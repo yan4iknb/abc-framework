@@ -1,7 +1,5 @@
 <?php
-
-namespace abc;
-
+namespace ABC;
 /**
  * Текущая версия фреймворка.
  */
@@ -33,8 +31,7 @@ class Abc
 /**
  * @var string
  */
-    protected $autoload = __DIR__ .'/core/AbcAutoloader.php';
-
+    protected $autoload = __DIR__ .'/core/ABCAutoloader.php';
 
 /**
  * Запуск фреймворка
@@ -81,8 +78,7 @@ class Abc
     {
         return $this->config;
     }
-    
-    
+
 /**
  * Принимает отчет об  ошибке
  *
@@ -96,11 +92,9 @@ class Abc
  *
  * @return void
  */     
-    public function error($message = 'Unspecified error', $errorLevel = E_USER_WARNING)
+    public function error($message = 'Unspecified error')
     {
-        if (!empty($this->config['debug_mod'])) {
-            $this->reportErrorSelector($message, $errorLevel);
-        }    
+        trigger_error($message, E_USER_ERROR);  
     } 
 
 /**
@@ -113,14 +107,12 @@ class Abc
  */    
     protected function run($appConfig, $siteConfig)
     {
-        $this->config = array_merge($appConfig, $siteConfig);
-        
-        if (!empty($this->config['composer']) || !empty($this->config['autoload_path'])) {
-            $this->autoloadSelector();    
-            return;
-        }
-     
+        $this->config = array_merge($appConfig, $siteConfig); 
         $this->autoloadIclude();
+        
+        if (!empty($this->config['debug_mod'])) {
+            $this->reportErrorSelector();
+        }  
     }
     
 /**
@@ -167,11 +159,12 @@ class Abc
  *
  * @return void
  */     
-    protected function reportErrorSelector($message, $errorLevel)
+    protected function reportErrorSelector($message = '', $errorLevel = '')
     {
-        $selector = new \core\ErrorSelector($this->config);
+        $selector = new \ABC\abc\core\ErrorSelector($this->config);
         $selector->setMessage($message);
         $selector->setErrorLevel($errorLevel);
+        $selector->selectErrorMode();
     }
 
 /**
@@ -183,7 +176,7 @@ class Abc
     final public static function getVersion($component = '')
     {
         if (!empty($component) && is_string($component)) {
-            return (new \resourse\AbcComponents)->getVersion($component);  
+            return (new \ABC\resourse\AbcComponents)->getVersion($component);  
         }
         
         return ABC_VERSION;

@@ -25,9 +25,12 @@ namespace core\abc;
  * Находит файлы, начиная от корневой директории сервера
  * или от папки с именем, установленном в константе
  *
+ * Возможно использовать префикс ABC (высшее пространство имен).
+ * Он будет проигнорирован в пути до файла
+ *
  * Пример 1:
  *
- *      new \abc\components\Example;
+ *      new \ABC\abc\components\Example;
  * 
  * найдет файл по пути
  *
@@ -35,7 +38,7 @@ namespace core\abc;
  *
  * Пример 2:
  *
- *      new \app\components\Example;
+ *      new \ABC\app\components\Example;
  * 
  * подключит файл по пути
  *
@@ -46,9 +49,11 @@ namespace core\abc;
  */   
 spl_autoload_register(function ($class) {
 
+    $class = preg_replace('#^ABC\\\#u', '', $class);
+
     $files[] = ABC_REPOSITORY_NAME .'/'. $class;    
     $files[] = ABC_VERSIONS_NAME .'/'. $class;
- 
+
     foreach ($files as $file) {
         $file = stream_resolve_include_path(ABC_BASE_PATH .'/'. $file .'.php');
       

@@ -1,8 +1,10 @@
 <?php
 
-namespace abc\core;
+namespace ABC\abc\core;
 
-use components\AbcProfiler as AbcProfiler; 
+use ABC\abc\components\debuger\AbcException as AbcException;
+use ABC\abc\components\debuger\php\PhpHandler as PhpHandler;
+use ABC\abc\components\AbcProfiler as AbcProfiler; 
 
 /** 
  * Класс ErrorSelector
@@ -16,55 +18,93 @@ use components\AbcProfiler as AbcProfiler;
  
 class ErrorSelector
 {
-    
+/**
+ * $var array
+ */     
+   protected $config;
+
+ /**
+ * $var string
+ */     
+   protected $message;
+   
+/**
+ * $var int
+ */     
+   protected $errorLevel;   
+   
+   
+/**
+ * Конструктор
+ *
+ * @param array $config
+ */        
+    public function __construct($config)
+    {
+        $this->config = $config;
+    }    
 
 /**
- * Выбор способа реакции на ошибку
- *
- * Принимает параметрами сообщение об ошибке и её уровень 
- *
- * Имеет два режима, настраиваемых в конфигурационном файле ключем exception. 
- * Если настройка установлена в true или 1, то будет выброшено исключение. 
- * Если нет - управление передается селектору выбора обработчика
+ * Устанавливает сообщение об ошибке
  *
  * @param string $message
+ *
+ * @return void
+ */        
+    public function setMessage($message)
+    {
+        $this->message = $message;
+    }
+    
+/**
+ * Устанавливает уровень ошибки
+ *
  * @param int $errorLevel
+ *
+ * @return void
+ */      
+    public function setErrorLevel($errorLevel)
+    {
+        $this->errorLevel = $errorLevel;
+    }
+    
+/**
+ * Выбирает режим обработки ошибок
  *
  * @return void
  */     
-    public function selectDebugMod($message, $errorLevel)
+    public function selectErrorMode()
     {
-        if (!empty($this->config['exception'])) {
-            set_exception_handler('setExceptionHandler');
-            throw new Exception($message, $errorLevel);
+        if (!empty($this->config['debug_mod'] === 'abc') ) {
+            $this->setExceptionMod();
+        }elseif ($this->config['debug_mod'] === 'profiling')  {
+            (new AbcProfiler)->run($this->message, $this->errorLevel);
         }
-        
-        $this->handlersSelector($message, $errorLevel);
     }
     
 /**
- * Устанавливает способ обработки ошибок
- *
- * Имеет два режима, настраиваемых в конфигурационном файле ключем profiling. 
- * Установленная в true или 1, включает профилирование. В ином случае ошибки будет обрабатывать 
- * интерпретатор PHP
- * 
- * @param string $message
- * @param int $errorLevel
+ * Устанавливает ABC обработчик исключений
  *
  * @return void
- */    
-    protected function handlersSelector($message, $errorLevel)
+ */     
+    public function setExceptionMod()
     {
-        if (empty($this->config['profiling'])) {
-            return (new AbcProfiler)->run($message, $errorLevel);
+        set_error_handler([$this, 'setAbcException']);
+        new PhpHandler($this->message, $this->errorLevel);
+    } 
+    
+    
+/**
+ * Бросает исключение на trigger_eror и отчеты интерпретатора
+ *
+ * @return void
+ */
+    public function setAbcException($code, $message, $file, $line)
+    { 
+        if (error_reporting() & $code) {
+            throw new AbcException($message, $code, $file, $line);
         }
-        else {        
-            set_error_handler('setAllException');
-            trigger_error($message, $errorLevel);
-        }
-    }
-
+    }    
 }
 
 

@@ -54,8 +54,13 @@ class Abc
             throw new Exception('Only one object');  
         }
        
-        $appConfig  = is_array($appConfig) ? $appConfig : [];    
-        $siteConfig = is_array($siteConfig) ? $siteConfig : [];
+        if (!is_array($appConfig)) {
+            throw new Exception('Configuring the application is to be performed array');
+        }
+        
+        if (!is_array($siteConfig)) {
+            throw new Exception('Configuring the site is to be performed array');
+        }
         
         self::$abc = new self;
         self::$abc->run($appConfig, $siteConfig);
@@ -82,24 +87,6 @@ class Abc
     }
 
 /**
- * Принимает отчет об  ошибке
- *
- * Принимает параметрами сообщение об ошибке и её уровень 
- *
- * Имеет два режима, настраиваемых в конфигурационном файле ключем debug_mod. 
- * При настройке установленной в true или 1 включается обработка ошибок
- *
- * @param string $message
- * @param int $errorLevel
- *
- * @return void
- */     
-    public function error($message = 'Unspecified error')
-    {
-        trigger_error($message, E_USER_ERROR);  
-    } 
-
-/**
  * Формирует настройки и подключает автолоадер классов.
  *
  * @param array $appConfig
@@ -113,7 +100,7 @@ class Abc
         $this->autoloadIclude();
         
         if (!empty($this->config['debug_mod'])) {
-            $this->reportErrorSelector();
+            $this->errorSelector();
         }  
     }
     
@@ -161,7 +148,7 @@ class Abc
  *
  * @return void
  */     
-    protected function reportErrorSelector($message = '', $errorLevel = '')
+    protected function errorSelector($message = '', $errorLevel = '')
     {
         $selector = new \ABC\abc\core\ErrorSelector($this->config);
         $selector->setMessage($message);

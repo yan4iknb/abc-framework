@@ -7,4 +7,3 @@ namespace ABC;
     Abc::createNewAbc(['debug_mod' => 'display']);
 // Демонстрация дебаггера 
     (new \ABC\app\DebugingDemo);
-    //(new \ABC\app\DiContainerDemo); 

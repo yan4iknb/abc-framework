@@ -67,7 +67,7 @@ class PhpHandler extends ExceptionHandler
     { 
         $this->mainBlock = false;    
         return $this->createTrace(); 
-    }    
+    }   
     
  /**
  * Генерирует листинг участка кода
@@ -78,20 +78,22 @@ class PhpHandler extends ExceptionHandler
     { 
         $i = 0;
         $code = ''; 
-     
-        $file = file($this->block['file']);
-        $line = $this->block['line'];            
+        
+        $this->line = $this->block['line'];        
+        $this->file = $this->block['file'];
+
+        $script = file($this->block['file']);      
         $arguments = var_export($this->block['args'], true);
         
         $ext = ceil($this->sizeListing / 2);
-        $position = ($line <= $ext) ? 0 : $line - $ext;
+        $position = ($this->line <= $ext) ? 0 : $this->line - $ext;
         
-        foreach ($file as $string) {
+        foreach ($script as $string) {
             ++$i;
          
-            if($this->mainBlock && $i == $line) {
+            if($this->mainBlock && $i == $this->line) {
                 $lines[] = $this->tpl->wrapLine($i, 'error');
-            } elseif($i == $line) {
+            } elseif($i == $this->line) {
                 $lines[] = $this->tpl->wrapLine($i, 'trace');
             }
             else {
@@ -133,16 +135,12 @@ class PhpHandler extends ExceptionHandler
                 continue;
             }  
             
-            $this->line = $this->block['line'];
-            $this->file = $this->block['file'];
-            $php = $this->createCode($this->block);
-         
             $data = ['num'       => $i,
                      'space'     => !empty($this->block['class']) ? $this->block['class'] : 'GLOBALS',
                      'location'  => ltrim(substr($this->file, strrpos($this->file, DIRECTORY_SEPARATOR)), '\\'),
-                     'line'      => $this->line,
-                     'file'      => $this->file,
-                     'php'       => $php
+                     'file'      => $this->block['file'],
+                     'line'      => $this->block['line'],
+                     'php'       => $this->createCode($this->block)
             ];            
          
             if (!empty($this->block['class'])) { 
@@ -169,7 +167,7 @@ class PhpHandler extends ExceptionHandler
  *
  * @return void
  */   
-    public function display() 
+    public function action() 
     {
         $this->tpl->displayReport($this->data);
     }   

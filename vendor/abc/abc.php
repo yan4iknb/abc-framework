@@ -1,5 +1,8 @@
 <?php
 namespace ABC;
+
+use Exception;
+
 /**
  * Текущая версия фреймворка.
  */
@@ -17,6 +20,11 @@ define('ABC_VERSION', '1.0.0');
  
 class Abc
 {
+
+/**
+ * @var string
+ */
+    public $autoload = __DIR__ .'/core/ABCAutoloader.php'; 
     
 /**
  * @var object
@@ -27,11 +35,6 @@ class Abc
  * @var array 
  */
     protected $config;
-
-/**
- * @var string
- */
-    protected $autoload = __DIR__ .'/core/ABCAutoloader.php';
 
 /**
  * Запуск фреймворка
@@ -46,15 +49,18 @@ class Abc
  *
  * @return object
  */     
-    public static function createNewAbc($appConfig = [], $siteConfig = [])
+    public static function createNewAbc($appConfig = [],  $siteConfig = [])
     {
         if (!empty(self::$abc)) {
             throw new Exception('Only one object');  
         }
        
-        $appConfig  = is_array($appConfig) ? $appConfig : [];    
-        $siteConfig = is_array($siteConfig) ? $siteConfig : [];
-        
+        if(!is_array($appConfig))
+            throw new Exception('Application configuration is not an array');
+     
+        if(!is_array($siteConfig))
+            throw new Exception('Site configuration is not an array');
+            
         self::$abc = new self;
         self::$abc->run($appConfig, $siteConfig);
     }
@@ -80,24 +86,6 @@ class Abc
     }
 
 /**
- * Принимает отчет об  ошибке
- *
- * Принимает параметрами сообщение об ошибке и её уровень 
- *
- * Имеет два режима, настраиваемых в конфигурационном файле ключем debug_mod. 
- * При настройке установленной в true или 1 включается обработка ошибок
- *
- * @param string $message
- * @param int $errorLevel
- *
- * @return void
- */     
-    public function error($message = 'Unspecified error')
-    {
-        trigger_error($message, E_USER_ERROR);  
-    } 
-
-/**
  * Формирует настройки и подключает автолоадер классов.
  *
  * @param array $appConfig
@@ -107,11 +95,12 @@ class Abc
  */    
     protected function run($appConfig, $siteConfig)
     {
+                
         $this->config = array_merge($appConfig, $siteConfig); 
         $this->autoloadIclude();
         
         if (!empty($this->config['debug_mod'])) {
-            $this->reportErrorSelector();
+            $this->errorSelector();
         }  
     }
     
@@ -159,7 +148,7 @@ class Abc
  *
  * @return void
  */     
-    protected function reportErrorSelector($message = '', $errorLevel = '')
+    protected function errorSelector($message = '', $errorLevel = '')
     {
         $selector = new \ABC\abc\core\ErrorSelector($this->config);
         $selector->setMessage($message);

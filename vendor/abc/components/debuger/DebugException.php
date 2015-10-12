@@ -5,7 +5,7 @@ namespace ABC\abc\components\debuger;
 use Exception;
 
 /** 
- * Класс AbcException 
+ * Класс DebugException 
  * Адаптирует trigger_error к Exception
  * для корректного выброса исключения
  * NOTE: Requires PHP version 5.5 or later   
@@ -15,7 +15,7 @@ use Exception;
  * @package system.cmponents.debugger 
  */  
 
-class AbcException extends Exception 
+class DebugException extends Exception 
 {
 
 /**

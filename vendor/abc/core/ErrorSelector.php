@@ -2,9 +2,9 @@
 
 namespace ABC\abc\core;
 
-use ABC\abc\components\debuger\AbcException as AbcException;
+use ABC\abc\components\debuger\DebugException as DebugException;
 use ABC\abc\components\debuger\php\PhpHandler as PhpHandler;
-use ABC\abc\components\AbcProfiler as AbcProfiler; 
+use ABC\abc\components\debuger\loger\Loger as Loger; 
 
 /** 
  * Класс ErrorSelector
@@ -75,34 +75,24 @@ class ErrorSelector
  */     
     public function selectErrorMode()
     {
-        if (!empty($this->config['debug_mod'] === 'abc') ) {
-            $this->setExceptionMod();
-        }elseif ($this->config['debug_mod'] === 'profiling')  {
-            (new AbcProfiler)->run($this->message, $this->errorLevel);
+        set_error_handler([$this, 'setException']);
+     
+        if ($this->config['debug_mod'] === 'display') {
+            new PhpHandler($this->message, $this->errorLevel);
+        }elseif ($this->config['debug_mod'] === 'log')  {
+            new Loger($this->message, $this->errorLevel);
         }
     }
-    
-/**
- * Устанавливает ABC обработчик исключений
- *
- * @return void
- */     
-    public function setExceptionMod()
-    {
-        set_error_handler([$this, 'setAbcException']);
-        new PhpHandler($this->message, $this->errorLevel);
-    } 
-    
-    
+   
 /**
  * Бросает исключение на trigger_eror и отчеты интерпретатора
  *
  * @return void
  */
-    public function setAbcException($code, $message, $file, $line)
+    public function setException($code, $message, $file, $line)
     { 
         if (error_reporting() & $code) {
-            throw new AbcException($message, $code, $file, $line);
+            throw new DebugException($message, $code, $file, $line);
         }
     }    
 }

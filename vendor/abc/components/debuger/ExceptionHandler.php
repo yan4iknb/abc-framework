@@ -2,6 +2,7 @@
 
 namespace ABC\abc\components\debuger;
 
+
 /** 
  * Класс ExceptionHandler
  * Обработчик исключений 
@@ -14,6 +15,11 @@ namespace ABC\abc\components\debuger;
 
 abstract class ExceptionHandler
 {
+/**
+ * @var string 
+ */
+    public $user = 'ABC'; 
+    
 /**
  * @var string 
  */
@@ -41,9 +47,10 @@ abstract class ExceptionHandler
  * @param string $message
  * @param int $errorLevel
  */       
-    public function __construct($message, $errorLevel) 
+    public function __construct() 
     {
         set_exception_handler(array($this, 'exceptionHandler'));
+        
     }
     
  /**
@@ -51,12 +58,12 @@ abstract class ExceptionHandler
  *
  * @param string $message
  * @param int $errorLevel
- */  
+ */ 
     abstract protected function getLocation();
     abstract protected function getTrace();
     abstract protected function createCode(); 
     abstract protected function createTrace();
-    abstract protected function display();
+    abstract protected function action();
     
  /**
  * Обработчик исключений
@@ -65,21 +72,19 @@ abstract class ExceptionHandler
  */   
     public function exceptionHandler($e) 
     {
-        $this->file  = $e->getFile();
-        $this->line  = $e->getLine();
         $this->code  = $e->getCode();        
         $this->trace = $e->getTrace();
         $this->prepareTrace();
      
-        $this->data = ['file'     => $this->file,
-                       'line'     => $this->line,        
-                       'message'  => $e->getMessage(),
+        $this->data = ['message'  => $e->getMessage(),
                        'level'    => $this->lewelMessage($e->getCode()),
-                       'excample' => $this->getLocation(),
+                       'location' => $this->getLocation(),                       
+                       'file'     => $this->file,
+                       'line'     => $this->line,                       
                        'trace'    => $this->getTrace(),
         ];
         
-        $this->display();
+        $this->action();
     }
  
 
@@ -93,12 +98,12 @@ abstract class ExceptionHandler
         $listLevels = [
                         E_NOTICE        => 'PHP Notice: ',
                         E_WARNING       => 'PHP Warning: ',
-                        E_USER_NOTICE   => 'ABC Notice: ',
-                        E_USER_WARNING  => 'ABC Warning: ',
-                        E_USER_ERROR    => 'ABC : '
+                        E_USER_NOTICE   => $this->user .' Notice: ',
+                        E_USER_WARNING  => $this->user .' Warning: ',
+                        E_USER_ERROR    => $this->user .' Message: '
         ];
         
-        return !empty($listLevels[$level]) ? $listLevels[$level] : 'ABC debugging mode: ';
+        return !empty($listLevels[$level]) ? $listLevels[$level] : $this->user .' debug mode: ';
     }    
 
  /**
@@ -132,17 +137,16 @@ abstract class ExceptionHandler
  * @return string
  */    
     protected function normaliseBlock($block)
-    { 
-        if ($block['function'] == 'setAbcException') {
-            $block = ['file'     => $block['args'][2],
-                      'line'     => $block['args'][3],
-                      'function' => $block['function'],
-                      'class'    => $block['class'],
-                      'type'     => $block['type'],
-                      'args'     => [0, $block['args'][0]]
+    {  
+        if ($block['function'] == 'setException') {
+            $block = ['file'      => $block['args'][2],
+                      'line'      => $block['args'][3],
+                      'function'  => $block['function'],
+                      'class'     => $block['class'],
+                      'type'      => $block['type'],
+                      'args'      => [0, $block['args'][0]]
             ];
         } 
-        
         return $this->blocksFilter($block);
     }    
 
@@ -154,17 +158,23 @@ abstract class ExceptionHandler
  * @return array|bool
  */    
     protected function blocksFilter($block)
-    { 
+    {
+        $e_User = [
+            E_USER_NOTICE,
+            E_USER_WARNING,
+            E_USER_ERROR
+        ];
+     
         switch ($block) {
             case (empty($block)) :
                 return false;
           
-            case (!empty($block['args'][1]) && $block['args'][1] === E_USER_ERROR) :
+            case (!empty($block['args'][1]) && in_array($block['args'][1], $e_User)) :
                 return false;
          
             case ($block['function'] === 'trigger_error') :
                 return false;
-         
+           
             case (false !== strpos($block['file'], 'eval')) :
                 return false;
          

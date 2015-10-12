@@ -1,27 +1,56 @@
 <?php
 namespace ABC\app;
 
-use Exception;
-
-
 class DebugingDemo
 {  
     public function __construct()
     {
-        $this->traceExample(1);
+        //echo $a; // Notice
+        
+        $var1 = 'cодержимое первого аргумента';
+        $var2 = 'cодержимое второго аргумента';
+        $this->traceExample1($var1, $var2);
     }
     
-    public function traceExample($var)
+    public function traceExample1($var1, $var2)
     {
-        $var++;
-        $this->errorExample($var);
+        $this->traceExample2($var1, $var2);
     }    
     
-    public function errorExample($var){
-        echo $a;  
-        //\ABC\Abc::current()->error('Пипец!');        
-        //trigger_error('Пипец');
-        //throw new Exception('Пипец!');
+    public function traceExample2($var1, $var2)
+    {
+        (new ExampleComponent($var1, $var2));
     }
 }
+
+
+
+
+
+
+
+
+// Эмуляция компонента, выбрасывающего исключение
+
+class ExampleComponent
+{  
+    public function __construct($var1, $var2)
+    {
+        if (!is_int($var1)) {
+            //throw new \Exception('Первый аргумент - не число', E_USER_WARNING);
+            trigger_error('Полный пипец!!!');        
+        }
+
+    }
+
+}
+
+
+
+
+
+
+
+
+
 

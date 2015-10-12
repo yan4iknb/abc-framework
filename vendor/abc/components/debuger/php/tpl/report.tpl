@@ -43,6 +43,19 @@
             ge('n_' + i).style.display = 'table-row';
             i++   
         }
+        ge('hide').innerHTML = '(Hide)';
+        return false;
+    }
+    
+    function hideAll(num)
+    {
+        var i = 0;
+        while(i < num)
+        {
+            ge('n_' + i).style.display = 'none';
+            i++   
+        }
+        ge('hide').innerHTML = '';
         return false;
     }
     
@@ -70,6 +83,6 @@
         <strong>in:</strong> <?=$file; ?>
         <strong>on line:</strong> <?=$line;?>
     </div> 
-        <?=$excample; ?>           
+        <?=$location; ?>           
         <?=$trace; ?>  
 </div> 

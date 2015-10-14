@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\abc\components\debuger;
+namespace ABC\abc\components\debugger;
 
 use Exception;
 

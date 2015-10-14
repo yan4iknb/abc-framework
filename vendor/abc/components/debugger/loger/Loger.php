@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\abc\components\debuger\loger;
+namespace ABC\abc\components\debugger\loger;
 
 use ABC\abc\components\debuger\ExceptionHandler as ExceptionHandler;
 

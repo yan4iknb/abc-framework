@@ -2,9 +2,9 @@
 
 namespace ABC\abc\core;
 
-use ABC\abc\components\debuger\DebugException as DebugException;
-use ABC\abc\components\debuger\php\PhpHandler as PhpHandler;
-use ABC\abc\components\debuger\loger\Loger as Loger; 
+use ABC\abc\components\debugger\DebugException as DebugException;
+use ABC\abc\components\debugger\php\PhpHandler as PhpHandler;
+use ABC\abc\components\debugger\loger\Loger as Loger; 
 
 /** 
  * Класс ErrorSelector
@@ -21,19 +21,8 @@ class ErrorSelector
 /**
  * $var array
  */     
-   protected $config;
-
- /**
- * $var string
- */     
-   protected $message;
-   
-/**
- * $var int
- */     
-   protected $errorLevel;   
-   
-   
+   protected $config;  
+  
 /**
  * Конструктор
  *
@@ -42,32 +31,9 @@ class ErrorSelector
     public function __construct($config)
     {
         $this->config = $config;
+        $this->selectErrorMode();
     }    
-
-/**
- * Устанавливает сообщение об ошибке
- *
- * @param string $message
- *
- * @return void
- */        
-    public function setMessage($message)
-    {
-        $this->message = $message;
-    }
-    
-/**
- * Устанавливает уровень ошибки
- *
- * @param int $errorLevel
- *
- * @return void
- */      
-    public function setErrorLevel($errorLevel)
-    {
-        $this->errorLevel = $errorLevel;
-    }
-    
+   
 /**
  * Выбирает режим обработки ошибок
  *
@@ -78,9 +44,9 @@ class ErrorSelector
         set_error_handler([$this, 'setException']);
      
         if ($this->config['debug_mod'] === 'display') {
-            new PhpHandler($this->message, $this->errorLevel);
+            new PhpHandler();
         }elseif ($this->config['debug_mod'] === 'log')  {
-            new Loger($this->message, $this->errorLevel);
+            new Loger();
         }
     }
    

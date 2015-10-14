@@ -6,10 +6,11 @@ class DebugingDemo
 {  
     public function __construct()
     {
-        //echo $a; // Notice
-        
         $var1 = 'cодержимое первого аргумента';
         $var2 = 'cодержимое второго аргумента';
+       
+        echo $a; // Notice
+        
         $this->traceExample1($var1, $var2);
     }
     

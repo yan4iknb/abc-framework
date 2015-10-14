@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\abc\components\debuger;
+namespace ABC\abc\components\debugger;
 
 
 /** 
@@ -21,26 +21,16 @@ abstract class ExceptionHandler
     public $user = 'ABC'; 
     
 /**
- * @var string 
+ * @var bool 
  */
+    public $developer = false;  
+   
     protected $file;
-/**
- * @var int 
- */
     protected $line;
-/**
- * @var array 
- */
     protected $trace;
-/**
- * @var int 
- */
     protected $code;
-/**
- * @var array 
- */
     protected $data;
-
+    
  /**
  * Конструктор
  *
@@ -49,8 +39,7 @@ abstract class ExceptionHandler
  */       
     public function __construct() 
     {
-        set_exception_handler(array($this, 'exceptionHandler'));
-        
+        set_exception_handler(array($this, 'exceptionHandler'));   
     }
     
  /**
@@ -87,7 +76,6 @@ abstract class ExceptionHandler
         $this->action();
     }
  
-
  /**
  * Готовит сообщение о типе ошибки
  *
@@ -107,7 +95,7 @@ abstract class ExceptionHandler
     }    
 
  /**
- * Подготвливает трассировку для генерации листингов
+ * Подготавливает трассировку для генерации листингов
  *
  * @return void
  */   
@@ -159,19 +147,28 @@ abstract class ExceptionHandler
  */    
     protected function blocksFilter($block)
     {
+        if (!empty($this->developer)) {
+            return $block;
+        }
+        
         $e_User = [
             E_USER_NOTICE,
             E_USER_WARNING,
             E_USER_ERROR
         ];
+        
+        $isFramework = $this->checkFramework(@$block['class']);
      
         switch ($block) {
             case (empty($block)) :
                 return false;
-          
+         
+            case ($isFramework) :
+                return false;
+                
             case (!empty($block['args'][1]) && in_array($block['args'][1], $e_User)) :
                 return false;
-         
+                
             case ($block['function'] === 'trigger_error') :
                 return false;
            
@@ -181,6 +178,33 @@ abstract class ExceptionHandler
             default :
                 return $block;
         } 
-    }   
-   
+    } 
+    
+ /**
+ * Распознает зарезервированные классы
+ *
+ * @param array $class
+ *
+ * @return bool
+ */    
+    protected function checkFramework($class)
+    {
+        return preg_match('#^'. preg_quote($this->user) .'\\\abc.+#i', $class);
+    }     
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

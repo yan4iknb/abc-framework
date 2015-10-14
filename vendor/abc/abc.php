@@ -2,11 +2,6 @@
 
 namespace ABC;
 
-/**
- * Текущая версия фреймворка.
- */
-define('ABC_VERSION', '1.0.0');
-
 /** 
  * Класс Abc 
  * Стартует фреймворк
@@ -23,7 +18,12 @@ class Abc
 /**
  * @var object
  */
-    protected static $abc;    
+    protected static $abc; 
+    
+/**
+ * @var object
+ */
+    protected $framework;     
 
 /**
  * @var array 
@@ -33,7 +33,7 @@ class Abc
 /**
  * @var string
  */
-    protected $autoload = __DIR__ .'/core/ABCAutoloader.php';
+    protected $autoload = __DIR__ .'/core/Autoloader.php';
 
 /**
  * Запуск фреймворка
@@ -48,18 +48,18 @@ class Abc
  *
  * @return object
  */     
-    public static function createNewAbc($appConfig = [], $siteConfig = [])
+    public static function createNew($appConfig = [], $siteConfig = [])
     {
         if (!empty(self::$abc)) {
-            throw new Exception('Only one object');  
+            throw new \Exception('Only one object');  
         }
        
         if (!is_array($appConfig)) {
-            throw new Exception('Configuring the application is to be performed array');
+            throw new \Exception('Configuring the application is to be performed array');
         }
         
         if (!is_array($siteConfig)) {
-            throw new Exception('Configuring the site is to be performed array');
+            throw new \Exception('Configuring the site is to be performed array');
         }
         
         self::$abc = new self;
@@ -73,7 +73,7 @@ class Abc
  */     
     public static function current()
     {
-        return self::$abc;
+        return self::$abc->framework;
     }    
 
 /**
@@ -85,7 +85,7 @@ class Abc
     {
         return $this->config;
     }
-
+    
 /**
  * Формирует настройки и подключает автолоадер классов.
  *
@@ -97,11 +97,13 @@ class Abc
     protected function run($appConfig, $siteConfig)
     {
         $this->config = array_merge($appConfig, $siteConfig); 
-        $this->autoloadIclude();
+        $this->autoloadSelector();
         
         if (!empty($this->config['debug_mod'])) {
             $this->errorSelector();
-        }  
+        } 
+        
+        self::$abc->framework = new ABC\core\AbcFramework;
     }
     
 /**
@@ -148,12 +150,9 @@ class Abc
  *
  * @return void
  */     
-    protected function errorSelector($message = '', $errorLevel = '')
+    protected function errorSelector()
     {
-        $selector = new \ABC\abc\core\ErrorSelector($this->config);
-        $selector->setMessage($message);
-        $selector->setErrorLevel($errorLevel);
-        $selector->selectErrorMode();
+        new \ABC\abc\core\ErrorSelector($this->config);  
     }
 
 /**
@@ -164,11 +163,17 @@ class Abc
  */    
     final public static function getVersion($component = '')
     {
-        if (!empty($component) && is_string($component)) {
-            return (new \ABC\resourse\AbcComponents)->getVersion($component);  
+        if (!empty($component) && !is_string($component)) {
+            throw new \Exception('Invalid argument. Expects parameter 1 to be string', E_USER_WARNING);
         }
         
-        return ABC_VERSION;
+        $version = (new \ABC\abc\components\ComponentRegistry)->getVersion($component);
+        
+        if (!empty($version)) {
+            throw new \Exception("Component <b>$component</b> is not installed.", E_USER_WARNING);
+        }
+        
+        return $version;  
     }
 }
 

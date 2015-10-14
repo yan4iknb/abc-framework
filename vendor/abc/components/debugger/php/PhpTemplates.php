@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\abc\components\debuger\php;
+namespace ABC\abc\components\debugger\php;
 
 /** 
  * Класс PhpTemplates

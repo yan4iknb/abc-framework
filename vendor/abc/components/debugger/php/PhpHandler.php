@@ -1,13 +1,13 @@
 <?php
 
-namespace ABC\abc\components\debuger\php;
+namespace ABC\abc\components\debugger\php;
 
-use ABC\abc\components\debuger\ExceptionHandler as ExceptionHandler;
-use ABC\abc\components\debuger\php\PhpTemplates as PhpTemplates;
+use ABC\abc\components\debugger\ExceptionHandler as ExceptionHandler;
+use ABC\abc\components\debugger\php\PhpTemplates as PhpTemplates;
 
 /** 
  * Класс PhpHandler
- * Обработчик исключений 
+ * Визуализарует отчет о пойманых исключениях.
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
  * @copyright © 2015
@@ -41,9 +41,9 @@ class PhpHandler extends ExceptionHandler
  * @param string $message
  * @param int $errorLevel
  */       
-    public function __construct($message, $errorLevel) 
+    public function __construct() 
     {
-        parent::__construct($message, $errorLevel);
+        parent::__construct();
         $this->tpl = new PhpTemplates;
     }
     
@@ -172,3 +172,5 @@ class PhpHandler extends ExceptionHandler
         $this->tpl->displayReport($this->data);
     }   
 }
+
+

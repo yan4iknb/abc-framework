@@ -133,7 +133,7 @@ class AbcProcessor
         if (empty($component) || !is_string($component)) {
             trigger_error('Component name should be a string', E_USER_WARNING);
         }
-            $this->locator->unset($component);
+            $this->locator->unsetServise($component);
             $class = '\ABC\Abc\components\\'. $component .'\\'. $component;
             $this->locator->setGlobal($component, function() use ($class, $data) {
                                                       return new $class($data);

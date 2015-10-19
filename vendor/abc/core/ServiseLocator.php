@@ -58,7 +58,7 @@ class ServiseLocator
     {    
         $ServiseId = $this->validateServise($ServiseId);
      
-        if (!empty($this->ServiseFrozen[$ServiseId])) {
+        if (isset($this->ServiseFrozen[$ServiseId])) {
             
             if (empty(self::$ObjectStorage[$ServiseId])) {
                 self::$ObjectStorage[$ServiseId] = $this->ServiseStorage[$ServiseId]->__invoke();

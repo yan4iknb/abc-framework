@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\abc\components\debugger;
+namespace ABC\abc\core\debugger;
 
 
 /** 
@@ -10,21 +10,27 @@ namespace ABC\abc\components\debugger;
  * @author phpforum.su
  * @copyright © 2015
  * @license http://abc-framework.com/license/ 
- * @package system.cmponents.debugger 
  */   
 
-abstract class ExceptionHandler
+abstract class Handler
 {
 /**
  * @var string 
  */
     public $user = 'ABC'; 
-    
+/**
+ * @var string 
+ */
+    public $framework = 'AbcProcessor';
+
 /**
  * @var bool 
  */
-    public $developer = false;  
-   
+    public $developer = false;
+
+    
+    
+    protected $exception = false;
     protected $file;
     protected $line;
     protected $trace;
@@ -47,30 +53,41 @@ abstract class ExceptionHandler
  *
  * @param string $message
  * @param int $errorLevel
- */ 
-    abstract protected function getLocation();
-    abstract protected function getTrace();
-    abstract protected function createCode(); 
-    abstract protected function createTrace();
+ */  
+    abstract protected function createStack();
+    abstract protected function getListing();
+    abstract protected function getStack();
     abstract protected function action();
+    
+ /**
+ * Отлавливает исключения
+ *
+ * @return void
+ */   
+    public function exceptionHandler($e) 
+    {
+        $this->exception = true;
+        $this->createReport($e);  
+    }
     
  /**
  * Обработчик исключений
  *
  * @return void
  */   
-    public function exceptionHandler($e) 
+    public function createReport($e) 
     {
-        $this->code  = $e->getCode();        
-        $this->trace = $e->getTrace();
+        $this->code = $e->getCode();        
+        $this->backTrace = $e->getTrace();
         $this->prepareTrace();
      
         $this->data = ['message'  => $e->getMessage(),
-                       'level'    => $this->lewelMessage($e->getCode()),
-                       'location' => $this->getLocation(),                       
+                       'adds'     => true,
+                       'level'    => $this->lewelMessage($this->code),
+                       'listing'  => $this->getListing($this->trace[0]),                       
                        'file'     => $this->file,
                        'line'     => $this->line,                       
-                       'trace'    => $this->getTrace(),
+                       'stack'    => $this->getStack(),
         ];
         
         $this->action();
@@ -103,29 +120,28 @@ abstract class ExceptionHandler
     {    
         $blocks = [];
      
-        foreach ($this->trace as $block) {
-            
+        foreach ($this->backTrace as $block) { 
             $block = $this->normaliseBlock($block);
          
             if (empty($block)) {
                 continue;
             }  
-            
+         
             $blocks[] = $block;
         }
         
-        $this->trace = $blocks; 
+        $this->backTrace = $blocks; 
     }   
 
  /**
  * Приводит блоки трассировки к одному типу
  *
- * @param string $code
+ * @param string $block
  *
  * @return string
  */    
     protected function normaliseBlock($block)
-    {  
+    { //
         if ($block['function'] == 'setException') {
             $block = ['file'      => $block['args'][2],
                       'line'      => $block['args'][3],
@@ -135,7 +151,8 @@ abstract class ExceptionHandler
                       'args'      => [0, $block['args'][0]]
             ];
         } 
-        return $this->blocksFilter($block);
+     
+        return $this->blocksFilter($block); 
     }    
 
  /**
@@ -146,33 +163,29 @@ abstract class ExceptionHandler
  * @return array|bool
  */    
     protected function blocksFilter($block)
-    {
-        if (!empty($this->developer)) {
+    {    
+        if ($this->developer) {
             return $block;
         }
-        
+      
         $e_User = [
             E_USER_NOTICE,
             E_USER_WARNING,
             E_USER_ERROR
         ];
-        
-        $isFramework = $this->checkFramework(@$block['class']);
-     
+       
         switch ($block) {
-            case (empty($block)) :
-                return false;
          
-            case ($isFramework) :
+            case ($this->checkFramework($block)) :
                 return false;
                 
-            case (!empty($block['args'][1]) && in_array($block['args'][1], $e_User)) :
+            case (!empty($block['args'][1]) && is_int($block['args'][1]) && in_array($block['args'][1], $e_User)) :
                 return false;
                 
             case ($block['function'] === 'trigger_error') :
                 return false;
            
-            case (false !== strpos($block['file'], 'eval')) :
+            case (!empty($block['file'][1]) && false !== strpos($block['file'], 'eval')) :
                 return false;
          
             default :
@@ -181,15 +194,28 @@ abstract class ExceptionHandler
     } 
     
  /**
- * Распознает зарезервированные классы
+ * Распознает классы фреймворка
  *
- * @param array $class
- *
+ * @param array $block
+ *var_dump($class);
  * @return bool
  */    
-    protected function checkFramework($class)
-    {
-        return preg_match('#^'. preg_quote($this->user) .'\\\abc.+#i', $class);
+    protected function checkFramework($block)
+    { 
+        if (empty($block['class'])) {
+            return false;
+        }
+    
+        if (basename($block['class']) === $this->framework && (!$this->exception || $block['function'] === 'getComponent')) {
+            return true;
+        }
+        
+        if (basename($block['class']) === 'Dbg') {
+            return true;
+        }
+        
+        $user = preg_quote($this->user);        
+        return preg_match('#^'. $user .'\\\\'. $user .'.+#i', $block['class']);
     }     
 }
 

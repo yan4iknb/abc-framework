@@ -2,9 +2,8 @@
 
 namespace ABC\abc\core;
 
-use ABC\abc\components\debugger\DebugException as DebugException;
-use ABC\abc\components\debugger\php\PhpHandler as PhpHandler;
-use ABC\abc\components\debugger\loger\Loger as Loger; 
+use ABC\abc\core\php\PhpHandler as PhpHandler;
+use ABC\abc\core\loger\Loger as Loger; 
 
 /** 
  * Класс ErrorSelector
@@ -13,7 +12,6 @@ use ABC\abc\components\debugger\loger\Loger as Loger;
  * @author phpforum.su
  * @copyright © 2015
  * @license http://abc-framework.com/license/ 
- * @package system.core 
  */   
  
 class ErrorSelector
@@ -58,7 +56,7 @@ class ErrorSelector
     public function setException($code, $message, $file, $line)
     { 
         if (error_reporting() & $code) {
-            throw new DebugException($message, $code, $file, $line);
+            throw new ErrorException($message, $code, $file, $line);
         }
     }    
 }

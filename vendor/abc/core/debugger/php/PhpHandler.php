@@ -1,0 +1,203 @@
+<?php
+
+namespace ABC\abc\core\debugger\php;
+
+use ABC\abc\core\debugger\Handler;
+use ABC\abc\core\debugger\php\View;
+use ABC\abc\core\debugger\php\Painter;
+
+/** 
+ * Класс PhpHandler
+ * Визуализирует отчет о пойманых исключениях.
+ * NOTE: Requires PHP version 5.5 or later   
+ * @author phpforum.su
+ * @copyright © 2015
+ * @license http://abc-framework.com/license/ 
+ * @package system.cmponents.debugger 
+ */   
+
+class PhpHandler extends Handler
+{
+    public $sizeListing = 20;
+    
+/**
+ * @var object 
+ */    
+    protected $view;
+/**
+ * @var object 
+ */    
+    protected $painter;
+    
+    protected $num = 0;
+    protected $mainBlock = true;
+    
+ /**
+ * Конструктор
+ *
+ * @param string $message
+ * @param int $errorLevel
+ */       
+    public function __construct() 
+    {
+        parent::__construct();
+        $this->view    = new View;
+        $this->painter = new Painter;
+    }
+    
+ /**
+ * Возвращает главный блок участка кода
+ *
+ * @return string
+ */   
+    public function getListing() 
+    {
+        $block = array_shift($this->backTrace);
+        return $this->createBlock($block);
+    }
+
+ /**
+ * Возвращает листинги трассировки
+ *
+ * @return string
+ */    
+    public function getStack() 
+    { 
+        $this->mainBlock = false;    
+        return $this->createStack(); 
+    }  
+      
+ /**
+ * Подготовка данных для листингов
+ *
+ * $param $blockCont
+ *
+ * @return void
+ */     
+    protected function prepareValue($blockCont) 
+    {
+        if (empty($blockCont)) {
+            $blockCont = 'Void';  
+        } 
+     
+        ob_start();
+            var_dump($blockCont);       
+        $blockCont = ob_get_clean();
+     
+        return $blockCont;
+    } 
+    
+ /**
+ * Генерирует листинг участка кода
+ *
+ * @return string
+ */   
+    protected function createBlock($block, $num = false) 
+    { 
+        $i = 0;
+        $blockCont = ''; 
+      
+        $this->line  = $block['line'];        
+        $this->file  = $block['file'];
+        $script = file($block['file']);
+        $arguments = $this->prepareValue(@$block['args']);
+        
+        $ext = ceil($this->sizeListing / 2);
+        $position = ($this->line <= $ext) ? 0 : $this->line - $ext;
+        
+        foreach ($script as $string) {
+            ++$i;
+         
+            if($this->mainBlock && $i == $this->line) {
+                $lines[] = $this->painter->wrapLine($i, 'error');
+            } elseif($i == $this->line) {
+                $lines[] = $this->painter->wrapLine($i, 'trace');
+            }
+            else {
+                $lines[] = $i;
+            }
+            
+            $blockCont .= $string;
+        } 
+       
+        $lines = array_slice($lines, $position, $this->sizeListing);
+        
+        if ($this->exception && $num === false) {
+            $arguments = 'null';
+        }
+        
+        $data = ['num'       => $num,
+                 'arguments' => $this->painter->highlightVar($arguments),
+                 'lines'     => [$lines],
+                 'total'     => $this->painter->highlightString($blockCont, $position, $this->sizeListing),
+        ];
+      
+        return $this->view->createBlock($data);
+    }     
+
+ /**
+ * Генерирует таблицу трассировки
+ *
+ * @return string
+ */   
+    protected function createStack()
+    {    
+        $i = 0;
+        $tpl    = $this->view->getStackRow();
+        $action = '';
+        $steck  = $rows = [];
+       
+        foreach ($this->backTrace as $block) {
+            
+            $block = $this->normaliseBlock($block);
+         
+            if (empty($block)) {
+                continue;
+            }  
+            
+            $space    = !empty($block['class']) ? dirname($block['class']) : 'GLOBALS';
+            $location = basename($this->file);
+            
+            $data = ['space'     => $space,
+                     'location'  => $location,
+                     'file'      => $block['file'],
+                     'line'      => $block['line'],
+                     'total'     => $this->createBlock($block, $i)
+            ];            
+         
+            if (!empty($block['class'])) { 
+                $action = basename($block['class']). $block['type']; 
+            } 
+            
+            $data['action'] = $action . $block['function'];
+            
+            $steck[] = $data;
+            $i++;
+        }
+        
+        $steck = array_reverse($steck);    
+        
+        foreach ($steck as $row) {
+            $row['num'] = ++$this->num;        
+            $rows[] = $this->view->parseTpl($tpl, $row);
+        }
+        
+        $data = ['cnt'  => count($this->trace),
+                 'rows' => implode('', $rows)
+        ];
+        
+        return $this->view->createStack($data);
+    }    
+
+ /**
+ * Рендер
+ *
+ * @return void
+ */   
+    public function action() 
+    {
+        $this->view->displayReport($this->data);
+    }
+}
+
+

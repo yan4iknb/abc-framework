@@ -15,7 +15,7 @@ namespace core\abc;
  /** 
  * Устанавливает имя директории с версиями по умолчанию.
  */
-    defined('ABC_VERSIONS_NAME') or define('ABC_VERSIONS_NAME', 'versions');
+    defined('ABC_VERSIONS_NAME') or define('ABC_VERSIONS_NAME', '');
 
  /** 
  *
@@ -54,9 +54,9 @@ spl_autoload_register(function ($class) {
     $files[] = ABC_REPOSITORY_NAME .'/'. $class;    
     $files[] = ABC_VERSIONS_NAME .'/'. $class;
 
-    foreach ($files as $file) {
+    foreach ($files as $file) {   
         $file = stream_resolve_include_path(ABC_BASE_PATH .'/'. $file .'.php');
-      
+     
         if(is_readable($file)) {
             include_once $file;
             break;

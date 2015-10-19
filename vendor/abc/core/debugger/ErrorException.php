@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\abc\components\debugger;
+namespace ABC\abc\core\debugger;
 
 use Exception;
 
@@ -12,10 +12,9 @@ use Exception;
  * @author phpforum.su
  * @copyright © 2015
  * @license http://abc-framework.com/license/ 
- * @package system.cmponents.debugger 
  */  
 
-class DebugException extends Exception 
+class ErrorException extends Exception 
 {
 
 /**

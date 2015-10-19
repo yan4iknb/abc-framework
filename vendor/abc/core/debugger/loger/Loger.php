@@ -1,8 +1,8 @@
 <?php
 
-namespace ABC\abc\components\debugger\loger;
+namespace ABC\abc\core\debugger\loger;
 
-use ABC\abc\components\debuger\ExceptionHandler as ExceptionHandler;
+use ABC\abc\core\debuger\ExceptionHandler;
 
 /** 
  * Класс Loger 
@@ -11,8 +11,7 @@ use ABC\abc\components\debuger\ExceptionHandler as ExceptionHandler;
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
  * @copyright © 2015
- * @license http://abc-framework.com/license/ 
- * @package system.cmponents.loger 
+ * @license http://abc-framework.com/license/  
  */  
 class Loger extends ExceptionHandler 
 {
@@ -32,11 +31,9 @@ class Loger extends ExceptionHandler
     protected function createTrace()
     {
     
-    }
-    
+    }   
     protected function action()
     {
     
     }
-
 }

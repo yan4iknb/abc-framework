@@ -15,18 +15,42 @@ class MysqliDebug
 {
 
     protected $mess = 'MySQL error: ';
-    protected $view;    
+    
+    /**
+    * @var object
+    */
+    protected $view; 
+    
+    /**
+    * @var object
+    */
     protected $mysqli;
     
+    /**
+    * Конструктор
+    *
+    * @param object $mysqli
+    * @param object $view
+    */        
     public function __construct($mysqli, $view)
     { 
         $this->mysqli = $mysqli->db;
         $this->view = $view;
     }
     
+    /**
+    * Формирует отчет обо ошибке SQL запроса
+    *
+    * @param string $file
+    * @param int $line    
+    * @param string    $sql
+    * @param string    $error
+    *
+    * @return void
+    */        
     public function errorReport($file, $line, $sql, $error = '')
     { 
-        $raw = $this->prepareSql($sql, $error);
+        $raw = $this->prepareSqlListing($sql, $error);
         $data = ['mess'    => $this->mess,
                  'file'    => $file,
                  'line'    => $line,
@@ -38,19 +62,37 @@ class MysqliDebug
         $this->view->createReport($data);
     } 
     
-    public static function testReport($file, $line, $sql)
+    /**
+    * Тест запроса
+    *
+    * @param string $file
+    * @param int $line    
+    * @param string    $sql
+    * @param string    $error
+    *
+    * @return void
+    */       
+    public function testReport($file, $line, $sql, $error = '')
     { 
         $this->mess = 'MySQL query: ';
-        $this->errorReport($file, $line, $sql)
-     
-        $start = microtime(true);
+        $this->errorReport($file, $line, $sql, $error = '');
+        $start = microtime(true);        
         $this->mysqli->query($sql);
         $data['time'] = sprintf("%01.4f", microtime(true) - $start);
-        $this->view->createReport($data);
-        $this->explain($sql);
+        $data['explain'] = $this->explain($sql);
+        $this->view->createExplain($data);
+        
     }
 
-    protected function prepareListing($sql, $error = '')
+    /**
+    * Подготавливает листинг SQL
+    *
+    * @param string $sql
+    * @param string $error
+    *
+    * @return array
+    */    
+    protected function prepareSqlListing($sql, $error = '')
     { 
         $sql   = htmlSpecialChars($sql);
         $error = htmlSpecialChars($error);
@@ -67,7 +109,14 @@ class MysqliDebug
         $num = array_fill(1, $cnt, true);
         return ['num' => $num, 'sql' => $sql];
     }
-    
+ 
+    /**
+    * Выполняет EXPLAIN запроса
+    *
+    * @param string $sql
+    *
+    * @return null
+    */    
     protected function explain($sql)
     {     
         $res = $this->mysqli->query(db::getLink(), "EXPLAIN ". $sql);
@@ -75,8 +124,10 @@ class MysqliDebug
         if (is_object($res)) {
          
             $data = $res->fetch_array(MYSQLI_ASSOC);
-            $this->view->createExplain($data);
+            return $this->view->createExplain($data);
         }
+        
+        return null;
     } 
 }
 

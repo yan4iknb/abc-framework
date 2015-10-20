@@ -14,7 +14,7 @@ namespace ABC\abc\components\mysqli;
 class View
 {
     /**
-    * 
+    * Помечает проблемный участок SQL
     *
     * @param 
     *
@@ -26,7 +26,7 @@ class View
     }
 
     /**
-    * 
+    * Генерирует листинг SQL
     *
     * @param 
     *
@@ -39,7 +39,7 @@ class View
     }    
     
     /**
-    * 
+    * Генерирует EXPLAIN
     *
     * @param string $data
     *
@@ -47,7 +47,7 @@ class View
     */     
     public function createExplain($data)
     { 
-        $tpl = $this->getTpl(__DIR__ '/tpl/report.tpl');
+        $tpl = $this->getTpl(__DIR__ '/tpl/explain.tpl');
         $this->display(parseTpl($tpl, $data));
     }
     

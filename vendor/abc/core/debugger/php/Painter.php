@@ -35,7 +35,7 @@ class Painter
     public function highlightString($blockCont, $position, $size)
     {
         $descr = preg_match('~^[\r\n\s\t]*?<\?php~uis', $blockCont) ? '' : '<?php ';
-        $blockCont  = highlight_string($descr . $blockCont, true);
+        $blockCont = highlight_string($descr . $blockCont, true);
         $lines = preg_split('~<br[\s/]*?>~ui', $blockCont);       
         $lines = array_slice($lines, $position, $size);
         return implode('<br />', $lines);

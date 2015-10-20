@@ -63,7 +63,7 @@ abstract class Handler
     * @param string $message
     * @param int $errorLevel
     */  
-    abstract protected function createStack();
+    abstract protected function prepareStack();
     abstract protected function getListing();
     abstract protected function getStack();
     abstract protected function action();

@@ -19,14 +19,14 @@ class Configurator
     protected $userConfig;
     
     /**
-    * @var object
+    * @var ServiceLocator
     */ 
     protected $locator;
     
     /**
     * @var array
     */ 
-    protected $regestry;
+    protected $registry;
     
     /**
     * Конструктор
@@ -38,7 +38,7 @@ class Configurator
     {
         $this->locator    = $locator;
         $this->userConfig = $userConfig;
-        $this->regestry   = include __DIR__ .'/../resourses/Components.php';
+        $this->registry   = include __DIR__ .'/../resourses/Components.php';
     } 
     
     /**
@@ -48,10 +48,10 @@ class Configurator
     */     
     public function packComponents()
     { 
-        foreach ($this->regestry as $component => $type) {
+        foreach ($this->registry as $component => $type) {
          
             $class = '\ABC\Abc\components\\'. $component .'\\'. $component;
-            $data  = @$this->userConfig[$component] ?: [];
+            $data  = $this->userConfig[$component] ?: [];
             
             if ($type == 'global' || true === $type) {
                 $this->locator->setGlobal($component, 

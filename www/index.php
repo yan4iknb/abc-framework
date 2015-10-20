@@ -1,15 +1,16 @@
 <?php
 
 namespace ABC;
-
-
+ 
+    error_reporting(E_ALL);
+    
     require __DIR__ .'/../vendor/abc/Abc.php'; 
     $config = require __DIR__ .'/../app/resourses/config.php';
    
     Abc::createApp($config);
 
-    //new \ABC\app\DebugingDemo;   
-    new \ABC\app\MisqliDebugingDemo;
+    new \ABC\app\DebugingDemo;   
+    //new \ABC\app\MisqliDebugingDemo;
     
     
 

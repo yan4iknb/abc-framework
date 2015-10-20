@@ -19,17 +19,17 @@ class Abc
 {
     
     /**
-    * @var object
+    * @var Abc 
     */
     protected static $abc; 
     
     /**
-    * @var object
+    * @var AbcProcess
     */
     protected $process;     
 
     /**
-    * @var array 
+    * @var config 
     */
     protected $config;
 

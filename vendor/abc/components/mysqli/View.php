@@ -32,10 +32,11 @@ class View
     *
     * @return void
     */    
-    public function createSqlListing($data)
+    public function createReport($data)
     { 
-        $tpl = $this->getTpl(__DIR__ '/tpl/report.tpl');
-        $this->display(parseTpl($tpl, $data));
+        $data['num'] = implode('<br>', $data['num']);
+        $tpl = $this->getTpl(__DIR__ .'/tpl/report.tpl');
+        $this->display($this->parseTpl($tpl, $data));
     }    
     
     /**
@@ -47,10 +48,51 @@ class View
     */     
     public function createExplain($data)
     { 
-        $tpl = $this->getTpl(__DIR__ '/tpl/explain.tpl');
-        $this->display(parseTpl($tpl, $data));
+        $tpl = $this->getTpl(__DIR__ .'/tpl/explain.tpl');
+        return $this->parseTpl($tpl, $data);
     }
     
+    /**
+    * Подсветка линии
+    *
+    * @return string
+    */  
+    public function wrapLine($line, $type)
+    {
+        return '<span class="abc_'. $type .'_line">'. $line .'</span>';
+    } 
+    
+    /**
+    * Подсветка php кода
+    *
+    * @param string $blockCont
+    * @param int $position
+    *
+    * @return string
+    */    
+    public function highlightString($php, $position, $size)
+    {
+        $descr = preg_match('~^[\r\n\s\t]*?<\?php~uis', $php) ? '' : '<?php ';
+        $php   = highlight_string($descr . $php, true);
+        $lines = preg_split('~<br[\s/]*?>~ui', $php);       
+        $lines = array_slice($lines, $position, $size);
+        return implode('<br />', $lines);
+    } 
+    
+    /**
+    * Возвращает сформированный листинг php кода
+    *
+    * @param string $blockCont
+    * @param int $position
+    *
+    * @return string
+    */    
+    public function createPhp($data)
+    {
+        $data['num'] = implode('<br>', $data['num']);
+        $tpl = $this->getTpl(__DIR__ .'/tpl/php.tpl');
+        return $this->parseTpl($tpl, $data);
+    }     
     /**
     * Читает шаблон
     *
@@ -73,7 +115,7 @@ class View
     */     
     public function parseTpl($tpl, $data)
     {
-        $tpl = preg_replace('#\{\$(.+?)\}#i', '<?=$\\1?>', $tpl);
+        $tpl = preg_replace('#\{\$(.+?)\}#i', '<?=$\\1;?>', $tpl);
         extract($data);
         ob_start();
         eval('?>'. $tpl);

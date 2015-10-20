@@ -3,7 +3,7 @@
 namespace ABC\abc\core;
 
 use ABC\abc\core\Configurator;
-use ABC\abc\core\ServiseLocator;
+use ABC\abc\core\ServiceLocator;
 
 use ABC\abc\core\debugger\ErrorException;
 use ABC\abc\core\debugger\php\PhpHandler;
@@ -23,22 +23,16 @@ class AbcProcessor
     * @var array
     */ 
     protected $userConfig;
-    
+
     /**
-    * @var object
-    */ 
-    protected $regestry;
-    
-    /**
-    * @var object
-    */ 
-    protected $container;  
-    
-    
-    /**
-    * @var object
+    * @var ServiceLocator
     */ 
     protected $locator; 
+    
+    /**
+    * @var object
+    */ 
+    protected $container;
     
     /**
     * Конструктор
@@ -48,7 +42,7 @@ class AbcProcessor
     {
         $this->userConfig = $userConfig;
         $this->selectErrorMode(); 
-        $this->locator = new ServiseLocator;
+        $this->locator = new ServiceLocator;
         $this->configurator = new Configurator($this->locator, $userConfig);
         $this->configureFramework();
     }

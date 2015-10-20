@@ -22,12 +22,12 @@ class PhpHandler extends Handler
     public $sizeListing = 20;
     
     /**
-    * @var object 
+    * @var View 
     */    
     protected $view;
     
     /**
-    * @var object 
+    * @var Painter 
     */    
     protected $painter;
     
@@ -53,7 +53,7 @@ class PhpHandler extends Handler
     public function getListing() 
     {
         $block = array_shift($this->backTrace);
-        return $this->createBlock($block);
+        return $this->prepareBlock($block);
     }
 
     /**
@@ -64,7 +64,7 @@ class PhpHandler extends Handler
     public function getStack() 
     { 
         $this->mainBlock = false;    
-        return $this->createStack(); 
+        return $this->prepareStack(); 
     }  
 
     /**
@@ -92,7 +92,7 @@ class PhpHandler extends Handler
     *
     * @return string
     */   
-    protected function createBlock($block, $num = false) 
+    protected function prepareBlock($block, $num = false) 
     { 
         $i = 0;
         $blockCont = ''; 
@@ -140,7 +140,7 @@ class PhpHandler extends Handler
     *
     * @return string
     */   
-    protected function createStack()
+    protected function prepareStack()
     {    
         $i = 0;
         $tpl    = $this->view->getStackRow();
@@ -155,18 +155,20 @@ class PhpHandler extends Handler
                 continue;
             }  
             
-            $space    = !empty($block['class']) ? dirname($block['class']) : 'GLOBALS';
+            $class  = $block['class'] ?: 'GLOBALS';
+            $class  = str_replace('\\', DIRECTORY_SEPARATOR, $block['class']);
+            $space  = str_replace(DIRECTORY_SEPARATOR, '\\', dirname($class));
             $location = basename($this->file);
             
             $data = ['space'     => $space,
                      'location'  => $location,
                      'file'      => $block['file'],
                      'line'      => $block['line'],
-                     'total'     => $this->createBlock($block, $i)
+                     'total'     => $this->prepareBlock($block, $i)
             ];            
          
             if (!empty($block['class'])) { 
-                $action = basename($block['class']). $block['type']; 
+                $action = basename($class). $block['type']; 
             } 
             
             $data['action'] = $action . $block['function'];
@@ -182,7 +184,7 @@ class PhpHandler extends Handler
             $rows[] = $this->view->parseTpl($tpl, $row);
         }
         
-        $data = ['cnt'  => count($this->trace),
+        $data = ['cnt'  => $this->num,
                  'rows' => implode('', $rows)
         ];
         
@@ -196,6 +198,7 @@ class PhpHandler extends Handler
     */   
     public function action() 
     {
+        $this->data['num']  = $this->num;
         $this->view->displayReport($this->data);
     }
 }

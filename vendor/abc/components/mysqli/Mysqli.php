@@ -2,6 +2,8 @@
 
 namespace ABC\abc\components\mysqli;
 
+use ABC\abc\components\mysqli\MysqliDebug;
+use ABC\abc\components\mysqli\View;
 /** 
  * Класс Mysqli
  * 
@@ -14,25 +16,36 @@ namespace ABC\abc\components\mysqli;
 class Mysqli 
 {
 /**
- * @var object
+ * @var Mysqli
  */ 
     public $db;
+    
+    public $test = false;
+    
 /**
  * @var string
  */     
     protected $host;
+    
 /**
  * @var string
  */ 
     protected $user;
+    
 /**
  * @var string
  */ 
     protected $pass;
+    
 /**
  * @var string
  */ 
     protected $base;
+
+/**
+ * @var string
+ */ 
+    protected $view;
     
 /**
  * Конструктор
@@ -51,6 +64,9 @@ class Mysqli
             
             $this->newConnect($host, $user, $pass, $base);
         }
+        
+        $this->view = new View;
+        
     }
     
 /**
@@ -84,7 +100,23 @@ class Mysqli
  */     
     public function query($sql)
     {
-        return $this->db->query($sql);
+        $result = $this->db->query($sql);
+        
+        if (false === $result || $this->test) {
+         
+            $error = $this->db->error;
+            $trace = debug_backtrace();
+            $debug = new MysqliDebug($this->db, $this->view);
+            
+            if ($this->test) {
+                $debug->testReport($trace, $sql, $error);
+            }
+            else {
+                $debug->errorReport($trace, $sql, $error);
+            }
+        }
+        
+        return $result;
     } 
     
 /**

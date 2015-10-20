@@ -1,11 +1,9 @@
 <style type="text/css">
 .abc_dedugger{margin:20px;height:1000px;font-size:14px;padding:0px;}
-
 .abc_dedugger a{color:#0000DD; text-decoration:none;}
 .abc_dedugger a:hover{color:#FF7575;}
 .abc_dedugger pre{margin:0}
 .abc_dedugger .clear{width:100%;clear:both;}
-
 .abc_dedugger .abc_level{color:red;background:#FECBCC;padding:5px}
 .abc_dedugger .abc_mess{color:black; background:#F5EDB1;padding:5px;}
 .abc_dedugger .abc_args_head{background:#F5EDB1;padding:15px 5px 5px 15px}
@@ -28,7 +26,6 @@
 .abc_dedugger .abc_explain th{border:#8C999D 1px solid;background:#D8D8D8;text-align:center}
 .abc_dedugger .abc_explain td{border:#8C999D 1px solid;background:#F0F0F0;text-align:center}
 .abc_dedugger .abc_php_line{background:#FFFFB0;width:100%;display:inline-block}
-
 .abc_dedugger .type{font-weight:bold;font-style:italic;color:#009500}
 .abc_dedugger .object{font-weight:bold;font-style:italic;color:#0000FF}
 .abc_dedugger .property{font-style:italic;color:#86407E}

@@ -55,7 +55,7 @@ namespace core\abc;
         $files[] = ABC_VERSIONS_NAME .'/'. $class;
      
         foreach ($files as $file) {   
-            $file = stream_resolve_include_path(ABC_BASE_PATH .'/'. $file .'.php');
+            $file = str_replace('\\', DIRECTORY_SEPARATOR, ABC_BASE_PATH .'/'. $file .'.php');
          
             if(is_readable($file)) {
                 include_once $file;

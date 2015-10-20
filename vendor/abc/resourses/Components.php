@@ -4,9 +4,9 @@ namespace ABC\abc\resourses;
 
 
     return [
-                        'mysqli'    => 'global',
-                        'pdo'       => 'global',
-                        'container' => 'local',
+                        //'mysqli'    => 'global',
+                        //'pdo'       => 'global',
+                        //'container' => 'local',
             ];
     
 

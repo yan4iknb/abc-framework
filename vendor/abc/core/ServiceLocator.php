@@ -10,67 +10,67 @@ namespace ABC\abc\core;
  * @copyright © 2015
  * @license http://abc-framework.com/license/ 
  */   
-class ServiseLocator 
+class ServiceLocator 
 { 
-    protected $ServiseStorage = [];
-    protected $ServiseFrozen  = [];
+    protected $ServiceStorage = [];
+    protected $ServiceFrozen  = [];
     protected static $ObjectStorage = [];  
 
     /**
     * Записывает сервис в хранилище
     *
-    * @param string $ServiseId
+    * @param string $ServiceId
     * @param callable $callable
     *
     * @return void
     */  
-    public function set($ServiseId, $callable)
+    public function set($ServiceId, $callable)
     {
-        $ServiseId = $this->validateServise($ServiseId);
+        $ServiceId = $this->validateService($ServiceId);
         $callable  = $this->validateCallable($callable);
         
-        if (isset($this->ServiseStorage[$ServiseId])) {
+        if (isset($this->ServiseStorage[$ServiceId])) {
             return false;
         }
 
-        $this->ServiseStorage[$ServiseId] = $callable;   
+        $this->ServiceStorage[$ServiceId] = $callable;   
     }
     
     /**
     * Записывает сервис в глобальное хранилище
     *
-    * @param string $ServiseId
+    * @param string $ServiceId
     * @param callable $callable
     *
     * @return void
     */  
-    public function setGlobal($ServiseId, $callable)
+    public function setGlobal($ServiceId, $callable)
     {
-        $this->set($ServiseId, $callable);
-        $this->ServiseFrozen[strtolower($ServiseId)]  = true;    
+        $this->set($ServiceId, $callable);
+        $this->ServiceFrozen[strtolower($ServiceId)]  = true;    
     }
     
     /**
     * Инициализирует и возвращает объект сервиса
     *
-    * @param string $ServiseId
+    * @param string $ServiceId
     *
     * @return object
     */      
-    public function get($ServiseId)
+    public function get($ServiceId)
     {
-        $ServiseId = $this->validateServise($ServiseId);
+        $ServiceId = $this->validateService($ServiceId);
      
-        if (isset($this->ServiseFrozen[$ServiseId])) {
+        if (isset($this->ServiseFrozen[$ServiceId])) {
          
-            if (empty(self::$ObjectStorage[$ServiseId])) {
-                self::$ObjectStorage[$ServiseId] = $this->ServiseStorage[$ServiseId]->__invoke();
+            if (empty(self::$ObjectStorage[$ServiceId])) {
+                self::$ObjectStorage[$ServiceId] = $this->ServiceStorage[$ServiceId]->__invoke();
             }
          
-            return self::$ObjectStorage[$ServiseId];
+            return self::$ObjectStorage[$ServiceId];
          
-        } elseif (!empty($this->ServiseStorage[$ServiseId])) {
-            return $this->ServiseStorage[$ServiseId]->__invoke();
+        } elseif (!empty($this->ServiceStorage[$ServiceId])) {
+            return $this->ServiceStorage[$ServiceId]->__invoke();
         }
      
         return false;
@@ -79,36 +79,36 @@ class ServiseLocator
     /**
     * Удаляет объект из хранилища
     *
-    * @param string $ServiseId
+    * @param string $ServiceId
     *
     * @return void
     */       
-    public function unsetServise($ServiseId)
+    public function unsetService($ServiceId)
     {
-        $ServiseId = $this->validateServise($ServiseId);
+        $ServiceId = $this->validateService($ServiceId);
         
-        if (!isset($this->ServiseStorage[$ServiseId])) {
+        if (!isset($this->ServiceStorage[$ServiceId])) {
             return false;
         }
 
-        unset($this->ServiseStorage[$ServiseId]);
-        unset(self::$ObjectStorage[$ServiseId]);
+        unset($this->ServiceStorage[$ServiceId]);
+        unset(self::$ObjectStorage[$ServiceId]);
     } 
     
     /**
     * Проверяет корректность ID сервиса 
     *
-    * @param string $ServiseId
+    * @param string $ServiceId
     *
     * @return string
     */
-    protected function validateServise($ServiseId)
+    protected function validateService($ServiceId)
     {
-        if (empty($ServiseId) || !is_string($ServiseId)) {
+        if (empty($ServiceId) || !is_string($ServiceId)) {
             trigger_error('ID service should be a string', E_USER_WARNING); 
         }
      
-        return strtolower($ServiseId);
+        return strtolower($ServiceId);
     }
     
     /**

@@ -13,18 +13,26 @@ namespace ABC\abc\components\mysqli;
 
 class MysqliDebug
 {
-
-    protected $mess = 'MySQL error: ';
+    
+    public $sizeListing = 30; 
+    
+    protected $message = 'MySQL error: ';
     
     /**
-    * @var object
+    * @var View
     */
     protected $view; 
     
     /**
-    * @var object
+    * @var Mysqli
     */
-    protected $mysqli;
+    protected $db;
+
+    /**
+    * @var string
+    */
+    protected $explain;
+ 
     
     /**
     * Конструктор
@@ -32,9 +40,9 @@ class MysqliDebug
     * @param object $mysqli
     * @param object $view
     */        
-    public function __construct($mysqli, $view)
+    public function __construct($db, $view)
     { 
-        $this->mysqli = $mysqli->db;
+        $this->db = $db;
         $this->view = $view;
     }
     
@@ -48,18 +56,22 @@ class MysqliDebug
     *
     * @return void
     */        
-    public function errorReport($file, $line, $sql, $error = '')
+    public function errorReport($trace, $sql, $error = '')
     { 
         $raw = $this->prepareSqlListing($sql, $error);
-        $data = ['mess'    => $this->mess,
-                 'file'    => $file,
-                 'line'    => $line,
+        
+        $data = ['message' => $this->message,
+                 'file'    => $trace[0]['file'],
+                 'line'    => $trace[0]['line'],
                  'error'   => htmlSpecialChars($error),
                  'num'     => $raw['num'],
-                 'sql'     => $raw['sql']
+                 'sql'     => $raw['sql'],
+                 'explain' => $this->explain,
+                 'php'     => $this->preparePhp($trace)
         ];
         
         $this->view->createReport($data);
+        die;
     } 
     
     /**
@@ -72,16 +84,15 @@ class MysqliDebug
     *
     * @return void
     */       
-    public function testReport($file, $line, $sql, $error = '')
+    public function testReport($trace, $sql, $error = '')
     { 
-        $this->mess = 'MySQL query: ';
-        $this->errorReport($file, $line, $sql, $error = '');
+        $this->message = 'MySQL query: ';
         $start = microtime(true);        
-        $this->mysqli->query($sql);
-        $data['time'] = sprintf("%01.4f", microtime(true) - $start);
-        $data['explain'] = $this->explain($sql);
-        $this->view->createExplain($data);
-        
+        $this->db->query($sql);
+        $time = sprintf("%01.4f", microtime(true) - $start);
+        $data['explain'] = $this->explain($sql, $time);
+        $this->explain = $this->view->createExplain($data);
+        $this->errorReport($trace, $sql, $error = '');        
     }
 
     /**
@@ -105,8 +116,8 @@ class MysqliDebug
             }
         }
         
-        $cnt = substr_count($sql, "\r") + 1;
-        $num = array_fill(1, $cnt, true);
+        $cnt = substr_count($sql, "\r") + 2;
+        $num = range(1, $cnt);
         return ['num' => $num, 'sql' => $sql];
     }
  
@@ -114,21 +125,59 @@ class MysqliDebug
     * Выполняет EXPLAIN запроса
     *
     * @param string $sql
+    * @param string $time
     *
     * @return null
     */    
-    protected function explain($sql)
+    protected function explain($sql, $time)
     {     
-        $res = $this->mysqli->query(db::getLink(), "EXPLAIN ". $sql);
+        $res = $this->db->query("EXPLAIN ". $sql);
         
         if (is_object($res)) {
-         
-            $data = $res->fetch_array(MYSQLI_ASSOC);
+            $data = $res->fetch_array(MYSQLI_ASSOC); 
+            $data['queryTime'] = $time;
             return $this->view->createExplain($data);
         }
         
         return null;
     } 
+ 
+    /**
+    * Формирует проблемный участок PHP кода 
+    *
+    * @param array $trace
+    *
+    * @return null
+    */    
+    protected function preparePhp($trace)
+    { 
+        $php = '';
+        $i = 0;
+        $block = $trace[0]; 
+        $script = file($block['file']);
+        $ext = ceil($this->sizeListing / 2);
+        $position = ($block['line'] <= $ext) ? 0 : $block['line'] - $ext;
+        
+        foreach ($script as $string) {
+            ++$i;
+         
+            if($i == $block['line']) {
+                $lines[] = $this->view->wrapLine($i, 'error');
+            } elseif($i == $block['line']) {
+                $lines[] = $this->view->wrapLine($i, 'trace');
+            }
+            else {
+                $lines[] = $i;
+            }
+            
+            $php .= $string;
+        } 
+       
+        $data['num'] = array_slice($lines, $position, $this->sizeListing);
+        $data['total'] = $this->view->highlightString($php, $position, $this->sizeListing);
+        $cnt = substr_count($data['total'], "\r") + 2;
+        return $this->view->createPhp($data);
+    }
 }
 
 

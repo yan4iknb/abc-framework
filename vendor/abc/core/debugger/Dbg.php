@@ -23,7 +23,7 @@ class Dbg extends PhpHandler
     public $container = 'ABC\abc\core\Container';
     
     /**
-    * @var object 
+    * @var TraceClass|TraceContainer|TraceObject|TraceVariable 
     */    
     protected $tracer;
     

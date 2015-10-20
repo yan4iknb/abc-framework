@@ -8,8 +8,8 @@ namespace ABC;
    
     Abc::createApp($config);
 
-    new \ABC\app\DebugingDemo;   
-
+    //new \ABC\app\DebugingDemo;   
+    new \ABC\app\MisqliDebugingDemo;
     
     
 

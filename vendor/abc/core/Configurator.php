@@ -42,7 +42,7 @@ class Configurator
     } 
     
     /**
-    * Упаковывает компоненты в контейнер сервис-локатора
+    * Упаковывает дефолтные компоненты в контейнер сервис-локатора
     *
     * @return object
     */     
@@ -54,19 +54,28 @@ class Configurator
             $data  = @$this->userConfig[$component] ?: [];
             
             if ($type == 'global' || true === $type) {
-                $this->locator->setGlobal($component, function() use ($class, $data) {
-                                                          return new $class($data);
-                                                      }
-                                );        
+                $this->locator->setGlobal($component, 
+                                          function() use ($class, $data) {
+                                              return new $class($data);
+                                          }
+                );
             }
             else {
-                $this->locator->set($component, function() use ($class, $data) {
-                                                          return new $class($data);
-                                                }
-                                );        
+                $this->locator->set($component, 
+                                    function() use ($class, $data) {
+                                        return new $class($data);
+                                    }
+                );
             }
         }
         
         return $this->locator;        
     } 
+    
+    
+    
+    
+    
+    
+    
 }

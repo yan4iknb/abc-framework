@@ -28,6 +28,11 @@ class ServiseLocator
     {
         $ServiseId = $this->validateServise($ServiseId);
         $callable  = $this->validateCallable($callable);
+        
+        if (isset($this->ServiseStorage[$ServiseId])) {
+            return false;
+        }
+
         $this->ServiseStorage[$ServiseId] = $callable;   
     }
     
@@ -81,8 +86,12 @@ class ServiseLocator
     public function unsetServise($ServiseId)
     {
         $ServiseId = $this->validateServise($ServiseId);
-     
-        unset(self::$ObjectStorage[$ServiseId]);
+        
+        if (!isset($this->ServiseStorage[$ServiseId])) {
+            return false;
+        }
+
+        unset($this->ServiseStorage[$ServiseId]);
         unset(self::$ObjectStorage[$ServiseId]);
     } 
     

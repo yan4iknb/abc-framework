@@ -129,10 +129,11 @@ class AbcProcessor
         }
             $this->locator->unsetServise($component);
             $class = '\ABC\Abc\components\\'. $component .'\\'. $component;
-            $this->locator->set($component, function() use ($class, $data) {
-                                                return new $class($data);
-                                            }
-                                );
+            $this->locator->set($component, 
+                                function() use ($class, $data) {
+                                    return new $class($data);
+                                }
+            );
         
         return $this->container->get($component);
     }
@@ -152,10 +153,11 @@ class AbcProcessor
         }
             $this->locator->unsetServise($component);
             $class = '\ABC\Abc\components\\'. $component .'\\'. $component;
-            $this->locator->setGlobal($component, function() use ($class, $data) {
-                                                      return new $class($data);
-                                                  }
-                                      );
+            $this->locator->setGlobal($component, 
+                                      function() use ($class, $data) {
+                                          return new $class($data);
+                                     }
+            );
         
         return $this->container->get($component);
     }

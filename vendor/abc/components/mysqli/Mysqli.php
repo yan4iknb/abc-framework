@@ -74,7 +74,18 @@ class Mysqli
         $this->pass = $pass;
         $this->base = $base;
         $this->connect();
-    }  
+    } 
+    
+    
+/**
+ * Обертка для query()
+ *
+ * @return void
+ */     
+    public function query($sql)
+    {
+        return $this->db->query($sql);
+    } 
     
 /**
  * Инициализирует объект Mysqli
@@ -91,16 +102,7 @@ class Mysqli
         
         $this->db->set_charset("utf8");
     } 
-    
-/**
- * Обертка для query()
- *
- * @return void
- */     
-    protected function query($sql)
-    {
-        return $this->db->query($sql);
-    } 
+
 }
 
 

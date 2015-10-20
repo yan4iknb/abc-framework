@@ -32,7 +32,13 @@ class AbcProcessor
     /**
     * @var object
     */ 
-    protected $container;    
+    protected $container;  
+    
+    
+    /**
+    * @var object
+    */ 
+    protected $locator; 
     
     /**
     * Конструктор
@@ -41,8 +47,9 @@ class AbcProcessor
     public function __construct($userConfig = [])
     {
         $this->userConfig = $userConfig;
-        $this->selectErrorMode();        
-        $this->configurator = new Configurator(new ServiseLocator, $userConfig);
+        $this->selectErrorMode(); 
+        $this->locator = new ServiseLocator;
+        $this->configurator = new Configurator($this->locator, $userConfig);
         $this->configureFramework();
     }
     

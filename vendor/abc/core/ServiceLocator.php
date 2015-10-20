@@ -105,7 +105,7 @@ class ServiceLocator
     protected function validateService($ServiceId)
     {
         if (empty($ServiceId) || !is_string($ServiceId)) {
-            trigger_error('ID service should be a string', E_USER_WARNING); 
+            throw new \InvalidArgumentException('ID service should be a string', E_USER_WARNING); 
         }
      
         return strtolower($ServiceId);
@@ -121,7 +121,7 @@ class ServiceLocator
     protected function validateCallable($callable)
     {      
         if (!is_callable($callable)) {
-            trigger_error('Callable must be a function of anonymity is conferred', E_USER_WARNING); 
+            throw new \InvalidArgumentException('Callable must be a function of anonymity is conferred', E_USER_WARNING); 
         }
         
         return $callable;

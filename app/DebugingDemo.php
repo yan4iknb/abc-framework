@@ -4,6 +4,8 @@ namespace ABC\app;
 
 use \ABC\abc as Abc;
 
+class MyException extends \Exception{}
+
 class TestDebug
 {
     public function __construct($var1, $var2)
@@ -16,9 +18,19 @@ class TestDebug
         //Abc::dbg('ABC\Abc');
         //throw new \Exception('Первый аргумент - не число', E_USER_WARNING);
         //trigger_error('Полный пипец!!!'); 
-     
+        
+    //try {
+    
         $mysqli = Abc::component('MySQLi');
-        Abc::dbg($mysqli);
+
+    //}
+    //catch (\Exception $e) {
+        //echo $e->getMessage();
+        //echo $e->getCode();
+    //}
+    //echo 111; 
+        //
+        //Abc::dbg($mysqli);
     }
 }
 

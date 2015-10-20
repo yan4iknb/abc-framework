@@ -96,13 +96,13 @@ class AbcProcessor
     public function getComponent($component = null)
     {    
         if (empty($component) || !is_string($component)) {
-            trigger_error('Component name should be a string', E_USER_WARNING);
+            throw new \InvalidArgumentException('Component name should be a string', E_USER_WARNING);
         }
         
         $object = $this->container->get($component);
         
         if (false === $object) {
-            trigger_error('Component "'. $component .'" is not defined.', E_USER_WARNING);
+            throw new \BadFunctionCallException('Component "'. $component .'" is not defined.', E_USER_WARNING);
         }
         
         return $object;
@@ -119,7 +119,7 @@ class AbcProcessor
     public function newComponent($component = null, $data = [])
     {    
         if (empty($component) || !is_string($component)) {
-            trigger_error('Component name should be a string', E_USER_WARNING);
+            throw new \BadFunctionCallException('Component name should be a string', E_USER_WARNING);
         }
             $this->locator->unsetServise($component);
             $class = '\ABC\Abc\components\\'. $component .'\\'. $component;
@@ -143,7 +143,7 @@ class AbcProcessor
     public function newGlobalComponent($component = null, $data = [])
     {    
         if (empty($component) || !is_string($component)) {
-            trigger_error('Component name should be a string', E_USER_WARNING);
+            throw new \BadFunctionCallException('Component name should be a string', E_USER_WARNING);
         }
             $this->locator->unsetServise($component);
             $class = '\ABC\Abc\components\\'. $component .'\\'. $component;

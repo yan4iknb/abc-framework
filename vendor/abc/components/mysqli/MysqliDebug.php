@@ -13,113 +13,71 @@ namespace ABC\abc\components\mysqli;
 
 class MysqliDebug
 {
-    public static function prepareError($file, $line, $sql = '', $error = '')
+
+    protected $mess = 'MySQL error: ';
+    protected $view;    
+    protected $mysqli;
+    
+    public function __construct($mysqli, $view)
     { 
-        $output =  '<div class="irb_mess">'
-                 .  '<strong>MySQL error: <br />'
-                 .  'in: </strong>'. $file 
-                 .  '<strong> on line: </strong>'. $line
-                 . '<br />'
-                 . htmlSpecialChars($error)
-                 . '</div>'; 
-      
-        if(!empty($sql))
-        {  
-            $output .= self::_prepareSql($sql, $error);
-        }  
+        $this->mysqli = $mysqli->db;
+        $this->view = $view;
+    }
+    
+    public function errorReport($file, $line, $sql, $error = '')
+    { 
+        $raw = $this->prepareSql($sql, $error);
+        $data = ['mess'    => $this->mess,
+                 'file'    => $file,
+                 'line'    => $line,
+                 'error'   => htmlSpecialChars($error),
+                 'num'     => $raw['num'],
+                 'sql'     => $raw['sql']
+        ];
         
-        return $output;
+        $this->view->createReport($data);
     } 
     
-    public static function prepareTest($file, $line, $sql, $error)
+    public static function testReport($file, $line, $sql)
     { 
-        $output =  '<div class="irb_mess">'
-                 .  '<strong>Query: <br />'
-                 .  'in: </strong>'. $file 
-                 .  '<strong> on line: </strong>'. $line
-                 . '</div>'; 
+        $this->mess = 'MySQL query: ';
+        $this->errorReport($file, $line, $sql)
+     
+        $start = microtime(true);
+        $this->mysqli->query($sql);
+        $data['time'] = sprintf("%01.4f", microtime(true) - $start);
+        $this->view->createReport($data);
+        $this->explain($sql);
+    }
+
+    protected function prepareListing($sql, $error = '')
+    { 
+        $sql   = htmlSpecialChars($sql);
+        $error = htmlSpecialChars($error);
         
-        $output .= self::_prepareSql($sql);
-        
-        if(empty($error))
-        {
-            $start = microtime(true);
-            mysqli_query(db::getLink(), $sql);
-            $end   = microtime(true);
-            $output .= '<div style="color:black; background:#F5EDB1;padding:5px">
-                           <strong>Query time: </strong>'. sprintf("%01.4f", $end - $start) .' s
-                           <br>
-                           <strong>Explain:</strong>
-                       </div>';
+        if (!empty($error)) {
+            preg_match("#'(.+?)'#is", $error, $location);
             
-            $res = mysqli_query(db::getLink(), "EXPLAIN ". $sql);
-            
-            if(is_object($res))
-            {
-                $explain = mysqli_fetch_assoc($res);
-                $output .= '<table class="irb_explain" width="100%" border="0" cellspacing="0" cellpadding="0">
-                            <tr style="color:##B2B2B2">
-                                <th>id</th>
-                                <th>select_type</th>
-                                <th>table</th>        
-                                <th>type</th>        
-                                <th>possible_keys</th>        
-                                <th>key</th>
-                                <th>key_len</th>
-                                <th>ref</th>        
-                                <th>rows</th>        
-                                <th>Extra</th>
-                            </tr>    
-                            <tr>
-                                <td>'. $explain['id'] .'</td>
-                                <td>'. $explain['select_type'] .'</td>        
-                                <td>'. $explain['table'] .'</td>
-                                <td>'. $explain['type'] .'</td>        
-                                <td>'. $explain['possible_keys'] .'</td>        
-                                <td>'. $explain['key'] .'</td>        
-                                <td>'. $explain['key_len'] .'</td>        
-                                <td>'. $explain['ref'] .'</td>        
-                                <td>'. $explain['rows'] .'</td>
-                                <td>'. $explain['Extra'] .'</td>
-                            </tr>    
-                        </table>'; 
+            if (!empty($location[1])) {
+                $sql = $this->view->highlightLocation($sql, $location[1]);
             }
         }
         
-        return $output;
-    } 
+        $cnt = substr_count($sql, "\r") + 1;
+        $num = array_fill(1, $cnt, true);
+        return ['num' => $num, 'sql' => $sql];
+    }
     
-    protected static function _prepareSql($sql, $error = '')
-    { 
-        $sql   = htmlSpecialChars($sql);
-        $error = htmlSpecialChars($error); 
-        $out   = array('', '');
+    protected function explain($sql)
+    {     
+        $res = $this->mysqli->query(db::getLink(), "EXPLAIN ". $sql);
         
-        if(!empty($error))
-        {
-            preg_match("#'(.+?)'#is", $error, $out);
-            
-            if(!empty($out[1]))
-                $sql = str_replace($out[1], '<b style="color:red">'. $out[1] .'</b>', $sql);
+        if (is_object($res)) {
+         
+            $data = $res->fetch_array(MYSQLI_ASSOC);
+            $this->view->createExplain($data);
         }
-        
-        $cnt  = substr_count($sql, "\r") + 1;
-        $nums = array_fill(1, $cnt, true);
-      
-        return    '<div class="irb_listing">'
-                .    '<div class="irb_num">'
-                .        '<code>'. implode("<br>", array_keys($nums)) .'</code>' 
-                .    '</div>'
-                .    '<div class="irb_code">'
-                .        '<code><span style="color:#990099">'
-                .        nl2br($sql)
-                .        '</span></code>'
-                .    '</div>'                              
-                .    '<div class="clear"></div>'
-                . '</div>';
-     
-    }     
-
+    } 
 }
 
 

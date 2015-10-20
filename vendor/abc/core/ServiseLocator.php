@@ -12,7 +12,6 @@ namespace ABC\abc\core;
  */   
 class ServiseLocator 
 { 
-
     protected $ServiseStorage = [];
     protected $ServiseFrozen  = [];
     protected static $ObjectStorage = [];  
@@ -29,7 +28,6 @@ class ServiseLocator
     {
         $ServiseId = $this->validateServise($ServiseId);
         $callable  = $this->validateCallable($callable);
-     
         $this->ServiseStorage[$ServiseId] = $callable;   
     }
     
@@ -42,7 +40,7 @@ class ServiseLocator
     * @return void
     */  
     public function setGlobal($ServiseId, $callable)
-    {   
+    {
         $this->set($ServiseId, $callable);
         $this->ServiseFrozen[strtolower($ServiseId)]  = true;    
     }
@@ -55,17 +53,17 @@ class ServiseLocator
     * @return object
     */      
     public function get($ServiseId)
-    {    
+    {
         $ServiseId = $this->validateServise($ServiseId);
      
         if (isset($this->ServiseFrozen[$ServiseId])) {
-            
+         
             if (empty(self::$ObjectStorage[$ServiseId])) {
                 self::$ObjectStorage[$ServiseId] = $this->ServiseStorage[$ServiseId]->__invoke();
             }
-            
+         
             return self::$ObjectStorage[$ServiseId];
-            
+         
         } elseif (!empty($this->ServiseStorage[$ServiseId])) {
             return $this->ServiseStorage[$ServiseId]->__invoke();
         }
@@ -81,16 +79,11 @@ class ServiseLocator
     * @return void
     */       
     public function unsetServise($ServiseId)
-    {    
+    {
         $ServiseId = $this->validateServise($ServiseId);
      
-        if (!empty($this->ServiseFrozen[$ServiseId])) {
-            unset(self::$ObjectStorage[$ServiseId]);
-            unset(self::$ObjectStorage[$ServiseId]);
-            
-        } elseif (!empty($this->ServiseStorage[$ServiseId])) {
-            unset($this->ServiseStorage[$ServiseId]);
-        }
+        unset(self::$ObjectStorage[$ServiseId]);
+        unset(self::$ObjectStorage[$ServiseId]);
     } 
     
     /**
@@ -101,11 +94,11 @@ class ServiseLocator
     * @return string
     */
     protected function validateServise($ServiseId)
-    {   
+    {
         if (empty($ServiseId) || !is_string($ServiseId)) {
             trigger_error('ID service should be a string', E_USER_WARNING); 
         }
-        
+     
         return strtolower($ServiseId);
     }
     
@@ -117,7 +110,7 @@ class ServiseLocator
     * @return callable
     */
     protected function validateCallable($callable)
-    {           
+    {      
         if (!is_callable($callable)) {
             trigger_error('Callable must be a function of anonymity is conferred', E_USER_WARNING); 
         }

@@ -24,7 +24,6 @@ class Painter
         return '<span class="abc_'. $type .'_line">'. $line .'</span>';
     }
     
-   
     /**
     * Подсветка php кода
     *
@@ -62,7 +61,7 @@ class Painter
                                         $blockCont);
                                         
         $blockCont = preg_replace("#[^\$](class|extends|implements|static)#", '<span class="extends">\\1</span> ', $blockCont);
-        $blockCont = preg_replace('#[^\$](public|protected|private)#i', '<span class="property">\\1</span>', $blockCont);
+        $blockCont = preg_replace('#[^\$](public|protected|private)#i', '<span class="property">\\1</span> ', $blockCont);
         $blockCont = preg_replace('#\$([a-z0-9_]+?)\s#i', '<span class="property_value">$\\1</span> ', $blockCont); 
         $blockCont = preg_replace('#\((size.+?)\)#i', '<span class="size">(\\1)</span>', $blockCont);
         $blockCont = preg_replace("#\[(.+?)\]#i", '<span class="method_name">\\1</span>', $blockCont);   
@@ -73,7 +72,7 @@ class Painter
                     'array'    => '<span class="type">array</span>',
         ];        
         $blockCont = str_replace(array_keys($strings), array_values($strings), $blockCont);        
-
+     
         
         $i = 0;
         foreach ($annotations[0] as $a) {
@@ -111,11 +110,15 @@ class Painter
         $blockCont = strip_tags($blockCont);
         $strings = ['object'   => '<span class="object">object</span>',
                     'array'    => '<span class="type">array</span>',
+                    'string' => '<span class="type">string</span>',
+                    'int'    => '<span class="type">int</span>',
+                    'null'    => '<span class="type">null</span>'
         ];
+        $blockCont = preg_replace("#string\s*?'(.*?)'#i", '<span class="property_value">"\\1"</span>', $blockCont);        
         $blockCont = preg_replace('#\((size.+?)\)#i', '<span class="size">(\\1)</span>', $blockCont);
-        $blockCont = preg_replace("#'(.+?)'#i", '<span class="property_value">$\\1</span>', $blockCont);
+        $blockCont = preg_replace("#'(.+?)'#i", '<span class="property_var">$\\1</span>', $blockCont);
         $blockCont = preg_replace('#(?<!\$)(public|protected|private)#i', '<span class="property">\\1</span>', $blockCont);
-        
+
         $blockCont = str_replace(array_keys($strings), array_values($strings), $blockCont);
         return $blockCont;
     }  

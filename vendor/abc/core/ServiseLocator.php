@@ -16,15 +16,15 @@ class ServiseLocator
     protected $ServiseStorage = [];
     protected $ServiseFrozen  = [];
     protected static $ObjectStorage = [];  
-    
-/**
- * Записывает сервис в хранилище
- *
- * @param string $ServiseId
- * @param callable $callable
- *
- * @return void
- */  
+
+    /**
+    * Записывает сервис в хранилище
+    *
+    * @param string $ServiseId
+    * @param callable $callable
+    *
+    * @return void
+    */  
     public function set($ServiseId, $callable)
     {
         $ServiseId = $this->validateServise($ServiseId);
@@ -33,27 +33,27 @@ class ServiseLocator
         $this->ServiseStorage[$ServiseId] = $callable;   
     }
     
-/**
- * Записывает сервис в глобальное хранилище
- *
- * @param string $ServiseId
- * @param callable $callable
- *
- * @return void
- */  
+    /**
+    * Записывает сервис в глобальное хранилище
+    *
+    * @param string $ServiseId
+    * @param callable $callable
+    *
+    * @return void
+    */  
     public function setGlobal($ServiseId, $callable)
     {   
         $this->set($ServiseId, $callable);
         $this->ServiseFrozen[strtolower($ServiseId)]  = true;    
     }
     
-/**
- * Инициализирует и возвращает объект сервиса
- *
- * @param string $ServiseId
- *
- * @return object
- */      
+    /**
+    * Инициализирует и возвращает объект сервиса
+    *
+    * @param string $ServiseId
+    *
+    * @return object
+    */      
     public function get($ServiseId)
     {    
         $ServiseId = $this->validateServise($ServiseId);
@@ -73,13 +73,13 @@ class ServiseLocator
         return false;
     }  
     
-/**
- * Удаляет объект из хранилища
- *
- * @param string $ServiseId
- *
- * @return void
- */       
+    /**
+    * Удаляет объект из хранилища
+    *
+    * @param string $ServiseId
+    *
+    * @return void
+    */       
     public function unsetServise($ServiseId)
     {    
         $ServiseId = $this->validateServise($ServiseId);
@@ -93,13 +93,13 @@ class ServiseLocator
         }
     } 
     
-/**
- * Проверяет корректность ID сервиса 
- *
- * @param string $ServiseId
- *
- * @return string
- */
+    /**
+    * Проверяет корректность ID сервиса 
+    *
+    * @param string $ServiseId
+    *
+    * @return string
+    */
     protected function validateServise($ServiseId)
     {   
         if (empty($ServiseId) || !is_string($ServiseId)) {
@@ -109,13 +109,13 @@ class ServiseLocator
         return strtolower($ServiseId);
     }
     
-/**
- * Проверяет корректность анонимной функции 
- *
- * @param callable $callable
- *
- * @return callable
- */
+    /**
+    * Проверяет корректность анонимной функции 
+    *
+    * @param callable $callable
+    *
+    * @return callable
+    */
     protected function validateCallable($callable)
     {           
         if (!is_callable($callable)) {
@@ -125,23 +125,4 @@ class ServiseLocator
         return $callable;
     }    
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

@@ -16,27 +16,27 @@ use ABC\abc\core\loger\Loger as Loger;
  
 class ErrorSelector
 {
-/**
- * $var array
- */     
+    /**
+    * $var array
+    */     
    protected $config;  
   
-/**
- * Конструктор
- *
- * @param array $config
- */        
+    /**
+    * Конструктор
+    *
+    * @param array $config
+    */        
     public function __construct($config)
     {
         $this->config = $config;
         $this->selectErrorMode();
     }    
    
-/**
- * Выбирает режим обработки ошибок
- *
- * @return void
- */     
+    /**
+    * Выбирает режим обработки ошибок
+    *
+    * @return void
+    */     
     public function selectErrorMode()
     {
         set_error_handler([$this, 'setException']);
@@ -48,11 +48,11 @@ class ErrorSelector
         }
     }
    
-/**
- * Бросает исключение на trigger_eror и отчеты интерпретатора
- *
- * @return void
- */
+    /**
+    * Бросает исключение на trigger_eror и отчеты интерпретатора
+    *
+    * @return void
+    */
     public function setException($code, $message, $file, $line)
     { 
         if (error_reporting() & $code) {
@@ -61,11 +61,4 @@ class ErrorSelector
     }    
 }
 
-
-
-
-
-
-
-
-    
+   

@@ -17,17 +17,17 @@ use Exception;
 class ErrorException extends Exception 
 {
 
-/**
- * Меняет местами порядок аргументов, передаваемых trigger_error
- * для корректного выброса исключения
- *
- * @param string $message
- * @param string $code
- * @param string $file 
- * @param string $line 
- *
- * @return void
- */     
+    /**
+    * Меняет местами порядок аргументов, передаваемых trigger_error
+    * для корректного выброса исключения
+    *
+    * @param string $message
+    * @param string $code
+    * @param string $file 
+    * @param string $line 
+    *
+    * @return void
+    */     
     public function __construct($message, $code, $file, $line) 
     {
         $this->file = $file;

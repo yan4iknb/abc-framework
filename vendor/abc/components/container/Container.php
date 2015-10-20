@@ -2,12 +2,25 @@
 
 namespace ABC\abc\components\container;
 
-class Container 
-{
-    protected $container;
+use ABC\abc\core\ServiseLocator;
 
+class Container extends ServiseLocator
+{
     public function __construct()
     {
-        $this->container = new \ABC\abc\core\ServiseLocator;
+     
     }
+    
+    
+    public function __construct()
+    {
+     
+    }    
+    
+    
+    
+    
+    
+    
+    
 }

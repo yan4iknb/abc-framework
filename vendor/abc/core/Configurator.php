@@ -13,25 +13,27 @@ namespace ABC\abc\core;
     
 class Configurator
 {
-/**
- * @var array
- */ 
+    /**
+    * @var array
+    */ 
     protected $userConfig;
-/**
- * @var object
- */ 
+    
+    /**
+    * @var object
+    */ 
     protected $locator;
-/**
- * @var array
- */ 
+    
+    /**
+    * @var array
+    */ 
     protected $regestry;
     
-/**
- * Конструктор
- *
- * @param string $locator
- * @param array $userConfig
- */        
+    /**
+    * Конструктор
+    *
+    * @param string $locator
+    * @param array $userConfig
+    */        
     public function __construct($locator, $userConfig)
     {
         $this->locator    = $locator;
@@ -39,11 +41,11 @@ class Configurator
         $this->regestry   = include __DIR__ .'/../resourses/Components.php';
     } 
     
-/**
- * Упаковывает компоненты в контейнер сервис-локатора
- *
- * @return object
- */     
+    /**
+    * Упаковывает компоненты в контейнер сервис-локатора
+    *
+    * @return object
+    */     
     public function packComponents()
     { 
         foreach ($this->regestry as $component => $type) {
@@ -68,25 +70,3 @@ class Configurator
         return $this->locator;        
     } 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

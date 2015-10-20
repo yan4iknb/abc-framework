@@ -19,15 +19,25 @@ use ABC\abc\core\debugger\loger\Loger;
  */   
 class AbcProcessor
 {
-
+    /**
+    * @var array
+    */ 
     protected $userConfig;
+    
+    /**
+    * @var object
+    */ 
     protected $regestry;
+    
+    /**
+    * @var object
+    */ 
     protected $container;    
     
-/**
-* Конструктор
-* 
-*/    
+    /**
+    * Конструктор
+    * 
+    */    
     public function __construct($userConfig = [])
     {
         $this->userConfig = $userConfig;
@@ -36,11 +46,11 @@ class AbcProcessor
         $this->configureFramework();
     }
     
-/**
- * Выбирает режим обработки ошибок
- *
- * @return void
- */     
+    /**
+    * Выбирает режим обработки ошибок
+    *
+    * @return void
+    */     
     protected function selectErrorMode()
     {
         if (empty($this->userConfig['debug_mod'])) {
@@ -55,11 +65,11 @@ class AbcProcessor
         }
     }
    
-/**
- * Бросает исключение на trigger_eror и отчеты интерпретатора
- *
- * @return void
- */
+    /**
+    * Бросает исключение на trigger_eror и отчеты интерпретатора
+    *
+    * @return void
+    */
     public function setException($code, $message, $file, $line)
     { 
         if (error_reporting() & $code) {
@@ -67,21 +77,21 @@ class AbcProcessor
         }
     }
     
-/**
- * Конфигурирует компоненты фреймворка
- *
- * @return void
- */     
+    /**
+    * Конфигурирует компоненты фреймворка
+    *
+    * @return void
+    */     
     protected function configureFramework()
     {
         $this->container = $this->configurator->packComponents();
     } 
     
-/**
- * Выбирает и запускает компонент
- *
- * @return object
- */     
+    /**
+    * Выбирает и запускает компонент
+    *
+    * @return object
+    */     
     public function getComponent($component = null)
     {    
         if (empty($component) || !is_string($component)) {
@@ -97,14 +107,14 @@ class AbcProcessor
         return $object;
     }
     
-/**
- * Перезаписывает  компонент
- *
- * @param string $component
- * @param array $data
- *
- * @return object
- */      
+    /**
+    * Перезаписывает  компонент
+    *
+    * @param string $component
+    * @param array $data
+    *
+    * @return object
+    */      
     public function newComponent($component = null, $data = [])
     {    
         if (empty($component) || !is_string($component)) {
@@ -120,14 +130,14 @@ class AbcProcessor
         return $this->container->get($component);
     }
     
-/**
- * Перезаписывает глобальный компонент
- *
- * @param string $component
- * @param array $data
- *
- * @return object
- */     
+    /**
+    * Перезаписывает глобальный компонент
+    *
+    * @param string $component
+    * @param array $data
+    *
+    * @return object
+    */     
     public function newGlobalComponent($component = null, $data = [])
     {    
         if (empty($component) || !is_string($component)) {
@@ -143,24 +153,3 @@ class AbcProcessor
         return $this->container->get($component);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

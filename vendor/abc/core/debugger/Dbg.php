@@ -21,23 +21,22 @@ class Dbg extends PhpHandler
 {
 
     public $container = 'ABC\abc\core\Container';
-/**
- * @var object 
- */    
+    
+    /**
+    * @var object 
+    */    
     protected $tracer;
     
     protected $trace = true;
     protected $reflection = false;
     protected $errorLevel = E_USER_ERROR;
 
-/**
- * Конструктор
- *
- * @param mixed $var
- * @param mixed $no
- *
- * @return void
- */    
+    /**
+    * Конструктор
+    *
+    * @param mixed $var
+    * @param mixed $no
+    */    
     public function __construct($var = 'stop', $no = null)
     {
         if ($no !== null) {
@@ -49,13 +48,13 @@ class Dbg extends PhpHandler
         $this->traceProcessor($var);
     }
 
-/**
- * Выбор трассировщика в зависимости от типа данных
- *
- * @param mixed $var
- *
- * @return void
- */     
+    /**
+    * Выбор трассировщика в зависимости от типа данных
+    *
+    * @param mixed $var
+    *
+    * @return void
+    */     
     protected function tracersSelector($var) 
     { 
         if (is_string($var) && class_exists($var)) {
@@ -77,13 +76,13 @@ class Dbg extends PhpHandler
         }
     }     
  
-/**
- * Запускает трассировку
- *
- * @param mixed $var
- *
- * @return void
- */      
+    /**
+    * Запускает трассировку
+    *
+    * @param mixed $var
+    *
+    * @return void
+    */      
     protected function traceProcessor($var) 
     {
         $this->backTrace = debug_backtrace();
@@ -98,11 +97,11 @@ class Dbg extends PhpHandler
         $this->render($location, $listing);
     } 
 
-/**
- * Возвращает файл и линию трассировки
- *
- * @return void
- */        
+    /**
+    * Возвращает файл и линию трассировки
+    *
+    * @return void
+    */        
     protected function getLocation() 
     { 
         $blocs = [];
@@ -120,14 +119,14 @@ class Dbg extends PhpHandler
         return $blocs[0];
     }
     
-/**
- * Рендер 
- *
- * @param array $location
- * @param string $listing
- *
- * @return void
- */    
+    /**
+    * Рендер 
+    *
+    * @param array $location
+    * @param string $listing
+    *
+    * @return void
+    */    
     protected function render($location, $listing) 
     { 
         $this->data = ['message'  => $this->tracer->message,

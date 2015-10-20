@@ -18,37 +18,37 @@ use ABC\abc\core\debugger\Dbg;
 class Abc
 {
     
-/**
- * @var object
- */
+    /**
+    * @var object
+    */
     protected static $abc; 
     
-/**
- * @var object
- */
+    /**
+    * @var object
+    */
     protected $process;     
 
-/**
- * @var array 
- */
+    /**
+    * @var array 
+    */
     protected $config;
 
     protected $autoload = __DIR__ .'/core/Autoloader.php';
 
-/**
- * Запуск фреймворка
- *
- * Допускает инициализацию только одного объекта
- *
- * Принимает аргументaми массивы пользовательских настроек.
- * Список настроек доступен в документации 
- *
- * @param array $appConfig
- * @param array $siteConfig
- *
- * @return object
- */     
-    public static function createNewApp($appConfig = [], $siteConfig = [])
+    /**
+    * Запуск фреймворка
+    *
+    * Допускает инициализацию только одного объекта
+    *
+    * Принимает аргументaми массивы пользовательских настроек.
+    * Список настроек доступен в документации 
+    *
+    * @param array $appConfig
+    * @param array $siteConfig
+    *
+    * @return void
+    */     
+    public static function createApp($appConfig = [], $siteConfig = [])
     {
         if (!empty(self::$abc)) {
             throw new \Exception('Only one process');  
@@ -66,14 +66,14 @@ class Abc
         self::$abc->run($appConfig, $siteConfig);
     }
  
-/**
- * Формирует настройки и подключает автолоадер классов.
- *
- * @param array $appConfig
- * @param array $siteConfig
- *
- * @return void
- */    
+    /**
+    * Формирует настройки и подключает автолоадер классов.
+    *
+    * @param array $appConfig
+    * @param array $siteConfig
+    *
+    * @return void
+    */    
     protected function run($appConfig, $siteConfig)
     {
         $this->config = array_merge($appConfig, $siteConfig); 
@@ -81,18 +81,18 @@ class Abc
         self::$abc->process = new AbcProcessor($this->config);
     }
     
-/**
- * Селектор выбора автозагрузчика
- *
- * Если в конфиге установлена настройка "composer", то подключит
- * автозагрузчик композера
- *
- * Если в настройке autoload_path указан другой автозагрузчик, то установит его.
- *
- * Приоритет у настройки "composer"
- * 
- * @return void
- */    
+    /**
+    * Селектор выбора автозагрузчика
+    *
+    * Если в конфиге установлена настройка "composer", то подключит
+    * автозагрузчик композера
+    *
+    * Если в настройке autoload_path указан другой автозагрузчик, то установит его.
+    *
+    * Приоритет у настройки "composer"
+    * 
+    * @return void
+    */    
     protected function autoloadSelector()
     {
         if (empty($this->config['composer']) && !empty($this->config['autoload_path'])) {        
@@ -105,67 +105,67 @@ class Abc
         $this->autoloadIclude();
     }
  
-/**
- * Подключает автолоадер
- *
- * @return void
- */    
+    /**
+    * Подключает автолоадер
+    *
+    * @return void
+    */    
     protected function autoloadIclude()
     {
         include $this->autoload;
     } 
   
-/**
- * Возвращает объект фреймворка
- *
- * @return object
- */     
+    /**
+    * Возвращает объект фреймворка
+    *
+    * @return object
+    */     
     public static function process()
     {
         return self::$abc->process;
     }
   
-/**
- * Возвращает объект фреймворка
- *
- * @return object
- */     
+    /**
+    * Возвращает объект фреймворка
+    *
+    * @return object
+    */     
     public static function component($component = null)
     {
         return self::$abc->process->getComponent($component);
     }    
     
-/**
- * Перезаписывает  компонент
- *
- * @param string $component
- * @param array $data
- *
- * @return object
- */      
+    /**
+    * Перезаписывает  компонент
+    *
+    * @param string $component
+    * @param array $data
+    *
+    * @return object
+    */      
     public static function newComponent($component = null, $data = [])
     {    
         return self::$abc->process->newComponent($component, $data);
     }
     
-/**
- * Перезаписывает глобальный компонент
- *
- * @param string $component
- * @param array $data
- *
- * @return object
- */     
+    /**
+    * Перезаписывает глобальный компонент
+    *
+    * @param string $component
+    * @param array $data
+    *
+    * @return object
+    */     
     public static function newGlobalComponent($component = null, $data = [])
     {    
         return self::$abc->process->newGlobalComponent($component, $data);
     } 
     
-/**
- * Метод трассировки скриптов
- *
- * @return void
- */ 
+    /**
+    * Метод трассировки скриптов
+    *
+    * @return void
+    */ 
     public static function dbg($var = 'stop', $no = null)
     {   
         new Dbg($var, $no);

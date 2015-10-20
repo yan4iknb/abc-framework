@@ -20,25 +20,25 @@ class TraceContainer
     protected $painter;
     protected $view;
     
-/**
- * Конструктор
- *
- * @param object $painter
- * @param object $view 
- */   
+    /**
+    * Конструктор
+    *
+    * @param object $painter
+    * @param object $view 
+    */   
     public function __construct($painter, $view) 
     { 
         $this->view = $view;
         $this->painter = $painter;
     }      
     
-/**
- * Возвращает сформированный листинг
- *
- * @param string $var
- *
- * @return string
- */   
+    /**
+    * Возвращает сформированный листинг
+    *
+    * @param string $var
+    *
+    * @return string
+    */   
     public function getListing() 
     {
         $blockCont = $this->reflectionContainer($this->container);
@@ -46,27 +46,26 @@ class TraceContainer
         $data['lines'] = $this->createLine($blockCont);
         return $this->view->createListingContainer($data);
     }
-    
-    
-/**
- * Возвращает структуру объекта
- *
- * @param string $var
- *
- * @return string
- */ 
+  
+    /**
+    * Возвращает структуру объекта
+    *
+    * @param string $var
+    *
+    * @return string
+    */ 
     protected function reflectionContainer($var) 
     { 
         return null;
     }    
     
-/**
- * Генерирует массив столбика нумерации линий
- *
- * @param string $blockCont
- *
- * @return array
- */     
+    /**
+    * Генерирует массив столбика нумерации линий
+    *
+    * @param string $blockCont
+    *
+    * @return array
+    */     
     protected function createLine($blockCont) 
     { 
         $linesCnt = range(1, substr_count((string)$blockCont, "\n") + 3);
@@ -74,39 +73,3 @@ class TraceContainer
     } 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

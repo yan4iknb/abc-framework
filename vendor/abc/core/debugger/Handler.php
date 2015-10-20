@@ -14,67 +14,76 @@ namespace ABC\abc\core\debugger;
 
 abstract class Handler
 {
-/**
- * @var string 
- */
+
     public $user = 'ABC'; 
-/**
- * @var string 
- */
     public $framework = 'AbcProcessor';
+    public $developer = false; 
 
-/**
- * @var bool 
- */
-    public $developer = false;
-
-    
-    
     protected $exception = false;
+    
+    /**
+    * $var string
+    */      
     protected $file;
+    
+    /**
+    * $var int
+    */  
     protected $line;
+    
+    /**
+    * $var array
+    */  
     protected $trace;
+    
+    /**
+    * $var int
+    */  
     protected $code;
+    
+    /**
+    * $var array
+    */  
     protected $data;
     
- /**
- * Конструктор
- *
- * @param string $message
- * @param int $errorLevel
- */       
+    /**
+    * Конструктор
+    *
+    * @param string $message
+    * @param int $errorLevel
+    */       
     public function __construct() 
     {
         set_exception_handler(array($this, 'exceptionHandler'));   
     }
     
- /**
- * Абстрактные методы. Реализация в потомках
- *
- * @param string $message
- * @param int $errorLevel
- */  
+    /**
+    * Абстрактные методы. Реализация в потомках
+    *
+    * @param string $message
+    * @param int $errorLevel
+    */  
     abstract protected function createStack();
     abstract protected function getListing();
     abstract protected function getStack();
     abstract protected function action();
     
- /**
- * Отлавливает исключения
- *
- * @return void
- */   
+    /**
+    * Отлавливает исключения
+    *
+    * @return void
+    */   
     public function exceptionHandler($e) 
     {
         $this->exception = true;
         $this->createReport($e);  
     }
     
- /**
- * Обработчик исключений
- *
- * @return void
- */   
+    /**
+    * Обработчик исключений
+    *
+    * @return void
+    */   
     public function createReport($e) 
     {
         $this->code = $e->getCode();        
@@ -93,11 +102,11 @@ abstract class Handler
         $this->action();
     }
  
- /**
- * Готовит сообщение о типе ошибки
- *
- * @return string
- */       
+    /**
+    * Готовит сообщение о типе ошибки
+    *
+    * @return string
+    */       
     protected function lewelMessage($level) 
     {
         $listLevels = [
@@ -111,11 +120,11 @@ abstract class Handler
         return !empty($listLevels[$level]) ? $listLevels[$level] : $this->user .' debug mode: ';
     }    
 
- /**
- * Подготавливает трассировку для генерации листингов
- *
- * @return void
- */   
+    /**
+    * Подготавливает трассировку для генерации листингов
+    *
+    * @return void
+    */   
     protected function prepareTrace()
     {    
         $blocks = [];
@@ -133,15 +142,15 @@ abstract class Handler
         $this->backTrace = $blocks; 
     }   
 
- /**
- * Приводит блоки трассировки к одному типу
- *
- * @param string $block
- *
- * @return string
- */    
+    /**
+    * Приводит блоки трассировки к одному типу
+    *
+    * @param string $block
+    *
+    * @return string
+    */    
     protected function normaliseBlock($block)
-    { //
+    {
         if ($block['function'] == 'setException') {
             $block = ['file'      => $block['args'][2],
                       'line'      => $block['args'][3],
@@ -155,13 +164,13 @@ abstract class Handler
         return $this->blocksFilter($block); 
     }    
 
- /**
- * Фильтрует трассировку
- *
- * @param array $block
- *
- * @return array|bool
- */    
+    /**
+    * Фильтрует трассировку
+    *
+    * @param array $block
+    *
+    * @return array|bool
+    */    
     protected function blocksFilter($block)
     {    
         if ($this->developer) {
@@ -193,13 +202,13 @@ abstract class Handler
         } 
     } 
     
- /**
- * Распознает классы фреймворка
- *
- * @param array $block
- *var_dump($class);
- * @return bool
- */    
+    /**
+    * Распознает классы фреймворка
+    *
+    * @param array $block
+    *
+    * @return bool
+    */    
     protected function checkFramework($block)
     { 
         if (empty($block['class'])) {
@@ -218,19 +227,4 @@ abstract class Handler
         return preg_match('#^'. $user .'\\\\'. $user .'.+#i', $block['class']);
     }     
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

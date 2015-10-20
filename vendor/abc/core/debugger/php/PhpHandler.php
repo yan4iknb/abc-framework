@@ -18,26 +18,26 @@ use ABC\abc\core\debugger\php\Painter;
 
 class PhpHandler extends Handler
 {
+
     public $sizeListing = 20;
     
-/**
- * @var object 
- */    
+    /**
+    * @var object 
+    */    
     protected $view;
-/**
- * @var object 
- */    
+    
+    /**
+    * @var object 
+    */    
     protected $painter;
     
     protected $num = 0;
     protected $mainBlock = true;
     
- /**
- * Конструктор
- *
- * @param string $message
- * @param int $errorLevel
- */       
+    /**
+    * Конструктор
+    *
+    */       
     public function __construct() 
     {
         parent::__construct();
@@ -45,35 +45,35 @@ class PhpHandler extends Handler
         $this->painter = new Painter;
     }
     
- /**
- * Возвращает главный блок участка кода
- *
- * @return string
- */   
+    /**
+    * Возвращает главный блок участка кода
+    *
+    * @return string
+    */   
     public function getListing() 
     {
         $block = array_shift($this->backTrace);
         return $this->createBlock($block);
     }
 
- /**
- * Возвращает листинги трассировки
- *
- * @return string
- */    
+    /**
+    * Возвращает листинги трассировки
+    *
+    * @return string
+    */    
     public function getStack() 
     { 
         $this->mainBlock = false;    
         return $this->createStack(); 
     }  
-      
- /**
- * Подготовка данных для листингов
- *
- * $param $blockCont
- *
- * @return void
- */     
+
+    /**
+    * Подготовка данных для листингов
+    *
+    * $param $blockCont
+    *
+    * @return void
+    */     
     protected function prepareValue($blockCont) 
     {
         if (empty($blockCont)) {
@@ -87,11 +87,11 @@ class PhpHandler extends Handler
         return $blockCont;
     } 
     
- /**
- * Генерирует листинг участка кода
- *
- * @return string
- */   
+    /**
+    * Генерирует листинг участка кода
+    *
+    * @return string
+    */   
     protected function createBlock($block, $num = false) 
     { 
         $i = 0;
@@ -135,11 +135,11 @@ class PhpHandler extends Handler
         return $this->view->createBlock($data);
     }     
 
- /**
- * Генерирует таблицу трассировки
- *
- * @return string
- */   
+    /**
+    * Генерирует таблицу трассировки
+    *
+    * @return string
+    */   
     protected function createStack()
     {    
         $i = 0;
@@ -189,11 +189,11 @@ class PhpHandler extends Handler
         return $this->view->createStack($data);
     }    
 
- /**
- * Рендер
- *
- * @return void
- */   
+    /**
+    * Рендер
+    *
+    * @return void
+    */   
     public function action() 
     {
         $this->view->displayReport($this->data);

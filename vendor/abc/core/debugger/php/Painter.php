@@ -14,25 +14,25 @@ namespace ABC\abc\core\debugger\php;
 class Painter
 {  
 
- /**
- * Подсветка линии
- *
- * @return string
- */  
+    /**
+    * Подсветка линии
+    *
+    * @return string
+    */  
     public function wrapLine($line, $type)
     {
         return '<span class="abc_'. $type .'_line">'. $line .'</span>';
     }
     
    
- /**
- * Подсветка php кода
- *
- * @param string $blockCont
- * @param int $position
- *
- * @return string
- */    
+    /**
+    * Подсветка php кода
+    *
+    * @param string $blockCont
+    * @param int $position
+    *
+    * @return string
+    */    
     public function highlightString($blockCont, $position, $size)
     {
         $descr = preg_match('~^[\r\n\s\t]*?<\?php~uis', $blockCont) ? '' : '<?php ';
@@ -42,13 +42,13 @@ class Painter
         return implode('<br />', $lines);
     } 
     
- /**
- * Подсветка содержимого класса
- *
- * @param string $blockCont
- *
- * @return string
- */    
+    /**
+    * Подсветка содержимого класса
+    *
+    * @param string $blockCont
+    *
+    * @return string
+    */    
     public function highlightClass($blockCont)
     {
         $blockCont = strip_tags($blockCont);
@@ -87,25 +87,25 @@ class Painter
         return $blockCont;
     } 
     
- /**
- * Подсветка содержимого контейнера
- *
- * @param string $blockCont
- *
- * @return string
- */    
+    /**
+    * Подсветка содержимого контейнера
+    *
+    * @param string $blockCont
+    *
+    * @return string
+    */    
     public function highlightContainer($blockCont)
     {
         return $blockCont;
     } 
     
- /**
- * Подсветка содержимого объекта
- *
- * @param string $blockCont
- *
- * @return string
- */    
+    /**
+    * Подсветка содержимого объекта
+    *
+    * @param string $blockCont
+    *
+    * @return string
+    */    
     public function highlightObject($blockCont)
     {
         $blockCont = strip_tags($blockCont);
@@ -120,13 +120,13 @@ class Painter
         return $blockCont;
     }  
     
- /**
- * Подсветка содержимого переменной
- *
- * @param string $blockCont
- *
- * @return string
- */    
+    /**
+    * Подсветка содержимого переменной
+    *
+    * @param string $blockCont
+    *
+    * @return string
+    */    
     public function highlightVar($blockCont)
     {
         $blockCont = strip_tags($blockCont);   
@@ -141,11 +141,11 @@ class Painter
         return $blockCont;
     } 
     
- /**
- * Картинка для открытия одной аннотации
- *
- * @return string
- */     
+    /**
+    * Картинка для открытия одной аннотации
+    *
+    * @return string
+    */     
     public function openAnnotationImg()
     {
         return '<img src="data:image/gif;base64,iVBORw0KGgoAAAANSUhEUgAAAA0AAAALCAYAAACksgdhAAAACXBIWXMAAA7DAAAOwwHHb6hkAAABu0lEQVR4nHVSTWtTQRQ9M2/y0pcmRFP7idBWQcEPFERw585tV9Jtt10WuuwfaMWFm0L/h6CrguhKRBA/ulBaTXnRvLRm+tLk5c2bO8+bmkVp6cAMc+89555zhxHN9yuaujtVCPCSQHCDKjdXn1QuXd3GBUs03izqqUdLVeEbDgvI4kPo8KgVjM6tSe8UkjLIicevg6BWV46sgXDIbXhSU6UiqlMYTw5ebdEQn+cW3fArPDP2lMO6yl2W2Fij/f0lXJYOYfKcJZcmsLvPN1qfXywxyXIi5m7jGLu/AFX0B65BTsDSf3+ezKH46iiY33/7zFPkMib9gXPHEDKE8EdAJFGPathrzHDeolZp4sHtQ3j5LMj2wEoGZFq8O7D9DosQgy+j05/G3euT3MDiy7efoGTQNGZSmvBDEJzpwRpOJPpk6N29SczMlrFzJOHrvyi6NtdiCE+zxdSoPGeSTZk0UIqh4DBX+4Ff9TLS4gRU+yMe3tqHTSykKjHJQBXK80zo8Vx9pDoCjXRxpRAhziI0wjLu3fkNr0/gMpNYwMljoZuflqMP65tpmwf1S+xbQIgzP2B4yEIF2ei1d/8AyBrngSsY6DUAAAAASUVORK5CYII="  alt="Visible annotation" border="0"/>';

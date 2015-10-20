@@ -16,7 +16,7 @@ class TestDebug
         //Abc::dbg('ABC\Abc');
         //throw new \Exception('Первый аргумент - не число', E_USER_WARNING);
         //trigger_error('Полный пипец!!!'); 
-        
+     
         $mysqli = Abc::component('MySQLi');
         Abc::dbg($mysqli);
     }
@@ -60,23 +60,3 @@ class TraceExample2
         new TestDebug($var1, $var2);
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

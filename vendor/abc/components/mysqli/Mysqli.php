@@ -2,19 +2,48 @@
 
 namespace ABC\abc\components\mysqli;
 
+/** 
+ * Класс Mysqli
+ * 
+ * NOTE: Requires PHP version 5.5 or later   
+ * @author phpforum.su
+ * @copyright © 2015
+ * @license http://abc-framework.com/license/ 
+ */  
+
 class Mysqli 
 {
+/**
+ * @var object
+ */ 
     public $db;
-    protected $host;    
-    protected $user;    
+/**
+ * @var string
+ */     
+    protected $host;
+/**
+ * @var string
+ */ 
+    protected $user;
+/**
+ * @var string
+ */ 
     protected $pass;
-    protected $base;    
+/**
+ * @var string
+ */ 
+    protected $base;
     
-    public function __construct($data = [])
+/**
+ * Конструктор
+ *
+ * @param array $connectData
+ */      
+    public function __construct($connectData = [])
     {        
-        if (!empty($data)) {
+        if (!empty($connectData)) {
          
-            extract($data);
+            extract($connectData);
             
             if (!isset($host, $user, $pass, $base)) {
                 trigger_error('Wrong data connection in the configuration file', E_USER_WARNING);
@@ -24,6 +53,16 @@ class Mysqli
         }
     }
     
+/**
+ * Новый коннект
+ *
+ * @param string $host
+ * @param string $user
+ * @param string $pass
+ * @param string $base
+ *
+ * @return void
+ */    
     public function newConnect($host = '', $user = '', $pass = '', $base = '')
     {
         if (empty($host) || empty($user) || empty($base)) {
@@ -37,12 +76,37 @@ class Mysqli
         $this->connect();
     }  
     
-    public function connect()
+/**
+ * Инициализирует объект Mysqli
+ *
+ * @return void
+ */     
+    protected function connect()
     {
         $this->db = @new \Mysqli($this->host, $this->user, $this->pass, $this->base);
       
         if ($this->db->connect_error) {
             trigger_error('<b>MySQLi error:</b> '. $this->db->connect_error, E_USER_WARNING);
         }
-    }      
+        
+        $this->db->set_charset("utf8");
+    } 
+    
+/**
+ * Обертка для query()
+ *
+ * @return void
+ */     
+    protected function query($sql)
+    {
+        return $this->db->query($sql);
+    } 
 }
+
+
+
+
+
+
+
+

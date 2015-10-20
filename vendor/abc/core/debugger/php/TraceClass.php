@@ -14,35 +14,37 @@ namespace ABC\abc\core\debugger\php;
 class TraceClass
 {
     public $message = 'Tracing Class ';
-    public $adds = false;    
-/**
- * @var object 
- */        
+    public $adds = false;
+    
+    /**
+    * @var object 
+    */        
     protected $painter;
-/**
- * @var object 
- */    
+    
+    /**
+    * @var object 
+    */    
     protected $view;
     
-/**
- * Конструктор
- *
- * @param object $painter
- * @param object $view 
- */     
+    /**
+    * Конструктор
+    *
+    * @param object $painter
+    * @param object $view 
+    */     
     public function __construct($painter, $view) 
     { 
         $this->view = $view;
         $this->painter = $painter;
     } 
     
-/**
- * Возвращает сформированный листинг
- *
- * @param string $var
- *
- * @return string
- */   
+    /**
+    * Возвращает сформированный листинг
+    *
+    * @param string $var
+    *
+    * @return string
+    */   
     public function getListing($var) 
     {
         $blockCont = $this->reflectionClass($var);        
@@ -51,26 +53,26 @@ class TraceClass
         return $this->view->createListingClass($data);
     } 
     
-/**
- * Возвращает структуру класса
- *
- * @param string $var
- *
- * @return string
- */ 
+    /**
+    * Возвращает структуру класса
+    *
+    * @param string $var
+    *
+    * @return string
+    */ 
     protected function reflectionClass($var) 
     { 
         $classInfo = new \ReflectionClass($var);
         return \Reflection::export($classInfo, true);
     }
     
-/**
- * Генерирует массивы столбика нумерации линий
- *
- * @param string $blockCont
- *
- * @return array
- */       
+    /**
+    * Генерирует массивы столбика нумерации линий
+    *
+    * @param string $blockCont
+    *
+    * @return array
+    */       
     protected function createLine($blockCont) 
     { 
         $amountAnn = [];
@@ -85,39 +87,4 @@ class TraceClass
         return [$linesCnt, $amountAnn];
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

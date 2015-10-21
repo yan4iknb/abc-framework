@@ -11,5 +11,6 @@ namespace ABC\app\resourses;
                  'mysqli'    =>  ['host'  => 'localhost', 
                                   'user'  => 'root', 
                                   'pass'  => '', 
-                                  'base'  => 'test'],
+                                  'base'  => 'test',
+                                  'debug' => true],
     ];

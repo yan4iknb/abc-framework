@@ -17,12 +17,7 @@ class MysqliDebugingDemo
                                    AND 1 = 1"
                               );
         
-        Abc::dbg($res);
+        Abc::dbg($res);        
     }
 }
 
-        //$res = $mysqli->query("SELECT * 
-                                 //FROM test.test 
-                                   //WHERE id = 1
-                                   //AND 1 = 1"
-                              //);

@@ -60,7 +60,7 @@ class MysqliBuilder
         
         $this->locator->setGlobal($this->service, 
                                   function() use ($component, $data) {
-                                      $data['debugger'] = new SqlDebug(new View);
+                                      $data['debugger'] = isset($data['debug']) ? new SqlDebug(new View) : null;                                    
                                       $service = new $component($data);
                                       return $service;
                                   }

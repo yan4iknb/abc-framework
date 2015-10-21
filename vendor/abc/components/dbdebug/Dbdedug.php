@@ -1,20 +1,13 @@
 <?php
 
-namespace ABC\abc\components\mysqli;
+namespace ABC\abc\components\dbdebug;
 
-/** 
- * Класс MysqliDebug
- * 
- * NOTE: Requires PHP version 5.5 or later   
- * @author phpforum.su
- * @copyright © 2015
- * @license http://abc-framework.com/license/ 
- */  
-
-class MysqliDebug
+class Dbdedug
 {
-    
+   
     public $sizeListing = 30; 
+    public $db; 
+    public $type;    
     
     protected $message = 'MySQL error: ';
     
@@ -22,17 +15,11 @@ class MysqliDebug
     * @var View
     */
     protected $view; 
-    
-    /**
-    * @var Mysqli
-    */
-    protected $db;
 
     /**
     * @var string
     */
     protected $explain;
- 
     
     /**
     * Конструктор
@@ -40,9 +27,8 @@ class MysqliDebug
     * @param object $mysqli
     * @param object $view
     */        
-    public function __construct($db, $view)
+    public function __construct($view)
     { 
-        $this->db = $db;
         $this->view = $view;
     }
     
@@ -90,8 +76,7 @@ class MysqliDebug
         $start = microtime(true);        
         $this->db->query($sql);
         $time = sprintf("%01.4f", microtime(true) - $start);
-        $data['explain'] = $this->explain($sql, $time);
-        $this->explain = $this->view->createExplain($data);
+        $this->explain = $this->performExplain($sql, $time);
         $this->errorReport($trace, $sql, $error = '');        
     }
 
@@ -129,12 +114,19 @@ class MysqliDebug
     *
     * @return null
     */    
-    protected function explain($sql, $time)
+    protected function performExplain($sql, $time)
     {     
         $res = $this->db->query("EXPLAIN ". $sql);
         
         if (is_object($res)) {
-            $data = $res->fetch_array(MYSQLI_ASSOC); 
+         
+            if ($this->type === 'mysqli') {
+                $data = $res->fetch_array(MYSQLI_ASSOC);         
+            }
+            elseif ($this->type === 'pdo') {
+                $data = $res[0];
+            }
+            
             $data['queryTime'] = $time;
             return $this->view->createExplain($data);
         }
@@ -179,12 +171,4 @@ class MysqliDebug
         return $this->view->createPhp($data);
     }
 }
-
-
-
-
-
-
-
-
 

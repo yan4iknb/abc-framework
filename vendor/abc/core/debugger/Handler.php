@@ -172,7 +172,12 @@ abstract class Handler
     * @return array|bool
     */    
     protected function blocksFilter($block)
-    {    
+    { 
+        if (!empty($block['file'][1]) && false !== strpos($block['file'], 'eval')) {
+            return false;
+        }
+
+    
         if ($this->developer) {
             return $block;
         }
@@ -193,9 +198,6 @@ abstract class Handler
                 
             case ($block['function'] === 'trigger_error') :
                 return false;
-           
-            case (!empty($block['file'][1]) && false !== strpos($block['file'], 'eval')) :
-                return false;
          
             default :
                 return $block;
@@ -215,7 +217,7 @@ abstract class Handler
             return false;
         }
     
-        if (basename($block['class']) === $this->framework && (!$this->exception || $block['function'] === 'getComponent')) {
+        if (basename($block['class']) === $this->framework && (!$this->exception || $block['function'] === 'getService')) {
             return true;
         }
         

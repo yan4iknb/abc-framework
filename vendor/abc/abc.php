@@ -126,40 +126,14 @@ class Abc
     }
   
     /**
-    * Возвращает объект компонента фреймворка
+    * Возвращает объект сервиса
     *
     * @return object
     */     
-    public static function component($component = null)
+    public static function service($service = null)
     {
-        return self::$abc->process->getComponent($component);
+        return self::$abc->process->getService($service);
     }    
-    
-    /**
-    * Перезаписывает  компонент
-    *
-    * @param string $component
-    * @param array $data
-    *
-    * @return object
-    */      
-    public static function newComponent($component = null, $data = [])
-    {    
-        return self::$abc->process->newComponent($component, $data);
-    }
-    
-    /**
-    * Перезаписывает глобальный компонент
-    *
-    * @param string $component
-    * @param array $data
-    *
-    * @return object
-    */     
-    public static function newGlobalComponent($component = null, $data = [])
-    {    
-        return self::$abc->process->newGlobalComponent($component, $data);
-    } 
     
     /**
     * Метод трассировки скриптов

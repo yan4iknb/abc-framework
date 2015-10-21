@@ -9,8 +9,8 @@ namespace ABC;
    
     Abc::createApp($config);
 
-    new \ABC\app\DebugingDemo;   
-    //new \ABC\app\MisqliDebugingDemo;
+    //new \ABC\app\DebugingDemo;   
+    new \ABC\app\MysqliDebugingDemo;
     
     
 

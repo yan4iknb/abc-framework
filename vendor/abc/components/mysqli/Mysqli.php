@@ -2,8 +2,6 @@
 
 namespace ABC\abc\components\mysqli;
 
-use ABC\abc\components\mysqli\MysqliDebug;
-use ABC\abc\components\mysqli\View;
 /** 
  * Класс Mysqli
  * 
@@ -12,48 +10,27 @@ use ABC\abc\components\mysqli\View;
  * @copyright © 2015
  * @license http://abc-framework.com/license/ 
  */  
-
 class Mysqli 
 {
-/**
- * @var Mysqli
- */ 
+    /**
+    * @var Mysqli
+    */ 
     public $db;
+    public $error = false;     
+    public $test  = false;
     
-    public $test = false;
-    
-/**
- * @var string
- */     
-    protected $host;
-    
-/**
- * @var string
- */ 
-    protected $user;
-    
-/**
- * @var string
- */ 
-    protected $pass;
-    
-/**
- * @var string
- */ 
-    protected $base;
+    /**
+    * @var Dbdebug
+    */     
+    protected $debugger;
 
-/**
- * @var string
- */ 
-    protected $view;
-    
-/**
- * Конструктор
- *
- * @param array $connectData
- */      
+    /**
+    * Инициализирует объект Mysqli
+    *
+    * @return void
+    */     
     public function __construct($connectData = [])
-    {        
+    {
         if (!empty($connectData)) {
          
             extract($connectData);
@@ -62,86 +39,47 @@ class Mysqli
                 throw new \InvalidArgumentException('Wrong data connection in the configuration file', E_USER_WARNING);
             }
             
-            $this->newConnect($host, $user, $pass, $base);
+            $this->debugger = $debugger;
         }
-        
-        $this->view = new View;
-        
-    }
-    
-/**
- * Новый коннект
- *
- * @param string $host
- * @param string $user
- * @param string $pass
- * @param string $base
- *
- * @return void
- */    
-    public function newConnect($host = '', $user = '', $pass = '', $base = '')
-    {
-        if (empty($host) || empty($user) || empty($base)) {
-            throw new \InvalidArgumentException('Incorrect data connect', E_USER_WARNING);
-        }
-        
-        $this->host = $host;
-        $this->user = $user;
-        $this->pass = $pass;
-        $this->base = $base;
-        $this->db = $this->connect();
      
+        $db = @new \Mysqli($host, $user, $pass, $base);
+      
+        if ($db->connect_error) {
+            $this->error = $db->connect_error;
+        }
+        
+        $db->set_charset("utf8");
+        $this->db = $db;
     } 
-    
-    
-/**
- * Обертка для query()
- *
- * @return void
- */     
+
+    /**
+    * Обертка для query()
+    *
+    * @return void
+    */     
     public function query($sql)
     {
         $result = $this->db->query($sql);
         
-        if (false === $result || $this->test) {
+        if (isset($this->debugger) && (false === $result || $this->test)) {
          
-            $error = $this->db->error;
+            $this->error = $this->db->error;
             $trace = debug_backtrace();
-            $debug = new MysqliDebug($this->db, $this->view);
+            
+            $this->debugger->db = $this->db;
+            $this->debugger->type = 'mysqli';
             
             if ($this->test) {
-                $debug->testReport($trace, $sql, $error);
+                $this->debugger->testReport($trace, $sql, $this->error);
             }
             else {
-                $debug->errorReport($trace, $sql, $error);
+                $this->debugger->errorReport($trace, $sql, $this->error);
             }
         }
         
         return $result;
     } 
-    
-/**
- * Инициализирует объект Mysqli
- *
- * @return void
- */     
-    protected function connect()
-    {
-        $db = @new \Mysqli($this->host, $this->user, $this->pass, $this->base);
-      
-        if ($db->connect_error) {
-            return false;
-        }
-        
-        $db->set_charset("utf8");
-        
-        return $db;
-    } 
-
 }
-
-
-
 
 
 

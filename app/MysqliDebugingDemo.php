@@ -4,11 +4,11 @@ namespace ABC\app;
 
 use \ABC\abc as Abc;
 
-class MisqliDebugingDemo
+class MysqliDebugingDemo
 {
     public function __construct()
     {
-        $mysqli = Abc::component('MySQLi');
+        $mysqli = Abc::service('Mysqli');
         
         $mysqli->test = true;
         $res = $mysqli->query("SELECT * 

@@ -19,6 +19,9 @@ class TestDebug
         //throw new \Exception('Первый аргумент - не число', E_USER_WARNING);
         //trigger_error('Полный пипец!!!'); 
         
+new ABC\abc\tests\MoneyTest;
+        
+        
     //try {
     
         $mysqli = Abc::component('MySQLi');

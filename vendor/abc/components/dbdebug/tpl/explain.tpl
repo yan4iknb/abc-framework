@@ -5,7 +5,7 @@
         <strong>Explain:</strong>
     </div>
     <table class="abc_explain" width="100%" border="0" cellspacing="0" cellpadding="0">
-        <tr style="color:#B2B2B2">
+        <tr style="color:#575757">
             <th>id</th>
             <th>select_type</th>
             <th>table</th>        

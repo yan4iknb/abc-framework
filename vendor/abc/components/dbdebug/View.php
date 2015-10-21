@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\abc\components\mysqli;
+namespace ABC\abc\components\dbdebug;
 
 /** 
  * Класс View

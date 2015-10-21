@@ -63,18 +63,31 @@ class ServiceLocator
      
         if (isset($this->ServiseFrozen[$ServiceId])) {
          
-            if (empty(self::$ObjectStorage[$ServiceId])) {
+            if (!isset(self::$ObjectStorage[$ServiceId])) {
                 self::$ObjectStorage[$ServiceId] = $this->ServiceStorage[$ServiceId]->__invoke();
             }
          
             return self::$ObjectStorage[$ServiceId];
          
-        } elseif (!empty($this->ServiceStorage[$ServiceId])) {
+        } elseif (isset($this->ServiceStorage[$ServiceId])) {
             return $this->ServiceStorage[$ServiceId]->__invoke();
         }
      
         return false;
     }  
+    
+    /**
+    * Проверяет наличие сервиса в хранилище
+    *
+    * @param string $ServiceId
+    *
+    * @return void
+    */       
+    public function checkService($ServiceId)
+    {
+        $ServiceId = $this->validateService($ServiceId);
+        return isset($this->ServiceStorage[$ServiceId]);
+    } 
     
     /**
     * Удаляет объект из хранилища
@@ -90,7 +103,7 @@ class ServiceLocator
         if (!isset($this->ServiceStorage[$ServiceId])) {
             return false;
         }
-
+     
         unset($this->ServiceStorage[$ServiceId]);
         unset(self::$ObjectStorage[$ServiceId]);
     } 

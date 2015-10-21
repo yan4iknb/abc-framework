@@ -2,7 +2,6 @@
 
 namespace ABC\abc\core;
 
-use ABC\abc\core\Configurator;
 use ABC\abc\core\ServiceLocator;
 
 use ABC\abc\core\debugger\ErrorException;
@@ -43,8 +42,6 @@ class AbcProcessor
         $this->userConfig = $userConfig;
         $this->selectErrorMode(); 
         $this->locator = new ServiceLocator;
-        $this->configurator = new Configurator($this->locator, $userConfig);
-        $this->configureFramework();
     }
     
     /**
@@ -79,80 +76,26 @@ class AbcProcessor
     }
     
     /**
-    * Конфигурирует компоненты фреймворка
-    *
-    * @return void
-    */     
-    protected function configureFramework()
-    {
-        $this->container = $this->configurator->packComponents();
-    } 
-    
-    /**
     * Выбирает и запускает компонент
     *
     * @return object
     */     
-    public function getComponent($component = null)
+    public function getService($service = null)
     {    
-        if (empty($component) || !is_string($component)) {
-            throw new \InvalidArgumentException('Component name should be a string', E_USER_WARNING);
+        if (empty($service) || !is_string($service)) {
+            throw new \InvalidArgumentException('Service name should be a string', E_USER_WARNING);
         }
         
-        $object = $this->container->get($component);
+        $builder = '\ABC\abc\builders\\'. $service .'Builder';
+        $builder = new $builder;
+        $builder->userConfig = $this->userConfig;
+        $builder->locator    = $this->locator;
+        $object  = $builder->get($service);
         
         if (false === $object) {
-            throw new \BadFunctionCallException('Component "'. $component .'" is not defined.', E_USER_WARNING);
+            throw new \BadFunctionCallException('Service "'. $service .'" is not defined.', E_USER_WARNING);
         }
         
         return $object;
-    }
-    
-    /**
-    * Перезаписывает  компонент
-    *
-    * @param string $component
-    * @param array $data
-    *
-    * @return object
-    */      
-    public function newComponent($component = null, $data = [])
-    {    
-        if (empty($component) || !is_string($component)) {
-            throw new \BadFunctionCallException('Component name should be a string', E_USER_WARNING);
-        }
-            $this->locator->unsetServise($component);
-            $class = '\ABC\Abc\components\\'. $component .'\\'. $component;
-            $this->locator->set($component, 
-                                function() use ($class, $data) {
-                                    return new $class($data);
-                                }
-            );
-        
-        return $this->container->get($component);
-    }
-    
-    /**
-    * Перезаписывает глобальный компонент
-    *
-    * @param string $component
-    * @param array $data
-    *
-    * @return object
-    */     
-    public function newGlobalComponent($component = null, $data = [])
-    {    
-        if (empty($component) || !is_string($component)) {
-            throw new \BadFunctionCallException('Component name should be a string', E_USER_WARNING);
-        }
-            $this->locator->unsetServise($component);
-            $class = '\ABC\Abc\components\\'. $component .'\\'. $component;
-            $this->locator->setGlobal($component, 
-                                      function() use ($class, $data) {
-                                          return new $class($data);
-                                     }
-            );
-        
-        return $this->container->get($component);
     }
 }

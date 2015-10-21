@@ -1,8 +1,16 @@
 <?php
 
-namespace ABC\abc\components\dbdebug;
+namespace ABC\abc\components\sqldebug;
 
-class Dbdedug
+/** 
+ * Класс SqlDedug
+ * 
+ * NOTE: Requires PHP version 5.5 or later   
+ * @author phpforum.su
+ * @copyright © 2015
+ * @license http://abc-framework.com/license/ 
+ */  
+class SqlDebug
 {
    
     public $sizeListing = 30; 

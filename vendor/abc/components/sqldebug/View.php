@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\abc\components\dbdebug;
+namespace ABC\abc\components\sqldebug;
 
 /** 
  * Класс View
@@ -10,7 +10,6 @@ namespace ABC\abc\components\dbdebug;
  * @copyright © 2015
  * @license http://abc-framework.com/license/ 
  */  
-
 class View
 {
     /**

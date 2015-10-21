@@ -4,8 +4,8 @@ namespace ABC\abc\builders;
 /** 
  * Сборка дебаггера SQL 
  */ 
-use ABC\abc\components\dbdebug\Dbdedug;
-use ABC\abc\components\dbdebug\View;
+use ABC\abc\components\sqldebug\SqlDebug;
+use ABC\abc\components\sqldebug\View;
 
 /** 
  * Класс Mysqli
@@ -60,7 +60,7 @@ class MysqliBuilder
         
         $this->locator->setGlobal($this->service, 
                                   function() use ($component, $data) {
-                                      $data['debugger'] = new Dbdedug(new View);
+                                      $data['debugger'] = new SqlDebug(new View);
                                       $service = new $component($data);
                                       return $service;
                                   }

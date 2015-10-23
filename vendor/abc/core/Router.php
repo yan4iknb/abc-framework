@@ -68,6 +68,8 @@ class Router
     /**
     * Если не найден контроллер, активирует базовый с генерацией 404 заголовка
     *
+    * @param string $controller
+    *  
     * @return string
     */        
     public function create404($controller)

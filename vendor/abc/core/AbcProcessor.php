@@ -48,9 +48,9 @@ class AbcProcessor
     */    
     public function __construct($appConfig = [], $siteConfig = [])
     {
-        $this->selectErrorMode();    
         $configurator  = new Configurator;
         $this->config  = $configurator->getConfig($appConfig, $siteConfig);
+        $this->selectErrorMode();           
         $this->locator = new ServiceLocator;        
     }
     
@@ -96,24 +96,18 @@ class AbcProcessor
     */     
     protected function selectErrorMode()
     {
-        if (empty($this->config)) {
-            set_error_handler([$this, 'throwDebugException']);        
-            new PhpHandler();
-        }
-     
-        if (!isset($this->config['debug_mod'])) {
-            return;
-        }
-     
-        if ($this->config['debug_mod'] === 'display') {
-            set_error_handler([$this, 'throwDebugException']);        
-            new PhpHandler($this->config);
-        } elseif ($this->config['debug_mod'] === 'log')  {
-            new Loger();
-            set_error_handler([$this, 'throwError500Exception']);
-        } elseif ($this->config['debug_mod'] == 500) {
-            set_error_handler([$this, 'throwError500Exception']);
-        }
+        if (isset($this->config['debug_mod'])) {
+         
+            if ($this->config['debug_mod'] === 'display') {
+                set_error_handler([$this, 'throwDebugException']);        
+                new PhpHandler($this->config);
+            } elseif ($this->config['debug_mod'] === 'log')  {
+                new Loger();
+                set_error_handler([$this, 'throwError500Exception']);
+            } elseif ($this->config['debug_mod'] == 500) {
+                set_error_handler([$this, 'throwError500Exception']);
+            }
+        }        
     }
     
     /**

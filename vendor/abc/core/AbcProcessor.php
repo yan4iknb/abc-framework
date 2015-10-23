@@ -98,8 +98,7 @@ class AbcProcessor
     {
         if (isset($this->config['debug_mod'])) {
          
-            if ($this->config['debug_mod'] === 'display') {
-                set_error_handler([$this, 'throwDebugException']);        
+            if ($this->config['debug_mod'] === 'display') {   
                 new PhpHandler($this->config);
             } elseif ($this->config['debug_mod'] === 'log')  {
                 new Loger();
@@ -122,16 +121,4 @@ class AbcProcessor
             throw new Error500Exception($message, $code, $file, $line);
         }
     } 
-    
-    /**
-    * Бросает исключение на trigger_eror и отчеты интерпретатора
-    *
-    * @return void
-    */
-    public function throwDebugException($code, $message, $file, $line)
-    { 
-        if (error_reporting() & $code) {
-            throw new DebugException($message, $code, $file, $line);
-        }
-    }
 }

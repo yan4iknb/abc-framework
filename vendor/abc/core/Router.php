@@ -50,8 +50,12 @@ class Router
     */        
     public function getControllersDir()
     {
-        $userSettings = @$this->config['settings'] ?: [];
-        $settings = array_merge($this->defaultSettings, $userSettings);    
+        if (isset($this->config['settings'])) {
+            $settings = array_merge($this->defaultSettings, $this->config['settings']);        
+        } else {
+            $settings = $this->defaultSettings;
+        }
+     
         return $settings['application'] .'\\'. $settings['dir_controllers'];
     }   
     

@@ -2,8 +2,11 @@
 
 namespace ABC\App\Controllers;
 
-use ABC\Abc;
 use ABC\Abc\Core\BaseController;
+
+use ABC\Abc;
+use ABC\App\Example;
+
 /** 
  * Контролер
  * 
@@ -17,30 +20,22 @@ class Controller extends BaseController
     public function __construct()
     {
         $var1 = 'cодержимое первого аргумента';
-        $var2 = ['первый' => 'cодержимое второго аргумента'];
-        $var3 = 1;
+        $var2 = ['первый' => 'cодержимое первого элемента',
+                 'второй' => 'cодержимое второго элемента'
+            ];
         
-        //echo $a;
- 
+        echo $a;
+     
         //Abc::dbg(); 
         //Abc::dbg($var1); 
         //Abc::dbg($var2);        
         //Abc::dbg(new \ABC\Abc); 
         //Abc::dbg('ABC\Abc');
-
+     
         //new Example; 
-        $db = Abc::getService('Mysqli');
-        Abc::dbg($db);
-    }
-}
-
-
-class Example
-{ 
-    public function __construct()
-    {        
-       throw new \Exception('Первый аргумент - не число');
-        //trigger_error('Полный пипец!!!'); 
+        //$mysqli = Abc::getService('Mysqli');
+        //echo $mysqli->connect_error;
+        //Abc::dbg($db);
     }
 }
 

@@ -15,7 +15,12 @@ abstract class Handler
     public $spacePrefix = 'ABC'; 
     public $allTrace = false; 
     
-    protected $exception = false;
+    protected $exception = true;
+
+    /**
+    * $var string
+    */      
+    protected $message; 
     
     /**
     * $var string
@@ -63,7 +68,8 @@ abstract class Handler
             $this->spacePrefix = $config['space_prexix'];
         }
         
-        set_exception_handler(array($this, 'exceptionHandler'));   
+        set_exception_handler([$this, 'exceptionHandler']);
+        set_error_handler([$this, 'triggerErrorHandler']);
     }
     
     /**
@@ -84,8 +90,29 @@ abstract class Handler
     */   
     public function exceptionHandler($e) 
     {
-        $this->exception = in_array($e->getCode(), $this->E_User);
-        $this->createReport($e);  
+        $this->message   = $e->getMessage();
+        $this->code      = $e->getCode();        
+        $this->backTrace = $e->getTrace();
+        $this->createReport();  
+    }
+    
+    /**
+    * Отлавливает trigger_error
+    *
+    * @return void
+    */   
+    public function triggerErrorHandler($code, $message, $file, $line) 
+    {  
+        if (error_reporting() & $code) {
+            $this->exception = false;
+            $this->message   = $message;
+            $this->code      = $code; 
+            $this->file      = $file;
+            $this->line      = $line; 
+            $this->backTrace = debug_backtrace();
+            $this->createReport(); 
+        } 
+        
     }
     
     /**
@@ -93,13 +120,11 @@ abstract class Handler
     *
     * @return void
     */   
-    public function createReport($e) 
+    public function createReport() 
     {
-        $this->code = $e->getCode();        
-        $this->backTrace = $e->getTrace();
         $this->prepareTrace();
      
-        $this->data = ['message'  => $e->getMessage(),
+        $this->data = ['message'  => $this->message,
                        'adds'     => true,
                        'level'    => $this->lewelMessage($this->code),
                        'listing'  => $this->getListing($this->trace[0]),                       
@@ -148,7 +173,8 @@ abstract class Handler
         }
         
         $this->backTrace = $blocks; 
-    }   
+    }
+    
     /**
     * Приводит блоки трассировки к одному типу
     *
@@ -158,18 +184,14 @@ abstract class Handler
     */    
     protected function normaliseBlock($block)
     {
-        if ($block['function'] == 'setException') {
-            $block = ['file'      => $block['args'][2],
-                      'line'      => $block['args'][3],
-                      'function'  => $block['function'],
-                      'class'     => $block['class'],
-                      'type'      => $block['type'],
-                      'args'      => [0, $block['args'][0]]
-            ];
-        } 
-      
-        return $this->blocksFilter($block); 
-    }    
+        if (!$this->exception) {
+            $block['file'] = $this->file;
+            $block['line'] = $this->line;        
+        }
+        
+        return $this->blocksFilter($block);
+    } 
+    
     /**
     * Фильтрует трассировку
     *
@@ -198,7 +220,7 @@ abstract class Handler
         if ($block['function'] === 'trigger_error') {
             return false;
         } 
-
+     
         return $block;
     } 
     

@@ -52,9 +52,9 @@ class PhpHandler extends Handler
     public function getListing() 
     {
         if ($this->exception) {
-            $block = array_pop($this->backTrace);        
+            $block = array_shift($this->backTrace);   
         } else {
-            $block = array_shift($this->backTrace);
+            $block = array_pop($this->backTrace);
         }
 
 
@@ -83,12 +83,11 @@ class PhpHandler extends Handler
     {
         if (empty($blockCont)) {
             $blockCont = 'Void';  
-        } 
-     
-        ob_start();
-            var_dump($blockCont);       
-        $blockCont = ob_get_clean();
-     
+        } else {
+            ob_start();
+                var_dump($blockCont);       
+            $blockCont = ob_get_clean();
+        }
         return $blockCont;
     } 
     
@@ -130,7 +129,7 @@ class PhpHandler extends Handler
        
         $lines = array_slice($lines, $position, $this->sizeListing);
         
-        if ($this->exception && $num === false) {
+        if (!$this->exception && $num === false) {
             $arguments = 'null';
         }
         
@@ -158,7 +157,7 @@ class PhpHandler extends Handler
         
         foreach ($reversTrace as $block) {
         
-            $beforeClass = $this->exception ? $beforBlocks[$j]['class'] : @$beforBlocks[$j - 1]['class'];;
+            $beforeClass = $this->exception ? @$beforBlocks[$j - 1]['class'] : $beforBlocks[$j]['class'];
             $j++;
             $block = $this->blocksFilter($block, $beforeClass);
          

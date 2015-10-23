@@ -16,7 +16,7 @@ class Mysqli
     * @var Mysqli
     */ 
     public $db;
-    public $error = false;     
+    public $connect_error = null;     
     public $test  = false;
     
     /**
@@ -45,10 +45,11 @@ class Mysqli
         $db = @new \Mysqli($host, $user, $pass, $base);
       
         if ($db->connect_error) {
-            $this->error = $db->connect_error;
+            $this->connect_error = $db->connect_error;
+        } else {
+            $db->set_charset("utf8");  
         }
-        
-        $db->set_charset("utf8");
+     
         $this->db = $db;
     } 
 

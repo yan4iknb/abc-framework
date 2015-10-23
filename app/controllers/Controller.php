@@ -20,15 +20,36 @@ class Controller extends BaseController
         $var2 = ['первый' => 'cодержимое второго аргумента'];
         $var3 = 1;
         
-        echo $a;
-        //Abc::dbg($var1, $var2); 
+        //echo $a;
+ 
         //Abc::dbg(); 
-        //Abc::dbg($var1);         
+        //Abc::dbg($var1); 
+        //Abc::dbg($var2);        
         //Abc::dbg(new \ABC\Abc); 
         //Abc::dbg('ABC\Abc');
-        //throw new \Exception('Первый аргумент - не число', E_USER_WARNING);
-        //trigger_error('Полный пипец!!!'); 
-        //$db = Abc::getService('Mysqli');
-        //Abc::dbg($db);
+
+        //new Example; 
+        $db = Abc::getService('Mysqli');
+        Abc::dbg($db);
     }
 }
+
+
+class Example
+{ 
+    public function __construct()
+    {        
+       throw new \Exception('Первый аргумент - не число');
+        //trigger_error('Полный пипец!!!'); 
+    }
+}
+
+
+
+
+
+
+
+
+
+

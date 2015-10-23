@@ -219,16 +219,3 @@ abstract class Handler
         return preg_match('#^'. $spacePrefix .'\\\abc.*#iu', $beforeClass);
     }     
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

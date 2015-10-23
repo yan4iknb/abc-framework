@@ -5,10 +5,10 @@ namespace ABC\Abc\Core;
 use ABC\Abc\Core\ServiceLocator;
 use ABC\Abc\Core\Router;
 
-use ABC\Abc\Core\debugger\DebugException;
-use ABC\Abc\Core\debugger\Error500Exception;
-use ABC\Abc\Core\debugger\php\PhpHandler;
-use ABC\Abc\Core\debugger\loger\Loger;
+use ABC\Abc\Core\Debugger\DebugException;
+use ABC\Abc\Core\Debugger\Error500Exception;
+use ABC\Abc\Core\Debugger\Php\PhpHandler;
+use ABC\Abc\Core\Debugger\Loger\Loger;
 
 /** 
  * Класс AbcFramework
@@ -55,7 +55,7 @@ class AbcProcessor
     }
     
     /**
-    * Устанавливает пользовательские маршруты 
+    * Устанавливает пользовательские маршруты и запускает роутер 
     *
     * @return void
     */     
@@ -84,8 +84,8 @@ class AbcProcessor
         }    
         
         $builder = new $builder;
-        $builder->config = $this->config;
-        $builder->locator    = $this->locator;
+        $builder->config  = $this->config;
+        $builder->locator = $this->locator;
         return $builder->get($service);
     }
   

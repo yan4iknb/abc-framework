@@ -36,7 +36,7 @@ class Pdo
             extract($data);
             
             if (!isset($host, $user, $pass, $base)) {
-                throw new \InvalidArgumentException('Wrong data connection in the configuration file', E_USER_WARNING);
+                throw new \InvalidArgumentException('Component PDO: wrong data connection in the configuration file', E_USER_WARNING);
             }
             
             $this->debugger = $debugger;

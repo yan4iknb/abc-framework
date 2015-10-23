@@ -1,12 +1,14 @@
 <?php
 
-namespace ABC\abc\core;
+namespace ABC\Abc\Core;
 
-use ABC\abc\core\ServiceLocator;
+use ABC\Abc\Core\ServiceLocator;
+use ABC\Abc\Core\Router;
 
-use ABC\abc\core\debugger\ErrorException;
-use ABC\abc\core\debugger\php\PhpHandler;
-use ABC\abc\core\debugger\loger\Loger;
+use ABC\Abc\Core\debugger\DebugException;
+use ABC\Abc\Core\debugger\Error500Exception;
+use ABC\Abc\Core\debugger\php\PhpHandler;
+use ABC\Abc\Core\debugger\loger\Loger;
 
 /** 
  * Класс AbcFramework
@@ -21,7 +23,7 @@ class AbcProcessor
     /**
     * @var array
     */ 
-    protected $userConfig;
+    protected $config;
 
     /**
     * @var ServiceLocator
@@ -34,49 +36,38 @@ class AbcProcessor
     protected $container;
     
     /**
+    * @var Router
+    */ 
+    protected $router;
+    
+    /**
     * Конструктор
     * 
+    * @param array $appConfig
+    * @param array $siteConfig
     */    
-    public function __construct($userConfig = [])
+    public function __construct($appConfig = [], $siteConfig = [])
     {
-        $this->userConfig = $userConfig;
-        $this->selectErrorMode(); 
-        $this->locator = new ServiceLocator;
+        $this->selectErrorMode();    
+        $configurator  = new Configurator;
+        $this->config  = $configurator->getConfig($appConfig, $siteConfig);
+        $this->locator = new ServiceLocator;        
     }
     
     /**
-    * Выбирает режим обработки ошибок
+    * Устанавливает пользовательские маршруты 
     *
     * @return void
     */     
-    protected function selectErrorMode()
-    {
-        if (empty($this->userConfig['debug_mod'])) {
-            return false;
-        } 
-     
-        if ($this->userConfig['debug_mod'] === 'display') {
-            set_error_handler([$this, 'setException']);        
-            new PhpHandler();
-        } elseif ($this->userConfig['debug_mod'] === 'log')  {
-            new Loger();
-        }
-    }
-   
-    /**
-    * Бросает исключение на trigger_eror и отчеты интерпретатора
-    *
-    * @return void
-    */
-    public function setException($code, $message, $file, $line)
+    public function route()
     { 
-        if (error_reporting() & $code) {
-            throw new ErrorException($message, $code, $file, $line);
-        }
+        $this->router  = new Router;
+        $this->router->config = $this->config;
+        $this->router->run();
     }
     
     /**
-    * Выбирает и запускает компонент
+    * Выбирает и запускает сервис
     *
     * @return object
     */     
@@ -87,15 +78,66 @@ class AbcProcessor
         }
         
         $builder = '\ABC\abc\builders\\'. $service .'Builder';
-        $builder = new $builder;
-        $builder->userConfig = $this->userConfig;
-        $builder->locator    = $this->locator;
-        $object  = $builder->get($service);
         
-        if (false === $object) {
+        if (!class_exists($builder)) {
             throw new \BadFunctionCallException('Service "'. $service .'" is not defined.', E_USER_WARNING);
-        }
+        }    
         
-        return $object;
+        $builder = new $builder;
+        $builder->config = $this->config;
+        $builder->locator    = $this->locator;
+        return $builder->get($service);
+    }
+  
+    /**
+    * Выбирает режим обработки ошибок
+    *
+    * @return void
+    */     
+    protected function selectErrorMode()
+    {
+        if (empty($this->config)) {
+            set_error_handler([$this, 'throwDebugException']);        
+            new PhpHandler();
+        }
+     
+        if (!isset($this->config['debug_mod'])) {
+            return;
+        }
+     
+        if ($this->config['debug_mod'] === 'display') {
+            set_error_handler([$this, 'throwDebugException']);        
+            new PhpHandler($this->config);
+        } elseif ($this->config['debug_mod'] === 'log')  {
+            new Loger();
+            set_error_handler([$this, 'throwError500Exception']);
+        } elseif ($this->config['debug_mod'] == 500) {
+            set_error_handler([$this, 'throwError500Exception']);
+        }
+    }
+    
+    /**
+    * Бросает исключение на отчеты интерпретатора при вклченной
+    * опции 500 Internal Server Error
+    *
+    * @return void
+    */
+    public function throwError500Exception($code, $message, $file, $line)
+    { 
+        if (error_reporting() & $code) {
+            throw new Error500Exception($message, $code, $file, $line);
+        }
+    } 
+    
+    /**
+    * Бросает исключение на trigger_eror и отчеты интерпретатора
+    *
+    * @return void
+    */
+    public function throwDebugException($code, $message, $file, $line)
+    { 
+        if (error_reporting() & $code) {
+            throw new DebugException($message, $code, $file, $line);
+        }
     }
 }

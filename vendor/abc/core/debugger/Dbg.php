@@ -37,12 +37,8 @@ class Dbg extends PhpHandler
     * @param mixed $var
     * @param mixed $no
     */    
-    public function __construct($var = 'stop', $no = null)
+    public function __construct($var = 'stop')
     {
-        if ($no !== null) {
-            trigger_error('Function expects exactly one parameter.', E_USER_WARNING);
-        }
-     
         parent::__construct();
         $this->tracersSelector($var);
         $this->traceProcessor($var);

@@ -30,7 +30,7 @@
 .abc_dedugger .object{font-weight:bold;font-style:italic;color:#0000FF}
 .abc_dedugger .property{font-style:italic;color:#86407E}
 .abc_dedugger .property_var{color:#047DCE}
-.abc_dedugger .property_value{color:#FF0000}
+.abc_dedugger .property_value{color:#047DCE}
 .abc_dedugger .method{color:#009300}
 .abc_dedugger .value{color:#CE001A}
 .abc_dedugger .size{font-style:italic;font-size:12px;color:#797979}

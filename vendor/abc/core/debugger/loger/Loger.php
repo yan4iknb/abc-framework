@@ -1,8 +1,6 @@
 <?php
 
-namespace ABC\abc\core\debugger\loger;
-
-use ABC\abc\core\debuger\ExceptionHandler;
+namespace ABC\Abc\Core\Debugger\Loger;
 
 /** 
  * Класс Loger 
@@ -13,7 +11,7 @@ use ABC\abc\core\debuger\ExceptionHandler;
  * @copyright © 2015
  * @license http://abc-framework.com/license/  
  */  
-class Loger extends ExceptionHandler 
+class Loger
 {
  
     protected function getLocation()

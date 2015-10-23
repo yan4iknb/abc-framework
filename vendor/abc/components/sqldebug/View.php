@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\abc\components\sqldebug;
+namespace ABC\Abc\Components\Sqldebug;
 
 /** 
  * Класс View

@@ -1,11 +1,11 @@
 <?php
-namespace ABC\abc\builders;
+namespace ABC\Abc\Builders;
 
 /** 
  * Сборка дебаггера SQL 
  */ 
-use ABC\abc\components\sqldebug\SqlDebug;
-use ABC\abc\components\sqldebug\View;
+use ABC\Abc\Components\Sqldebug\SqlDebug;
+use ABC\Abc\Components\Sqldebug\View;
 
 /** 
  * Класс Mysqli
@@ -26,7 +26,7 @@ class MysqliBuilder
     /**
     * @var array
     */ 
-    public $userConfig;
+    public $config;
     
     /**
     * @var ServiceLocator
@@ -56,14 +56,14 @@ class MysqliBuilder
     protected function buildService()
     { 
         $component = '\ABC\abc\components\\'. $this->service .'\\'. $this->service;    
-        $data  = @$this->userConfig[$this->service] ?: [];
+        $data = @$this->config[$this->service] ?: [];
         
-        $this->locator->setGlobal($this->service, 
-                                  function() use ($component, $data) {
-                                      $data['debugger'] = isset($data['debug']) ? new SqlDebug(new View) : null;                                    
-                                      $service = new $component($data);
-                                      return $service;
-                                  }
+        $this->locator->setGlobal(
+            $this->service, 
+            function() use ($component, $data) {
+                $data['debugger'] = isset($data['debug']) ? new SqlDebug(new View) : null;
+                return new $component($data);
+            }
         );
     }   
 }

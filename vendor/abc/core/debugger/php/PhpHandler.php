@@ -1,10 +1,10 @@
 <?php
 
-namespace ABC\abc\core\debugger\php;
+namespace ABC\Abc\Core\Debugger\php;
 
-use ABC\abc\core\debugger\Handler;
-use ABC\abc\core\debugger\php\View;
-use ABC\abc\core\debugger\php\Painter;
+use ABC\Abc\Core\Debugger\Handler;
+use ABC\Abc\Core\Debugger\Php\View;
+use ABC\Abc\Core\Debugger\Php\Painter;
 
 /** 
  * Класс PhpHandler
@@ -15,10 +15,8 @@ use ABC\abc\core\debugger\php\Painter;
  * @license http://abc-framework.com/license/ 
  * @package system.cmponents.debugger 
  */   
-
 class PhpHandler extends Handler
 {
-
     public $sizeListing = 20;
     
     /**
@@ -37,10 +35,11 @@ class PhpHandler extends Handler
     /**
     * Конструктор
     *
+    * $param $blockCont
     */       
-    public function __construct() 
+    public function __construct($config = []) 
     {
-        parent::__construct();
+        parent::__construct($config);
         $this->view    = new View;
         $this->painter = new Painter;
     }
@@ -52,10 +51,16 @@ class PhpHandler extends Handler
     */   
     public function getListing() 
     {
-        $block = array_shift($this->backTrace);
+        if ($this->exception) {
+            $block = array_pop($this->backTrace);        
+        } else {
+            $block = array_shift($this->backTrace);
+        }
+
+
         return $this->prepareBlock($block);
     }
-
+    
     /**
     * Возвращает листинги трассировки
     *
@@ -65,14 +70,14 @@ class PhpHandler extends Handler
     { 
         $this->mainBlock = false;    
         return $this->prepareStack(); 
-    }  
-
+    } 
+    
     /**
     * Подготовка данных для листингов
     *
-    * $param $blockCont
+    * @param string $blockCont
     *
-    * @return void
+    * @return string
     */     
     protected function prepareValue($blockCont) 
     {
@@ -89,6 +94,9 @@ class PhpHandler extends Handler
     
     /**
     * Генерирует листинг участка кода
+    *
+    * @param array $block
+    * @param int $num
     *
     * @return string
     */   
@@ -133,8 +141,8 @@ class PhpHandler extends Handler
         ];
       
         return $this->view->createBlock($data);
-    }     
-
+    }  
+    
     /**
     * Генерирует таблицу трассировки
     *
@@ -142,20 +150,22 @@ class PhpHandler extends Handler
     */   
     protected function prepareStack()
     {    
-        $i = 0;
+        $i = $j = 0;
         $tpl    = $this->view->getStackRow();
         $action = '';
         $steck  = $rows = [];
-       
-        foreach ($this->backTrace as $block) {
-            
-            $block = $this->normaliseBlock($block);
+        $beforBlocks = $reversTrace = array_reverse($this->backTrace);
+        
+        foreach ($reversTrace as $block) {
+        
+            $beforeClass = $this->exception ? $beforBlocks[$j]['class'] : @$beforBlocks[$j - 1]['class'];;
+            $j++;
+            $block = $this->blocksFilter($block, $beforeClass);
          
             if (empty($block)) {
                 continue;
             }  
             
-            $class  = $block['class'] ?: 'GLOBALS';
             $class  = str_replace('\\', DIRECTORY_SEPARATOR, $block['class']);
             $space  = str_replace(DIRECTORY_SEPARATOR, '\\', dirname($class));
             $location = basename($this->file);
@@ -175,9 +185,7 @@ class PhpHandler extends Handler
             
             $steck[] = $data;
             $i++;
-        }
-        
-        $steck = array_reverse($steck);    
+        }   
         
         foreach ($steck as $row) {
             $row['num'] = ++$this->num;        
@@ -189,8 +197,8 @@ class PhpHandler extends Handler
         ];
         
         return $this->view->createStack($data);
-    }    
-
+    }  
+    
     /**
     * Рендер
     *
@@ -202,5 +210,3 @@ class PhpHandler extends Handler
         $this->view->displayReport($this->data);
     }
 }
-
-

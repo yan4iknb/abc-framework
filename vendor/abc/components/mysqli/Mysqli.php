@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\abc\components\mysqli;
+namespace ABC\Abc\Components\Mysqli;
 
 /** 
  * Класс Mysqli
@@ -29,11 +29,11 @@ class Mysqli
     *
     * @return void
     */     
-    public function __construct($connectData = [])
+    public function __construct($data = [])
     {
-        if (!empty($connectData)) {
+        if (!empty($data)) {
          
-            extract($connectData);
+            extract($data);
             
             if (!isset($host, $user, $pass, $base)) {
                 throw new \InvalidArgumentException('Wrong data connection in the configuration file', E_USER_WARNING);

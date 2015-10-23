@@ -1,5 +1,5 @@
 <?php
 
-namespace ABC\abc\resourses\lang;
+namespace ABC\Abc\Resourses\Lang;
 
 

@@ -49,17 +49,9 @@ class Abc
     * @return void
     */     
     public static function createApp($appConfig = [], $siteConfig = [])
-    {
+    { 
         if (!empty(self::$abc)) {
-            throw new \Exception('Only one process');  
-        }
-       
-        if (!is_array($appConfig)) {
-            throw new \Exception('Configuring the application is to be performed array');
-        }
-        
-        if (!is_array($siteConfig)) {
-            throw new \Exception('Configuring the site is to be performed array');
+            throw new \LogicException('Only one process');  
         }
         
         self::$abc = new self;
@@ -75,10 +67,10 @@ class Abc
     * @return void
     */    
     protected function run($appConfig, $siteConfig)
-    {
-        $this->config = array_merge($appConfig, $siteConfig); 
+    { 
         $this->autoloadSelector();
-        self::$abc->process = new AbcProcessor($this->config);
+        self::$abc->process = new AbcProcessor($appConfig, $siteConfig);
+        self::$abc->process->route();
     }
     
     /**
@@ -124,13 +116,13 @@ class Abc
     {
         return self::$abc->process;
     }
-  
+    
     /**
     * Возвращает объект сервиса
     *
     * @return object
     */     
-    public static function service($service = null)
+    public static function getService($service = null)
     {
         return self::$abc->process->getService($service);
     }    
@@ -140,9 +132,9 @@ class Abc
     *
     * @return void
     */ 
-    public static function dbg($var = 'stop', $no = null)
+    public static function dbg($var = 'stop')
     {   
-        new Dbg($var, $no);
+        new Dbg($var);
     }
 }
 

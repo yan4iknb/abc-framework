@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\abc\core;
+namespace ABC\Abc\Core;
 
 /** 
  * Сервис-локатор
@@ -30,7 +30,7 @@ class ServiceLocator
         $callable  = $this->validateCallable($callable);
         
         if (isset($this->ServiseStorage[$ServiceId])) {
-            return false;
+            throw new \OverflowException($ServiceId .' service is already installed.', E_USER_WARNING);
         }
 
         $this->ServiceStorage[$ServiceId] = $callable;   

@@ -2,7 +2,6 @@
 
 namespace ABC\abc\core\debugger;
 
-
 /** 
  * Класс ExceptionHandler
  * Обработчик исключений 
@@ -11,14 +10,11 @@ namespace ABC\abc\core\debugger;
  * @copyright © 2015
  * @license http://abc-framework.com/license/ 
  */   
-
 abstract class Handler
 {
-
-    public $user = 'ABC'; 
-    public $framework = 'AbcProcessor';
-    public $developer = false; 
-
+    public $spacePrefix = 'ABC'; 
+    public $allTrace = false; 
+    
     protected $exception = false;
     
     /**
@@ -46,14 +42,27 @@ abstract class Handler
     */  
     protected $data;
     
+    protected $E_User = [
+                E_USER_NOTICE,
+                E_USER_WARNING,
+                E_USER_ERROR
+            ];
     /**
     * Конструктор
     *
     * @param string $message
     * @param int $errorLevel
     */       
-    public function __construct() 
+    public function __construct($config = []) 
     {
+        if (isset($config['framework_trace'])) {
+            $this->allTrace = true;
+        }
+     
+        if (isset($config['space_prexix'])) {
+            $this->spacePrefix = $config['space_prexix'];
+        }
+        
         set_exception_handler(array($this, 'exceptionHandler'));   
     }
     
@@ -75,7 +84,7 @@ abstract class Handler
     */   
     public function exceptionHandler($e) 
     {
-        $this->exception = true;
+        $this->exception = in_array($e->getCode(), $this->E_User);
         $this->createReport($e);  
     }
     
@@ -112,14 +121,13 @@ abstract class Handler
         $listLevels = [
                         E_NOTICE        => 'PHP Notice: ',
                         E_WARNING       => 'PHP Warning: ',
-                        E_USER_NOTICE   => $this->user .' Notice: ',
-                        E_USER_WARNING  => $this->user .' Warning: ',
-                        E_USER_ERROR    => $this->user .' Message: '
+                        E_USER_NOTICE   => 'ABC Notice: ',
+                        E_USER_WARNING  => 'ABC Warning: ',
+                        E_USER_ERROR    => 'ABC Message: '
         ];
         
-        return !empty($listLevels[$level]) ? $listLevels[$level] : $this->user .' debug mode: ';
+        return !empty($listLevels[$level]) ? $listLevels[$level] : 'ABC debug mode: ';
     }    
-
     /**
     * Подготавливает трассировку для генерации листингов
     *
@@ -141,7 +149,6 @@ abstract class Handler
         
         $this->backTrace = $blocks; 
     }   
-
     /**
     * Приводит блоки трассировки к одному типу
     *
@@ -160,10 +167,9 @@ abstract class Handler
                       'args'      => [0, $block['args'][0]]
             ];
         } 
-     
+      
         return $this->blocksFilter($block); 
     }    
-
     /**
     * Фильтрует трассировку
     *
@@ -171,37 +177,29 @@ abstract class Handler
     *
     * @return array|bool
     */    
-    protected function blocksFilter($block)
+    protected function blocksFilter($block, $beforeClass = '')
     { 
         if (!empty($block['file'][1]) && false !== strpos($block['file'], 'eval')) {
             return false;
         }
-
-    
-        if ($this->developer) {
+     
+        if ($this->allTrace) {
             return $block;
         }
-      
-        $e_User = [
-            E_USER_NOTICE,
-            E_USER_WARNING,
-            E_USER_ERROR
-        ];
-       
-        switch ($block) {
-         
-            case ($this->checkFramework($block)) :
-                return false;
-                
-            case (!empty($block['args'][1]) && is_int($block['args'][1]) && in_array($block['args'][1], $e_User)) :
-                return false;
-                
-            case ($block['function'] === 'trigger_error') :
-                return false;
-         
-            default :
-                return $block;
+        
+        if ($this->checkFramework($beforeClass)) {
+            return false;
+        }
+     
+        if (!empty($block['args'][1]) && is_int($block['args'][1]) && in_array($block['args'][1], $this->E_User)) {
+            return false;
+        }
+        
+        if ($block['function'] === 'trigger_error') {
+            return false;
         } 
+
+        return $block;
     } 
     
     /**
@@ -211,22 +209,26 @@ abstract class Handler
     *
     * @return bool
     */    
-    protected function checkFramework($block)
-    { 
-        if (empty($block['class'])) {
+    protected function checkFramework($beforeClass)
+    {   
+        if (empty($beforeClass)) {
             return false;
         }
-    
-        if (basename($block['class']) === $this->framework && (!$this->exception || $block['function'] === 'getService')) {
-            return true;
-        }
-        
-        if (basename($block['class']) === 'Dbg') {
-            return true;
-        }
-        
-        $user = preg_quote($this->user);        
-        return preg_match('#^'. $user .'\\\\'. $user .'.+#i', $block['class']);
+     
+        $spacePrefix = preg_quote($this->spacePrefix);        
+        return preg_match('#^'. $spacePrefix .'\\\abc.*#iu', $beforeClass);
     }     
 }
+
+
+
+
+
+
+
+
+
+
+
+
 

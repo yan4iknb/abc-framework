@@ -14,7 +14,7 @@ use Exception;
  * @license http://abc-framework.com/license/ 
  */  
 
-class ErrorException extends Exception 
+class DebugException extends Exception 
 {
 
     /**

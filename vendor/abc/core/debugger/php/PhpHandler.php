@@ -152,19 +152,10 @@ class PhpHandler extends Handler
         $i = $j = 0;
         $tpl    = $this->view->getStackRow();
         $action = '';
-        $steck  = $rows = [];
-        $beforBlocks = $reversTrace = array_reverse($this->backTrace);
+        $stack  = $rows = [];
         
-        foreach ($reversTrace as $block) {
-        
-            $beforeClass = $this->exception ? @$beforBlocks[$j - 1]['class'] : $beforBlocks[$j]['class'];
-            $j++;
-            $block = $this->blocksFilter($block, $beforeClass);
+        foreach ($this->backTrace as $block) {
          
-            if (empty($block)) {
-                continue;
-            }  
-            
             $class  = str_replace('\\', DIRECTORY_SEPARATOR, $block['class']);
             $space  = str_replace(DIRECTORY_SEPARATOR, '\\', dirname($class));
             $location = basename($this->file);
@@ -182,11 +173,15 @@ class PhpHandler extends Handler
             
             $data['action'] = $action . $block['function'];
             
-            $steck[] = $data;
+            $stack[] = $data;
             $i++;
-        }   
+        } 
         
-        foreach ($steck as $row) {
+        if ($this->exception) {
+            $stack = array_reverse($stack);        
+        }
+     
+        foreach ($stack as $row) {
             $row['num'] = ++$this->num;        
             $rows[] = $this->view->parseTpl($tpl, $row);
         }

@@ -11,7 +11,7 @@ use ABC\Abc\Components\Sqldebug\SqlDebug;
 use ABC\Abc\Components\Sqldebug\View;
 
 /** 
- * Класс MysqliBuilder
+ * Класс Mysqli
  * 
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
@@ -19,13 +19,13 @@ use ABC\Abc\Components\Sqldebug\View;
  * @license http://abc-framework.com/license/ 
  */  
 
-class MysqliBuilder extends AbcBuilder
+class PdoBuilder extends AbcBuilder
 {
     /**
     * @var array
     */ 
-    protected $service = 'mysqli'; 
-    
+    protected $service = 'pdo';   
+
     /**
     * Строит сервис.
     * 
@@ -33,8 +33,8 @@ class MysqliBuilder extends AbcBuilder
     */        
     protected function buildService($global = false)
     { 
-        $component = '\ABC\abc\components\\'. $this->service .'\\'. $this->service; 
-        $data = @$this->config[$this->service] ?: [];        
+        $component = '\ABC\abc\components\\'. $this->service .'\\'. $this->service;    
+        $data = @$this->config[$this->service] ?: [];
         $typeService = $global ? 'setGlobal' : 'set';
         
         $this->locator->$typeService(

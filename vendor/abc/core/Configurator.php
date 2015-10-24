@@ -12,6 +12,9 @@ namespace ABC\Abc\Core;
  */   
 class Configurator
 {
+    protected $defaultRoutes = [
+    
+              ];
     /**
     * @var array
     */ 
@@ -71,6 +74,8 @@ class Configurator
     /**
     * Разбирает конфигурационный файл маршрутов и возвращает массив 
     *
+    * @param string $file
+    *
     * @return array
     */     
     protected function parseConfigRoutes($file)
@@ -78,7 +83,17 @@ class Configurator
         $configRoute = file_get_contents($file);
         // To be continued
         return [];
-    }     
+    } 
+    
+    /**
+    * Устанавливает дефолтные правили маршрутизации 
+    *
+    * @return array
+    */     
+    protected function defaultRoute()
+    { 
+        return $this->defaultRoutes;
+    }
 }
 
 

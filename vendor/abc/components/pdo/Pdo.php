@@ -10,13 +10,9 @@ namespace ABC\Abc\Components\Pdo;
  * @copyright © 2015
  * @license http://abc-framework.com/license/ 
  */ 
-class Pdo 
+class Pdo extends \PDO
 {
-    /**
-    * @var Mysqli
-    */ 
-    public $db;
-    public $error = false;     
+    public $error = null;     
     public $test  = false;
     
     /**
@@ -35,48 +31,17 @@ class Pdo
          
             extract($data);
             
-            if (!isset($host, $user, $pass, $base)) {
+            if (!isset($dsn, $user, $pass)) {
                 throw new \InvalidArgumentException('Component PDO: wrong data connection in the configuration file', E_USER_WARNING);
             }
             
             $this->debugger = $debugger;
         }
      
-        $db = @new \PDO($host, $user, $pass, $base);
-      
-        if ($db->connect_error) {
-            $this->error = $db->connect_error;
+        try {
+            $this->pdo = parent::__construct($dsn, $user, $pass);
+        } catch (PDOException $e) {
+            $this->error = $e->getMessage();
         }
-        
-        $db->set_charset("utf8");
-        $this->db = $db;
-    } 
-
-    /**
-    * Обертка для query()
-    *
-    * @return void
-    */     
-    public function query($sql)
-    {
-        $result = $this->db->query($sql);
-        
-        if (isset($this->debugger) && (false === $result || $this->test)) {
-         
-            $this->error = $this->db->error;
-            $trace = debug_backtrace();
-            
-            $this->debugger->db = $this->db;
-            $this->debugger->type = 'mysqli';
-            
-            if ($this->test) {
-                $this->debugger->testReport($trace, $sql, $this->error);
-            }
-            else {
-                $this->debugger->errorReport($trace, $sql, $this->error);
-            }
-        }
-        
-        return $result;
     } 
 }

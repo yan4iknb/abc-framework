@@ -128,6 +128,35 @@ class Abc
     }    
     
     /**
+    * Алиас метода getService()
+    *
+    * @return object
+    */     
+    public static function gs($service = null)
+    {
+        return self::getService($service);
+    }
+    
+    /**
+    * Инициализирует новый объект сервиса
+    *
+    * @return object
+    */     
+    public static function newService($service = null)
+    {
+        return self::$abc->process->newService($service);
+    }    
+    
+    /**
+    * Алиас метода getService()
+    *
+    * @return object
+    */     
+    public static function ns($service = null)
+    {
+        return self::newService($service);
+    }     
+    /**
     * Метод трассировки скриптов
     *
     * @return void

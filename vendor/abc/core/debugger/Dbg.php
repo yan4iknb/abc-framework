@@ -26,7 +26,7 @@ class Dbg extends PhpHandler
     * @var TraceClass|TraceContainer|TraceObject|TraceVariable 
     */    
     protected $tracer;
-    
+        
     protected $trace = true;
     protected $reflection = false;
     protected $errorLevel = E_USER_ERROR;
@@ -81,8 +81,8 @@ class Dbg extends PhpHandler
     */      
     protected function traceProcessor($var) 
     {
-        $this->backTrace = debug_backtrace();
-        $this->prepareTrace(); 
+        $trace = debug_backtrace();
+        $this->backTrace = $this->prepareTrace($trace); 
         
         if (!$this->reflection) {
             $var = $this->prepareValue($var);        

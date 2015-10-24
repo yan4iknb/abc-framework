@@ -10,14 +10,10 @@ namespace ABC\Abc\Components\Mysqli;
  * @copyright © 2015
  * @license http://abc-framework.com/license/ 
  */  
-class Mysqli 
+class Mysqli extends \Mysqli
 {
-    /**
-    * @var Mysqli
-    */ 
-    public $db;
-    public $connect_error = null;     
-    public $test  = false;
+
+    public $test = false;
     
     /**
     * @var Dbdebug
@@ -42,32 +38,29 @@ class Mysqli
             $this->debugger = $debugger;
         }
      
-        $db = @new \Mysqli($host, $user, $pass, $base);
+        parent::__construct($host, $user, $pass, $base);
       
-        if ($db->connect_error) {
-            $this->connect_error = $db->connect_error;
-        } else {
-            $db->set_charset("utf8");  
+        if ($this->connect_error) {
+            $db->set_charset("utf8");
         }
-     
-        $this->db = $db;
     } 
 
     /**
     * Обертка для query()
     *
+    * $param string $sql
+    *
     * @return void
     */     
     public function query($sql)
     {
-        $result = $this->db->query($sql);
-        
+        $result = parent::query($sql);
+       
         if (isset($this->debugger) && (false === $result || $this->test)) {
          
-            $this->error = $this->db->error;
             $trace = debug_backtrace();
             
-            $this->debugger->db = $this->db;
+            $this->debugger->db = $this;
             $this->debugger->type = 'mysqli';
             
             if ($this->test) {
@@ -80,6 +73,18 @@ class Mysqli
         
         return $result;
     } 
+    
+    /**
+    * Чистый запрос для дебаггера
+    *
+    * $param string $sql
+    *    
+    * @return void
+    */     
+    public function rawQuery($sql)
+    {
+        return parent::query($sql);
+    }     
 }
 
 

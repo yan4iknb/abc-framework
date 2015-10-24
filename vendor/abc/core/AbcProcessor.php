@@ -55,23 +55,51 @@ class AbcProcessor
     }
     
     /**
-    * Устанавливает пользовательские маршруты и запускает роутер 
+    * Запускает роутер 
     *
     * @return void
     */     
     public function route()
     { 
-        $this->router  = new Router;
+        $this->router = new Router;
         $this->router->config = $this->config;
         $this->router->run();
     }
-    
+
     /**
     * Выбирает и запускает сервис
+    *
+    * @param string $service
+    *
+    * @return object
+    */     
+    public function newService($service = null)
+    {   
+        $builder = $this->prepareBuilder($service);
+        return $builder->newService($service);
+    }
+    
+    /**
+    * Выбирает и запускает синглтон сервиса
+    *
+    * @param string $service
     *
     * @return object
     */     
     public function getService($service = null)
+    {  
+        $builder = $this->prepareBuilder($service);
+        return $builder->getService($service);
+    }
+
+    /**
+    * Подготовка билдера
+    *
+    * @param string $service
+    *
+    * @return object
+    */     
+    public function prepareBuilder($service = null)
     {    
         if (empty($service) || !is_string($service)) {
             throw new \InvalidArgumentException('Service name should be a string', E_USER_WARNING);
@@ -86,9 +114,10 @@ class AbcProcessor
         $builder = new $builder;
         $builder->config  = $this->config;
         $builder->locator = $this->locator;
-        return $builder->get($service);
+        return $builder;
     }
-  
+    
+    
     /**
     * Выбирает режим обработки ошибок
     *

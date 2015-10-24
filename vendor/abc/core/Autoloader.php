@@ -56,7 +56,7 @@ namespace core\abc;
      
         foreach ($files as $file) {   
             $file = str_replace('\\', DIRECTORY_SEPARATOR, ABC_BASE_PATH .'/'. $file .'.php');
-       
+          
             if(is_readable($file)) {
                 include_once $file;
                 break;

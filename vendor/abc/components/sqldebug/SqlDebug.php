@@ -17,7 +17,7 @@ class SqlDebug
     public $db; 
     public $type;    
     
-    protected $message = 'MySQL error: ';
+    protected $message = 'SQL error: ';
     
     /**
     * @var View
@@ -79,10 +79,10 @@ class SqlDebug
     * @return void
     */       
     public function testReport($trace, $sql, $error = '')
-    { 
-        $this->message = 'MySQL query: ';
-        $start = microtime(true);        
-        $this->db->query($sql);
+    {  
+        $this->message = 'SQL query: ';
+        $start = microtime(true);       
+        $this->db->rawQuery($sql);
         $time = sprintf("%01.4f", microtime(true) - $start);
         $this->explain = $this->performExplain($sql, $time);
         $this->errorReport($trace, $sql, $error = '');        
@@ -124,7 +124,7 @@ class SqlDebug
     */    
     protected function performExplain($sql, $time)
     {     
-        $res = $this->db->query("EXPLAIN ". $sql);
+        $res = $this->db->rawQuery("EXPLAIN ". $sql);
         
         if (is_object($res)) {
          

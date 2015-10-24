@@ -92,7 +92,8 @@ abstract class Handler
     {
         $this->message   = $e->getMessage();
         $this->code      = $e->getCode();        
-        $this->backTrace = $e->getTrace();
+        $trace = $e->getTrace();
+        $this->backTrace = $this->prepareTrace($trace);
         $this->createReport();  
     }
     
@@ -109,7 +110,9 @@ abstract class Handler
             $this->code      = $code; 
             $this->file      = $file;
             $this->line      = $line; 
-            $this->backTrace = debug_backtrace();
+            $trace = debug_backtrace();
+            $trace = $this->prepareTrace($trace);
+            $this->backTrace = array_reverse($trace);
             $this->createReport(); 
         } 
         
@@ -122,8 +125,6 @@ abstract class Handler
     */   
     public function createReport() 
     {
-        $this->prepareTrace();
-     
         $this->data = ['message'  => $this->message,
                        'adds'     => true,
                        'level'    => $this->lewelMessage($this->code),
@@ -152,27 +153,31 @@ abstract class Handler
         ];
         
         return !empty($listLevels[$level]) ? $listLevels[$level] : 'ABC debug mode: ';
-    }    
+    } 
+        
     /**
-    * Подготавливает трассировку для генерации листингов
+    * Подготавливает трассировку для исключений
     *
     * @return void
     */   
-    protected function prepareTrace()
-    {    
+    protected function prepareTrace($trace)
+    {      
+        $j = 0;
         $blocks = [];
-     
-        foreach ($this->backTrace as $block) { 
-            $block = $this->normaliseBlock($block);
-         
+        foreach ($trace as $block) {
+          
+            $beforeClass = @$trace[$j + 1]['class'];   
+            $j++;
+            $block = $this->blocksFilter($block, $beforeClass);
+            
             if (empty($block)) {
                 continue;
-            }  
-         
+            }
+            
             $blocks[] = $block;
         }
         
-        $this->backTrace = $blocks; 
+        return $blocks;
     }
     
     /**
@@ -184,7 +189,7 @@ abstract class Handler
     */    
     protected function normaliseBlock($block)
     {
-        if (!$this->exception) {
+        if ($block['function'] === 'triggerErrorHandler') {
             $block['file'] = $this->file;
             $block['line'] = $this->line;        
         }
@@ -221,6 +226,10 @@ abstract class Handler
             return false;
         } 
      
+        if (false !== strpos($block['function'], '{closure}')) {
+            return false;
+        } 
+        
         return $block;
     } 
     

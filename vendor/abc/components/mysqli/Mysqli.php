@@ -40,7 +40,7 @@ class Mysqli extends \Mysqli
      
         parent::__construct($host, $user, $pass, $base);
       
-        if ($this->connect_error) {
+        if (!$this->connect_error) {
             $db->set_charset("utf8");
         }
     } 

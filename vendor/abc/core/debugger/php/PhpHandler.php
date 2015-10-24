@@ -104,9 +104,15 @@ class PhpHandler extends Handler
         $i = 0;
         $blockCont = ''; 
       
-        $this->line  = $block['line'];        
-        $this->file  = $block['file'];
-        $script = file($block['file']);
+        $this->line  = !empty($block['line']) ? $block['line'] : null;
+        
+        if (!empty($block['file'])) {
+            $this->file  = $block['file'];
+            $script = file($block['file']);        
+        } else {
+            return null;
+        }
+     
         $arguments = $this->prepareValue(@$block['args']);
         
         $ext = ceil($this->sizeListing / 2);

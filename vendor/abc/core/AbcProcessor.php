@@ -129,6 +129,7 @@ class AbcProcessor
          
             if ($this->config['debug_mod'] === 'display') {   
                 new PhpHandler($this->config);
+                //error_reporting(0);
             } elseif ($this->config['debug_mod'] === 'log')  {
                 new Loger();
                 set_error_handler([$this, 'throwError500Exception']);

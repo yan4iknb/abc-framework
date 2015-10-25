@@ -50,7 +50,7 @@ abstract class AbcBuilder
             $this->buildService();
         }
         
-        return $this->locator->get($this->service);
+        return $this->locator->getNew($this->service);
     }
     
     /**

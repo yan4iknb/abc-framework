@@ -12,9 +12,9 @@ namespace ABC\Abc\Components\Dic;
  */   
 class DiC
 { 
-    protected $ServiceStorage = [];
-    protected $ServiceFrozen  = [];
-    protected static $ObjectStorage = [];  
+    protected $serviceStorage = [];
+    protected $serviceFrozen  = [];
+    protected static $objectStorage = [];  
 
     /**
     * Записывает сервис в хранилище
@@ -23,92 +23,134 @@ class DiC
     * @param callable $callable
     *
     * @return void
-    */  
-    public function set($ServiceId, $callable)
+    */ 
+    public function set($serviceId, $callable)
     {
-        $ServiceId = $this->validateService($ServiceId);
+        $serviceId = $this->validateService($serviceId);
         $callable  = $this->validateCallable($callable);
         
-        if (isset($this->ServiseStorage[$ServiceId])) {
-            throw new \OverflowException($ServiceId .' service is already installed.', E_USER_WARNING);
+        if (isset($this->ServiseStorage[$serviceId])) {
+            throw new \OverflowException($serviceId .' service is already installed.', E_USER_WARNING);
         }
      
-        $this->ServiceStorage[$ServiceId] = $callable;   
+        $this->ServiceStorage[$serviceId] = $callable;   
     }
     
     /**
     * Записывает сервис в глобальное хранилище
     *
-    * @param string $ServiceId
+    * @param string $serviceId
     * @param callable $callable
     *
     * @return void
     */  
-    public function setGlobal($ServiceId, $callable)
+    public function setGlobal($serviceId, $callable)
     {
-        $this->set($ServiceId, $callable);
-        $this->ServiceFrozen[strtolower($ServiceId)]  = true;    
+        $this->set($serviceId, $callable);
+        $this->ServiceFrozen[strtolower($serviceId)]  = true;    
     }
-    
+
     /**
     * Инициализирует и возвращает объект сервиса
     *
-    * @param string $ServiceId
+    * @param string $serviceId
     *
     * @return object
     */      
-    public function get($ServiceId)
+    public function get($serviceId)
     {
-        $ServiceId = $this->validateService($ServiceId);
+        $serviceId = $this->validateService($serviceId);
      
-        if (isset($this->ServiseFrozen[$ServiceId])) {
+        if (isset($this->ServiseFrozen[$serviceId])) {
          
-            if (!isset(self::$ObjectStorage[$ServiceId])) {
-                self::$ObjectStorage[$ServiceId] = $this->ServiceStorage[$ServiceId]->__invoke();
+            if (!isset(self::$objectStorage[$serviceId])) {
+                self::$ObjectStorage[$serviceId] = $this->ServiceStorage[$serviceId]->__invoke();
             }
          
-            return self::$ObjectStorage[$ServiceId];
+            return self::$objectStorage[$serviceId];
          
-        } elseif (isset($this->ServiceStorage[$ServiceId])) {
-            return $this->ServiceStorage[$ServiceId]->__invoke();
+        } elseif (isset($this->ServiceStorage[$serviceId])) {
+            return $this->ServiceStorage[$serviceId]->__invoke();
         }
      
         return false;
-    }  
-   
+    }
+
+    /**
+    * Внедряет оди сервис в другой, создавая третий
+    *
+    * @param string $newService
+    * @param string $serviceId    
+    * @param string $dependenceId
+    * @param array $property
+    *
+    * @return object
+    */ 
+    public function injection($newService, $serviceId, $dependenceId, $property = [])
+    {
+        $newService   = $this->validateService($newService);
+        $serviceId    = $this->validateService($serviceId);
+        $dependenceId = $this->validateService($dependenceId);
+        
+        if (!empty($property) && !is_array($property)) {
+            throw new \InvalidArgumentException('Property should be a array', E_USER_WARNING); 
+        }
+        
+        $dependence = $this->ServiceStorage[$dependenceId];
+        $service = $this->ServiceStorage[$serviceId]; 
+        
+        $objService = $service->__invoke();
+        $class = get_class($objService);
+        
+        $objDependence = $dependence->__invoke();
+        
+        $newCallable = function() use ($class, $objDependence, $property) {
+                $obj = new $class($objDependence);
+                foreach ($property as $key => $value) {
+                    $obj->$key = $value;
+                }
+                return $obj;
+           };
+     
+        unset($objService);
+        unset($objDependence);
+        
+        $this->ServiceStorage[$newService] = $newCallable;
+    }
+    
     /**
     * Удаляет объект из хранилища
     *
-    * @param string $ServiceId
+    * @param string $serviceId
     *
     * @return void
     */       
-    public function unsetService($ServiceId)
+    public function unsetService($serviceId)
     {
-        $ServiceId = $this->validateService($ServiceId);
+        $serviceId = $this->validateService($serviceId);
         
-        if (!isset($this->ServiceStorage[$ServiceId])) {
+        if (!isset($this->ServiceStorage[$serviceId])) {
             return false;
         }
      
-        unset($this->ServiceStorage[$ServiceId]);
-        unset(self::$ObjectStorage[$ServiceId]);
+        unset($this->ServiceStorage[$serviceId]);
+        unset(self::$objectStorage[$serviceId]);
     } 
     
     /**
     * Проверяет корректность ID сервиса 
     *
-    * @param string $ServiceId
+    * @param string $serviceId
     *
     * @return string
     */
-    protected function validateService($ServiceId)
+    protected function validateService($serviceId)
     {
-        if (empty($ServiceId) || !is_string($ServiceId)) {
+        if (empty($serviceId) || !is_string($serviceId)) {
             throw new \InvalidArgumentException('ID service should be a string', E_USER_WARNING); 
         }
      
-        return strtolower($ServiceId);
+        return strtolower($serviceId);
     }
     
     /**
@@ -127,3 +169,4 @@ class DiC
         return $callable;
     }    
 }
+

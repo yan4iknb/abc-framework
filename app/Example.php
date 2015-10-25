@@ -12,7 +12,8 @@ class Example
         $var2 = ['первый' => 'cодержимое первого элемента',
                  'второй' => 'cодержимое второго элемента'
             ];
-        
+
+               
         //echo $a;
      
         //Abc::dbg(); 
@@ -23,19 +24,64 @@ class Example
         //throw new \Exception('Тестовое исключение');
         //trigger_error('Полный пипец!!!');         
         
-        $mysqli = Abc::gs('Mysql');
-        $mysqli->test = true;
-        $mysqli->query("SELECT * FROM `test`");
-        //$mysqli->query("sSELECT * FROM `test`");        
-        //Abc::dbg($mysqli); 
+        //$mysqli = Abc::gs('Mysql');
+        //$mysqli->test = true;
+        //$mysqli->query("SELECT * FROM `test`");
         
-        //$pdo = Abc::gs('PDO');        
-        //Abc::dbg($pdo);
+        //$mysqli->query("sSELECT * FROM `test`");        
+        
+        //////////////////////////////
+        // Демонстрация IOC
+        
+        $ioc = Abc::gs('DiC');
+        
+        $ioc->set('dependence',
+                   function() {
+                   return new Example1;
+                   }
+               );    
+     
+        $ioc->set('service',
+                   function() {
+                   return new Example2;
+                   }
+               );              
+    
+        $ioc->injection('newSerwice', 'service', 'dependence', ['var' => 'Hello, World!']);
+        
+        
+        $obj = $ioc->get('newSerwice');
+        $obj->run();
+        /////////////////////////////////////////////////
     }
 }
 
+// Классы для демонстрации IOC
+class Example1
+{
+    public function display($var)
+    {
+        echo $var;
+    }
+}
 
-
+class Example2
+{
+    public $var;
+    protected $dep;
+    
+    public function __construct($dep = null)
+    {
+        if (is_object($dep)) {
+            $this->dep = $dep;
+        }
+    }
+    
+    public function run()
+    {
+        $this->dep->display($this->var);
+    }    
+}
 
 
 

@@ -39,9 +39,9 @@ class Mysqli extends \Mysqli
         }
      
         parent::__construct($host, $user, $pass, $base);
-      
+        
         if (!$this->connect_error) {
-            $db->set_charset("utf8");
+            $this->set_charset("utf8");
         }
     } 
 
@@ -52,11 +52,11 @@ class Mysqli extends \Mysqli
     *
     * @return void
     */     
-    public function query($sql)
+    public function query($sql, $resultMode = null)
     {
-        $result = parent::query($sql);
+        $result = parent::query($sql, $resultMode);
        
-        if (isset($this->debugger) && (false === $result || $this->test)) {
+        if (!empty($this->debugger) && (false === $result || $this->test)) {
          
             $trace = debug_backtrace();
             
@@ -65,10 +65,12 @@ class Mysqli extends \Mysqli
             
             if ($this->test) {
                 $this->debugger->testReport($trace, $sql, $this->error);
-            }
-            else {
+            } else {
                 $this->debugger->errorReport($trace, $sql, $this->error);
             }
+            
+        } elseif (empty($this->debugger) && $this->test) {
+            throw new \BadFunctionCallException('SQL debugger is inactive. Set to true debug configuration.', E_USER_WARNING);
         }
         
         return $result;

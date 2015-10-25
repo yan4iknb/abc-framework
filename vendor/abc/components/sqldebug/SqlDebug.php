@@ -132,7 +132,8 @@ class SqlDebug
                 $data = $res->fetch_array(MYSQLI_ASSOC);         
             }
             elseif ($this->type === 'pdo') {
-                $data = $res[0];
+                $res->setFetchMode(\PDO::FETCH_ASSOC);
+                $data = $res->fetch();
             }
             
             $data['queryTime'] = $time;

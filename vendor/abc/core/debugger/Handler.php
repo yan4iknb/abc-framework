@@ -124,11 +124,11 @@ abstract class Handler
     * @return void
     */   
     public function createReport() 
-    {
+    { 
         $this->data = ['message'  => $this->message,
-                       'adds'     => true,
+                       'adds'     => isset($this->line),
                        'level'    => $this->lewelMessage($this->code),
-                       'listing'  => $this->getListing($this->trace[0]),                       
+                       'listing'  => $this->getListing(),                       
                        'file'     => $this->file,
                        'line'     => $this->line,                       
                        'stack'    => $this->getStack(),

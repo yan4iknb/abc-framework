@@ -40,7 +40,7 @@ class MysqliBuilder extends AbcBuilder
         $this->locator->$typeService(
             $this->service, 
             function() use ($component, $data) {
-                $data['debugger'] = isset($data['debug']) ? new SqlDebug(new View) : null;
+                $data['debugger'] = !empty($data['debug']) ? new SqlDebug(new View) : null;
                 return new $component($data);
             }
         );

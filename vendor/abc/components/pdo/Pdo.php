@@ -3,7 +3,7 @@
 namespace ABC\Abc\Components\Pdo;
 
 /** 
- * Класс Mysqli
+ * Класс Pdo
  * 
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
@@ -39,9 +39,60 @@ class Pdo extends \PDO
         }
      
         try {
-            $this->pdo = parent::__construct($dsn, $user, $pass);
+            parent::__construct($dsn, $user, $pass);
         } catch (PDOException $e) {
             $this->error = $e->getMessage();
         }
+    }
+
+    /**
+    * Обертка для query()
+    *
+    * $param string $sql
+    *
+    * @return void
+    */     
+    public function query($sql)
+    {
+        $result = parent::query($sql);
+       
+        if (!empty($this->debugger) && (false === $result || $this->test)) {
+         
+            $trace = debug_backtrace();
+            
+            $this->debugger->db = $this;
+            $this->debugger->type = 'pdo';
+            
+            if ($this->test) {
+                $this->debugger->testReport($trace, $sql, $this->error);
+            } else {
+                $this->debugger->errorReport($trace, $sql, $this->error);
+            }
+            
+        } elseif (empty($this->debugger) && $this->test) {
+            throw new \BadFunctionCallException('SQL debugger is inactive. Set to true debug configuration.', E_USER_WARNING);
+        }
+        
+        return $result;
+    } 
+    
+    /**
+    * Чистый запрос для дебаггера
+    *
+    * $param string $sql
+    *    
+    * @return void
+    */     
+    public function rawQuery($sql)
+    {
+        return parent::query($sql);
     } 
 }
+
+
+
+
+
+
+
+

@@ -56,8 +56,7 @@ class PhpHandler extends Handler
         } else {
             $block = array_pop($this->backTrace);
         }
-
-
+        
         return $this->prepareBlock($block);
     }
     
@@ -103,8 +102,8 @@ class PhpHandler extends Handler
     { 
         $i = 0;
         $blockCont = ''; 
-      
-        $this->line  = !empty($block['line']) ? $block['line'] : null;
+       
+        $line = !empty($block['line']) ? $block['line'] : null;
         
         if (!empty($block['file'])) {
             $this->file  = $block['file'];
@@ -116,14 +115,14 @@ class PhpHandler extends Handler
         $arguments = $this->prepareValue(@$block['args']);
         
         $ext = ceil($this->sizeListing / 2);
-        $position = ($this->line <= $ext) ? 0 : $this->line - $ext;
+        $position = ($line <= $ext) ? 0 : $line - $ext;
         
         foreach ($script as $string) {
             ++$i;
          
-            if($this->mainBlock && $i == $this->line) {
+            if($this->mainBlock && $i == $line) {
                 $lines[] = $this->painter->wrapLine($i, 'error');
-            } elseif($i == $this->line) {
+            } elseif($i == $line) {
                 $lines[] = $this->painter->wrapLine($i, 'trace');
             }
             else {
@@ -164,6 +163,7 @@ class PhpHandler extends Handler
          
             $class  = str_replace('\\', DIRECTORY_SEPARATOR, $block['class']);
             $space  = str_replace(DIRECTORY_SEPARATOR, '\\', dirname($class));
+            $space  = str_replace('.', '\\', $space);
             $location = basename($this->file);
             
             $data = ['space'     => $space,
@@ -205,7 +205,7 @@ class PhpHandler extends Handler
     * @return void
     */   
     public function action() 
-    {
+    {       
         $this->data['num']  = $this->num;
         $this->view->displayReport($this->data);
     }

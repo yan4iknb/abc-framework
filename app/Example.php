@@ -23,11 +23,11 @@ class Example
         //throw new \Exception('Тестовое исключение');
         //trigger_error('Полный пипец!!!');         
         
-        $mysqli = Abc::gs('Mysqli');
+        $mysqli = Abc::gs('Mysql');
         $mysqli->test = true;
         $mysqli->query("SELECT * FROM `test`");
         //$mysqli->query("sSELECT * FROM `test`");        
-        Abc::dbg($mysqli); 
+        //Abc::dbg($mysqli); 
         
         //$pdo = Abc::gs('PDO');        
         //Abc::dbg($pdo);

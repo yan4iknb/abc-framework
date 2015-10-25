@@ -48,7 +48,7 @@ class Example
                );              
     
         $ioc->injection('service', 'dependence', 'newSerwice', ['var' => 'Hello, World!']);
-        
+        //$ioc->injection('newSerwice', 'dependence');
         
         $obj = $ioc->get('newSerwice');
         $obj->run();

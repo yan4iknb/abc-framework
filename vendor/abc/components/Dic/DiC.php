@@ -14,6 +14,7 @@ class DiC
 { 
     protected $serviceStorage = [];
     protected $serviceFrozen  = [];
+    protected $serviceSynthetic  = [];
     protected static $objectStorage = [];  
 
     /**
@@ -29,11 +30,11 @@ class DiC
         $serviceId = $this->validateService($serviceId);
         $callable  = $this->validateCallable($callable);
         
-        if (isset($this->ServiseStorage[$serviceId])) {
+        if (isset($this->serviseStorage[$serviceId])) {
             throw new \OverflowException($serviceId .' service is already installed.', E_USER_WARNING);
         }
      
-        $this->ServiceStorage[$serviceId] = $callable;   
+        $this->serviceStorage[$serviceId] = $callable;   
     }
     
     /**
@@ -47,7 +48,7 @@ class DiC
     public function setGlobal($serviceId, $callable)
     {
         $this->set($serviceId, $callable);
-        $this->ServiceFrozen[strtolower($serviceId)]  = true;    
+        $this->serviceFrozen[strtolower($serviceId)]  = true;    
     }
 
     /**
@@ -69,8 +70,8 @@ class DiC
          
             return self::$objectStorage[$serviceId];
          
-        } elseif (isset($this->ServiceStorage[$serviceId])) {
-            return $this->ServiceStorage[$serviceId]->__invoke();
+        } elseif (isset($this->serviceStorage[$serviceId])) {
+            return $this->serviceStorage[$serviceId]->__invoke();
         }
      
         return false;
@@ -95,6 +96,11 @@ class DiC
         } else {
             $newService = $this->validateService($newService);        
         }
+        
+        if (isset($this->serviceSynthetic[$newService])) {
+            throw new \LogicException($newService 
+                                     .' created synthetically. Impossible to implement services according to the synthetic', E_USER_WARNING);
+        }
      
         $dependenceId = $this->validateService($dependenceId);
         
@@ -102,8 +108,8 @@ class DiC
             throw new \InvalidArgumentException('Property should be a array', E_USER_WARNING); 
         }
         
-        $dependence = $this->ServiceStorage[$dependenceId];
-        $service = $this->ServiceStorage[$serviceId]; 
+        $dependence = $this->serviceStorage[$dependenceId];
+        $service = $this->serviceStorage[$serviceId]; 
         
         $objService = $service->__invoke();
         $class = get_class($objService);
@@ -121,7 +127,8 @@ class DiC
         unset($objService);
         unset($objDependence);
         
-        $this->ServiceStorage[$newService] = $newCallable;
+        $this->serviceStorage[$newService] = $newCallable;
+        $this->serviceSynthetic[$newService] = true;
     }
     
     /**
@@ -135,11 +142,11 @@ class DiC
     {
         $serviceId = $this->validateService($serviceId);
         
-        if (!isset($this->ServiceStorage[$serviceId])) {
+        if (!isset($this->serviceStorage[$serviceId])) {
             return false;
         }
      
-        unset($this->ServiceStorage[$serviceId]);
+        unset($this->serviceStorage[$serviceId]);
         unset(self::$objectStorage[$serviceId]);
     } 
     

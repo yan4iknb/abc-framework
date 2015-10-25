@@ -87,7 +87,7 @@ class DiC
     *
     * @return object
     */ 
-    public function injection($serviceId, $dependenceId, $newService = null, $property = [])
+    public function injection($dependenceId, $serviceId, $newService = null, $property = [])
     {
         $serviceId = $this->validateService($serviceId);
         

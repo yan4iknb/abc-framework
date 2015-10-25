@@ -78,7 +78,7 @@ class DiC
     }
 
     /**
-    * Внедряет оди сервис в другой, создавая третий
+    * Внедряет один сервис в другой, создавая третий
     *
     * @param string $dependenceId
     * @param string $serviceId    
@@ -89,7 +89,7 @@ class DiC
     */ 
     public function injection($serviceId, $dependenceId, $newService = null, $property = [])
     {
-        $serviceId    = $this->validateService($serviceId);
+        $serviceId = $this->validateService($serviceId);
         
         if (empty($newService)) {
             $newService = $serviceId;
@@ -109,9 +109,7 @@ class DiC
         }
         
         $dependence = $this->serviceStorage[$dependenceId];
-        $service = $this->serviceStorage[$serviceId]; 
-        
-        $objService = $service->__invoke();
+        $objService = $this->get($serviceId); 
         $class = get_class($objService);
         
         $objDependence = $dependence->__invoke();

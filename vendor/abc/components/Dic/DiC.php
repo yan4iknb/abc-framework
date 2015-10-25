@@ -108,12 +108,10 @@ class DiC
             throw new \InvalidArgumentException('Property should be a array', E_USER_WARNING); 
         }
         
-        $dependence = $this->serviceStorage[$dependenceId];
         $objService = $this->get($serviceId); 
         $class = get_class($objService);
-        
-        $objDependence = $dependence->__invoke();
-        
+        $objDependence = $this->get($dependenceId); 
+    
         $newCallable = function() use ($class, $objDependence, $property) {
                 $obj = new $class($objDependence);
                 foreach ($property as $key => $value) {

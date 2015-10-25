@@ -79,17 +79,23 @@ class DiC
     /**
     * Внедряет оди сервис в другой, создавая третий
     *
-    * @param string $newService
-    * @param string $serviceId    
     * @param string $dependenceId
+    * @param string $serviceId    
+    * @param string $newService
     * @param array $property
     *
     * @return object
     */ 
-    public function injection($newService, $serviceId, $dependenceId, $property = [])
+    public function injection($serviceId, $dependenceId, $newService = null, $property = [])
     {
-        $newService   = $this->validateService($newService);
         $serviceId    = $this->validateService($serviceId);
+        
+        if (empty($newService)) {
+            $newService = $serviceId;
+        } else {
+            $newService = $this->validateService($newService);        
+        }
+     
         $dependenceId = $this->validateService($dependenceId);
         
         if (!empty($property) && !is_array($property)) {

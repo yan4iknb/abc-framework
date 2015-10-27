@@ -15,7 +15,7 @@ class TraceContainer
 {
     public $message = 'Tracing Container ';
     public $adds = true;    
-    public $container = 'ABC\abc\core\Container';
+    public $container;
     
     protected $painter;
     protected $view;
@@ -31,6 +31,22 @@ class TraceContainer
         $this->view = $view;
         $this->painter = $painter;
     }      
+
+    /**
+    * Возвращает сформированный листинг
+    *
+    * @param string $var
+    *
+    * @return string
+    */   
+    public function getValue() 
+    {
+        $var = $this->reflectionContainer();
+        ob_start();
+            var_dump($var);
+        $this->value = ob_get_clean();
+        return $this->value;
+    }   
     
     /**
     * Возвращает сформированный листинг
@@ -41,9 +57,8 @@ class TraceContainer
     */   
     public function getListing() 
     {
-        $blockCont = $this->reflectionContainer($this->container);
-        $data['total'] = $this->painter->highlightContainer($blockCont);        
-        $data['lines'] = $this->createLine($blockCont);
+        $data['total'] = $this->painter->highlightContainer($this->value);        
+        $data['lines'] = $this->createLine($this->value);
         return $this->view->createListingContainer($data);
     }
   
@@ -54,9 +69,9 @@ class TraceContainer
     *
     * @return string
     */ 
-    protected function reflectionContainer($var) 
-    { 
-        return null;
+    protected function reflectionContainer() 
+    { // Не реализовано
+        return new $this->container;
     }    
     
     /**

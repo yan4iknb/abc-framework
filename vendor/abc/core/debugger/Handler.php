@@ -110,7 +110,7 @@ abstract class Handler
             $this->code      = $code; 
             $this->file      = $file;
             $this->line      = $line; 
-            $trace = debug_backtrace();
+            $trace = debug_backtrace();//var_dump($trace);
             $trace = $this->prepareTrace($trace);
             $this->backTrace = array_reverse($trace);
             $this->createReport(); 
@@ -165,7 +165,15 @@ abstract class Handler
         $j = 0;
         $blocks = [];
         foreach ($trace as $block) {
-          
+         
+        if (empty($block['class'])) {
+            $block['class'] = 'PHP';
+            $block['type']  = '>>>';
+            $this->file = $block['file'];
+            $this->line = $block['line'];
+        }
+
+
             $beforeClass = @$trace[$j + 1]['class'];   
             $j++;
             $block = $this->blocksFilter($block, $beforeClass);

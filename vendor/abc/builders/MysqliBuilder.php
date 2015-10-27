@@ -9,7 +9,7 @@ use ABC\Abc\Builders\AbcBuilder;
  */ 
 use ABC\Abc\Components\Sqldebug\SqlDebug;
 use ABC\Abc\Components\Sqldebug\View;
-
+use ABC\Abc\Components\Mysqli\Shaper;
 /** 
  * Класс MysqliBuilder
  * 

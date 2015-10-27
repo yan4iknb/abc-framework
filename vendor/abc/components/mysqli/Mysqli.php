@@ -16,14 +16,16 @@ class Mysqli extends \Mysqli
     public $test = false;
     
     /**
-    * @var Dbdebug
+    * @var ABC\Abc\Components\Sqldebug\SqlDebug
     */     
     protected $debugger;
 
     /**
-    * Инициализирует объект Mysqli
+    * Конструктор
     *
-    * @return void
+    * @param array $data
+    *
+
     */     
     public function __construct($data = [])
     {
@@ -32,10 +34,11 @@ class Mysqli extends \Mysqli
             extract($data);
             
             if (!isset($host, $user, $pass, $base)) {
-                throw new \InvalidArgumentException('Component Mysqli: wrong data connection in the configuration file', E_USER_WARNING);
+                throw new \InvalidArgumentException('<b>Component Mysqli</b>: wrong data connection in the configuration file', 
+                                                    E_USER_WARNING);
             }
             
-            $this->debugger = $debugger;
+            $this->debugger = $debugger;    
         }
      
         parent::__construct($host, $user, $pass, $base);
@@ -43,43 +46,63 @@ class Mysqli extends \Mysqli
         if (!$this->connect_error) {
             $this->set_charset("utf8");
         }
-    } 
-
+    }
+    
+    /**
+    * Включает тестовый режим
+    *
+    * @return void
+    */     
+    public function test()
+    {
+       $this->test = true;
+    }
+    
     /**
     * Обертка для query()
     *
-    * $param string $sql
+    * @param string $sql
+    * @param int $resultMode
     *
-    * @return void
+    * @return object
     */     
     public function query($sql, $resultMode = null)
     {
         $result = parent::query($sql, $resultMode);
-       
-        if (!empty($this->debugger) && (false === $result || $this->test)) {
-         
-            $trace = debug_backtrace();
-            
+        
+        if (!empty($this->debugger)) {
+            $this->debugger->trace = debug_backtrace();
             $this->debugger->db = $this;
-            $this->debugger->type = 'mysqli';
-            
-            if ($this->test) {
-                $this->debugger->testReport($trace, $sql, $this->error);
-            } else {
-                $this->debugger->errorReport($trace, $sql, $this->error);
-            }
-            
+            $this->debugger->component = 'Mysqli';
+            $this->debugger->run($sql, $result);        
         } elseif (empty($this->debugger) && $this->test) {
-            throw new \BadFunctionCallException('SQL debugger is inactive. Set to true debug configuration.', E_USER_WARNING);
+            throw new \BadFunctionCallException('<b>Component Mysqli</b>: SQL debugger is inactive. Set to true debug configuration.',
+                                                E_USER_WARNING);
         }
         
         return $result;
     } 
     
     /**
+    * Обертка для prepare()
+    *
+    * @param string $sql
+    *    
+    * @return void
+    */     
+    public function prepare($sql)
+    {    
+        if (!empty($this->debugger)) {
+            return new Shaper($this, $sql);        
+        }
+        
+        return parent::prepare($sql);
+    }
+
+    /**
     * Чистый запрос для дебаггера
     *
-    * $param string $sql
+    * @param string $sql
     *    
     * @return void
     */     
@@ -88,8 +111,3 @@ class Mysqli extends \Mysqli
         return parent::query($sql);
     }     
 }
-
-
-
-
-

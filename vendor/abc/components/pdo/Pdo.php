@@ -48,7 +48,7 @@ class Pdo extends \PDO
     /**
     * Обертка для query()
     *
-    * $param string $sql
+    * @param string $sql
     *
     * @return void
     */     
@@ -79,7 +79,7 @@ class Pdo extends \PDO
     /**
     * Чистый запрос для дебаггера
     *
-    * $param string $sql
+    * @param string $sql
     *    
     * @return void
     */     

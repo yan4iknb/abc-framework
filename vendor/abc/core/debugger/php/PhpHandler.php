@@ -165,18 +165,15 @@ class PhpHandler extends Handler
             $space  = str_replace(DIRECTORY_SEPARATOR, '\\', dirname($class));
             $space  = str_replace('.', '\\', $space);
             $location = basename($this->file);
-            
+
             $data = ['space'     => $space,
                      'location'  => $location,
-                     'file'      => $block['file'],
-                     'line'      => $block['line'],
+                     'file'      => @$block['file'] ?: 'PHP',
+                     'line'      => @$block['line'] ?: ' - ',
                      'total'     => $this->prepareBlock($block, $i)
             ];            
-         
-            if (!empty($block['class'])) { 
-                $action = basename($class). $block['type']; 
-            } 
-            
+          
+            $action = basename($class). $block['type'];
             $data['action'] = $action . $block['function'];
             
             $stack[] = $data;

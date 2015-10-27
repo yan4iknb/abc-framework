@@ -4,6 +4,11 @@ namespace ABC\App;
 
 use ABC\Abc;
 
+/**
+* Класс демонстрации текущих возможностей.
+* Раскомменчивайте блоки и смтрите что будет.
+*/    
+
 class Example
 { 
     public function __construct()
@@ -13,8 +18,10 @@ class Example
                  'второй' => 'cодержимое второго элемента'
             ];
 
-               
-        //echo $a;
+        //- - - - - - - - - - - - - - - - - - - - - - - 
+        // Демонстрация дебаггера  (раскомменчивать по очереди)
+        
+        echo $a;
      
         //Abc::dbg(); 
         //Abc::dbg($var1); 
@@ -22,19 +29,51 @@ class Example
         //Abc::dbg(new \ABC\Abc); 
         //Abc::dbg('ABC\Abc');
         //throw new \Exception('Тестовое исключение');
-        //trigger_error('Полный пипец!!!');         
+        //trigger_error('Полный пипец!!!');
         
-        //$mysqli = Abc::gs('Mysql');
-        //$mysqli->test = true;
-        //$mysqli->query("SELECT * FROM `test`");
+        // Конец - - - - - - - - - - - - - - - - - - - -        
         
-        //$mysqli->query("sSELECT * FROM `test`");        
+     
         
-        //////////////////////////////
+        
+        //- - - - - - - - - - - - - - - - - - - - - - - 
+        // Продготовленные запросы  
+        /* 
+        
+        $mysqli = Abc::getService('Mysqli');
+        $mysqli->test();
+        $stmt = $mysqli->prepare("INSERT INTO `test` VALUES (?, ?)");
+        
+        $stmt->bind_param('is', $id, $text);
+        $id = 5;  
+        $text = "te'st";        
+        
+        $stmt->execute();
+        
+        */
+        // Конец - - - - - - - - - - - - - - - - - - - -        
+        
+     
+        
+        //- - - - - - - - - - - - - - - - - - - - - - - 
+        // Простые запросы
+        /*
+        
+        $mysqli = Abc::getService('Mysqli');
+        $mysqli->test = true;
+        $mysqli->query("SELECT * FROM `test`");
+        
+        */
+        // Конец - - - - - - - - - - - - - - - - - - - -
+        
+     
+        
+        //- - - - - - - - - - - - - - - - - - - - - - - 
         // Демонстрация IOC
+        /*
         
-        $ioc = Abc::gs('DiC');
-        
+        $ioc = Abc::getService('DiC');
+      
         $ioc->set('dependence',
                    function() {
                    return new Example1;
@@ -47,12 +86,11 @@ class Example
                    }
                );              
     
-        $ioc->injection('dependence', 'service', 'newSerwice', ['var' => 'Hello, World!']);
-        //$ioc->injection('newSerwice', 'dependence');
-        
+        $ioc->injection('dependence', 'service', 'newSerwice', ['var' => 'Hello, World!']);        
         $obj = $ioc->get('newSerwice');
         $obj->run();
-        /////////////////////////////////////////////////
+        */
+        // Конец - - - - - - - - - - - - - - - - - - - -
     }
 }
 

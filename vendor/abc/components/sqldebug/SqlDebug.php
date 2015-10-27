@@ -15,19 +15,18 @@ class SqlDebug
    
     public $sizeListing = 30; 
     public $db; 
-    public $type;    
-    
-    protected $message = 'SQL error: ';
+    public $component;    
+    public $trace;
     
     /**
     * @var View
     */
     protected $view; 
 
-    /**
-    * @var string
-    */
-    protected $explain;
+    protected $explain;    
+    protected $file;
+    protected $line;
+    protected $message = 'SQL error: ';    
     
     /**
     * Конструктор
@@ -41,6 +40,25 @@ class SqlDebug
     }
     
     /**
+    * Активация дебаггера
+    *
+    * $param string $sql
+    *
+    * @return void
+    */     
+    public function run($sql, $result)
+    {
+        if (false === $result || $this->db->test) {
+         
+            if (false === $result) {
+                $this->errorReport($sql, $this->db->error);
+            } else {
+                $this->testReport($sql, $this->db->error);
+            }  
+        }
+    } 
+    
+    /**
     * Формирует отчет обо ошибке SQL запроса
     *
     * @param string $file
@@ -50,18 +68,18 @@ class SqlDebug
     *
     * @return void
     */        
-    public function errorReport($trace, $sql, $error = '')
+    public function errorReport($sql, $error = '')
     { 
         $raw = $this->prepareSqlListing($sql, $error);
         
-        $data = ['message' => $this->message,
-                 'file'    => $trace[0]['file'],
-                 'line'    => $trace[0]['line'],
+        $data = ['message' => 'Component '. $this->component .': <b>'. $this->message .'</b>',
                  'error'   => htmlSpecialChars($error),
                  'num'     => $raw['num'],
                  'sql'     => $raw['sql'],
                  'explain' => $this->explain,
-                 'php'     => $this->preparePhp($trace)
+                 'php'     => $this->preparePhp(),
+                 'file'    => $this->file,
+                 'line'    => $this->line,
         ];
         
         $this->view->createReport($data);
@@ -78,14 +96,14 @@ class SqlDebug
     *
     * @return void
     */       
-    public function testReport($trace, $sql, $error = '')
+    public function testReport($sql, $error = '')
     {  
-        $this->message = 'SQL query: ';
+        $this->message = null;
         $start = microtime(true);       
         $this->db->rawQuery($sql);
         $time = sprintf("%01.4f", microtime(true) - $start);
         $this->explain = $this->performExplain($sql, $time);
-        $this->errorReport($trace, $sql, $error = '');        
+        $this->errorReport($sql, $error = '');        
     }
 
     /**
@@ -128,10 +146,10 @@ class SqlDebug
         
         if (is_object($res)) {
          
-            if ($this->type === 'mysqli') {
+            if ($this->component === 'Mysqli') {
                 $data = $res->fetch_array(MYSQLI_ASSOC);         
             }
-            elseif ($this->type === 'pdo') {
+            elseif ($this->type === 'PDO') {
                 $res->setFetchMode(\PDO::FETCH_ASSOC);
                 $data = $res->fetch();
             }
@@ -150,11 +168,18 @@ class SqlDebug
     *
     * @return null
     */    
-    protected function preparePhp($trace)
-    { 
+    protected function preparePhp()
+    {
         $php = '';
         $i = 0;
-        $block = $trace[0]; 
+        $block = $this->trace[0]; 
+        
+        if (basename($block['file']) === 'Shaper.php') {
+            $block = $this->trace[1]; 
+        }
+        
+        $this->file = $block['file'];
+        $this->line = $block['line'];
         $script = file($block['file']);
         $ext = ceil($this->sizeListing / 2);
         $position = ($block['line'] <= $ext) ? 0 : $block['line'] - $ext;
@@ -180,4 +205,3 @@ class SqlDebug
         return $this->view->createPhp($data);
     }
 }
-

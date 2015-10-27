@@ -31,7 +31,7 @@ class DiC
         $callable  = $this->validateCallable($callable);
         
         if (isset($this->serviseStorage[$serviceId])) {
-            throw new \OverflowException($serviceId .' service is already installed.', E_USER_WARNING);
+            throw new \OverflowException('Service <b>'. $serviceId .'</b>  is already installed.', E_USER_WARNING);
         }
      
         $this->serviceStorage[$serviceId] = $callable;   
@@ -74,7 +74,7 @@ class DiC
             return $this->serviceStorage[$serviceId]->__invoke();
         }
      
-        return false;
+        throw new \OutOfBoundsException('Service <b>'. $serviceId .'</b> not found.', E_USER_WARNING);
     }
 
     /**
@@ -98,8 +98,8 @@ class DiC
         }
         
         if (isset($this->serviceSynthetic[$newService])) {
-            throw new \LogicException($newService 
-                                     .' created synthetically. Impossible to implement services according to the synthetic', E_USER_WARNING);
+            throw new \LogicException('Service <b>'. $newService 
+                                     .'</b> created synthetically. Impossible to implement services according to the synthetic', E_USER_WARNING);
         }
      
         $dependenceId = $this->validateService($dependenceId);
@@ -108,10 +108,20 @@ class DiC
             throw new \InvalidArgumentException('Property should be a array', E_USER_WARNING); 
         }
         
-        $objService = $this->get($serviceId); 
+        $objService = $this->get($serviceId);
+        
+        if (false === $objService) {
+            throw new \LogicException('Service <b>'. $serviceId .'</b> is not registered in a container', E_USER_WARNING);
+        }
+        
+        $objDependence = $this->get($dependenceId);
+        
+        if (false === $objDependence) {
+            throw new \LogicException('Service <b>'. $dependenceId .'</b> is not registered in a container', E_USER_WARNING);
+        }
+        
         $class = get_class($objService);
-        $objDependence = $this->get($dependenceId); 
-    
+ 
         $newCallable = function() use ($class, $objDependence, $property) {
                 $obj = new $class($objDependence);
                 foreach ($property as $key => $value) {

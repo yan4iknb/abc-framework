@@ -20,13 +20,13 @@ use ABC\abc\core\debugger\php\TraceVariable;
 class Dbg extends PhpHandler
 {
 
-    public $container = 'ABC\abc\core\Container';
+    public $container = 'ABC\abc\components\Dic\DiC';
     
     /**
     * @var TraceClass|TraceContainer|TraceObject|TraceVariable 
     */    
     protected $tracer;
-        
+    
     protected $trace = true;
     protected $reflection = false;
     protected $errorLevel = E_USER_ERROR;
@@ -41,7 +41,6 @@ class Dbg extends PhpHandler
     {
         parent::__construct();
         $this->tracersSelector($var);
-        $this->traceProcessor($var);
     }
 
     /**
@@ -52,24 +51,27 @@ class Dbg extends PhpHandler
     * @return void
     */     
     protected function tracersSelector($var) 
-    { 
+    {
+
         if (is_string($var) && class_exists($var)) {
             $this->tracer = new TraceClass($this->painter, $this->view);
-            $this->reflection = true;
-            
-        } elseif(is_object($var)) {
+            $this->reflection = true;  
+        } elseif (is_object($var)) {
          
-            if (get_class($var) === $this->container) {
+            if ($this->container === get_class($var)) {
                 $this->tracer = new TraceContainer($this->painter, $this->view);
-                $this->reflection = true;
-            } 
-            else {
-                $this->tracer = new TraceObject($this->painter, $this->view);
-            }  
-        } 
-        else {
+                $this->tracer->container = $this->container;
+                $this->reflection = true;            
+                $var = $this->tracer->getValue();        
+            } else {
+                $this->tracer = new TraceObject($this->painter, $this->view);            
+            }
+            
+        } else {
             $this->tracer = new TraceVariable($this->painter, $this->view);
         }
+        
+        $this->traceProcessor($var);
     }     
  
     /**

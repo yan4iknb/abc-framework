@@ -12,7 +12,7 @@ use ABC\abc\core\debugger\Dbg;
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
  * @copyright © 2015
- * @license http://abc-framework.com/license/ 
+ * @license http://www.wtfpl.net/ 
  */   
  
 class Abc
@@ -33,7 +33,7 @@ class Abc
     */
     protected $config;
 
-    protected $autoload = __DIR__ .'/core/Autoloader.php';
+    protected $autoload = '/Core/Autoloader.php';
 
     /**
     * Запуск фреймворка
@@ -67,7 +67,8 @@ class Abc
     * @return void
     */    
     protected function run($appConfig, $siteConfig)
-    { 
+    {
+        $this->autoload = __DIR__ . $this->autoload;
         $this->autoloadSelector();
         self::$abc->process = new AbcProcessor($appConfig, $siteConfig);
         self::$abc->process->route();

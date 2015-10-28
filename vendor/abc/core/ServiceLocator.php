@@ -10,7 +10,7 @@ use ABC\Abc\Components\Dic\DiC;
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
  * @copyright © 2015
- * @license http://www.wtfpl.net/ 
+ * @license http://abc-framework.com/license/ 
  */   
 class ServiceLocator extends DiC
 { 

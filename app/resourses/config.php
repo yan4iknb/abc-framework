@@ -15,10 +15,10 @@ namespace ABC\app\resourses;
                                  'debug' =>  true // Включает режим отладки SQL
                 ],
                 
-                'pdo'       =>  ['dsn'   => 'mysql:dbname=test;host=localhost;charset=UTF8', 
-                                 'user'  => 'root', 
-                                 'pass'  => '',
-                                 'debug' =>  true // Включает режим отладки SQL
-                ],
+                //'pdo'       =>  ['dsn'   => 'mysql:dbname=test;host=localhost;charset=UTF8', 
+                                 //'user'  => 'root', 
+                                 //'pass'  => '',
+                                 //'debug' =>  true // Включает режим отладки SQL
+                //],
     ];
 

@@ -16,7 +16,7 @@ use ABC\Abc\Core\Debugger\Loger\Loger;
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
  * @copyright © 2015
- * @license http://www.wtfpl.net/ 
+ * @license http://abc-framework.com/license/ 
  */   
 class AbcProcessor
 {

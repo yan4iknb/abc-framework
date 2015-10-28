@@ -31,69 +31,42 @@ class Example
         //throw new \Exception('Тестовое исключение');
         //trigger_error('Полный пипец!!!');
         
-        // Конец - - - - - - - - - - - - - - - - - - - -   
+        // Конец - - - - - - - - - - - - - - - - - - - -        
         
-        
-        
-        //- - - - - - - - - - - - - - - - - - - - - - - 
-        // Простые запросы mysqli
-/*
-        
-        $mysqli = Abc::getService('Mysqli');
-        $mysqli->test = true;
-        $mysqli->query("SELECT * FROM `test`");
-        
-*/
-        // Конец - - - - - - - - - - - - - - - - - - - -
-        
-        
+     
         
         
         //- - - - - - - - - - - - - - - - - - - - - - - 
-        // Продготовленные запросы  mysqli
-/* 
+        // Продготовленные запросы  
+        /* 
+        
         $mysqli = Abc::getService('Mysqli');
-        //$mysqli->test();
+        $mysqli->test();
         $stmt = $mysqli->prepare("INSERT INTO `test` VALUES (?, ?)");
         
         $stmt->bind_param('is', $id, $text);
-        $id = 1;  
+        $id = 5;  
         $text = "te'st";        
         
         $stmt->execute();
         
-*/
+        */
         // Конец - - - - - - - - - - - - - - - - - - - -        
         
      
         
         //- - - - - - - - - - - - - - - - - - - - - - - 
-        // Простые запросы  PDO
+        // Простые запросы
+        /*
         
-/*         
-        $pdo = Abc::getService('PDO');
-        $pdo->test();
+        $mysqli = Abc::getService('Mysqli');
+        $mysqli->test = true;
+        $mysqli->query("SELECT * FROM `test`");
         
-        $stmt = $pdo->query("SELECT * FROM `test`");  
-*/
-        // Конец - - - - - - - - - - - - - - - - - - - - 
+        */
+        // Конец - - - - - - - - - - - - - - - - - - - -
         
-        
-        
-        //- - - - - - - - - - - - - - - - - - - - - - - 
-        // Подготовленные запросы  PDO
-/**/        
-        
-        $pdo = Abc::getService('PDO');
-        $pdo->test();
-
-        $stmt = $pdo->prepare("SELECT * FROM `id` = ?");
-        $stmt->execute([3]);
-        
-        
-        // Конец - - - - - - - - - - - - - - - - - - - - 
-        
-        
+     
         
         //- - - - - - - - - - - - - - - - - - - - - - - 
         // Демонстрация IOC

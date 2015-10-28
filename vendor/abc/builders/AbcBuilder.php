@@ -14,7 +14,7 @@ use ABC\Abc\Components\Sqldebug\View;
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
  * @copyright © 2015
- * @license http://abc-framework.com/license/ 
+ * @license http://www.wtfpl.net/ 
  */  
 abstract class AbcBuilder 
 {

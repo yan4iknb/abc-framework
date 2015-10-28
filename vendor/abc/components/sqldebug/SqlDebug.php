@@ -51,9 +51,9 @@ class SqlDebug
         if (false === $result || $this->db->test) {
          
             if (false === $result) {
-                $this->errorReport($sql, $this->db->error);
+                $this->errorReport($sql);
             } else {
-                $this->testReport($sql, $this->db->error);
+                $this->testReport($sql);
             }  
         }
     } 
@@ -68,12 +68,12 @@ class SqlDebug
     *
     * @return void
     */        
-    public function errorReport($sql, $error = '')
+    public function errorReport($sql)
     { 
-        $raw = $this->prepareSqlListing($sql, $error);
+        $raw = $this->prepareSqlListing($sql, $this->db->error);
         
         $data = ['message' => 'Component '. $this->component .': <b>'. $this->message .'</b>',
-                 'error'   => htmlSpecialChars($error),
+                 'error'   => htmlSpecialChars($this->db->error),
                  'num'     => $raw['num'],
                  'sql'     => $raw['sql'],
                  'explain' => $this->explain,
@@ -96,14 +96,14 @@ class SqlDebug
     *
     * @return void
     */       
-    public function testReport($sql, $error = '')
+    public function testReport($sql)
     {  
         $this->message = null;
         $start = microtime(true);       
         $this->db->rawQuery($sql);
         $time = sprintf("%01.4f", microtime(true) - $start);
         $this->explain = $this->performExplain($sql, $time);
-        $this->errorReport($sql, $error = '');        
+        $this->errorReport($sql);        
     }
 
     /**
@@ -148,9 +148,8 @@ class SqlDebug
          
             if ($this->component === 'Mysqli') {
                 $data = $res->fetch_array(MYSQLI_ASSOC);         
-            }
-            elseif ($this->type === 'PDO') {
-                $res->setFetchMode(\PDO::FETCH_ASSOC);
+            } else {
+                $res->setFetchMode();
                 $data = $res->fetch();
             }
             

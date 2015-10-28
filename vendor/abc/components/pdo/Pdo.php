@@ -8,7 +8,7 @@ namespace ABC\Abc\Components\Pdo;
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
  * @copyright © 2015
- * @license http://abc-framework.com/license/ 
+ * @license http://www.wtfpl.net/ 
  */ 
 class Pdo extends \PDO
 {
@@ -21,7 +21,7 @@ class Pdo extends \PDO
     protected $debugger;
 
     /**
-    * Инициализирует объект Mysqli
+    * Конструктор
     *
     * @return void
     */     
@@ -35,16 +35,33 @@ class Pdo extends \PDO
                 throw new \InvalidArgumentException('Component PDO: wrong data connection in the configuration file', E_USER_WARNING);
             }
             
+            if (!isset($opt)) {
+                $opt = array(
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+                );            
+            }
+            
             $this->debugger = $debugger;
         }
      
         try {
-            parent::__construct($dsn, $user, $pass);
+            parent::__construct($dsn, $user, $pass, $opt);
         } catch (PDOException $e) {
             $this->error = $e->getMessage();
         }
     }
 
+    /**
+    * Включает тестовый режим
+    *
+    * @return void
+    */     
+    public function test()
+    {
+       $this->test = true;
+    }    
+    
     /**
     * Обертка для query()
     *
@@ -56,21 +73,14 @@ class Pdo extends \PDO
     {
         $result = parent::query($sql);
        
-        if (!empty($this->debugger) && (false === $result || $this->test)) {
-         
-            $trace = debug_backtrace();
-            
+        if (!empty($this->debugger)) {
+            $this->debugger->trace = debug_backtrace();
             $this->debugger->db = $this;
-            $this->debugger->type = 'pdo';
-            
-            if ($this->test) {
-                $this->debugger->testReport($trace, $sql, $this->error);
-            } else {
-                $this->debugger->errorReport($trace, $sql, $this->error);
-            }
-            
+            $this->debugger->component = 'PDO';
+            $this->debugger->run($sql, $result);        
         } elseif (empty($this->debugger) && $this->test) {
-            throw new \BadFunctionCallException('SQL debugger is inactive. Set to true debug configuration.', E_USER_WARNING);
+            throw new \BadFunctionCallException('<b>Component PDO</b>: SQL debugger is inactive. Set to true debug configuration.',
+                                                E_USER_WARNING);
         }
         
         return $result;

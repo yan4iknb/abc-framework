@@ -149,7 +149,7 @@ class Abc
     }    
     
     /**
-    * Алиас метода getService()
+    * Алиас метода newService()
     *
     * @return object
     */     

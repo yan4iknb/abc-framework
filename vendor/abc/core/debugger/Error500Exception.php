@@ -11,7 +11,7 @@ use ABC\abc\core\debugger\loger\Loger;
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
  * @copyright © 2015
- * @license http://abc-framework.com/license/ 
+ * @license http://www.wtfpl.net/
  */  
 
 class Error500Exception extends Exception 

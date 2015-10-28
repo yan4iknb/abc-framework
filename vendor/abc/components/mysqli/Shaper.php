@@ -8,7 +8,7 @@ namespace ABC\Abc\Components\Mysqli;
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
  * @copyright © 2015
- * @license http://abc-framework.com/license/ 
+ * @license http://www.wtfpl.net/ 
  */  
 class Shaper extends \mysqli_stmt
 {
@@ -24,6 +24,7 @@ class Shaper extends \mysqli_stmt
     /**
     * Конструктор
     *
+    * @param object $mysqli
     * @param string $sql
     *    
     */     
@@ -37,7 +38,8 @@ class Shaper extends \mysqli_stmt
     /**
     * Подготавливает параметры для запроса.
     *
-    * @param string $sql
+    * @param string $types
+    * @param mixed &$vars
     *    
     * @return void
     */     
@@ -57,10 +59,11 @@ class Shaper extends \mysqli_stmt
         $types  = str_split($this->debugTypes);
         $params = ['types' => $types,
                    'vars'  => $this->debugVars
-               ];
+        ];
+ 
+        $sql = $this->createSqlString($params);
         
         $this->mysqli->autocommit(false);  
-        $sql = $this->createSqlString($params); 
         $this->mysqli->query($sql);
         $this->mysqli->rollback();
         
@@ -68,13 +71,14 @@ class Shaper extends \mysqli_stmt
             $bindParams = $this->boundParams($params);
             call_user_func_array(['parent', 'bind_param'], $bindParams);
             parent::execute();
-            $this->mysqli->commit();   
         } 
     }
     
     /**
     * Связывает типы с параметрами.
-    *    
+    *  
+    * @param array $params
+    *
     * @return array
     */ 
     protected function boundParams($params)
@@ -92,7 +96,9 @@ class Shaper extends \mysqli_stmt
     
     /**
     * Генерирует результирующий SQL.
-    *    
+    * 
+    * @param array $params
+    *
     * @return string
     */ 
     protected function createSqlString($params)
@@ -127,7 +133,7 @@ class Shaper extends \mysqli_stmt
             
             case 's' :
             case 'b' :
-                return "'". addslashes($param) ."'";
+                return "'". $this->mysqli->real_escape_string($param) ."'";
             
             default :
                 throw new \InvalidArgumentException('<b>Component Mysqli</b>: unknown type of the parameter <b>'. $type .'</b>', 

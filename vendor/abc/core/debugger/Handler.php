@@ -110,12 +110,19 @@ abstract class Handler
             $this->code      = $code; 
             $this->file      = $file;
             $this->line      = $line; 
-            $trace = debug_backtrace();//var_dump($trace);
+            $trace = debug_backtrace();
+
+            if (in_array($code, $this->E_User)) {
+                array_shift($trace);            
+            }
+            
             $trace = $this->prepareTrace($trace);
             $this->backTrace = array_reverse($trace);
-            $this->createReport(); 
+            $this->createReport();
+            die;            
         } 
         
+
     }
     
     /**

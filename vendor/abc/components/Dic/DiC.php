@@ -30,7 +30,7 @@ class DiC
         $serviceId = $this->validateService($serviceId);
         $callable  = $this->validateCallable($callable);
         
-        if (isset($this->serviseStorage[$serviceId])) {
+        if (isset($this->serviceStorage[$serviceId])) {
             throw new \OverflowException('Service <b>'. $serviceId .'</b>  is already installed.', E_USER_WARNING);
         }
      
@@ -74,7 +74,7 @@ class DiC
             return $this->serviceStorage[$serviceId]->__invoke();
         }
      
-        throw new \OutOfBoundsException('Service <b>'. $serviceId .'</b> not found.', E_USER_WARNING);
+        throw new \OutOfBoundsException('Service '. $serviceId .' not found.', E_USER_WARNING);
     }
 
     /**

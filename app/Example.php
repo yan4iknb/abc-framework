@@ -21,7 +21,7 @@ class Example
         //- - - - - - - - - - - - - - - - - - - - - - - 
         // Демонстрация дебаггера  (раскомменчивать по очереди)
         
-        echo $a;
+        //echo $a;
      
         //Abc::dbg(); 
         //Abc::dbg($var1); 
@@ -29,7 +29,7 @@ class Example
         //Abc::dbg(new \ABC\Abc); 
         //Abc::dbg('ABC\Abc');
         //throw new \Exception('Тестовое исключение');
-        //trigger_error('Полный пипец!!!');
+        trigger_error(ABC_INVALID_ARGUMENT_EX .'Полный пипец!!!');
         
         // Конец - - - - - - - - - - - - - - - - - - - -   
         
@@ -48,7 +48,6 @@ class Example
         
         
         
-        
         //- - - - - - - - - - - - - - - - - - - - - - - 
         // Продготовленные запросы  mysqli
 /* 
@@ -56,7 +55,7 @@ class Example
         //$mysqli->test();
         $stmt = $mysqli->prepare("INSERT INTO `test` VALUES (?, ?)");
         
-        $stmt->bind_param('is', $id, $text);
+        $stmt->bind_param('isr', $id, $text);
         $id = 1;  
         $text = "te'st";        
         
@@ -82,14 +81,16 @@ class Example
         
         //- - - - - - - - - - - - - - - - - - - - - - - 
         // Подготовленные запросы  PDO
-/**/        
-        
+/*       
+
         $pdo = Abc::getService('PDO');
+        
         $pdo->test();
 
-        $stmt = $pdo->prepare("SELECT * FROM `id` = ?");
-        $stmt->execute([3]);
+        $stmt = $pdo->prepare("SELECT * FROM test.tests WHERE `id` = ? AND `text` = ?");
+        $stmt->execute([1, "te'xt"]);
         
+*/     
         
         // Конец - - - - - - - - - - - - - - - - - - - - 
         
@@ -147,7 +148,6 @@ class Example2
         $this->dep->display($this->var);
     }    
 }
-
 
 
 

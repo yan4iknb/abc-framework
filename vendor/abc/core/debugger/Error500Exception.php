@@ -2,8 +2,6 @@
 
 namespace ABC\abc\core\debugger;
 
-use Exception;
-use ABC\abc\core\debugger\loger\Loger;
 /** 
  * Класс DebugException 
  * Адаптирует trigger_error к Exception
@@ -14,12 +12,11 @@ use ABC\abc\core\debugger\loger\Loger;
  * @license http://www.wtfpl.net/
  */  
 
-class Error500Exception extends Exception 
+class Error500Exception extends \Exception 
 {
-
     /**
-    * Меняет местами порядок аргументов, передаваемых trigger_error
-    * для корректного выброса исключения
+    * Генерирует сзаголовок Error 500 Internal Server Error
+    * на сообщения об ошибках  
     *
     * @param string $message
     * @param string $code

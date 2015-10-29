@@ -167,12 +167,3 @@ class Abc
         new Dbg($var);
     }
 }
-
-
-
-
-
-
-
-
-    

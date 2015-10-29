@@ -34,9 +34,9 @@ class SqlDebug
     * @param object $mysqli
     * @param object $view
     */        
-    public function __construct($view)
+    public function __construct()
     { 
-        $this->view = $view;
+        $this->view = new View;
     }
     
     /**

@@ -80,7 +80,7 @@ class PhpHandler extends Handler
     */     
     protected function prepareValue($blockCont) 
     {
-        if (empty($blockCont)) {
+        if ($blockCont === null) {
             $blockCont = 'Void';  
         } else {
             ob_start();
@@ -107,6 +107,7 @@ class PhpHandler extends Handler
         
         if (!empty($block['file'])) {
             $this->file  = $block['file'];
+            $this->line  = $block['line'];
             $script = file($block['file']);        
         } else {
             return null;

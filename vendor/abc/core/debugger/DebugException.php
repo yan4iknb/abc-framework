@@ -2,8 +2,6 @@
 
 namespace ABC\abc\core\debugger;
 
-use Exception;
-
 /** 
  * Класс DebugException 
  * Адаптирует trigger_error к Exception
@@ -14,7 +12,7 @@ use Exception;
  * @license http://www.wtfpl.net/ 
  */  
 
-class DebugException extends Exception 
+class DebugException extends \Exception 
 {
 
     /**

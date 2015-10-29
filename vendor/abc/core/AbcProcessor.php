@@ -2,13 +2,16 @@
 
 namespace ABC\Abc\Core;
 
+use ABC\Abc\Core\AbcConstants;
 use ABC\Abc\Core\ServiceLocator;
 use ABC\Abc\Core\Router;
 
+use ABC\Abc\Core\Exception\AbcException;
 use ABC\Abc\Core\Debugger\DebugException;
 use ABC\Abc\Core\Debugger\Error500Exception;
 use ABC\Abc\Core\Debugger\Php\PhpHandler;
 use ABC\Abc\Core\Debugger\Loger\Loger;
+
 
 /** 
  * Класс AbcFramework
@@ -48,6 +51,7 @@ class AbcProcessor
     */    
     public function __construct($appConfig = [], $siteConfig = [])
     {
+        AbcConstants::set(); 
         $configurator  = new Configurator;
         $this->config  = $configurator->getConfig($appConfig, $siteConfig);
         $this->selectErrorMode();           
@@ -102,13 +106,13 @@ class AbcProcessor
     public function prepareBuilder($service = null)
     {    
         if (empty($service) || !is_string($service)) {
-            throw new \InvalidArgumentException('Service name should be a string', E_USER_WARNING);
+            trigger_error(ABC_INVALID_ARGUMENT_EX .'Service name should be a string', E_USER_WARNING);
         }
         
         $builder = '\ABC\abc\builders\\'. $service .'Builder';
         
         if (!class_exists($builder)) {
-            throw new \BadFunctionCallException('Service "'. $service .'" is not defined.', E_USER_WARNING);
+            trigger_error(ABC_BAD_FUNCTION_CALL_EX .'Service "'. $service .'" is not defined.', E_USER_WARNING);
         }    
         
         $builder = new $builder;
@@ -125,15 +129,13 @@ class AbcProcessor
     */     
     protected function selectErrorMode()
     {
-        if (isset($this->config['debug_mod'])) {
+        if (isset($this->config['error_mod'])) {
          
-            if ($this->config['debug_mod'] === 'display') {   
+            if ($this->config['error_mod'] === 'debug') {  
                 new PhpHandler($this->config);
-                //error_reporting(0);
-            } elseif ($this->config['debug_mod'] === 'log')  {
-                new Loger();
-                set_error_handler([$this, 'throwError500Exception']);
-            } elseif ($this->config['debug_mod'] == 500) {
+            } elseif ($this->config['error_mod'] === 'exception') {
+                new AbcException($this->config);
+            } elseif ($this->config['error_mod'] == 500) {
                 set_error_handler([$this, 'throwError500Exception']);
             }
         }        

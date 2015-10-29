@@ -46,8 +46,8 @@ class Pdo extends \PDO
         }
      
         try {
-            parent::__construct($dsn, $user, $pass, $opt);
-        } catch (PDOException $e) {
+            @parent::__construct($dsn, $user, $pass, $opt);
+        } catch (\PDOException $e) {
             $this->error = $e->getMessage();
         }
     }
@@ -71,9 +71,15 @@ class Pdo extends \PDO
     */     
     public function query($sql)
     {
-        $result = parent::query($sql);
-       
+        try {
+            $result = parent::query($sql);
+        } catch (\PDOException $e) {
+            $this->error = $e->getMessage();        
+            $result = false;
+        } 
+        
         if (!empty($this->debugger)) {
+
             $this->debugger->trace = debug_backtrace();
             $this->debugger->db = $this;
             $this->debugger->component = 'PDO';
@@ -85,6 +91,22 @@ class Pdo extends \PDO
         
         return $result;
     } 
+    
+    /**
+    * Обертка для prepare()
+    *
+    * @param string $sql
+    *    
+    * @return void
+    */     
+    public function prepare($sql, $options = null)
+    {    
+        if (!empty($this->debugger)) {
+            return new Shaper($this, $sql);        
+        }
+        
+        return parent::prepare($sql, $options);
+    }
     
     /**
     * Чистый запрос для дебаггера

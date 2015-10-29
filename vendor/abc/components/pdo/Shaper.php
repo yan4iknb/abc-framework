@@ -80,30 +80,12 @@ class Shaper extends \PDOStatement
     public function execute($params = null)
     {
         $sql = $this->createSqlString($params);
-        
+       
         $this->pdo->beginTransaction();
         $this->pdo->query($sql);
         $this->pdo->rollback();
      
         return parent::execute($params);
-    }
-    
-    /**
-    * Связывает типы с параметрами.
-    *    
-    * @return array
-    */ 
-    protected function boundParams($params)
-    {
-        $bound    = [];
-        $bound[0] = '';
-        
-        foreach ($params['types'] as $k => $type) {
-            $bound[0] .= $type;
-            $bound[]   = &$params['vars'][$k];
-        }
-     
-        return $bound;
     }
     
     /**
@@ -117,44 +99,47 @@ class Shaper extends \PDOStatement
      
         $params = !empty($this->bound) ? $this->bound : $params;
         
-        if ($params) {
+        if (!empty($params)) {
             ksort($params);
-            foreach ($params as $key => $value) {
-                $replace = (is_array($value)) ? $value
-                                              : ['value' => $value,
+            foreach ($params as $marker => $param) {
+                $replace = (is_array($param)) ? $param
+                                              : ['value' => $param,
                                                  'type'  => PDO::PARAM_STR ];
-                $replace = $this->prepareValue($replace);
-                $sql     = $this->replaceMarker($sql, $key, $replace);
+                $replace = $this->escape($replace);
+                $sql     = $this->replace($sql, $marker, $replace);
             }
         }
-
+     
         return $sql;
+    }
+    
+    protected function replace($sql, $marker, $replace)
+    {
+        if (is_numeric($marker)) {
+            $marker = '\?';
+        } else {
+            $marker = (preg_match('/^\:/', $marker)) ? $marker : ':' . $marker;
+        }
+     
+        return preg_replace('#'. $marker .'(?!\w)#', $replace, $sql, 1);
     }
     
     /**
     * Обрабатывает параметры для дебаггинга в зависимости от типа.
     *
     * @param string $param
-    * @param string $type
     *    
     * @return string
     */     
-    protected function escape($param, $type)
+    protected function escape($param)
     {    
-        switch ($type) {
-            case 'i' :
-                return (int)$param;
-            
-            case 'd' :
-                return "'". (float)$param ."'";
-            
-            case 's' :
-            case 'b' :
-                return "'". addslashes($param) ."'";
+        switch ($param['type']) {
+            case PDO::PARAM_INT :
+                return (int)$param['value'];
             
             default :
-                throw new \InvalidArgumentException('<b>Component Mysqli</b>: unknown type of the parameter <b>'. $type .'</b>', 
-                                                    E_USER_WARNING);    
+                return $this->pdo->quote($param['value']);
         }   
     }
+  
 }

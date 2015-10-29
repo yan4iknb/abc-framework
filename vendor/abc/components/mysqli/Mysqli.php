@@ -14,11 +14,11 @@ class Mysqli extends \Mysqli
 {
 
     public $test = false;
-    
+ 
     /**
     * @var ABC\Abc\Components\Sqldebug\SqlDebug
     */     
-    protected $debugger;
+    public $debugger;
 
     /**
     * Конструктор
@@ -34,17 +34,15 @@ class Mysqli extends \Mysqli
             extract($data);
             
             if (!isset($host, $user, $pass, $base)) {
-                throw new \InvalidArgumentException('<b>Component Mysqli</b>: wrong data connection in the configuration file', 
-                                                    E_USER_WARNING);
+                trigger_error(ABC_INVALID_ARGUMENT_EX .'Component Mysqli: wrong data connection in the configuration file', 
+                              E_USER_WARNING);
+            } else {
+                parent::__construct($host, $user, $pass, $base);
+                
+                if (!$this->connect_error) {
+                    $this->set_charset("utf8");
+                }
             }
-            
-            $this->debugger = $debugger;    
-        }
-     
-        parent::__construct($host, $user, $pass, $base);
-        
-        if (!$this->connect_error) {
-            $this->set_charset("utf8");
         }
     }
     
@@ -76,8 +74,8 @@ class Mysqli extends \Mysqli
             $this->debugger->component = 'Mysqli';
             $this->debugger->run($sql, $result);        
         } elseif (empty($this->debugger) && $this->test) {
-            throw new \BadFunctionCallException('<b>Component Mysqli</b>: SQL debugger is inactive. Set to true debug configuration.',
-                                                E_USER_WARNING);
+            trigger_error(ABC_BAD_FUNCTION_CALL_EX .'Component Mysqli: SQL debugger is inactive. Set to true debug configuration.',
+                          E_USER_WARNING);
         }
         
         return $result;

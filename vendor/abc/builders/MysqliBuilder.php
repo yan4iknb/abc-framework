@@ -8,8 +8,6 @@ use ABC\Abc\Builders\AbcBuilder;
  * Сборка дебаггера SQL 
  */ 
 use ABC\Abc\Components\Sqldebug\SqlDebug;
-use ABC\Abc\Components\Sqldebug\View;
-use ABC\Abc\Components\Mysqli\Shaper;
 /** 
  * Класс MysqliBuilder
  * 
@@ -24,7 +22,7 @@ class MysqliBuilder extends AbcBuilder
     /**
     * @var array
     */ 
-    protected $service = 'mysqli'; 
+    protected $service = 'mysqli';
     
     /**
     * Строит сервис.
@@ -32,16 +30,17 @@ class MysqliBuilder extends AbcBuilder
     * @return void
     */        
     protected function buildService($global = false)
-    { 
+    {
         $component = '\ABC\abc\components\\'. $this->service .'\\'. $this->service; 
-        $data = @$this->config[$this->service] ?: [];        
+        $data = @$this->config[$this->service] ?: [];  
         $typeService = $global ? 'setGlobal' : 'set';
-        
+     
         $this->locator->$typeService(
-            $this->service, 
-            function() use ($component, $data) {
-                $data['debugger'] = !empty($data['debug']) ? new SqlDebug(new View) : null;
-                return new $component($data);
+            $this->service,
+            function() use ($component, $data) {   
+                $obj = new $component($data);
+                $obj->debugger  = !empty($data['debug']) ? new SqlDebug() : null;
+                return $obj;
             }
         );
     }   

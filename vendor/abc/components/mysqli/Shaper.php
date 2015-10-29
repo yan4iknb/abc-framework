@@ -45,8 +45,16 @@ class Shaper extends \mysqli_stmt
     */     
     public function bind_param($types, &...$vars)
     {    
+        if (strlen($types) !== count($vars)) {
+            trigger_error(ABC_INVALID_ARGUMENT_EX 
+                          .'Component Mysqli: Number of elements '
+                          .'in type definition string doesn\'t match number of bind variables ', 
+                          E_USER_WARNING);
+        }
+     
         $this->debugTypes = $types;
         $this->debugVars  = $vars;
+        
     }
     
     /**
@@ -60,7 +68,7 @@ class Shaper extends \mysqli_stmt
         $params = ['types' => $types,
                    'vars'  => $this->debugVars
         ];
- 
+     
         $sql = $this->createSqlString($params);
         
         $this->mysqli->autocommit(false);  
@@ -105,7 +113,7 @@ class Shaper extends \mysqli_stmt
     {
         $values = [];
         $sql = $this->rawSql;
-        
+     
         foreach ($params['types'] as $k => $type) {
             $value = $this->escape($params['vars'][$k], $type);
             $sql = preg_replace('#\?#', $value, $sql, 1);            
@@ -136,8 +144,8 @@ class Shaper extends \mysqli_stmt
                 return "'". $this->mysqli->real_escape_string($param) ."'";
             
             default :
-                throw new \InvalidArgumentException('<b>Component Mysqli</b>: unknown type of the parameter <b>'. $type .'</b>', 
-                                                    E_USER_WARNING);    
+                trigger_error(ABC_INVALID_ARGUMENT_EX .'Component Mysqli: unknown type of the parameter '. $type, 
+                              E_USER_WARNING);    
         }   
     }
 }

@@ -25,6 +25,5 @@ class TrainingExample
     public function getText()
     {
         return 'Привет, Мир!';
-    }    
-   
+    }
 }

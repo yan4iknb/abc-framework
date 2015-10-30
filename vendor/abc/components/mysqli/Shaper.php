@@ -144,7 +144,8 @@ class Shaper extends \mysqli_stmt
                 return "'". $this->mysqli->real_escape_string($param) ."'";
             
             default :
-                trigger_error(ABC_INVALID_ARGUMENT_EX .'Component Mysqli: unknown type of the parameter '. $type, 
+                trigger_error(ABC_INVALID_ARGUMENT_EX 
+                             .'Component Mysqli: unknown type of the parameter '. $type, 
                               E_USER_WARNING);    
         }   
     }

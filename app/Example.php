@@ -29,7 +29,7 @@ class Example
         //Abc::dbg(new \ABC\Abc); 
         //Abc::dbg('ABC\Abc');
         //throw new \Exception('Тестовое исключение');
-        trigger_error(ABC_INVALID_ARGUMENT_EX .'Полный пипец!!!');
+        //trigger_error(ABC_INVALID_ARGUMENT_EX .'Полный пипец!!!', E_USER_WARNING);
         
         // Конец - - - - - - - - - - - - - - - - - - - -   
         
@@ -37,13 +37,13 @@ class Example
         
         //- - - - - - - - - - - - - - - - - - - - - - - 
         // Простые запросы mysqli
-/*
+/**/
         
         $mysqli = Abc::getService('Mysqli');
         $mysqli->test = true;
         $mysqli->query("SELECT * FROM `test`");
         
-*/
+
         // Конец - - - - - - - - - - - - - - - - - - - -
         
         

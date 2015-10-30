@@ -23,20 +23,20 @@ class AbcConstants
         /**
         * Константы кодов иерархии исключений SPL
         */  
-        defined('ABC_EXCEPTION') or define('ABC_EXCEPTION', '[0000]'); 
-        defined('ABC_BAD_FUNCTION_CALL_EX') or define('ABC_BAD_FUNCTION_CALL_EX', '[001]');
-        defined('ABC_BAD_METHOD_CALL_EX') or define('ABC_BAD_METHOD_CALL_EX', '[002]');    
-        defined('ABC_DOMAIN_EX') or define('ABC_DOMAIN_EX', '[0003] ');
-        defined('ABC_INVALID_ARGUMENT_EX') or define('ABC_INVALID_ARGUMENT_EX', '[004]');
-        defined('ABC_LENGTH_EX') or define('ABC_LENGTH_EX', '[005] ');    
-        defined('ABC_LOGIC_EX') or define('ABC_LOGIC_EX', '[006] ');
-        defined('ABC_OUT_OF_BOUNDS_EX') or define('ABC_OUT_OF_BOUNDS_EX', '[007]');    
-        defined('ABC_OUT_OF_RANGE_EX') or define('ABC_OUT_OF_RANGE_EX', '[008]');         
-        defined('ABC_OVERFLOW_EX') or define('ABC_OVERFLOW_EX', '[009]');    
-        defined('ABC_RANGE_EX') or define('ABC_RANGE_EX', '[010]'); 
-        defined('ABC_RUNTIME_EX') or define('ABC_RUNTIME_EX', '[011]');    
-        defined('ABC_UNDERFLOW_EX') or define('ABC_UNDERFLOW_EX', '[012] ');
-        defined('ABC_UNEXPECTED_VALUE_EX') or define('ABC_UNEXPECTED_VALUE_EX', '[013]');    
+        define('ABC_EXCEPTION', '[0000]'); 
+        define('ABC_BAD_FUNCTION_CALL_EX', '[001]');
+        define('ABC_BAD_METHOD_CALL_EX', '[002]');    
+        define('ABC_DOMAIN_EX', '[0003] ');
+        define('ABC_INVALID_ARGUMENT_EX', '[004]');
+        define('ABC_LENGTH_EX', '[005] ');    
+        define('ABC_LOGIC_EX', '[006] ');
+        define('ABC_OUT_OF_BOUNDS_EX', '[007]');    
+        define('ABC_OUT_OF_RANGE_EX', '[008]');         
+        define('ABC_OVERFLOW_EX', '[009]');    
+        define('ABC_RANGE_EX', '[010]'); 
+        define('ABC_RUNTIME_EX', '[011]');    
+        define('ABC_UNDERFLOW_EX', '[012] ');
+        define('ABC_UNEXPECTED_VALUE_EX', '[013]');    
 
     }
 

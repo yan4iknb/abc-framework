@@ -14,7 +14,11 @@ class Mysqli extends \Mysqli
 {
 
     public $test = false;
- 
+    public $host;    
+    public $user;    
+    public $pass;    
+    public $base;
+    
     /**
     * @var ABC\Abc\Components\Sqldebug\SqlDebug
     */     
@@ -25,7 +29,6 @@ class Mysqli extends \Mysqli
     *
     * @param array $data
     *
-
     */     
     public function __construct($data = [])
     {
@@ -34,16 +37,36 @@ class Mysqli extends \Mysqli
             extract($data);
             
             if (!isset($host, $user, $pass, $base)) {
-                trigger_error(ABC_INVALID_ARGUMENT_EX .'Component Mysqli: wrong data connection in the configuration file', 
+                trigger_error(ABC_INVALID_ARGUMENT_EX 
+                             .' Component Mysqli: wrong data connection in the configuration file', 
                               E_USER_WARNING);
             } else {
-                parent::__construct($host, $user, $pass, $base);
-                
-                if (!$this->connect_error) {
-                    $this->set_charset("utf8");
-                }
+                $this->host = $host;
+                $this->user = $user;
+                $this->pass = $pass;
+                $this->base = $base;
+                $this->newConnect();
             }
         }
+    }
+    
+    /**
+    * Коннектор
+    *
+    * @return void
+    */     
+    public function newConnect()
+    {
+        parent::__construct($this->host, $this->user, $this->pass, $this->base);
+        
+        if ($this->connect_error) {
+            trigger_error(ABC_LOGIC_EX 
+                         .' Component Mysqli: '. $this->connect_error, 
+                          E_USER_WARNING); 
+            return false;
+        }
+        
+        $this->set_charset("utf8");
     }
     
     /**
@@ -74,7 +97,8 @@ class Mysqli extends \Mysqli
             $this->debugger->component = 'Mysqli';
             $this->debugger->run($sql, $result);        
         } elseif (empty($this->debugger) && $this->test) {
-            trigger_error(ABC_BAD_FUNCTION_CALL_EX .'Component Mysqli: SQL debugger is inactive. Set to true debug configuration.',
+            trigger_error(ABC_BAD_FUNCTION_CALL_EX 
+                         .'Component Mysqli: SQL debugger is inactive. Set to true debug configuration.',
                           E_USER_WARNING);
         }
         

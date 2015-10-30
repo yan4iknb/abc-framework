@@ -3,8 +3,8 @@
 namespace ABC;
 
 
-use ABC\abc\core\AbcProcessor;
-use ABC\abc\core\debugger\Dbg;
+use ABC\Abc\Core\AbcProcessor;
+use ABC\Abc\Core\Debugger\Dbg;
 
 /** 
  * Класс Abc 
@@ -95,7 +95,7 @@ class Abc
             $this->autoload = __DIR__ .'/../autoload.php';
         }
         
-        $this->autoloadIclude();
+        $this->autoloadInclude();
     }
  
     /**
@@ -103,7 +103,7 @@ class Abc
     *
     * @return void
     */    
-    protected function autoloadIclude()
+    protected function autoloadInclude()
     {
         include $this->autoload;
     } 

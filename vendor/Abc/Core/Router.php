@@ -21,8 +21,8 @@ class Router
     public $routes;
     
     protected $defaultSettings = [
-                                    'application'     => 'app',
-                                    'dir_controllers' => 'controllers',    
+                                    'application'     => 'App',
+                                    'dir_controllers' => 'Controllers',    
               ];
 
     /**

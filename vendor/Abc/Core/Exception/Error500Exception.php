@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\abc\core\debugger;
+namespace ABC\Abc\Core\Exception;
 
 /** 
  * Класс DebugException 

@@ -29,9 +29,11 @@ class DiC
     {
         $serviceId = $this->validateService($serviceId);
         $callable  = $this->validateCallable($callable);
-        
+       
         if (isset($this->serviceStorage[$serviceId])) {
-            throw new \OverflowException('Service <b>'. $serviceId .'</b>  is already installed.', E_USER_WARNING);
+            trigger_error(ABC_OVERFLOW_EX 
+                         . 'Service '. $serviceId .'  is already installed.'
+                         , E_USER_WARNING);
         }
      
         $this->serviceStorage[$serviceId] = $callable;   
@@ -74,7 +76,9 @@ class DiC
             return $this->serviceStorage[$serviceId]->__invoke();
         }
      
-        throw new \OutOfBoundsException('Service '. $serviceId .' not found.', E_USER_WARNING);
+        trigger_error(ABC_OUT_OF_BOUNDS_EX
+                     .'Service '. $serviceId .' not found.', 
+                     E_USER_WARNING);
     }
 
     /**
@@ -98,26 +102,34 @@ class DiC
         }
         
         if (isset($this->serviceSynthetic[$newService])) {
-            throw new \LogicException('Service <b>'. $newService 
-                                     .'</b> created synthetically. Impossible to implement services according to the synthetic', E_USER_WARNING);
+            trigger_error(ABC_LOGIC_EX
+                          .'Service '. $newService 
+                          .' created synthetically. Impossible to implement services according to the synthetic',
+                          E_USER_WARNING);
         }
      
         $dependenceId = $this->validateService($dependenceId);
         
         if (!empty($property) && !is_array($property)) {
-            throw new \InvalidArgumentException('Property should be a array', E_USER_WARNING); 
+            trigger_error(ABC_INVALID_ARGUMENT_EX
+                         .'Property should be a array',
+                         E_USER_WARNING); 
         }
         
         $objService = $this->get($serviceId);
         
         if (false === $objService) {
-            throw new \LogicException('Service <b>'. $serviceId .'</b> is not registered in a container', E_USER_WARNING);
+            trigger_error(ABC_LOGIC_EX
+                         .'Service '. $serviceId .' is not registered in a container',
+                         E_USER_WARNING);
         }
         
         $objDependence = $this->get($dependenceId);
         
         if (false === $objDependence) {
-            throw new \LogicException('Service <b>'. $dependenceId .'</b> is not registered in a container', E_USER_WARNING);
+            trigger_error(ABC_LOGIC_EX
+                         .'Service '. $dependenceId .' is not registered in a container',
+                         E_USER_WARNING);
         }
         
         $class = get_class($objService);
@@ -166,7 +178,9 @@ class DiC
     protected function validateService($serviceId)
     {
         if (empty($serviceId) || !is_string($serviceId)) {
-            throw new \InvalidArgumentException('ID service should be a string', E_USER_WARNING); 
+            trigger_error(ABC_INVALID_ARGUMENT_EX
+                         .'ID service should be a string',
+                         E_USER_WARNING); 
         }
      
         return strtolower($serviceId);
@@ -182,7 +196,9 @@ class DiC
     protected function validateCallable($callable)
     {      
         if (!is_callable($callable)) {
-            throw new \InvalidArgumentException('Callable must be a function of anonymity is conferred', E_USER_WARNING); 
+            trigger_error(ABC_INVALID_ARGUMENT_EX
+                         .'Callable must be a function of anonymity is conferred',
+                         E_USER_WARNING); 
         }
         
         return $callable;

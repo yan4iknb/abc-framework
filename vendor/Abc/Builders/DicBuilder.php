@@ -24,7 +24,7 @@ class DicBuilder extends AbcBuilder
     /**
     * @var array
     */ 
-    protected $service = 'dic';
+    protected $service = 'DiC';
 
     /**
     * Строит сервис.
@@ -33,7 +33,7 @@ class DicBuilder extends AbcBuilder
     */        
     protected function buildService($global = false)
     { 
-        $component = '\ABC\abc\components\\'. $this->service .'\\'. $this->service;
+        $component = '\ABC\Abc\Components\\'. $this->service .'\\'. $this->service;
         $typeService = $global ? 'setGlobal' : 'set';
         
         $this->locator->$typeService(

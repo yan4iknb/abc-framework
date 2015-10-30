@@ -8,7 +8,6 @@ use ABC\Abc\Core\Container;
 use ABC\Abc\Core\Router;
 
 use ABC\Abc\Core\Exception\AbcException;
-use ABC\Abc\Core\Debugger\DebugException;
 use ABC\Abc\Core\Debugger\Error500Exception;
 use ABC\Abc\Core\Debugger\Php\PhpHandler;
 use ABC\Abc\Core\Debugger\Loger\Loger;

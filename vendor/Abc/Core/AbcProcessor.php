@@ -3,7 +3,7 @@
 namespace ABC\Abc\Core;
 
 use ABC\Abc\Core\AbcConstants;
-use ABC\Abc\Core\ServiceLocator;
+use ABC\Abc\Core\Container;
 use ABC\Abc\Core\Router;
 
 use ABC\Abc\Core\Exception\AbcException;
@@ -55,7 +55,7 @@ class AbcProcessor
         $configurator  = new Configurator;
         $this->config  = $configurator->getConfig($appConfig, $siteConfig);
         $this->selectErrorMode();           
-        $this->locator = new ServiceLocator;        
+        $this->locator = new Container;        
     }
     
     /**

@@ -3,8 +3,8 @@
 namespace ABC\Abc\Core;
 
 use ABC\Abc\Core\AbcConstants;
-use ABC\Abc\Core\AbcConstants;
 use ABC\Abc\Core\Configurator;
+use ABC\Abc\Core\Container;
 use ABC\Abc\Core\Router;
 
 use ABC\Abc\Core\Exception\AbcException;

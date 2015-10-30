@@ -24,7 +24,7 @@ class PdoBuilder extends AbcBuilder
     /**
     * @var array
     */ 
-    protected $service = 'pdo';   
+    protected $service = 'Pdo';   
 
     /**
     * Строит сервис.
@@ -33,7 +33,7 @@ class PdoBuilder extends AbcBuilder
     */        
     protected function buildService($global = false)
     { 
-        $component = '\ABC\abc\components\\'. $this->service .'\\'. $this->service;    
+        $component = '\ABC\Abc\Components\\'. $this->service .'\\'. $this->service;    
         $data = @$this->config[$this->service] ?: [];
         $typeService = $global ? 'setGlobal' : 'set';
         

@@ -48,6 +48,11 @@ class Pdo extends \PDO
         try {
             @parent::__construct($dsn, $user, $pass, $opt);
         } catch (\PDOException $e) {
+         
+            if (empty($debugger)) {
+                throw $e;
+            }
+            
             $this->error = $e->getMessage();
         }
     }
@@ -74,6 +79,11 @@ class Pdo extends \PDO
         try {
             $result = parent::query($sql);
         } catch (\PDOException $e) {
+         
+            if (empty($debugger)) {
+                throw $e;
+            }
+         
             $this->error = $e->getMessage();        
             $result = false;
         } 
@@ -87,6 +97,10 @@ class Pdo extends \PDO
         } elseif (empty($this->debugger) && $this->test) {
             throw new \BadFunctionCallException('<b>Component PDO</b>: SQL debugger is inactive. Set to true debug configuration.',
                                                 E_USER_WARNING);
+        }
+        
+        if (!$result) {
+            throw $e;
         }
         
         return $result;

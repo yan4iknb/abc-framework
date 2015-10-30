@@ -106,13 +106,17 @@ class AbcProcessor
     public function prepareBuilder($service = null)
     {    
         if (empty($service) || !is_string($service)) {
-            trigger_error(ABC_INVALID_ARGUMENT_EX .'Service name should be a string', E_USER_WARNING);
+            trigger_error(ABC_INVALID_ARGUMENT_EX 
+                         .'Service name should be a string',
+                         E_USER_WARNING);
         }
         
         $builder = '\ABC\abc\builders\\'. $service .'Builder';
         
         if (!class_exists($builder)) {
-            trigger_error(ABC_BAD_FUNCTION_CALL_EX .'Service "'. $service .'" is not defined.', E_USER_WARNING);
+            trigger_error(ABC_BAD_FUNCTION_CALL_EX 
+                         .'Service "'. $service .'" is not defined.', 
+                         E_USER_WARNING);
         }    
         
         $builder = new $builder;

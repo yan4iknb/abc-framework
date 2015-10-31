@@ -5,12 +5,6 @@ namespace ABC\Abc\Builders;
 use ABC\Abc\Builders\AbcBuilder;
 
 /** 
- * Сборка дебаггера SQL 
- */ 
-use ABC\Abc\Components\Sqldebug\SqlDebug;
-use ABC\Abc\Components\Sqldebug\View;
-
-/** 
  * Класс DicBuilder
  * 
  * NOTE: Requires PHP version 5.5 or later   

@@ -18,8 +18,8 @@ class Controller extends BaseController
 { 
     public function __construct()
     {
-        //Abc::getService('Traning')->display();    
-        new Example; 
+        Abc::getService('Traning')->display();    
+        //new Example; 
     }
 }
 

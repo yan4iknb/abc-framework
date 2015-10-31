@@ -133,11 +133,11 @@ class Painter
     public function highlightVar($blockCont)
     {
         $blockCont = strip_tags($blockCont);   
-        $strings = ['#(?<!\')object#i' => '<span class="type">object</span>',
-                    '#(?<!\')array#i'  => '<span class="type">array</span>',
-                    '#(?<!\')string#i' => '<span class="type">string</span>',
-                    '#(?<!\')int#i'    => '<span class="type">int</span>',
-                    '#(?<!\')null#i'   => '<span class="type">null</span>',
+        $strings = ['#(?<!\')object\s+#i' => '<span class="type">object</span> ',
+                    '#(?<!\')array\s+#i'  => '<span class="type">array</span> ',
+                    '#(?<!\')string\s+#i' => '<span class="type">string</span> ',
+                    '#(?<!\')int\s+#i'    => '<span class="type">int</span> ',
+                    '#(?<!\')null\s+#i'   => '<span class="type">null</span> ',
         ]; 
         $blockCont = preg_replace("#'(.+?)'#i", '<span class="value">\'$1\'</span>', $blockCont); 
         $blockCont = preg_replace("#\((.+?)\)#i", '<span class="property">($1)</span>', $blockCont);

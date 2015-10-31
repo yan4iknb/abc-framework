@@ -54,13 +54,20 @@ class Configurator
     }    
     
     /**
-    * Приводит все элементы к нижнему регистру 
+    * Приводит все ключи к нижнему регистру 
     *
     * @return array
     */     
     public function normaliseConfig($config)
     { 
-        return array_change_key_case($config);
+        $config = array_change_key_case($config); 
+        
+        foreach ($config as $key => $array) { 
+            if (is_array($array)) { 
+                $config[$key] = $this->normaliseConfig($array); 
+            } 
+        } 
+        return $config; 
     }    
     
 

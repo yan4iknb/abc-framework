@@ -48,7 +48,7 @@ class Container
     * @return void
     */  
     public function setGlobal($serviceId, $callable)
-    {
+    { 
         $this->set($serviceId, $callable);
         $this->serviceFrozen[strtolower($serviceId)]  = true;    
     }
@@ -61,15 +61,16 @@ class Container
     * @return object
     */      
     public function get($serviceId)
-    {
+    { 
         $serviceId = $this->validateService($serviceId);
      
-        if (isset($this->ServiseFrozen[$serviceId])) {
+        if (isset($this->serviceFrozen[$serviceId])) {
          
             if (!isset(self::$objectStorage[$serviceId])) {
-                self::$ObjectStorage[$serviceId] = $this->ServiceStorage[$serviceId]->__invoke();
+                self::$objectStorage[$serviceId] = $this->serviceStorage[$serviceId]->__invoke();
             }
-         
+
+                
             return self::$objectStorage[$serviceId];
          
         } elseif (isset($this->serviceStorage[$serviceId])) {

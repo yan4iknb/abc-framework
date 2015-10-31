@@ -3,6 +3,7 @@
 namespace ABC\Abc\Builders;
 
 use ABC\Abc\Builders\AbcBuilder;
+use ABC\Abc\Components\Mysqli\Mysqli;
 
 /** 
  * Сборка дебаггера SQL 
@@ -32,9 +33,9 @@ class MysqliBuilder extends AbcBuilder
     protected function buildService($global = false)
     {
         $component = '\ABC\Abc\Components\\'. $this->service .'\\'. $this->service; 
-        $data = @$this->config[$this->service] ?: [];  
-        $typeService = $global ? 'setGlobal' : 'set';
      
+        $data = @$this->config[strtolower($this->service)] ?: [];  
+        $typeService = $global ? 'setGlobal' : 'set';
         $this->locator->$typeService(
             $this->service,
             function() use ($component, $data) {   

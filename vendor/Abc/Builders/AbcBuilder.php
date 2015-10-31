@@ -60,7 +60,7 @@ abstract class AbcBuilder
     * @return object
     */    
     public function getService()
-    {  
+    { 
         if (!$this->locator->checkService($this->service)) {
             $this->buildService(true);
         }

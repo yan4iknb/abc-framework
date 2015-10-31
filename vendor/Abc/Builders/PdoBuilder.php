@@ -3,15 +3,10 @@
 namespace ABC\Abc\Builders;
 
 use ABC\Abc\Builders\AbcBuilder;
-
-/** 
- * Сборка дебаггера SQL 
- */ 
 use ABC\Abc\Components\Sqldebug\SqlDebug;
-use ABC\Abc\Components\Sqldebug\View;
 
 /** 
- * Класс Mysqli
+ * Класс PdoBuilder
  * 
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
@@ -34,7 +29,7 @@ class PdoBuilder extends AbcBuilder
     protected function buildService($global = false)
     { 
         $component = '\ABC\Abc\Components\\'. $this->service .'\\'. $this->service;    
-        $data = @$this->config[$this->service] ?: [];
+        $data = @$this->config[strtolower($this->service)] ?: [];
         $typeService = $global ? 'setGlobal' : 'set';
         
         $this->locator->$typeService(

@@ -28,15 +28,19 @@ class Configurator
     public function getConfig($appConfig, $siteConfig)
     {   
         if (!is_array($appConfig)) {
-            throw new \InvalidArgumentException('Configuring the application is to be performed array');
+            trigger_error(ABC_INVALID_ARGUMENT_EX
+                         .' Configuring the application is to be performed array',
+                         E_USER_WARNING);
         }
         
         if (!is_array($siteConfig)) {
-            throw new \InvalidArgumentException('Configuring the site is to be performed array');
+            trigger_error(ABC_INVALID_ARGUMENT_EX
+                         .' Configuring the site is to be performed array',
+                         E_USER_WARNING);
         }
      
         $this->config = array_merge($appConfig, $siteConfig);
-        return $this->config;
+        return $this->normaliseConfig($this->config);
     } 
     
     /**
@@ -47,7 +51,19 @@ class Configurator
     public function getRoutes()
     { 
         return prepareRoutes();
-    }
+    }    
+    
+    /**
+    * Приводит все элементы к нижнему регистру 
+    *
+    * @return array
+    */     
+    public function normaliseConfig($config)
+    { 
+        return array_change_key_case($config);
+    }    
+    
+
     
     /**
     * Разбирает настройки маршрутов 

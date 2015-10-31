@@ -31,8 +31,8 @@ class TraningBuilder extends AbcBuilder
     protected function buildService($global = false)
     { // Формируем путь до компонента
         $component = '\ABC\Abc\Components\\'. $this->service .'\\'. $this->service; 
-      // Получаем из конфиги необходимые настройки
-        $data = @$this->config[$this->service] ?: [];  
+      // Получаем из конфиги необходимые настройки/ Ключ обязательно в нижнем регистре
+        $data = @$this->config[strtolower($this->service)] ?: [];  
       // Здесь решаем, каким должен быть сервис. Глобальным (по приципу Singletone)
       // Или обычным, когда при каждом обращении формируются новые объекты
         $typeService = $global ? 'setGlobal' : 'set';

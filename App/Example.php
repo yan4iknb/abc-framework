@@ -38,7 +38,7 @@ class Example
         //- - - - - - - - - - - - - - - - - - - - - - - 
         // Простые запросы mysqli
 /**/
-        
+       
         $mysqli = Abc::getService('Mysqli');
         $mysqli->test = true;
         $mysqli->query("SELECT * FROM `test`");
@@ -52,7 +52,7 @@ class Example
         // Продготовленные запросы  mysqli
 /* 
         $mysqli = Abc::getService('Mysqli');
-        //$mysqli->test();
+        $mysqli->test();
         $stmt = $mysqli->prepare("INSERT INTO `test` VALUES (?, ?)");
         
         $stmt->bind_param('isr', $id, $text);

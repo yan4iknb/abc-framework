@@ -8,7 +8,7 @@ namespace ABC\app\resourses;
               'framework_trace' => true, //Включает в стек дебаггера классы фреймворка              
               
               'mysqli'    =>  ['host'  => 'localhost', 
-                               'user'  => 'root', 
+                               'user'  => 'roots', 
                                'pass'  => '', 
                                'base'  => 'test',
                                'debug' =>  true // Включает режим отладки SQL

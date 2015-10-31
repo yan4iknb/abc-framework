@@ -10,7 +10,7 @@ namespace ABC\Abc\Components\Mysqli;
  * @copyright © 2015
  * @license http://www.wtfpl.net/ 
  */  
-class Mysqli extends \Mysqli
+class Mysqli extends \mysqli
 {
 
     public $test = false;
@@ -35,7 +35,7 @@ class Mysqli extends \Mysqli
         if (!empty($data)) {
          
             extract($data);
-            
+           
             if (!isset($host, $user, $pass, $base)) {
                 trigger_error(ABC_INVALID_ARGUMENT_EX 
                              .' Component Mysqli: wrong data connection in the configuration file', 
@@ -57,7 +57,7 @@ class Mysqli extends \Mysqli
     */     
     public function newConnect()
     {
-        parent::__construct($this->host, $this->user, $this->pass, $this->base);
+        parent::__construct($this->host, $this->user, $this->pass, $this->base); 
         
         if ($this->connect_error) {
             trigger_error(ABC_LOGIC_EX 

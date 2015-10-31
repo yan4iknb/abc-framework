@@ -109,8 +109,8 @@ class AbcProcessor
                          E_USER_WARNING);
         }
         
-        $builder = '\ABC\abc\builders\\'. $service .'Builder';
-        
+        $builder = '\ABC\Abc\Builders\\'. $service .'Builder';
+         
         if (!class_exists($builder)) {
             trigger_error(ABC_BAD_FUNCTION_CALL_EX 
                          .'Service "'. $service .'" is not defined.', 

@@ -96,19 +96,7 @@ class BaseRequest
     */    
     protected function createUriHash()
     {
-        $uri = explode('/', $this->getPath());
-        
-        foreach ($uri as $key => $value) {
-            if (!empty($value)) {
-                $value = explode(':', $value);
-                
-                if (!isset($value[1])) {
-                    $this->uriHash[] = $value[0];
-                } else {
-                    $this->uriHash[$value[0]] = implode(':', array_slice($value, 1));
-                }
-            }
-        }
+        $this->uriHash = explode('/', $this->getPath());
         return $this->uriHash;
     }
 }

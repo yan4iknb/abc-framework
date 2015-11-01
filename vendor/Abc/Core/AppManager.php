@@ -33,8 +33,7 @@ class AppManager
         $controllersDir = $this->getControllersDir();
         $controller = $this->getController();
         $action = $this->getAction();
-        $controller = '\ABC\\'. $controllersDir .'\\'
-                    . mb_convert_case($controller, MB_CASE_TITLE) .'Controller';
+        $controller = '\ABC\\'. $controllersDir .'\\'. $controller;
         
         if (class_exists($controller)) {
          
@@ -74,17 +73,20 @@ class AppManager
     */        
     public function getController()
     {   
-        return $this->request->iniGET('controller');
+        $controller = $this->request->iniGET('controller');
+        $controller = preg_replace('#[^a-z0-9\-_]#ui', '', $controller); 
+        return mb_convert_case($controller, MB_CASE_TITLE) .'Controller';
     }  
 
     /**
-    * Возвращает имя вызванного контроллера
+    * Возвращает имя вызванного экшена
     *
     * @return string
     */        
     public function getAction()
     {   
         $action = $this->request->iniGET('action');
+        $action = preg_replace('#[^a-z0-9\-_]#ui', '', $action);
         return 'action'. mb_convert_case($action, MB_CASE_TITLE);
     } 
     
@@ -95,11 +97,11 @@ class AppManager
     *  
     * @return void
     */        
-    public function create404($controller)
+    public function create404($search)
     {   
         $baseController = new BaseController;
         $baseController->config = $this->config;
-        $baseController->action404($controller);
+        $baseController->action404($search);
     }  
 }
 

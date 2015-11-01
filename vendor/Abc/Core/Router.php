@@ -20,7 +20,6 @@ class Router
                             'action'     => 'index'
               ];
 
-
     /**
     * Преобразует массив URI в массив GET
     *
@@ -33,9 +32,80 @@ class Router
         if (empty($uriHash)) {
             return $this->default;
         }
+        
+        if (empty($this->routes)) {
+            return $this->defaultGet($uriHash);
+        }
+        
         // не реализовано
+        return $this->routeGet($uriHash);
+    }
+    
+    /**
+    * Устанавливает GET по умолчанию
+    *
+    * @param array $uriHash
+    *
+    * @return array
+    */    
+    protected function defaultGet($uriHash)
+    {
+        $app = ['controller' => @$uriHash[0] ?: $this->default['controller'],
+                'action'     => @$uriHash[1] ?: $this->default['action']
+        ];
+     
+        $param = array_slice($uriHash, 2);
+        $get = [];
+        
+        foreach ($param as $n => $value) {
+         
+            if ($n & 1) {
+                if (preg_match('#^[a-z_]+[a-z0-9_\[\]]+$#ui', $key)) {
+                    $get[$key] = $value;                
+                }
+            } else {
+                $key = $value;
+            }
+        }
+     
+        return array_merge($get, $app);
+    }
+    
+    /**
+    * Устанавливает GET согласно роутам
+    *
+    * @param array $uriHash
+    *
+    * @return array
+    */    
+    protected function routeGet($uriHash)
+    {
+        // Не реализовано
         return $this->default;
-    }      
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

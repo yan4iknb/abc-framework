@@ -2,7 +2,7 @@
 
 namespace ABC\Abc\Components\Dic;
 
-use ABC\Abc\Core\Container;
+use ABC\Abc\Core\ServiceLocator;
 
 /** 
  * DI контейнер

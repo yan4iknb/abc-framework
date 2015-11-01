@@ -28,12 +28,14 @@ class BaseRequest
     public function __construct($router)
     {
         $this->router = $router;
-    
+     
         if (!empty($_SERVER['QUERY_STRING'])) {
             $this->GET = $this->parseQueryString();
         } else {
             $this->GET = $this->parseRequestUri();
         }
+        
+        \ABC\Abc::dbg($this->GET);
     } 
     
     /**
@@ -77,8 +79,6 @@ class BaseRequest
     /**
     * Разбирает массив HASH в массив GET по правилам роутинга
     *
-    * @param 
-    *
     * @return void
     */    
     protected function parseRequestUri()
@@ -88,15 +88,13 @@ class BaseRequest
     }
     
     /**
-    * Преобразует URI в массив
-    *
-    * @param 
+    * Преобразует URI в массив HASH
     *
     * @return void
     */    
     protected function createUriHash()
     {
-        $this->uriHash = explode('/', $this->getPath());
+        $this->uriHash = explode('/', trim($this->getPath(), '/'));
         return $this->uriHash;
     }
 }

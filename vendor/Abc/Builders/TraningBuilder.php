@@ -26,8 +26,10 @@ class TraningBuilder extends AbcBuilder
     /**
     * Строит сервис.
     * 
+    * @param bool $global
+    *
     * @return void
-    */        
+    */ 
     protected function buildService($global = false)
     { // Формируем путь до компонента
         $component = '\ABC\Abc\Components\\'. $this->service .'\\'. $this->service; 

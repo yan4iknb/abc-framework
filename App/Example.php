@@ -37,13 +37,13 @@ class Example
         
         //- - - - - - - - - - - - - - - - - - - - - - - 
         // Простые запросы mysqli
-/**/
+/*
        
         $mysqli = Abc::getService('Mysqli');
         $mysqli->test = true;
         $mysqli->query("SELECT * FROM `test`");
         
-
+*/
         // Конец - - - - - - - - - - - - - - - - - - - -
         
         

@@ -14,9 +14,9 @@ use ABC\App\Example;
  * @copyright © 2015
  * @license http://abc-framework.com/license/ 
  */   
-class Controller extends BaseController
+class MainController extends BaseController
 { 
-    public function __construct()
+    public function actionIndex()
     {
         Abc::getService('Traning')->display();    
         //new Example; 

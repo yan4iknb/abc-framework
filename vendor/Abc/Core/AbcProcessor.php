@@ -4,8 +4,10 @@ namespace ABC\Abc\Core;
 
 use ABC\Abc\Core\AbcConstants;
 use ABC\Abc\Core\Configurator;
-use ABC\Abc\Core\Container;
+use ABC\Abc\Core\ServiceLocator;
 use ABC\Abc\Core\Router;
+use ABC\Abc\Core\BaseRequest;
+use ABC\Abc\Core\AppManager;
 
 use ABC\Abc\Core\Exception\AbcException;
 use ABC\Abc\Core\Exception\Error500Exception;
@@ -49,11 +51,12 @@ class AbcProcessor
     */    
     public function __construct($appConfig = [], $siteConfig = [])
     {
+        mb_internal_encoding('UTF-8');
         AbcConstants::set(); 
         $configurator  = new Configurator;
         $this->config  = $configurator->getConfig($appConfig, $siteConfig);
         $this->selectErrorMode();           
-        $this->locator = new Container;        
+        $this->locator = new ServiceLocator;        
     }
     
     /**
@@ -61,11 +64,14 @@ class AbcProcessor
     *
     * @return void
     */     
-    public function route()
-    { 
-        $this->router = new Router;
-        $this->router->config = $this->config;
-        $this->router->run();
+    public function startApplication()
+    {
+        $router  = new Router;  
+        $request = new BaseRequest($router);
+        $this->manager = new AppManager;
+        $this->manager->config  = $this->config;
+        $this->manager->request = $request;
+        $this->manager->run();
     }
 
     /**

@@ -12,74 +12,30 @@ namespace ABC\Abc\Core;
  */   
 class Router
 {
-    /**
-    * @var ServiceLocator
-    */
-    public $locator;
-    
     public $config;
     public $routes;
     
-    protected $defaultSettings = [
-                                    'application'     => 'App',
-                                    'dir_controllers' => 'Controllers',    
+    protected $default   = [
+                            'controller' => 'main', 
+                            'action'     => 'index'
               ];
 
+
     /**
-    * Вызывает контроллер
+    * Преобразует массив URI в массив GET
     *
-    * @return void
-    */        
-    public function run()
+    * @param array $uriHash
+    *
+    * @return array
+    */    
+    public function convertUri($uriHash)
     {
-        $controllersDir = $this->getControllersDir();
-        $controllerName = $this->getControllerName();
-        $controller = '\ABC\\'. $controllersDir .'\\'. $controllerName .'Controller';
-        
-        if (!class_exists($controller)) {
-            $this->create404($controller);
-        } else {
-            (new $controller());        
+        if (empty($uriHash)) {
+            return $this->default;
         }
-    }
-    
-    /**
-    * Возвращает директорию с пользовательскими контроллерами
-    *
-    * @return string
-    */        
-    public function getControllersDir()
-    {
-        if (isset($this->config['settings'])) {
-            $settings = array_merge($this->defaultSettings, $this->config['settings']);        
-        } else {
-            $settings = $this->defaultSettings;
-        }
-     
-        return $settings['application'] .'\\'. $settings['dir_controllers'];
-    }   
-    
-    /**
-    * Возвращает имя вызванного контроллера
-    *
-    * @return string
-    */        
-    public function getControllerName()
-    {   
-        return null;
-    }  
-    
-    /**
-    * Если не найден контроллер, активирует базовый с генерацией 404 заголовка
-    *
-    * @param string $controller
-    *  
-    * @return string
-    */        
-    public function create404($controller)
-    {   
-        (new BaseController($this->config))->action404($controller);
-    }  
+        // не реализовано
+        return $this->default;
+    }      
 }
 
 

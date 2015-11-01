@@ -1,0 +1,9 @@
+AddDefaultCharset UTF-8 
+
+Options -Indexes
+
+RewriteEngine    on 
+
+RewriteCond %{REQUEST_FILENAME} !-f  
+RewriteCond %{REQUEST_FILENAME} !-d 
+RewriteRule !^(p/|favicon\.ico|robots\.txt|sitemap\.xml|sitemap\.xml\.tgz) index.php [L]

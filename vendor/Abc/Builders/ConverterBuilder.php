@@ -23,6 +23,8 @@ class ConverterBuilder extends AbcBuilder
     /**
     * Строит сервис.
     * 
+    * @param bool $global
+    *
     * @return void
     */        
     protected function buildService($global = false)

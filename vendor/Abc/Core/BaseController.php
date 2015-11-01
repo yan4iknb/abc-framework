@@ -17,16 +17,6 @@ class BaseController
 
     public $config;
     
-    /**
-    * Конструктор
-    * 
-    * @param array $appConfig
-    * @param array $siteConfig
-    */    
-    public function __construct($config)
-    {
-        $this->config = $config;
-    }
 
     /**
     * Генерирует 404 Not Found
@@ -37,7 +27,7 @@ class BaseController
     */    
     public function action404($controller)
     {
-        if (isset($this->config['debug_mod']) && $this->config['debug_mod'] === 'display') {
+        if (isset($this->config['error_mod']) && $this->config['error_mod'] === 'debug') {
             throw new \DomainException('<b>'. $controller .'</b> not found ', E_USER_WARNING); 
         }
         

@@ -59,7 +59,8 @@ class Abc
     }
  
     /**
-    * Формирует настройки и подключает автолоадер классов.
+    * Формирует настройки, подключает автолоадер классов,
+    * запускает фреймворк и приложение
     *
     * @param array $appConfig
     * @param array $siteConfig
@@ -71,7 +72,7 @@ class Abc
         $this->autoload = __DIR__ . $this->autoload;
         $this->autoloadSelector();
         self::$abc->process = new AbcProcessor($appConfig, $siteConfig);
-        self::$abc->process->route();
+        self::$abc->process->startApplication();
     }
     
     /**

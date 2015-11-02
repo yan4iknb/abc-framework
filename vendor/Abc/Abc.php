@@ -157,7 +157,28 @@ class Abc
     public static function ns($service = null)
     {
         return self::newService($service);
-    }     
+    }
+    
+    /**
+    * Инициализация GET параметра
+    *
+    * @return object
+    */     
+    public static function GET($key, $default = null)
+    {
+        return self::getService('Request')->iniGET($key, $default);
+    }
+    
+    /**
+    * Инициализация POST параметра
+    *
+    * @return object
+    */     
+    public static function POST($key, $default = null)
+    {
+        return self::getService('Request')->iniPOST($key, $default);
+    }
+    
     /**
     * Метод трассировки скриптов
     *

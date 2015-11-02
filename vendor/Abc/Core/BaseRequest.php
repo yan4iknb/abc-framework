@@ -48,7 +48,7 @@ class BaseRequest
     {
         return isset($this->GET[$key]) ? $this->GET[$key] : $default;
     } 
-    
+
     /**
     * Возвращает PATH
     *

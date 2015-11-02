@@ -26,10 +26,10 @@ class AbcConstants
         define('ABC_EXCEPTION', '[0000]'); 
         define('ABC_BAD_FUNCTION_CALL_EX', '[001]');
         define('ABC_BAD_METHOD_CALL_EX', '[002]');    
-        define('ABC_DOMAIN_EX', '[0003] ');
+        define('ABC_DOMAIN_EX', '[0003]');
         define('ABC_INVALID_ARGUMENT_EX', '[004]');
-        define('ABC_LENGTH_EX', '[005] ');    
-        define('ABC_LOGIC_EX', '[006] ');
+        define('ABC_LENGTH_EX', '[005]');    
+        define('ABC_LOGIC_EX', '[006]');
         define('ABC_OUT_OF_BOUNDS_EX', '[007]');    
         define('ABC_OUT_OF_RANGE_EX', '[008]');         
         define('ABC_OVERFLOW_EX', '[009]');    

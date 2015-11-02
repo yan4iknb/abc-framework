@@ -2,8 +2,9 @@
 
 namespace ABC\Abc\Builders;
 
-use ABC\Abc\Builders\AbcBuilder;
 
+use ABC\Abc\Builders\AbcBuilder;
+use ABC\Abc\Core\Router;
 /** 
  * Класс DicBuilder
  * 
@@ -35,7 +36,7 @@ class RequestBuilder extends AbcBuilder
         $this->locator->$typeService(
             $this->service, 
             function() use ($component) {
-                return new $component;
+                return new $component(new Router);
             }
         );
     }   

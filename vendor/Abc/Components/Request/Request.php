@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Core;
+namespace ABC\Abc\Components\Request;
 
 use ABC\Abc\Core\BaseRequest;
 
@@ -14,6 +14,17 @@ use ABC\Abc\Core\BaseRequest;
  */   
 class Request extends BaseRequest
 {
+
+    /**
+    * Конструктор
+    *
+    * @param object $router
+    */    
+    public function __construct($router)
+    {
+        parent::__construct($router);
+    } 
+
     /**
     * Инициализация POST параметров 
     *
@@ -27,5 +38,3 @@ class Request extends BaseRequest
         return isset($_POST[$key]) ? $_POST[$key] : $default;
     }
 }
-
-

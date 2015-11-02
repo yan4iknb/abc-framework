@@ -15,8 +15,7 @@ namespace ABC\Abc\Core;
 class AbcConstants
 {
     /**
-    * Конструктор
-    * 
+    * Устанавливает предопределенные константы
     */     
     public static function set() 
     { 
@@ -35,9 +34,8 @@ class AbcConstants
         define('ABC_OVERFLOW_EX', '[009]');    
         define('ABC_RANGE_EX', '[010]'); 
         define('ABC_RUNTIME_EX', '[011]');    
-        define('ABC_UNDERFLOW_EX', '[012] ');
-        define('ABC_UNEXPECTED_VALUE_EX', '[013]');    
-
+        define('ABC_UNDERFLOW_EX', '[012]');
+        define('ABC_UNEXPECTED_VALUE_EX', '[013]');
     }
 
 }  

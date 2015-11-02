@@ -47,8 +47,7 @@ class Shaper extends \mysqli_stmt
     {    
         if (strlen($types) !== count($vars)) {
             trigger_error(ABC_INVALID_ARGUMENT_EX 
-                          .'Component Mysqli: Number of elements '
-                          .'in type definition string doesn\'t match number of bind variables ', 
+                          .'Component Mysqli: '. ABC_INVALID_MYSQLI_TYPE, 
                           E_USER_WARNING);
         }
      
@@ -145,7 +144,7 @@ class Shaper extends \mysqli_stmt
             
             default :
                 trigger_error(ABC_INVALID_ARGUMENT_EX 
-                             .'Component Mysqli: unknown type of the parameter '. $type, 
+                             .'Component Mysqli: '. ABC_NO_MYSQLI_TYPE . $type, 
                               E_USER_WARNING);    
         }   
     }

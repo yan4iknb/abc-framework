@@ -38,7 +38,7 @@ class Mysqli extends \mysqli
            
             if (!isset($host, $user, $pass, $base)) {
                 trigger_error(ABC_INVALID_ARGUMENT_EX 
-                             .' Component Mysqli: wrong data connection in the configuration file', 
+                             .' Component Mysqli: '. ABC_WRONG_CONNECTION, 
                               E_USER_WARNING);
             } else {
                 $this->host = $host;
@@ -98,8 +98,8 @@ class Mysqli extends \mysqli
             $this->debugger->run($sql, $result);        
         } elseif (empty($this->debugger) && $this->test) {
             trigger_error(ABC_BAD_FUNCTION_CALL_EX 
-                         .'Component Mysqli: SQL debugger is inactive. Set to true debug configuration.',
-                          E_USER_WARNING);
+                         .'Component Mysqli: '. ABC_NO_SQL_DEBUGGER,
+                          E_USER_NOTICE);
         }
         
         return $result;

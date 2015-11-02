@@ -28,15 +28,15 @@ class Configurator
     public function getConfig($appConfig, $siteConfig)
     {   
         if (!is_array($appConfig)) {
-            trigger_error(ABC_INVALID_ARGUMENT_EX
-                         .' Configuring the application is to be performed array',
-                         E_USER_WARNING);
+            trigger_error(ABC_INVALID_ARGUMENT_EX .
+                          ABC_INVALID_CONFIGURE,
+                          E_USER_WARNING);
         }
         
         if (!is_array($siteConfig)) {
-            trigger_error(ABC_INVALID_ARGUMENT_EX
-                         .' Configuring the site is to be performed array',
-                         E_USER_WARNING);
+            trigger_error(ABC_INVALID_ARGUMENT_EX .
+                          ABC_INVALID_CONFIGURE_SITE,
+                          E_USER_WARNING);
         }
      
         $this->config = array_merge($appConfig, $siteConfig);
@@ -68,9 +68,7 @@ class Configurator
             } 
         } 
         return $config; 
-    }    
-    
-
+    }
     
     /**
     * Разбирает настройки маршрутов 
@@ -91,7 +89,9 @@ class Configurator
             return $this->parseConfigRoutes($this->config['routes']);
         }
         
-        throw new \DomainException('Unknown type of routing data.');
+        trigger_error(ABC_BAD_FUNCTION_CALL_EX . 
+                      ABC_UNKNOWN_ROUTES,
+                      E_USER_WARNING);
     }     
     
     /**

@@ -32,7 +32,9 @@ class Pdo extends \PDO
             extract($data);
             
             if (!isset($dsn, $user, $pass)) {
-                throw new \InvalidArgumentException('Component PDO: wrong data connection in the configuration file', E_USER_WARNING);
+                trigger_error(ABC_INVALID_ARGUMENT_EX 
+                             .' Component PDO: '. ABC_WRONG_CONNECTION, 
+                              E_USER_WARNING);
             }
             
             if (!isset($opt)) {
@@ -79,11 +81,6 @@ class Pdo extends \PDO
         try {
             $result = parent::query($sql);
         } catch (\PDOException $e) {
-         
-            if (empty($debugger)) {
-                throw $e;
-            }
-         
             $this->error = $e->getMessage();        
             $result = false;
         } 
@@ -95,8 +92,9 @@ class Pdo extends \PDO
             $this->debugger->component = 'PDO';
             $this->debugger->run($sql, $result);        
         } elseif (empty($this->debugger) && $this->test) {
-            throw new \BadFunctionCallException('<b>Component PDO</b>: SQL debugger is inactive. Set to true debug configuration.',
-                                                E_USER_WARNING);
+            trigger_error(ABC_BAD_FUNCTION_CALL_EX 
+                         .'Component PDO: '. ABC_NO_SQL_DEBUGGER,
+                          E_USER_NOTICE);
         }
         
         if (!$result) {

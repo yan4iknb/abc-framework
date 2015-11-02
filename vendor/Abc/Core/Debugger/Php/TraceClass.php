@@ -13,7 +13,7 @@ namespace ABC\Abc\Core\Debugger\Php;
 
 class TraceClass
 {
-    public $message = 'Tracing Class ';
+    public $message = ABC_TRACING_CLASS;
     public $adds = false;
     
     /**

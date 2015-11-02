@@ -13,7 +13,7 @@ namespace ABC\Abc\Core\Debugger\Php;
 
 class TraceVariable
 {
-    public $message = 'Tracing Variable ';
+    public $message = ABC_TRACING_VARIABLE;
     public $adds = true;    
   
     /**

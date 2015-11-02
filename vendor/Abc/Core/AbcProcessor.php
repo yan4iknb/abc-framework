@@ -110,16 +110,16 @@ class AbcProcessor
     public function prepareBuilder($service = null)
     {    
         if (empty($service) || !is_string($service)) {
-            trigger_error(ABC_INVALID_ARGUMENT_EX 
-                         .'Service name should be a string',
-                         E_USER_WARNING);
+            trigger_error(ABC_INVALID_ARGUMENT_EX . 
+                          ABC_INVALID_SERVICE_NAME,
+                          E_USER_WARNING);
         }
         
         $builder = '\ABC\Abc\Builders\\'. $service .'Builder';
          
         if (!class_exists($builder)) {
-            trigger_error(ABC_BAD_FUNCTION_CALL_EX 
-                         .'Service "'. $service .'" is not defined.', 
+            trigger_error(ABC_BAD_FUNCTION_CALL_EX . 
+                         $service . ABC_NO_SERVICE, 
                          E_USER_WARNING);
         }    
         
@@ -139,14 +139,31 @@ class AbcProcessor
     {
         if (isset($this->config['error_mod'])) {
          
+            if (isset($this->config['error_language'])) {
+                $langusge = '\ABC\Abc\Resourses\Lang\\'. $this->config['error_language'];
+                
+                if (class_exists($langusge)) {
+                    $langusge::set();
+                } else {
+                    \ABC\Abc\Resourses\Lang\En::set();
+                }
+                
+            } else {
+                \ABC\Abc\Resourses\Lang\En::set();
+            }
+         
             if ($this->config['error_mod'] === 'debug') {  
                 new PhpHandler($this->config);
             } elseif ($this->config['error_mod'] === 'exception') {
                 new AbcException($this->config);
-            } elseif ($this->config['error_mod'] == 500) {
-                set_error_handler([$this, 'throwError500Exception']);
+            } else {
+                throw new \Exception(ABC_INVALID_DEBUG_SETTING); 
             }
-        }        
+            
+        } else {
+            \ABC\Abc\Resourses\Lang\En::set();
+            set_error_handler([$this, 'throwError500Exception']);
+        }
     }
     
     /**

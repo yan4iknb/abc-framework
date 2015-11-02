@@ -30,9 +30,9 @@ class ServiceLocator
         $callable  = $this->validateCallable($callable);
        
         if (isset($this->serviceStorage[$serviceId])) {
-            trigger_error(ABC_OVERFLOW_EX 
-                         . 'Service '. $serviceId .'  is already installed.',
-                         E_USER_WARNING);
+            trigger_error(ABC_OVERFLOW_EX . 
+                          $serviceId . ABC_ALREADY_SERVICE,
+                          E_USER_WARNING);
         }
      
         $this->serviceStorage[$serviceId] = $callable;   
@@ -76,8 +76,8 @@ class ServiceLocator
             return $this->serviceStorage[$serviceId]->__invoke();
         }
      
-        trigger_error(ABC_OUT_OF_BOUNDS_EX
-                     .'Service '. $serviceId .' not found.', 
+        trigger_error(ABC_OUT_OF_BOUNDS_EX .
+                      $serviceId . ABC_NOT_FOUND_SERVICE, 
                      E_USER_WARNING);
     }
 
@@ -122,9 +122,9 @@ class ServiceLocator
     protected function validateService($serviceId)
     {
         if (empty($serviceId) || !is_string($serviceId)) {
-            trigger_error(ABC_INVALID_ARGUMENT_EX
-                         .'ID service should be a string',
-                         E_USER_WARNING); 
+            trigger_error(ABC_INVALID_ARGUMENT_EX .
+                          ABC_INVALID_SERVICE_NAME,
+                          E_USER_WARNING); 
         }
      
         return strtolower($serviceId);
@@ -140,9 +140,9 @@ class ServiceLocator
     protected function validateCallable($callable)
     {      
         if (!is_callable($callable)) {
-            trigger_error(ABC_INVALID_ARGUMENT_EX
-                         .'Callable must be a function of anonymity is conferred',
-                         E_USER_WARNING); 
+            trigger_error(ABC_INVALID_ARGUMENT_EX .
+                          ABC_INVALID_CALLABLE,
+                          E_USER_WARNING); 
         }
         
         return $callable;

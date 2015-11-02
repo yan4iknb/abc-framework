@@ -38,25 +38,24 @@ class DiC extends ServiceLocator
         }
         
         if (isset($this->serviceSynthetic[$newService])) {
-            trigger_error(ABC_LOGIC_EX
-                          .'Service '. $newService 
-                          .' created synthetically. Impossible to implement services according to the synthetic',
+            trigger_error(ABC_LOGIC_EX .
+                          $newService . ABC_SYNTHETIC_SERVICE,
                           E_USER_WARNING);
         }
      
         $dependenceId = $this->validateService($dependenceId);
         
         if (!empty($property) && !is_array($property)) {
-            trigger_error(ABC_INVALID_ARGUMENT_EX
-                         .'Property should be a array',
-                         E_USER_WARNING); 
+            trigger_error(ABC_INVALID_ARGUMENT_EX .
+                          ABC_INVALID_PROPERTY,
+                          E_USER_WARNING); 
         }
         
         $objService = $this->get($serviceId);
         
         if (false === $objService) {
-            trigger_error(ABC_LOGIC_EX
-                         .'Service '. $serviceId .' is not registered in a container',
+            trigger_error(ABC_LOGIC_EX .
+                         $serviceId . ABC_NOT_REGISTERED_SERVICE,
                          E_USER_WARNING);
         }
         
@@ -64,7 +63,7 @@ class DiC extends ServiceLocator
         
         if (false === $objDependence) {
             trigger_error(ABC_LOGIC_EX
-                         .'Service '. $dependenceId .' is not registered in a container',
+                         . $dependenceId . ABC_NOT_REGISTERED_SERVICE,
                          E_USER_WARNING);
         }
         

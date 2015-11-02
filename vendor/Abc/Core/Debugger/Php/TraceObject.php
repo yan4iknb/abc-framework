@@ -13,7 +13,7 @@ namespace ABC\Abc\Core\Debugger\Php;
 
 class TraceObject
 {
-    public $message = 'Tracing Object ';
+    public $message = ABC_TRACING_OBJECT;
     public $adds = true;
     
     /**

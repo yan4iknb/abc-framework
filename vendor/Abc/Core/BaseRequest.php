@@ -34,8 +34,6 @@ class BaseRequest
         } else {
             $this->GET = $this->parseRequestUri();
         }
-        
-        \ABC\Abc::dbg($this->GET);
     } 
     
     /**

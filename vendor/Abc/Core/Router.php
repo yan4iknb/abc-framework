@@ -37,7 +37,6 @@ class Router
             return $this->defaultGet($uriHash);
         }
         
-        // не реализовано
         return $this->routeGet($uriHash);
     }
     
@@ -84,28 +83,4 @@ class Router
         return $this->default;
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

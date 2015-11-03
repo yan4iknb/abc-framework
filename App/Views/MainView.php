@@ -20,6 +20,6 @@ class MainView extends BaseView
         $this->setTpl('main');
         $hello = $this->getAattribute()['hello'];
         $this->assignHtml('hello', $hello);
-        $this->tpl->setBlock('hello');
+        $this->setBlock('hello');
     }
 }

@@ -37,9 +37,9 @@ class Configurator
         }
      
         $this->config = array_merge($appConfig, $siteConfig);
-        $this->config = $this->usersSettingsConfig($this->config);
+        $this->config = $this->normaliseConfig($this->config);
         
-        return $this->normaliseConfig($this->config);
+        return $this->usersSettingsConfig($this->config);
     } 
     
     /**
@@ -50,14 +50,14 @@ class Configurator
     public function getRoutes()
     { 
         return prepareRoutes();
-    }    
-    
+    }  
+
     /**
-    * Приводит все ключи к нижнему регистру 
+    * Приводим все ключи к нижнему регистру 
     *
     * @return array
     */     
-    public function normaliseConfig($config)
+    protected function normaliseConfig($config)
     { 
         $config = array_change_key_case($config); 
         
@@ -70,15 +70,16 @@ class Configurator
     }
     
     /**
-    * А теперь заменяем сеттинги конфигами
+    * И теперь заменяем сеттинги конфигами
     *
     * @return array
     */     
-    public function usersSettingsConfig($config)
+    protected function usersSettingsConfig($config)
     {  
         $settings = \ABC\Abc\Resourses\Settings::get();
         return array_replace_recursive($settings, $config); 
     }
+    
     /**
     * Разбирает настройки маршрутов 
     *

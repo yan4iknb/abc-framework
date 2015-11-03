@@ -14,6 +14,7 @@ class ServiceLocator
 { 
     protected $serviceStorage = [];
     protected $serviceFrozen  = [];
+    protected $serviceSynthetic  = [];    
     protected static $objectStorage = [];  
 
     /**
@@ -28,14 +29,14 @@ class ServiceLocator
     {
         $serviceId = $this->validateService($serviceId);
         $callable  = $this->validateCallable($callable);
-       
+      
         if (isset($this->serviceStorage[$serviceId])) {
             trigger_error(ABC_OVERFLOW_EX . 
                           $serviceId . ABC_ALREADY_SERVICE,
                           E_USER_WARNING);
         }
      
-        $this->serviceStorage[$serviceId] = $callable;   
+        $this->serviceStorage[$serviceId] = $callable; 
     }
     
     /**
@@ -68,8 +69,7 @@ class ServiceLocator
             if (!isset(self::$objectStorage[$serviceId])) {
                 self::$objectStorage[$serviceId] = $this->serviceStorage[$serviceId]->__invoke();
             }
-
-                
+           
             return self::$objectStorage[$serviceId];
          
         } elseif (isset($this->serviceStorage[$serviceId])) {
@@ -88,10 +88,10 @@ class ServiceLocator
     *
     * @return void
     */       
-    public function checkService($ServiceId)
+    public function checkService($serviceId)
     {
-        $ServiceId = $this->validateService($ServiceId);
-        return isset($this->ServiceStorage[$ServiceId]);
+        $serviceId = $this->validateService($serviceId);
+        return isset($this->serviceStorage[$serviceId]);
     }  
 
     /**
@@ -99,19 +99,31 @@ class ServiceLocator
     *
     * @param string $ServiceId
     *
-    * @return object
+    * @return object|bool
     */      
-    public function getNew($ServiceId)
+    public function getNew($serviceId)
     {
-        $ServiceId = $this->validateService($ServiceId);
+        $serviceId = $this->validateService($serviceId);
         
-        if (isset($this->ServiceStorage[$ServiceId])) {
-            return $this->ServiceStorage[$ServiceId]->__invoke();
+        if (isset($this->serviceStorage[$serviceId])) {
+            return $this->serviceStorage[$serviceId]->__invoke();
         }
      
         return false;
     } 
-    
+
+    /**
+    * Объявляет сервис синтетическим, запрещенным к внедрению в него зависимостей
+    *
+    * @param string $ServiceId
+    *
+    * @return void
+    */      
+    public function serviceSynthetic($serviceId)
+    {
+        $serviceId = $this->validateService($serviceId); 
+        $this->serviceSynthetic[$serviceId] = true;
+    }     
     /**
     * Проверяет корректность ID сервиса 
     *

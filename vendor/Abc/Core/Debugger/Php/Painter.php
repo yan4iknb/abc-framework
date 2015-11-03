@@ -108,18 +108,27 @@ class Painter
     public function highlightObject($blockCont)
     {
         $blockCont = strip_tags($blockCont);
-        $strings = ['object'   => '<span class="object">object</span>',
-                    'array'    => '<span class="type">array</span>',
-                    'string' => '<span class="type">string</span>',
-                    'int'    => '<span class="type">int</span>',
-                    'null'    => '<span class="type">null</span>'
+        $strings = ['#(?<!\'|")object(\s*)#i' => '<span class="type">object</span>$1',
+                    '#(?<!\'|")array(\s*)#i'  => '<span class="type">array</span>$1',
+                    '#(?<!\'|")string(\s*)#i' => '<span class="type">string</span>$1',
+                    '#(?<!\'|")int(\s*)#i'    => '<span class="type">int</span>$1',
+                    '#(?<!\'|")null(\s*)#i'   => '<span class="type">null</span>$1',
         ];
-        $blockCont = preg_replace("#string\s*?'(.*?)'#i", '<span class="property_value">"\\1"</span>', $blockCont);        
-        $blockCont = preg_replace('#\((size.+?)\)#i', '<span class="size">(\\1)</span>', $blockCont);
-        $blockCont = preg_replace("#'(.+?)'#i", '<span class="property_var">$\\1</span>', $blockCont);
-        $blockCont = preg_replace('#(?<!\$)(public|protected|private)#i', '<span class="property">\\1</span>', $blockCont);
-
-        $blockCont = str_replace(array_keys($strings), array_values($strings), $blockCont);
+        
+        if (extension_loaded('xdebug')) {
+            $blockCont = preg_replace("#string\s*?'(.*?)'#i", '<span class="property_value">"\\1"</span>', $blockCont);        
+            $blockCont = preg_replace('#\((size.+?)\)#i', '<span class="size">(\\1)</span>', $blockCont);
+            $blockCont = preg_replace("#'(.+?)'#i", '<span class="property_var">$\\1</span>', $blockCont);
+            $blockCont = preg_replace('#(?<!\$)(public|protected|private)#i', '<span class="property">\\1</span>', $blockCont);
+        } else {
+            $blockCont = preg_replace('#(string[\s|\(].*?[\)\s])[\'|"](.+?)[\'|"]#i', '$1 <span class=ᐃ$2\'</span>', $blockCont);
+            $blockCont = preg_replace('#\((size.+?)\)#i', '<span class=ᐅ(\\1)\'</span>', $blockCont);
+            $blockCont = preg_replace('#[\'|"](.+?)[\'|"]#i', '<span class="property_var">$\\1</span>', $blockCont);        
+            $blockCont = str_replace(['ᐃ', 'ᐅ'], ['"property_value">\'', '"size">\''], $blockCont);
+            $blockCont = preg_replace('#(?<!\$)(public|protected|private)#i', '<span class="property">\\1</span>', $blockCont);        
+        }
+        
+        $blockCont = preg_replace(array_keys($strings), array_values($strings), $blockCont);
         return $blockCont;
     }  
     
@@ -131,17 +140,24 @@ class Painter
     * @return string
     */    
     public function highlightVar($blockCont)
-    {
-        $blockCont = strip_tags($blockCont);   
+    {      
         $strings = ['#(?<!\')object\s+#i' => '<span class="type">object</span> ',
                     '#(?<!\')array\s+#i'  => '<span class="type">array</span> ',
                     '#(?<!\')string\s+#i' => '<span class="type">string</span> ',
                     '#(?<!\')int\s+#i'    => '<span class="type">int</span> ',
                     '#(?<!\')null\s+#i'   => '<span class="type">null</span> ',
-        ]; 
-        $blockCont = preg_replace("#'(.+?)'#i", '<span class="value">\'$1\'</span>', $blockCont); 
+        ];
+        
+        if (extension_loaded('xdebug')) {
+            $blockCont = strip_tags($blockCont);
+            $blockCont = preg_replace("#'(.+?)'#i", '<span class="value">\'$1\'</span>', $blockCont);
+        } else {
+            $blockCont = preg_replace('#[\'|"](.+?)[\'|"]#i', '<span class="value">\'$1\'</span>', $blockCont);
+        }
+        
         $blockCont = preg_replace("#\((.+?)\)#i", '<span class="property">($1)</span>', $blockCont);
         $blockCont = preg_replace(array_keys($strings), array_values($strings), $blockCont);
+        
         
         return $blockCont;
     } 

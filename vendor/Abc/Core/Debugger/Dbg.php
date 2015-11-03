@@ -1,12 +1,12 @@
 <?php
 
-namespace ABC\abc\core\debugger;
+namespace ABC\Abc\Core\Debugger;
 
-use ABC\abc\core\debugger\php\PhpHandler;
-use ABC\abc\core\debugger\php\TraceClass;
-use ABC\abc\core\debugger\php\TraceObject;
-use ABC\abc\core\debugger\php\TraceContainer;
-use ABC\abc\core\debugger\php\TraceVariable;
+use ABC\Abc\Core\Debugger\Php\PhpHandler;
+use ABC\Abc\Core\Debugger\Php\TraceClass;
+use ABC\Abc\Core\Debugger\Php\TraceObject;
+use ABC\Abc\Core\Debugger\Php\TraceContainer;
+use ABC\Abc\Core\Debugger\Php\TraceVariable;
 
 /** 
  * Класс Dbg

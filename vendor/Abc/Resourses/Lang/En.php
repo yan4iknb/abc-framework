@@ -18,6 +18,11 @@ class En
     public static function set() 
     { 
         /**
+        * General constants
+        */ 
+        define('ABC_NO_CLASS',     ' class not found');
+        define('ABC_NO_METHOD',    ' method offline in class ');
+        /**
         * General settings
         */ 
         define('ABC_INVALID_CONFIGURE_APP',    ' Configuring the application is to be performed array');
@@ -49,6 +54,12 @@ class En
         define('ABC_NO_SQL_DEBUGGER',          ' SQL debugger is inactive. Set to true debug configuration.');    
         define('ABC_INVALID_MYSQLI_TYPE',      ' Number of elements in type definition string doesn\'t match number of bind variables ');
         define('ABC_NO_MYSQLI_TYPE',           ' Unknown type of the parameter ');
+        /**
+        * Errors template
+        */ 
+        define('ABC_NO_TEMPLATE',             ' templates file  does not exist');
+        define('ABC_INVALID_BLOCK',           ' parent block does not exist or incorrect syntax');
+ 
     }
 
 }

@@ -7,7 +7,7 @@ use ABC\Abc\Core\BaseController;
 use ABC\App\Example;
 
 /** 
- * Контролер
+ * Контроллер
  * 
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
@@ -18,8 +18,8 @@ class MainController extends BaseController
 { 
     public function actionIndex()
     {
-        Abc::getService('Traning')->display();    
-        //new Example; 
+        $this->view->createHello();
+        $this->display();
     }
 }
 

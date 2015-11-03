@@ -14,8 +14,6 @@ use ABC\Abc\Core\ServiceLocator;
  */   
 class DiC extends ServiceLocator
 { 
-
-    protected $serviceSynthetic  = [];
     
     /**
     * Внедряет один сервис в другой, создавая третий

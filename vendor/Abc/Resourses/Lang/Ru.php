@@ -18,11 +18,16 @@ class Ru
     public static function set() 
     {
         /**
+        * General constants
+        */ 
+        define('ABC_NO_CLASS',     ' class not found (класс не найден)');
+        define('ABC_NO_METHOD',    ' method offline in class (метод отсутствует в классе) ');
+        /**
         * Общие настройки
         */ 
-        define('ABC_INVALID_CONFIGURE_APP',    'Configuring the application is to be performed array (конфигурация приложения должна быть массивом)');
-        define('ABC_INVALID_CONFIGURE_SITE',   'Configuring the site is to be performed array (конфигурация сайта должна быть массивом)');
-        define('ABC_UNKNOWN_ROUTES',           'Unknown type of routing data (неизвестный тип маршрутизации)');
+        define('ABC_INVALID_CONFIGURE_APP',    ' Configuring the application is to be performed array (конфигурация приложения должна быть массивом)');
+        define('ABC_INVALID_CONFIGURE_SITE',   ' Configuring the site is to be performed array (конфигурация сайта должна быть массивом)');
+        define('ABC_UNKNOWN_ROUTES',           ' Unknown type of routing data (неизвестный тип маршрутизации)');
         /**
         * Настройки дебаггера
         */ 
@@ -49,6 +54,11 @@ class Ru
         define('ABC_NO_SQL_DEBUGGER',          'SQL debugger is inactive. Set to true debug configuration. (SQL дебаггер не установлен. Установите настройку в конфигурационном файле)');    
         define('ABC_INVALID_MYSQLI_TYPE',      'Number of elements in type definition string doesn\'t match number of bind variables  (количество элементов типа отличается от количества аргументов)');
         define('ABC_NO_MYSQLI_TYPE',           ' Unknown type of the parameter  (неизвестный тип параметра) ');
+        /**
+        * Ошибки использованияшаблонизатора
+        */ 
+        define('ABC_NO_TEMPLATE',              ' templates file  does not exist (файл шаблона отутствует) ');
+        define('ABC_INVALID_BLOCK',            ' block does not exist or incorrect syntax (блок отсутствует, либо имеет некорректный синтаксис) ');
     }
 
 }

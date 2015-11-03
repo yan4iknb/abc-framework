@@ -12,9 +12,6 @@ namespace ABC\Abc\Core;
  */   
 class Configurator
 {
-    protected $defaultRoutes = [
-    
-              ];
     /**
     * @var array
     */ 
@@ -40,6 +37,8 @@ class Configurator
         }
      
         $this->config = array_merge($appConfig, $siteConfig);
+        $this->config = $this->usersSettingsConfig($this->config);
+        
         return $this->normaliseConfig($this->config);
     } 
     
@@ -70,6 +69,16 @@ class Configurator
         return $config; 
     }
     
+    /**
+    * А теперь заменяем сеттинги конфигами
+    *
+    * @return array
+    */     
+    public function usersSettingsConfig($config)
+    {  
+        $settings = \ABC\Abc\Resourses\Settings::get();
+        return array_replace_recursive($settings, $config); 
+    }
     /**
     * Разбирает настройки маршрутов 
     *

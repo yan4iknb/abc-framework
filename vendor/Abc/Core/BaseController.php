@@ -2,7 +2,7 @@
 
 namespace ABC\Abc\Core;
 
-use ABC\Abc;
+use ABC\Abc\Components\Template\Template;
 
 /** 
  * Фронт-контролер
@@ -14,10 +14,85 @@ use ABC\Abc;
  */   
 class BaseController
 { 
-
+    
+    /**
+    * @var BaseView
+    */  
+    public $view;
+    
+    /**
+    * @var array
+    */     
     public $config;
     
+    /**
+    * @var Template
+    */  
+    public $tpl;
 
+    /**
+    * Конструктор
+    *
+    * @param string $config
+    */     
+    public function __construct($config)
+    {
+        $this->config = $config; 
+    }
+
+    /**
+    * Устанавливает шаблон
+    *
+    * @param string|array $data
+    * @param mix $value
+    *
+    * @return void
+    */     
+    public function setTpl($template)
+    {
+        $this->tpl->setTpl($template);  
+    } 
+    
+    /**
+    * Передает переменные в шаблон
+    *
+    * @param string|array $data
+    * @param mix $value
+    *
+    * @return void
+    */     
+    public function assign($data, $value = null)
+    {
+        $this->tpl->assign($data, $value);  
+    } 
+    
+    /**
+    * Передает переменные в шаблон для вывода в поток 
+    *
+    * @param string|array $data
+    * @param mix $value
+    *
+    * @return void
+    */     
+    public function assignHtml($data, $value = null)
+    {
+        $this->tpl->assignHtml($data, $value);  
+    }  
+
+    /**
+    * Рендер
+    *
+    * @param string $layout
+    * @param string $block
+    *
+    * @return void
+    */     
+    public function display($layout = null, $block = 'content')
+    { 
+        $layout = @$layout ?: $this->config['settings']['layout'];
+        $this->tpl->extendsTpl($layout, $block)->display();
+    }
+    
     /**
     * Генерирует 404 Not Found
     *

@@ -162,8 +162,8 @@ class PhpHandler extends Handler
         
         foreach ($this->backTrace as $block) {
          
-            $class  = str_replace('\\', DIRECTORY_SEPARATOR, $block['class']);
-            $space  = str_replace(DIRECTORY_SEPARATOR, '\\', dirname($class));
+            $class  = str_replace('\\', ABC_DS, $block['class']);
+            $space  = str_replace(ABC_DS, '\\', dirname($class));
             $space  = str_replace('.', '\\', $space);
             $location = basename($this->file);
 

@@ -2,6 +2,9 @@
 
 namespace ABC\Abc\Core;
 
+use ABC\Abc;
+use ABC\Abc\Core\BaseModel;
+use ABC\Abc\Core\BaseView;
 /** 
  * Класс AbcFramework
  * 
@@ -18,11 +21,7 @@ class AppManager
     public $locator;
     public $request;
     public $config;
-    
-    protected $defaultSettings = [
-                                    'application'     => 'App',
-                                    'dir_controllers' => 'Controllers',    
-              ];
+
     /**
     * Вызывает контроллер
     *
@@ -31,16 +30,36 @@ class AppManager
     public function run()
     {
         $controllersDir = $this->getControllersDir();
-        $controller = $this->getController();
-        $action = $this->getAction();
-        $controller = '\ABC\\'. $controllersDir .'\\'. $controller;
-        
+        $nameClass  = $this->getNameClass();
+        $controller = '\ABC\\'. $controllersDir .'\\'. $nameClass .'Controller';
+        $action     = $this->getAction();
+     
         if (class_exists($controller)) {
-         
-            $objController = new $controller;
-         
+            $objController = new $controller($this->config);
+            $objController->tpl = $this->getTemplate();
+            
             if (method_exists($objController, $action)) {
+                $viewsDir = $this->getViewsDir();
+                $modelsDir = $this->getModelsDir();
+                $view = '\ABC\\'. $viewsDir .'\\'. $nameClass .'View';
+                $model = '\ABC\\'. $modelsDir .'\\'. $nameClass .'Model';
+                
+                if (class_exists($model)) {
+                    $objModel = new $model($this->config);
+                } 
+                
+                if (class_exists($view)) {
+                    $objView = new $view($this->config);
+                } else {
+                    $objView = new BaseView($this->config);
+                }
+                
+                $objView->model = $objModel;
+                $objView->tpl = $this->getTemplate();                
+                $objController->model = $objModel;    
+                $objController->view  = $objView;
                 call_user_func([$objController, $action]);
+                
             } else {
                 $this->create404($action);
             }
@@ -57,25 +76,39 @@ class AppManager
     */        
     public function getControllersDir()
     {
-        if (isset($this->config['settings'])) {
-            $settings = array_merge($this->defaultSettings, $this->config['settings']);        
-        } else {
-            $settings = $this->defaultSettings;
-        }
-     
-        return $settings['application'] .'\\'. $settings['dir_controllers'];
-    }   
+        return $this->config['settings']['application'] .'\\'. $this->config['settings']['dir_controllers'];
+    } 
     
+    /**
+    * Возвращает директорию с моделями
+    *
+    * @return string
+    */        
+    public function getModelsDir()
+    {
+        return $this->config['settings']['application'] .'\\'. $this->config['settings']['dir_models'];
+    } 
+    
+    
+    /**
+    * Возвращает директорию с пользовательскими вьюшками
+    *
+    * @return string
+    */        
+    public function getViewsDir()
+    {
+        return $this->config['settings']['application'] .'\\'. $this->config['settings']['dir_views'];
+    }    
     /**
     * Возвращает имя вызванного контроллера
     *
     * @return string
     */        
-    public function getController()
+    public function getNameClass()
     {   
-        $controller = $this->request->iniGET('controller');
-        $controller = preg_replace('#[^a-z0-9\-_]#ui', '', $controller); 
-        return mb_convert_case($controller, MB_CASE_TITLE) .'Controller';
+        $nameClass = $this->request->iniGET('controller', 'main');
+        $nameClass = preg_replace('#[^a-z0-9\-_]#ui', '', $nameClass); 
+        return mb_convert_case($nameClass, MB_CASE_TITLE);
     }  
 
     /**
@@ -85,10 +118,21 @@ class AppManager
     */        
     public function getAction()
     {   
-        $action = $this->request->iniGET('action');
+        $action = $this->request->iniGET('action', 'index');
         $action = preg_replace('#[^a-z0-9\-_]#ui', '', $action);
         return 'action'. mb_convert_case($action, MB_CASE_TITLE);
     } 
+    
+    /**
+    * Возвращает объект шаблонизатора
+    *
+    * @return string
+    */        
+    public function getTemplate()
+    {   
+        return Abc::getService('Template');
+    }     
+    
     
     /**
     * Если не найден контроллер, активирует базовый с генерацией 404 заголовка
@@ -99,8 +143,7 @@ class AppManager
     */        
     public function create404($search)
     {   
-        $baseController = new BaseController;
-        $baseController->config = $this->config;
+        $baseController = new BaseController($this->config);
         $baseController->action404($search);
     }  
 }

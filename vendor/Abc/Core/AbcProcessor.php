@@ -6,7 +6,7 @@ use ABC\Abc\Core\AbcConstants;
 use ABC\Abc\Core\Configurator;
 use ABC\Abc\Core\ServiceLocator;
 use ABC\Abc\Core\Router;
-use ABC\Abc\Core\BaseRequest;
+use ABC\Abc\Core\Request;
 use ABC\Abc\Core\AppManager;
 
 use ABC\Abc\Core\Exception\AbcException;
@@ -55,7 +55,7 @@ class AbcProcessor
         AbcConstants::set(); 
         $configurator  = new Configurator;
         $this->config  = $configurator->getConfig($appConfig, $siteConfig);
-        $this->selectErrorMode();           
+        $this->selectErrorMode();          
         $this->locator = new ServiceLocator;        
     }
     
@@ -67,7 +67,7 @@ class AbcProcessor
     public function startApplication()
     {
         $router  = new Router;  
-        $request = new BaseRequest($router);
+        $request = new Request($router);
         $this->manager = new AppManager;
         $this->manager->config  = $this->config;
         $this->manager->request = $request;

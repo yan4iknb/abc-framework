@@ -10,7 +10,7 @@ namespace ABC\Abc\Core;
  * @copyright © 2015
  * @license http://www.wtfpl.net/
  */   
-class BaseRequest
+class Request
 {
     /**
     * @var \ABC\Abc\Core\Router

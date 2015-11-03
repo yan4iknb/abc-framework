@@ -14,12 +14,6 @@ class Router
 {
     public $config;
     public $routes;
-    
-    protected $default   = [
-                            'controller' => 'main', 
-                            'action'     => 'index'
-              ];
-
     /**
     * Преобразует массив URI в массив GET
     *
@@ -49,8 +43,8 @@ class Router
     */    
     protected function defaultGet($uriHash)
     {
-        $app = ['controller' => @$uriHash[0] ?: $this->default['controller'],
-                'action'     => @$uriHash[1] ?: $this->default['action']
+        $app = ['controller' => @$uriHash[0] ?: $this->config['defaultRoute']['controller'],
+                'action'     => @$uriHash[1] ?: $this->config['defaultRoute']['action']
         ];
      
         $param = array_slice($uriHash, 2);
@@ -80,7 +74,7 @@ class Router
     protected function routeGet($uriHash)
     {
         // Не реализовано
-        return $this->default;
+        return $this->config->defaultRoute;
     }
 }
 

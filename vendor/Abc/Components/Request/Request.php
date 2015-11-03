@@ -2,7 +2,7 @@
 
 namespace ABC\Abc\Components\Request;
 
-use ABC\Abc\Core\BaseRequest;
+use ABC\Abc\Core\Request as BaseRequest;
 
 /** 
  * Класс Request

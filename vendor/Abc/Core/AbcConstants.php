@@ -19,6 +19,7 @@ class AbcConstants
     */     
     public static function set() 
     { 
+        define('ABC_DS', DIRECTORY_SEPARATOR);
         /**
         * Константы кодов иерархии исключений SPL
         */  

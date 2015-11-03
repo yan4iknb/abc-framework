@@ -52,7 +52,7 @@ class Request
     /**
     * Возвращает PATH
     *
-    * @return srring
+    * @return string
     */    
     public function getPath()
     {

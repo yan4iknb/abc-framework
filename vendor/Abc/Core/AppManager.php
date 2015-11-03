@@ -46,7 +46,9 @@ class AppManager
                 
                 if (class_exists($model)) {
                     $objModel = new $model($this->config);
-                } 
+                } else {
+                    $objModel = null;
+                }
                 
                 if (class_exists($view)) {
                     $objView = new $view($this->config);

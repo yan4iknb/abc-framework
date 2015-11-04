@@ -57,9 +57,28 @@ class En
         /**
         * Errors template
         */ 
-        define('ABC_NO_TEMPLATE',             ' templates file  does not exist');
-        define('ABC_INVALID_BLOCK',           ' parent block does not exist or incorrect syntax');
- 
+        define('ABC_NO_TEMPLATE',              ' templates file  does not exist ');
+        define('ABC_INVALID_BLOCK',            ' parent block does not exist or incorrect syntax ');
+        define('ABC_NO_METHOD_IN_TPL',         ' templating method is not supported ');
+        
+        
+        define('ABC_NO_MODEL',                 ' model is not implemented ');
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

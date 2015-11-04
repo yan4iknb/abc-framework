@@ -2,9 +2,7 @@
 
 namespace ABC\App\Controllers;
 
-use ABC\Abc;
 use ABC\Abc\Core\BaseController;
-use ABC\App\Example;
 
 /** 
  * Контроллер

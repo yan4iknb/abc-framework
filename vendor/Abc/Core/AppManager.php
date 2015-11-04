@@ -40,9 +40,9 @@ class AppManager
             
             if (method_exists($objController, $action)) {
                 $viewsDir = $this->getViewsDir();
-                $modelsDir = $this->getModelsDir();
+                $modelDir = $this->getModelsDir();
                 $view = '\ABC\\'. $viewsDir .'\\'. $nameClass .'View';
-                $model = '\ABC\\'. $modelsDir .'\\'. $nameClass .'Model';
+                $model = '\ABC\\'. $modelDir .'\\'. $nameClass .'Model';
                 
                 if (class_exists($model)) {
                     $objModel = new $model($this->config);
@@ -57,7 +57,7 @@ class AppManager
                 }
                 
                 $objView->model = $objModel;
-                $objView->tpl = $this->getTemplate();                
+                $objView->tpl   = $this->getTemplate();                
                 $objController->model = $objModel;    
                 $objController->view  = $objView;
                 call_user_func([$objController, $action]);
@@ -82,7 +82,7 @@ class AppManager
     } 
     
     /**
-    * Возвращает директорию с моделями
+    * Возвращает директорию с пользовательскими моделями
     *
     * @return string
     */        
@@ -100,7 +100,8 @@ class AppManager
     public function getViewsDir()
     {
         return $this->config['settings']['application'] .'\\'. $this->config['settings']['dir_views'];
-    }    
+    }
+    
     /**
     * Возвращает имя вызванного контроллера
     *

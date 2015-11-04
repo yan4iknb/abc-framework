@@ -44,7 +44,13 @@ class BaseView
     */ 
     public function getAattribute()
     {
-        return $this->model->getAattribute();
+        if (is_object($this->model)) {
+            return $this->model->getAattribute();       
+        } 
+     
+        trigger_error(ABC_BAD_METHOD_CALL_EX . 
+                      ABC_NO_MODEL, 
+                      E_USER_WARNING);
     }
     
     /**
@@ -57,7 +63,13 @@ class BaseView
     */     
     public function setTpl($template)
     {
-        $this->tpl->setTpl($template);  
+        if (method_exists($this->tpl, 'setTpl')) {
+            $this->tpl->setTpl($template);        
+        } else {
+            trigger_error(ABC_BAD_METHOD_CALL_EX . 
+                         __METHOD__ . ABC_NO_METHOD_IN_TPL, 
+                         E_USER_WARNING);
+        }
     } 
     
     /**
@@ -70,7 +82,13 @@ class BaseView
     */     
     public function assign($data, $value = null)
     {
-        $this->tpl->assign($data, $value);  
+        if (method_exists($this->tpl, 'assign')) {
+            $this->tpl->assign($data, $value);       
+        } else {
+            trigger_error(ABC_BAD_METHOD_CALL_EX . 
+                         __METHOD__ . ABC_NO_METHOD_IN_TPL, 
+                         E_USER_WARNING);
+        }  
     } 
     
     /**
@@ -83,8 +101,14 @@ class BaseView
     */     
     public function assignHtml($data, $value = null)
     {
-        $this->tpl->assignHtml($data, $value);  
-    } 
+        if (method_exists($this->tpl, 'assignHtml')) {
+            $this->tpl->assignHtml($data, $value);        
+        } else {
+            trigger_error(ABC_BAD_METHOD_CALL_EX . 
+                         __METHOD__ . ABC_NO_METHOD_IN_TPL, 
+                         E_USER_WARNING);
+        } 
+    }
     
     /**
     * Устанавливает блок 
@@ -95,7 +119,27 @@ class BaseView
     */     
     public function setBlock($blockName)
     {
-        $this->tpl->setBlock($blockName);  
-    }  
-
+        if (method_exists($this->tpl, 'setBlock')) {
+            $this->tpl->setBlock($blockName);        
+        } else {
+            trigger_error(ABC_BAD_METHOD_CALL_EX . 
+                         __METHOD__ . ABC_NO_METHOD_IN_TPL, 
+                         E_USER_WARNING);
+        } 
+    }
+   
+    /**
+    * Ошибка вызова метода
+    *
+    * @param string $method
+    * @param mix $param
+    *
+    * @return void
+    */     
+    public function __call($method, $param)
+    {
+        trigger_error(ABC_BAD_METHOD_CALL_EX . 
+                     $method . ABC_NO_METHOD, 
+                     E_USER_WARNING);
+    }
 }

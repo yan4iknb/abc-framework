@@ -51,14 +51,17 @@ class Ru
         * Ошибки использования компонентов СУБД
         */   
         define('ABC_WRONG_CONNECTION',         ' wrong data connection in the configuration file (неверные данные коннекта в конфигурационном файле)');
-        define('ABC_NO_SQL_DEBUGGER',          'SQL debugger is inactive. Set to true debug configuration. (SQL дебаггер не установлен. Установите настройку в конфигурационном файле)');    
-        define('ABC_INVALID_MYSQLI_TYPE',      'Number of elements in type definition string doesn\'t match number of bind variables  (количество элементов типа отличается от количества аргументов)');
+        define('ABC_NO_SQL_DEBUGGER',          ' SQL debugger is inactive. Set to true debug configuration. (SQL дебаггер не установлен. Установите настройку в конфигурационном файле)');    
+        define('ABC_INVALID_MYSQLI_TYPE',      ' Number of elements in type definition string doesn\'t match number of bind variables  (количество элементов типа отличается от количества аргументов)');
         define('ABC_NO_MYSQLI_TYPE',           ' Unknown type of the parameter  (неизвестный тип параметра) ');
         /**
         * Ошибки использованияшаблонизатора
         */ 
         define('ABC_NO_TEMPLATE',              ' templates file  does not exist (файл шаблона отутствует) ');
         define('ABC_INVALID_BLOCK',            ' block does not exist or incorrect syntax (блок отсутствует, либо имеет некорректный синтаксис) ');
+        define('ABC_NO_METHOD_IN_TPL',         ' templating method is not supported (метод не поддерживается шаблонизатором) ');
+        
+        define('ABC_NO_MODEL',                 ' model is not implemented (модель не реализована)');
     }
 
 }

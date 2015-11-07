@@ -54,9 +54,10 @@ class AbcProcessor
         mb_internal_encoding('UTF-8');
         AbcConstants::set(); 
         $configurator  = new Configurator;
-        $this->config  = $configurator->getConfig($appConfig, $siteConfig);
+        $this->config  = $config = $configurator->getConfig($appConfig, $siteConfig);
         $this->selectErrorMode();          
-        $this->locator = new ServiceLocator;        
+        $this->locator = new ServiceLocator; 
+        $this->setInStorage('config', $config);
     }
     
     /**
@@ -66,7 +67,9 @@ class AbcProcessor
     */     
     public function startApplication()
     {
-        $router  = new Router;  
+        $router  = new Router;
+        $router->config = $this->config;
+        $this->setInStorage('Router', $router);
         $request = new Request($router);
         $this->manager = new AppManager;
         $this->manager->config  = $this->config;
@@ -99,7 +102,35 @@ class AbcProcessor
         $builder = $this->prepareBuilder($service);
         return $builder->getService($service);
     }
-
+    
+    /**
+    * Помещает данные в глобальное хранилище
+    *
+    * @param string $id
+    * @param mix $data
+    *
+    * @return void
+    */     
+    public function setInStorage($id, $data)
+    {  
+        $this->locator->setGlobal($id, 
+                           function() use ($data) {
+                               return $data;
+                           });
+    }
+    
+    /**
+    * Получает данные из глобального хранилища
+    *
+    * @param string $id
+    *
+    * @return mix
+    */     
+    public function getFromStorage($id = null)
+    {  
+        return $this->locator->get($id);
+    }
+    
     /**
     * Подготовка билдера
     *

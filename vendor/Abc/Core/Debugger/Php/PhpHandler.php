@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Core\Debugger\php;
+namespace ABC\Abc\Core\Debugger\Php;
 
 use ABC\Abc\Core\Debugger\Handler;
 use ABC\Abc\Core\Debugger\Php\View;

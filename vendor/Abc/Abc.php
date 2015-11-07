@@ -122,41 +122,50 @@ class Abc
     /**
     * Возвращает объект сервиса
     *
+    * @param string $service
+    *
     * @return object
     */     
     public static function getService($service = null)
     {
         return self::$abc->process->getService($service);
-    }    
-    
-    /**
-    * Алиас метода getService()
-    *
-    * @return object
-    */     
-    public static function gs($service = null)
-    {
-        return self::getService($service);
     }
     
     /**
     * Инициализирует новый объект сервиса
     *
+    * @param string $service
+    *
     * @return object
-    */     
+    */ 
     public static function newService($service = null)
     {
         return self::$abc->process->newService($service);
-    }    
-    
+    }
+
     /**
-    * Алиас метода newService()
+    * Помещает данные в глобальное хранилище
     *
-    * @return object
+    * @param string $id
+    * @param mix $data
+    *
+    * @return void
     */     
-    public static function ns($service = null)
+    public static function setInStorage($id, $data)
     {
-        return self::newService($service);
+        self::$abc->process->setInStorage($id, $data);
+    }    
+
+    /**
+    * Получает данные из глобального хранилища
+    *
+    * @param string $id
+    *
+    * @return mix
+    */     
+    public static function getFromStorage($id = null)
+    {
+        return self::$abc->process->getFromStorage($id);
     }
     
     /**

@@ -52,7 +52,7 @@ class ServiceLocator
         $this->set($serviceId, $callable);
         $this->serviceFrozen[strtolower($serviceId)]  = true;    
     }
-
+    
     /**
     * Инициализирует и возвращает объект сервиса
     *

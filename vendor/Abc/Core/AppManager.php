@@ -15,10 +15,6 @@ use ABC\Abc\Core\BaseView;
  */   
 class AppManager
 {
-    /**
-    * @var ServiceLocator
-    */
-    public $locator;
     public $request;
     public $config;
 

@@ -8,7 +8,7 @@ use ABC\Abc\Core\BaseView;
  * Класс MainView
  * 
  * NOTE: Requires PHP version 5.5 or later   
- * @author phpforum.su
+ * @author irbis-team
  * @copyright © 2015
  * @license http://www.wtfpl.net/ 
  */   
@@ -21,5 +21,10 @@ class MainView extends BaseView
         $hello = $this->getAattribute()['hello'];
         $this->assignHtml('hello', $hello);
         $this->setBlock('hello');
+    }
+    
+    public function setLayoutVar()
+    {
+        $this->assignHtml('hello', $hello);
     }
 }

@@ -320,7 +320,7 @@ class Template
         
         $block = $this->includesPhp($block);
         $block = str_ireplace('<?xml', '<xml', $block);
-     
+        include_once 'functions.php'; 
         extract($this->data);
         ob_start();
             eval('?>'. $block);

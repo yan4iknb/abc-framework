@@ -155,7 +155,7 @@ class BaseController
     *
     * @return void
     */    
-    public function action404($search)
+    public function action404($search = null)
     {
         if (isset($this->config['error_mod']) && $this->config['error_mod'] === 'debug') {
             throw new \DomainException('404 <b>'. $search .'</b> not found ', E_USER_WARNING); 

@@ -29,20 +29,18 @@ use ABC\Abc;
     * 
     * @param string $text
     * @param string $query
-    * @param string|array $param
-    * @param string $return
-    * @param mix $default
+    * @param string $attribute
     * @param bool $abs
     *
     * @return string 
     */      
     function linkTo(...$args)   
     { 
-        $default = ['param' => null, 'return' => null, 'default' => false, 'abs' => false];
+        $default = ['attribute' => null, 'abs' => false];
         $args = array_merge($default, $args);
         extract($args);
         return '<a href="'. href($query, $abs) .'" '
-                          . activeLink($param, $return, $default) .'>'
+                          . $attribute .' >'
                           . htmlspecialchars($text) 
                           .'</a>';
     } 

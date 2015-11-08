@@ -29,7 +29,8 @@ class DebugException extends \Exception
     public function __construct($message, $code, $file, $line) 
     {
         $this->file = $file;
-        $this->line = $line;       
+        $this->line = $line; 
+        $message = 'перевод';
         parent::__construct($message, $code);
     }
 }  

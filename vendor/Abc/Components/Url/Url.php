@@ -19,28 +19,16 @@ class Url
 
     public function getUrl($string, $abs = false)
     {
+        $router = Abc::getFromStorage('Router');
+        $param = $router->hashFromUrl($string);    
+     
         if (isset($this->config['mod_rewrite']) && false === $this->config['mod_rewrite']) {
-            return $this->createQueryString($string);   
+            return '/?'. http_build_query($param);    
         } else {
-            return $this->createRequestUri($string);
+            $param = $router->hashFromQueryString($param);
+            return '/'. implode('/', $param);
         }
     }
-    
-    public function createQueryString($string)
-    {
-        $router = Abc::getFromStorage('Router');
-        $param = $router->hashFromUrl($string);
-        return '/?'. http_build_query($param);   
-    }
- 
-    
-    public function createRequestUri($string)
-    {
-        $router = Abc::getFromStorage('Router');
-        $param = $router->hashFromUrl($string);
-        return '/'. implode('/', $param);   
-    }    
-    
 } 
 
 

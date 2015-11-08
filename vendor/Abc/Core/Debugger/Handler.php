@@ -47,7 +47,8 @@ abstract class Handler
     */  
     protected $data;
     
-    protected $E_User = [
+    protected $E_Lavel = [
+                E_WARNING,
                 E_USER_NOTICE,
                 E_USER_WARNING,
                 E_USER_ERROR
@@ -66,6 +67,10 @@ abstract class Handler
      
         if (isset($config['space_prexix'])) {
             $this->spacePrefix = $config['space_prexix'];
+        }
+        
+        if (isset($config['error_language'])) {
+            $this->language = $config['error_language'];
         }
         
         set_exception_handler([$this, 'exceptionHandler']);
@@ -106,16 +111,23 @@ abstract class Handler
     {  
         if (error_reporting() & $code) {
             $this->exception = false;
-            $this->message   = $message;
+         
+            if (!empty($this->language)) {
+                $lang = '\ABC\Abc\Core\Debugger\Php\Lang\\'. $this->language;
+                $this->message = $lang::translate($message);            
+            } else {
+                $this->message = $message;
+            }
+            
             $this->code      = $code; 
             $this->file      = $file;
             $this->line      = $line; 
             $trace = debug_backtrace();
-
-            if (in_array($code, $this->E_User)) {
+         
+            if (in_array($code, $this->E_Lavel)) {
                 array_shift($trace);            
             }
-            
+         
             $trace = $this->prepareTrace($trace);
             $this->backTrace = array_reverse($trace);
             $this->createReport();
@@ -233,7 +245,7 @@ abstract class Handler
             return false;
         }
      
-        if (!empty($block['args'][1]) && is_int($block['args'][1]) && in_array($block['args'][1], $this->E_User)) {
+        if (!empty($block['args'][1]) && is_int($block['args'][1]) && in_array($block['args'][1], $this->E_Lavel)) {
             return false;
         }
         

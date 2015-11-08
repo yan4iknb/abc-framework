@@ -16,8 +16,9 @@ class MainController extends BaseController
 { 
     public function actionIndex()
     {
-        $this->view->createHello();
-        $this->display();
+        new \ABC\App\Example;
+        //$this->view->createHello();
+        //$this->display();
     }
 }
 

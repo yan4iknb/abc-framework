@@ -13,6 +13,51 @@ namespace ABC\Abc\Core;
 class Router
 {
     public $config;
+    
+    
+    /**
+    * Преобразует строку URL в массив согласно роутам
+    *
+    * @param string $string
+    *
+    * @return array
+    */    
+    public function hashFromUrl($string)
+    {
+        $string = trim($string, '/?');
+        
+        if (false !== strpos($string, '&')) {
+            mb_parse_str($string, $param); 
+            $param = $this->hashFromQueryString($param);
+        } else {
+            $param  = explode('/', $string);
+            
+        }
+     
+        return $this->convertUri($param);    
+    }     
+        
+    /**
+    * Генерирует массив HASH из QueryString
+    *
+    * @param array $param
+    *
+    * @return array
+    */    
+    public function hashFromQueryString($param)
+    {
+        $hash = array_values(array_slice($param, 0, 2));
+        $get  = array_slice($param, 2);
+      
+        foreach ($get as $key => $value) {
+            array_push($hash, $key);
+            array_push($hash, $value);
+        }
+       
+        return $hash;
+        
+    }     
+    
     /**
     * Преобразует массив URI в массив GET
     *
@@ -33,6 +78,23 @@ class Router
         return $this->routeGet($uriHash);
     }
     
+    /**
+    * Устанавливает GET по умолчанию
+    *
+    * @param array $param
+    *
+    * @return array
+    */    
+    protected function defaultGet($param)
+    {
+        $app = ['controller' => @$param[0] ?: $this->config['defaultRoute']['controller'],
+                'action'     => @$param[1] ?: $this->config['defaultRoute']['action']
+        ];
+     
+        $param = array_slice($param, 2);
+        $get   = $this->generateGet($param);
+        return array_merge($app, $get);
+    }    
     
     /**
     * Генерирует GET из HASH
@@ -56,66 +118,6 @@ class Router
         }
      
         return $get;
-    }
-    
-    
-    /**
-    * Преобразует строку URL в массив согласно роутам
-    *
-    * @param string $string
-    *
-    * @return array
-    */    
-    public function hashFromUrl($string)
-    {
-        if (false !== strpos($string, '&')) {
-            $param = $this->hashFromQueryString($string);
-        } else {
-            $param  = explode('/', trim($string, '/?'));        
-        }
-        
-        return $this->convertUri($param);    
-    }    
-    
-    /**
-    * Генерирует массив HASH из QueryString
-    *
-    * @param string $query
-    *
-    * @return array
-    */    
-    public function hashFromQueryString($query)
-    {
-        parse_str($query, $param);
-        $mods = array_values(array_slice($param, 0, 2));
-        $get  = array_slice($param, 2);
-        $hash = [];
-        
-        foreach ($get as $key => $value) {
-            $hash[] = $key;
-            $hash[] = $value;
-        }
-        
-        return array_merge($mods, $hash);
-        
-    }  
-    
-    /**
-    * Устанавливает GET по умолчанию
-    *
-    * @param array $uriHash
-    *
-    * @return array
-    */    
-    protected function defaultGet($uriHash)
-    {
-        $app = ['controller' => @$uriHash[0] ?: $this->config['defaultRoute']['controller'],
-                'action'     => @$uriHash[1] ?: $this->config['defaultRoute']['action']
-        ];
-     
-        $param = array_slice($uriHash, 2);
-        $get   = $this->generateGet($param);
-        return array_merge($app, $get);
     }
     
     /**

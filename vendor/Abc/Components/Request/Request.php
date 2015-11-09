@@ -33,8 +33,12 @@ class Request extends BaseRequest
     *
     * @return string
     */        
-    public function iniPOST($key, $default = null)
+    public function iniPOST($key = null, $default = null)
     {
+        if (empty($key)) {
+            return @$_POST;
+        }
+        
         return isset($_POST[$key]) ? $_POST[$key] : $default;
     }
 }

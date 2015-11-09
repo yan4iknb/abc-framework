@@ -29,6 +29,13 @@ class Url
             return '/'. implode('/', $param);
         }
     }
+    
+    public function getGet($string, $abs = false)
+    {
+        $router = Abc::getFromStorage('Router');
+        $param = $router->hashFromUrl($string);
+        return $param;
+    }
 } 
 
 

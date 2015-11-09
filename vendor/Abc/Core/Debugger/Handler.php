@@ -49,6 +49,7 @@ abstract class Handler
     
     protected $E_Lavel = [
                 E_WARNING,
+                E_STRICT,
                 E_USER_NOTICE,
                 E_USER_WARNING,
                 E_USER_ERROR
@@ -118,7 +119,7 @@ abstract class Handler
             } else {
                 $this->message = $message;
             }
-            
+         
             $this->code      = $code; 
             $this->file      = $file;
             $this->line      = $line; 
@@ -166,9 +167,10 @@ abstract class Handler
         $listLevels = [
                         E_NOTICE        => 'PHP Notice: ',
                         E_WARNING       => 'PHP Warning: ',
+                        E_STRICT        => 'PHP Strict: ',
                         E_USER_NOTICE   => 'ABC Notice: ',
                         E_USER_WARNING  => 'ABC Warning: ',
-                        E_USER_ERROR    => 'ABC Message: '
+                        E_USER_ERROR    => 'ABC Message: '                        
         ];
         
         return !empty($listLevels[$level]) ? $listLevels[$level] : 'ABC debug mode: ';
@@ -188,8 +190,8 @@ abstract class Handler
         if (empty($block['class'])) {
             $block['class'] = 'PHP';
             $block['type']  = '>>>';
-            $this->file = $block['file'];
-            $this->line = $block['line'];
+            $this->file = @$block['file'];
+            $this->line = @$block['line'];
         }
 
 

@@ -21,7 +21,7 @@ use ABC\Abc;
     */      
     function href($query, $abs = false)   
     {  
-        return Abc::getService('Url')->getUrl($query, $abs = false);
+        return Abc::getService('Url')->getUrl($query, $abs);
     }
     
     /**
@@ -54,17 +54,21 @@ use ABC\Abc;
     *
     * @return string
     */ 
-    function activeLink($param, $return, $default = false)
+    function activeLink($query, $default = false)
     { 
-        $value = Abc::GET($param);
+        $get = Abc::GET();
+        $current = Abc::getService('Url')->getGet($query);
+
+        if ($get === $current) {
+            return 'class="act"';        
+        }
+        
+        if (null === $get['controller'] && $default) {
+            return 'class="act"'; 
+        }
      
-        if($default && $value === '')
-            return 'class="active"';
-     
-        if(is_array($return) && in_array($value, $return))
-            return 'class="active"';
-     
-        return ($value === $return) ? 'class="active"' : NULL;
+        
+        return null;
     } 
     
   

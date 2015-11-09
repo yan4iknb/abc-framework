@@ -213,7 +213,7 @@ class Template
     * @return void
     */
     public function display()
-    {
+    {       
         if (empty($this->total)) {
             $this->total = $this->parseTpl();
         }
@@ -230,12 +230,12 @@ class Template
     * @return object
     */
     public function extendsTpl($tpl, $block)
-    {
+    { 
         $child = $this->parseChild();
         $parentTpl = new $this->class($this->tplDir);
         $parentTpl->setTpl($tpl, $block);
         $parentTpl->assign($block, $child);
-     
+      
         foreach ($this->stack as $stack) {
             $method = key($stack);
             $parentTpl->$method($stack[$method]);
@@ -264,7 +264,7 @@ class Template
     * @return string
     */
     protected function prepareTpl($check = true)
-    {
+    { 
         $this->tpl   = $this->parse($this->tpl);
         $this->tpl   = $this->clear($this->tpl);
         $this->total = $this->execute($this->tpl);
@@ -482,7 +482,7 @@ class Template
          
             if (!empty($vars[1])) {
                 foreach ($vars[1] as $var) {
-                    $this->data[$var] = '';
+                    $this->data[$var] = null;
                 }
             }
         }

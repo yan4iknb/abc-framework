@@ -44,8 +44,12 @@ class Request
     *
     * @return string
     */        
-    public function iniGET($key, $default = null)
+    public function iniGET($key = null, $default = null)
     {
+        if (empty($key)) {
+            return @$this->GET;
+        }
+        
         return isset($this->GET[$key]) ? $this->GET[$key] : $default;
     } 
 

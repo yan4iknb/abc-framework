@@ -173,7 +173,7 @@ class Abc
     *
     * @return object
     */     
-    public static function GET($key, $default = null)
+    public static function GET($key = null, $default = null)
     {
         return self::getService('Request')->iniGET($key, $default);
     }
@@ -183,7 +183,7 @@ class Abc
     *
     * @return object
     */     
-    public static function POST($key, $default = null)
+    public static function POST($key = null, $default = null)
     {
         return self::getService('Request')->iniPOST($key, $default);
     }

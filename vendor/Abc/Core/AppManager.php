@@ -29,22 +29,22 @@ class AppManager
         $nameClass  = $this->getNameClass();
         $controller = '\ABC\\'. $controllersDir .'\\'. $nameClass .'Controller';
         $action     = $this->getAction();
-     
+    
         if (class_exists($controller)) {
             $objController = new $controller($this->config);
             $objController->tpl = $this->getTemplate();
-            
+           
             if (method_exists($objController, $action)) {
                 $viewsDir = $this->getViewsDir();
                 $modelDir = $this->getModelsDir();
                 $view = '\ABC\\'. $viewsDir .'\\'. $nameClass .'View';
                 $model = '\ABC\\'. $modelDir .'\\'. $nameClass .'Model';
-                
-                if (class_exists($model)) {
-                    $objModel = new $model($this->config);
-                } else {
+                  
+                //if (class_exists($model)) {
+                    //$objModel = new $model($this->config);
+                //} else {
                     $objModel = null;
-                }
+                //}
                 
                 if (class_exists($view)) {
                     $objView = new $view($this->config);
@@ -134,7 +134,8 @@ class AppManager
     
     
     /**
-    * Если не найден контроллер, активирует базовый с генерацией 404 заголовка
+    * Если не найден контроллер или экшен, активирует 
+    * базовый контроллер с генерацией 404 заголовка
     *
     * @param string $controller
     *  

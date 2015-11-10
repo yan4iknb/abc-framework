@@ -44,6 +44,7 @@ class Pdo extends \PDO
                 );            
             }
             
+            defined('ABC_DBPREFIX') or define('ABC_DBPREFIX', @$prefix);
             $this->debugger = $debugger;
         }
      

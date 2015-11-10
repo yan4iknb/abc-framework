@@ -54,10 +54,10 @@ class AbcProcessor
         mb_internal_encoding('UTF-8');
         AbcConstants::set(); 
         $configurator  = new Configurator;
-        $this->config  = $config = $configurator->getConfig($appConfig, $siteConfig);
+        $this->config  = $configurator->getConfig($appConfig, $siteConfig);
         $this->selectErrorMode();          
         $this->locator = new ServiceLocator; 
-        $this->setInStorage('config', $config);
+        $this->setInStorage('config', $this->config);
     }
     
     /**

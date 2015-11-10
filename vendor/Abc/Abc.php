@@ -189,6 +189,16 @@ class Abc
     }
     
     /**
+    * Инициализация POST параметра
+    *
+    * @return object
+    */     
+    public static function getConfig($key = null)
+    {
+        return self::$abc->process->getFromStorage('config')[$key];
+    }
+    
+    /**
     * Метод трассировки скриптов
     *
     * @return void

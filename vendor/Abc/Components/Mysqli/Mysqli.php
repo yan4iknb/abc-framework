@@ -45,6 +45,7 @@ class Mysqli extends \mysqli
                 $this->user = $user;
                 $this->pass = $pass;
                 $this->base = $base;
+                defined('ABC_DBPREFIX') or define('ABC_DBPREFIX', @$prefix);
                 $this->newConnect();
             }
         }

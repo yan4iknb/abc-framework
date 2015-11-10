@@ -13,7 +13,19 @@ namespace ABC\Abc\Core;
 class Router
 {
     public $config;
-    
+
+    /**
+    * Преобразует строку URL в массив
+    *
+    * @param string $string
+    *
+    * @return array
+    */    
+    public function createGetFrom($string)
+    {
+        $param = $this->hashFromString($string);
+        return $this->generateGet($param);    
+    }     
     
     /**
     * Преобразует строку URL в массив согласно роутам
@@ -23,6 +35,19 @@ class Router
     * @return array
     */    
     public function hashFromUrl($string)
+    {
+        $param = $this->hashFromString($string);
+        return $this->convertUri($param);    
+    } 
+    
+    /**
+    * Преобразует строку URL в массив согласно роутам
+    *
+    * @param string $string
+    *
+    * @return array
+    */    
+    public function hashFromString($string)
     {
         $string = trim($string, '/?');
         
@@ -34,9 +59,9 @@ class Router
             
         }
      
-        return $this->convertUri($param);    
-    }     
-        
+        return $param;    
+    } 
+  
     /**
     * Генерирует массив HASH из QueryString
     *
@@ -85,7 +110,7 @@ class Router
     *
     * @return array
     */    
-    protected function defaultGet($param)
+    public function defaultGet($param)
     {
         $app = ['controller' => @$param[0] ?: $this->config['defaultRoute']['controller'],
                 'action'     => @$param[1] ?: $this->config['defaultRoute']['action']

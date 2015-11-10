@@ -48,7 +48,7 @@ abstract class Handler
     protected $data;
     
     protected $E_Lavel = [
-                E_WARNING,
+               // E_WARNING,
                 E_STRICT,
                 E_USER_NOTICE,
                 E_USER_WARNING,

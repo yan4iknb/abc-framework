@@ -28,16 +28,6 @@ class BaseView
     public $tpl;
     
     /**
-    * Конструктор
-    *
-    * @param string $config
-    */  
-    public function __construct($config)
-    {
-        $this->config = $config;  
-    }
-    
-    /**
     * Возвращает данные из модели
     *
     * @return array
@@ -127,7 +117,25 @@ class BaseView
                          E_USER_WARNING);
         } 
     }
-   
+ 
+    
+    /**
+    * Очищает блок 
+    *
+    * @param string $blockName
+    *
+    * @return void
+    */     
+    public function clearBlock($blockName)
+    {
+        if (method_exists($this->tpl, 'clearBlock')) {
+            $this->tpl->clearBlock($blockName);        
+        } else {
+            trigger_error(ABC_BAD_METHOD_CALL_EX . 
+                         __METHOD__ . ABC_NO_METHOD_IN_TPL, 
+                         E_USER_WARNING);
+        } 
+    }    
     /**
     * Ошибка вызова метода
     *

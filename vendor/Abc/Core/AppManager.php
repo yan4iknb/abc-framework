@@ -29,32 +29,23 @@ class AppManager
         $nameClass  = $this->getNameClass();
         $controller = '\ABC\\'. $controllersDir .'\\'. $nameClass .'Controller';
         $action     = $this->getAction();
-    
+     
         if (class_exists($controller)) {
             $objController = new $controller($this->config);
             $objController->tpl = $this->getTemplate();
-           
+          
             if (method_exists($objController, $action)) {
                 $viewsDir = $this->getViewsDir();
-                $modelDir = $this->getModelsDir();
                 $view = '\ABC\\'. $viewsDir .'\\'. $nameClass .'View';
-                $model = '\ABC\\'. $modelDir .'\\'. $nameClass .'Model';
-                  
-                //if (class_exists($model)) {
-                    //$objModel = new $model($this->config);
-                //} else {
-                    $objModel = null;
-                //}
                 
                 if (class_exists($view)) {
-                    $objView = new $view($this->config);
+                    $objView = new $view;
+                    $objView->config = $this->config;
                 } else {
                     $objView = new BaseView($this->config);
                 }
                 
-                $objView->model = $objModel;
-                $objView->tpl   = $this->getTemplate();                
-                $objController->model = $objModel;    
+                $objView->tpl   = $this->getTemplate();   
                 $objController->view  = $objView;
                 call_user_func([$objController, $action]);
                 
@@ -76,17 +67,6 @@ class AppManager
     {
         return $this->config['settings']['application'] .'\\'. $this->config['settings']['dir_controllers'];
     } 
-    
-    /**
-    * Возвращает директорию с пользовательскими моделями
-    *
-    * @return string
-    */        
-    public function getModelsDir()
-    {
-        return $this->config['settings']['application'] .'\\'. $this->config['settings']['dir_models'];
-    } 
-    
     
     /**
     * Возвращает директорию с пользовательскими вьюшками

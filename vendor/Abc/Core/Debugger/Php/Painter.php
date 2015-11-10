@@ -125,7 +125,8 @@ class Painter
             $blockCont = preg_replace('#\((size.+?)\)#i', '<span class=ᐅ(\\1)\'</span>', $blockCont);
             $blockCont = preg_replace('#[\'|"](.+?)[\'|"]#i', '<span class="property_var">$\\1</span>', $blockCont);        
             $blockCont = str_replace(['ᐃ', 'ᐅ'], ['"property_value">\'', '"size">\''], $blockCont);
-            $blockCont = preg_replace('#(?<!\$)(public|protected|private)#i', '<span class="property">\\1</span>', $blockCont);        
+            $blockCont = preg_replace('#(?<!\$)(public|protected|private)#i', '<span class="property">\\1</span>', $blockCont);
+            
         }
         
         $blockCont = preg_replace(array_keys($strings), array_values($strings), $blockCont);

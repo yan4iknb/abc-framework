@@ -3,13 +3,7 @@
 namespace ABC\Abc\Builders;
 
 /** 
- * Сборка дебаггера SQL 
- */ 
-use ABC\Abc\Components\Sqldebug\SqlDebug;
-use ABC\Abc\Components\Sqldebug\View;
-
-/** 
- * Класс Mysqli
+ * Класс AbcBuilder
  * 
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
@@ -56,6 +50,7 @@ abstract class AbcBuilder
     /**
     * Получает сервис из локатора если он есть
     * или сначала помещает его туда
+    * (по принципу Singleton)
     *
     * @return object
     */    

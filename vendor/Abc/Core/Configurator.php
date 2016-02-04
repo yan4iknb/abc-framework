@@ -49,7 +49,7 @@ class Configurator
     */     
     public function getRoutes()
     { 
-        return prepareRoutes();
+        return $this->prepareRoutes();
     }  
 
     /**
@@ -125,7 +125,8 @@ class Configurator
     */     
     protected function defaultRoute()
     { 
-        return $this->defaultRoutes;
+        // To be continued
+        return [];
     }
 }
 

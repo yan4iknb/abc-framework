@@ -68,13 +68,14 @@ class DiC extends ServiceLocator
         $class = get_class($objService);
      
         $newCallable = function() use ($class, $objDependence, $property) {
-                $obj = new $class($objDependence);
-                $obj
-                foreach ($property as $key => $value) {
-                    $obj->$key = $value;
-                }
-                return $obj;
-            };
+            $obj = new $class($objDependence);
+         
+            foreach ($property as $key => $value) {
+                $obj->$key = $value;
+            }
+            
+            return $obj;
+        };
      
         unset($objService);
         unset($objDependence);

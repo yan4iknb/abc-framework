@@ -171,7 +171,7 @@ class Abc
     /**
     * Инициализация GET параметра
     *
-    * @return object
+    * @return string
     */     
     public static function GET($key = null, $default = null)
     {
@@ -181,7 +181,7 @@ class Abc
     /**
     * Инициализация POST параметра
     *
-    * @return object
+    * @return string
     */     
     public static function POST($key = null, $default = null)
     {
@@ -189,9 +189,9 @@ class Abc
     }
     
     /**
-    * Инициализация POST параметра
+    * Получает настройку конфигурации
     *
-    * @return object
+    * @return string
     */     
     public static function getConfig($key = null)
     {

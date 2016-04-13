@@ -19,7 +19,7 @@ class AppManager
     public $config;
 
     /**
-    * Вызывает контроллер
+    * Вызывает контроллер  и, если есть, вьюшку и модель
     *
     * @return void
     */        
@@ -42,12 +42,14 @@ class AppManager
                 $model = '\ABC\\'. $modelsDir .'\\'. $nameClass .'Model';
                 
                 if (class_exists($view)) {
-                    $objView = new $view(new $model);
-                    $objView->config = $this->config;
+                    $objView = new $view;
+                    $objView->model = class_exists($model) ? new $model : null;
                 } else {
-                    $objView = new BaseView($this->config);
+                    $objView = new BaseView;
+                    
                 }
                 
+                $objView->config = $this->config;
                 $objView->tpl = $this->getTemplate();   
                 $objController->view  = $objView;
                 call_user_func([$objController, $action]);

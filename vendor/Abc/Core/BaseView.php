@@ -18,28 +18,26 @@ class BaseView
     * @var array
     */     
     public $config;
+
     /**
     * @var Model
     */     
-    public $model;  
+    public $model;
+    
     /**
     * @var Template
     */  
-    public $tpl;
-    
-    public function __construct($model)
-    {   
-        $this->model = $model;
-    }
+    public $tpl;    
+  
     /**
-    * Возвращает данные из модели
+    * Возвращает объект модели
     *
     * @return array
     */ 
-    public function getAattribute()
+    public function model()
     {
         if (is_object($this->model)) {
-            return $this->model->getAattribute();       
+            return $this->model;       
         } 
      
         trigger_error(ABC_BAD_METHOD_CALL_EX . 

@@ -2,9 +2,8 @@
 
 namespace ABC;
 
-
-use ABC\Abc\Core\AbcProcessor;
 use ABC\Abc\Core\Debugger\Dbg;
+use ABC\Abc\Core\AbcProcessor;
 
 /** 
  * Класс Abc 
@@ -198,6 +197,7 @@ class Abc
         return self::$abc->process->getFromStorage('config')[$key];
     }
     
+    
     /**
     * Метод трассировки скриптов
     *
@@ -208,3 +208,5 @@ class Abc
         new Dbg($var);
     }
 }
+
+

@@ -11,7 +11,7 @@ use ABC\Abc\Core\BaseModel;
  * @copyright © 2015
  * @license http://www.wtfpl.net/ 
  */   
-class MainModel extends BaseModel
+class MainModel
 {
     public function getAattribute()
     {

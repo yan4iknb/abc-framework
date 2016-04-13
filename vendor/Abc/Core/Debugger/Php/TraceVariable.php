@@ -2,6 +2,9 @@
 
 namespace ABC\Abc\Core\Debugger\Php;
 
+ 
+  defined('ABC_TRACING_VARIABLE') or define('ABC_TRACING_VARIABLE', ' Tracing Variable<br />');
+ 
 /** 
  * Класс TraceVariable
  * Трассировка переменной.
@@ -10,7 +13,6 @@ namespace ABC\Abc\Core\Debugger\Php;
  * @copyright © 2015 
  * @license http://www.wtfpl.net/
  */   
-
 class TraceVariable
 {
     public $message = ABC_TRACING_VARIABLE;

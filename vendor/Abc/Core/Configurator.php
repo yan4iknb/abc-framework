@@ -2,6 +2,8 @@
 
 namespace ABC\Abc\Core;
 
+use ABC\Abc\Resourses\Settings;
+
 /** 
  * Конфигуратор
  * 
@@ -12,10 +14,6 @@ namespace ABC\Abc\Core;
  */   
 class Configurator
 {
-    /**
-    * @var array
-    */ 
-    protected $config;
     
     /**
     * Возвращает массив пользовательских настроек 
@@ -36,10 +34,10 @@ class Configurator
                           E_USER_WARNING);
         }
      
-        $this->config = array_merge($appConfig, $siteConfig);
-        $this->config = $this->normaliseConfig($this->config);
-        
-        return $this->usersSettingsConfig($this->config);
+        $config   = array_replace_recursive($appConfig, $siteConfig);
+        $config   = $this->normaliseConfig($config);
+        $settings = Settings::get();
+        return array_replace_recursive($settings, $config); 
     } 
     
     /**
@@ -67,17 +65,6 @@ class Configurator
             } 
         } 
         return $config; 
-    }
-    
-    /**
-    * И теперь заменяем сеттинги конфигами
-    *
-    * @return array
-    */     
-    protected function usersSettingsConfig($config)
-    {  
-        $settings = \ABC\Abc\Resourses\Settings::get();
-        return array_replace_recursive($settings, $config); 
     }
     
     /**

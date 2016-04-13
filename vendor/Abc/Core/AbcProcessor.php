@@ -2,6 +2,18 @@
 
 namespace ABC\Abc\Core;
 
+/**
+* @TODO To clean in release 
+*/
+use ABC\Abc\Core\Debugger\Dbg;
+
+    function dbg($var = 'stop')
+    {   
+        new Dbg($var);
+    }
+
+
+
 use ABC\Abc\Core\AbcConstants;
 use ABC\Abc\Core\Configurator;
 use ABC\Abc\Core\Container;
@@ -205,3 +217,4 @@ class AbcProcessor
         }
     } 
 }
+

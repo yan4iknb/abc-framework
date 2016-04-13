@@ -4,7 +4,7 @@ namespace ABC\Abc\Core;
 
 use ABC\Abc\Core\AbcConstants;
 use ABC\Abc\Core\Configurator;
-use ABC\Abc\Core\ServiceLocator;
+use ABC\Abc\Core\Container;
 use ABC\Abc\Core\Router;
 use ABC\Abc\Core\Request;
 use ABC\Abc\Core\AppManager;
@@ -26,15 +26,10 @@ class AbcProcessor
     /**
     * @var array
     */ 
-    protected $config;
-
-    /**
-    * @var ServiceLocator
-    */ 
-    protected $locator; 
+    protected $config; 
     
     /**
-    * @var object
+    * @var Container
     */ 
     protected $container;
     
@@ -56,7 +51,7 @@ class AbcProcessor
         $configurator  = new Configurator;
         $this->config  = $configurator->getConfig($appConfig, $siteConfig);
         $this->selectErrorMode();          
-        $this->locator = new ServiceLocator; 
+        $this->container = new Container; 
         $this->setInStorage('config', $this->config);
     }
     
@@ -113,7 +108,7 @@ class AbcProcessor
     */     
     public function setInStorage($id, $data)
     {  
-        $this->locator->setGlobal($id, 
+        $this->container->setGlobal($id, 
                            function() use ($data) {
                                return $data;
                            });
@@ -128,7 +123,7 @@ class AbcProcessor
     */     
     public function getFromStorage($id = null)
     {  
-        return $this->locator->get($id);
+        return $this->container->get($id);
     }
     
     /**
@@ -156,7 +151,7 @@ class AbcProcessor
         
         $builder = new $builder;
         $builder->config  = $this->config;
-        $builder->locator = $this->locator;
+        $builder->container = $this->container;
         return $builder;
     }
     

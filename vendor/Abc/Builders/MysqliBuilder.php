@@ -38,7 +38,7 @@ class MysqliBuilder extends AbcBuilder
      
         $data = @$this->config[strtolower($this->service)] ?: [];  
         $typeService = $global ? 'setGlobal' : 'set';
-        $this->locator->$typeService(
+        $this->container->$typeService(
             $this->service,
             function() use ($component, $data) {   
                 $obj = new $component($data);

@@ -23,9 +23,9 @@ abstract class AbcBuilder
     public $component;
 
     /**
-    * @var ServiceLocator
+    * @var Container
     */ 
-    public $locator; 
+    public $container; 
     
     /**
     * Контракт
@@ -40,11 +40,11 @@ abstract class AbcBuilder
     */    
     public function newService()
     {  
-        if (!$this->locator->checkService($this->service)) {
+        if (!$this->container->checkService($this->service)) {
             $this->buildService();
         }
         
-        return $this->locator->getNew($this->service);
+        return $this->container->getNew($this->service);
     }
     
     /**
@@ -56,11 +56,11 @@ abstract class AbcBuilder
     */    
     public function getService()
     { 
-        if (!$this->locator->checkService($this->service)) { 
+        if (!$this->container->checkService($this->service)) { 
             $this->buildService(true);
         }
       
-        return $this->locator->get($this->service);
+        return $this->container->get($this->service);
     }     
     
 }

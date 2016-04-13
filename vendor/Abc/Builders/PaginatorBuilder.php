@@ -35,7 +35,7 @@ class PaginatorBuilder extends AbcBuilder
         $typeService = $global ? 'setGlobal' : 'set';
         $get = Abc::GET();
         $url = Abc::getService('Url');
-        $this->locator->$typeService(
+        $this->container->$typeService(
             $this->service, 
             function() use ($component, $get, $url) {
                 $obj = new $component;

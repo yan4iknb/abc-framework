@@ -34,7 +34,7 @@ class UrlBuilder extends AbcBuilder
         $config = $this->config;
         $router = Abc::getFromStorage('Router');
       
-        $this->locator->$typeService(
+        $this->container->$typeService(
             $this->service, 
             function() use ($component, $config, $router) {
                 $obj = new $component;

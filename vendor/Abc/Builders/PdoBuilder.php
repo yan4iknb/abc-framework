@@ -34,7 +34,7 @@ class PdoBuilder extends AbcBuilder
         $data = @$this->config[strtolower($this->service)] ?: [];
         $typeService = $global ? 'setGlobal' : 'set';
         
-        $this->locator->$typeService(
+        $this->container->$typeService(
             $this->service, 
             function() use ($component, $data) {
                 $data['debugger'] = isset($data['debug']) ? new SqlDebug(new View) : null;

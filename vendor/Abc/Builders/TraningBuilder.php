@@ -39,7 +39,7 @@ class TraningBuilder extends AbcBuilder
       // Или обычным, когда при каждом обращении формируются новые объекты
         $typeService = $global ? 'setGlobal' : 'set';
       // Помещаем сервис в локатор в виде анонимной функции
-        $this->locator->$typeService(
+        $this->container->$typeService(
             $this->service, // <--- Это название сервиса
             function() use ($component, $data) {// <--- Передаем в функцию имя компонента и настройки конфигурации
                 // Подготавливаем к запуску интерфейс основного компонента

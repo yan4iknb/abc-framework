@@ -32,12 +32,12 @@ class TemplateBuilder extends AbcBuilder
         $component = '\ABC\Abc\Components\\'. $this->service .'\\'. $this->service;
         $typeService = $global ? 'setGlobal' : 'set';
         $config = $this->config;
-        $this->locator->$typeService(
+        $this->container->$typeService(
             $this->service,
             function() use ($component, $config) {
                 return new $component($config['settings']['dir_template']);
             }
         );
-        $this->locator->serviceSynthetic($this->service);
+        $this->container->serviceSynthetic($this->service);
     }   
 }

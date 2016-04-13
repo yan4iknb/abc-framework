@@ -27,6 +27,10 @@ class BaseView
     */  
     public $tpl;
     
+    public function __construct($model)
+    {   
+        $this->model = $model;
+    }
     /**
     * Возвращает данные из модели
     *

@@ -2,7 +2,7 @@
 
 namespace ABC\Abc\Components\Dic;
 
-use ABC\Abc\Core\ServiceLocator;
+use ABC\Abc\Core\Container;
 
 /** 
  * DI контейнер
@@ -12,7 +12,7 @@ use ABC\Abc\Core\ServiceLocator;
  * @copyright © 2015
  * @license http://www.wtfpl.net/ 
  */   
-class DiC extends ServiceLocator
+class DiC extends Container
 { 
     
     /**

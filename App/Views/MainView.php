@@ -22,9 +22,4 @@ class MainView extends BaseView
         $this->assignHtml('hello', $hello);
         $this->setBlock('hello');
     }
-    
-    public function setLayoutVar()
-    {
-        $this->assignHtml('hello', $hello);
-    }
 }

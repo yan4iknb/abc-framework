@@ -32,7 +32,7 @@ class ConverterBuilder extends AbcBuilder
         $component = '\ABC\Abc\Components\\'. $this->service .'\\'. $this->service;
         $typeService = $global ? 'setGlobal' : 'set';
         
-        $this->locator->$typeService(
+        $this->container->$typeService(
             $this->service, 
             function() use ($component) {
                 return new $component;

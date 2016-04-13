@@ -10,7 +10,7 @@ namespace ABC\Abc\Core;
  * @copyright © 2015
  * @license http://www.wtfpl.net/ 
  */   
-class ServiceLocator
+class Container
 { 
     protected $serviceStorage = [];
     protected $serviceFrozen  = [];

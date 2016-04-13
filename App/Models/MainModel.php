@@ -2,7 +2,6 @@
 
 namespace ABC\App\Models;
 
-use ABC\Abc\Core\BaseModel;
 /** 
  * Класс MainView
  * 

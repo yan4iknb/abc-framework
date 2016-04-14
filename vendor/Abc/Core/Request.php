@@ -52,6 +52,23 @@ class Request
         
         return isset($this->GET[$key]) ? $this->GET[$key] : $default;
     } 
+    
+
+    /**
+    * Возвращает HOST
+    *
+    * @return string
+    */    
+    public function getHostName()
+    {
+        if (isset($_SERVER['HTTP_HOST'])) {
+            return $_SERVER['HTTP_HOST'];
+        } elseif (isset($_SERVER['SERVER_NAME'])) {
+            return $_SERVER['SERVER_NAME'];
+        }
+        
+        return null;
+    }
 
     /**
     * Возвращает PATH
@@ -96,8 +113,13 @@ class Request
     */    
     protected function createUriHash()
     {
-        $this->uriHash = explode('/', trim($this->getPath(), '/'));
-        return $this->uriHash;
+        $uriHash = explode('/', trim($this->getPath(), '/'));
+        
+        if (!empty($this->router->config['url']['show_script'])) {
+            array_shift($uriHash);
+        }
+        
+        return $uriHash;
     }
 }
 

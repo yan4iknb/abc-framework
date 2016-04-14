@@ -16,12 +16,13 @@ use ABC\Abc;
     * Формирование URL.
     * 
     * @param string $arg
+    * @param bool|array $mode
     *
     * @return string 
     */      
-    function href($query, $abs = false)   
+    function href($query, $mode = false)   
     {  
-        return Abc::getService('Url')->getUrl($query, $abs);
+        return Abc::getService('Url')->getUrl($query, $mode);
     }
     
     /**
@@ -34,21 +35,21 @@ use ABC\Abc;
     *
     * @return string 
     */      
-    function linkTo(...$args)   
+    function linkTo($query, $text, $attribute = null, $mode = false)   
     { 
-        $default = ['attribute' => null, 'abs' => false];
-        $args = array_merge($default, $args);
-        extract($args);
-        return '<a href="'. href($query, $abs) .'" '
+        if (substr($query, 0, 4) !== 'http') {
+            $query = href($query, $mode);
+        }
+        
+        return '<a href="'. $query .'" '
                           . $attribute .' >'
-                          . htmlspecialchars($text) 
+                          . $text 
                           .'</a>';
     } 
     
     /**   
     * Активация ссылок 
     *
-    * @param string $return
     * @param string|array $param
     * @param mix $default
     *
@@ -56,18 +57,32 @@ use ABC\Abc;
     */ 
     function activeLink($query, $default = false)
     { 
-        $get = Abc::GET();
-        $current = Abc::getService('Url')->getGet($query);
-
-        if ($get === $current) {
+        $url = Abc::getService('Url');
+        $current = $url->getGet($query);
+     
+        if (Abc::GET() === $current) {
             return 'class="act"';        
-        }
+        }        
         
-        if (null === $get['controller'] && $default) {
-            return 'class="act"'; 
+        preg_match('#(.+?)/<(.*?)>#', $query, $out);
+     
+        if (!empty($out)) {
+         
+            $get = strtolower(Abc::GET('controller') .'/'. Abc::GET('action'));
+            $get = $url->getUrl($get);
+            array_shift($out);
+            $controller = array_shift($out);
+            
+            $out = explode('|', $out[0]);
+            
+            foreach ($out as $action) {
+             
+                if ($get === strtolower($url->getUrl($controller .'/'. $action))) {
+                    return 'class="act"';
+                }
+            }
         }
      
-        
         return null;
     } 
     

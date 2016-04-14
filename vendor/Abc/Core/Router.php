@@ -15,7 +15,7 @@ class Router
     public $config;
 
     /**
-    * Преобразует строку URL в массив
+    * Преобразует строку URL в массив GET
     *
     * @param string $string
     *
@@ -28,7 +28,7 @@ class Router
     }     
     
     /**
-    * Преобразует строку URL в массив согласно роутам
+    * Преобразует URL в массив согласно роутам
     *
     * @param string $string
     *
@@ -41,7 +41,7 @@ class Router
     } 
     
     /**
-    * Преобразует строку URL в массив согласно роутам
+    * Преобразует строку URL в массив hash 
     *
     * @param string $string
     *
@@ -53,7 +53,7 @@ class Router
         
         if (false !== strpos($string, '&')) {
             mb_parse_str($string, $param); 
-            $param = $this->hashFromQueryString($param);
+            $param = $this->hashFromParam($param);
         } else {
             $param  = explode('/', $string);
             
@@ -63,13 +63,13 @@ class Router
     } 
   
     /**
-    * Генерирует массив HASH из QueryString
+    * Генерирует массив HASH
     *
     * @param array $param
     *
     * @return array
     */    
-    public function hashFromQueryString($param)
+    public function hashFromParam($param)
     {
         $hash = array_values(array_slice($param, 0, 2));
         $get  = array_slice($param, 2);
@@ -92,15 +92,11 @@ class Router
     */    
     public function convertUri($uriHash)
     {
-        if (empty($uriHash)) {
-            return $this->default;
-        }
-        
         if (empty($this->config['routes'])) {
             return $this->defaultGet($uriHash);
         }
         
-        return $this->routeGet($uriHash);
+        return $this->routeRule($uriHash);
     }
     
     /**
@@ -144,7 +140,7 @@ class Router
      
         return $get;
     }
-    
+  
     /**
     * Устанавливает GET согласно роутам
     *
@@ -152,7 +148,7 @@ class Router
     *
     * @return array
     */    
-    protected function routeGet($uriHash)
+    protected function routeRule($uriHash)
     {
         // Не реализовано
         return $this->config->defaultRoute;

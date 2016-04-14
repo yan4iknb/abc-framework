@@ -32,14 +32,12 @@ class UrlBuilder extends AbcBuilder
         $component = '\ABC\Abc\Components\\'. $this->service .'\\'. $this->service;
         $typeService = $global ? 'setGlobal' : 'set';
         $config = $this->config;
-        $router = Abc::getFromStorage('Router');
-      
+        $request = Abc::getFromStorage('Request');
         $this->container->$typeService(
             $this->service, 
-            function() use ($component, $config, $router) {
-                $obj = new $component;
-                $obj->config = $config;
-                $obj->router = $router;   
+            function() use ($component, $config, $request) {
+                $obj = new $component($request);
+                $obj->config = $config;   
                 return $obj;
             }
         );

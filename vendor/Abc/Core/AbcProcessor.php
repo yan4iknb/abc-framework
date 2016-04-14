@@ -76,8 +76,8 @@ class AbcProcessor
     {
         $router  = new Router;
         $router->config = $this->config;
-        $this->setInStorage('Router', $router);
         $request = new Request($router);
+        $this->setInStorage('Request', $request);
         $this->manager = new AppManager;
         $this->manager->config  = $this->config;
         $this->manager->request = $request;

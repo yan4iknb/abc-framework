@@ -17,9 +17,9 @@ class MainView extends BaseView
 
     public function createHello()
     {
-        $this->setTpl('main');
+        //$this->setTpl('main');
         $hello = $this->model()->getAattribute()['hello'];
-        $this->assignHtml('hello', $hello);
-        $this->setBlock('hello');
+        //$this->assignHtml('hello', $hello);
+        //$this->setBlock('hello');
     }
 }

@@ -13,21 +13,27 @@ namespace ABC\Abc\Core;
 class Request
 {
     /**
-    * @var \ABC\Abc\Core\Router
-    */
-    public $router;
-    
-    public $GET;
-    public $uriHash;
+    * @var array
+    */     
+    protected $GET;
     
     /**
-    * Конструктор
-    *
-    * @param object $router
-    */    
-    public function __construct($router)
+    * @var array
+    */ 
+    protected $uriHash;
+    
+    /**
+    * @var array
+    */ 
+    protected $config; 
+    
+    /**
+    * @param object $container
+    */ 
+    public function __construct($container)
     {
-        $this->router = $router;
+        $this->config = $container->get('config');
+        $this->router = $container->get('Router');
      
         if (!empty($_SERVER['QUERY_STRING'])) {
             $this->GET = $this->parseQueryString();
@@ -79,7 +85,8 @@ class Request
     {
         if (isset($_SERVER['REQUEST_URI'])) {
             return parse_url($_SERVER['REQUEST_URI'])['path'];        
-        }    
+        } 
+        
         return '/';
     }
     
@@ -91,8 +98,8 @@ class Request
     protected function parseQueryString()
     {
         $queryString = urldecode($_SERVER['QUERY_STRING']);
-        mb_parse_str($queryString, $out);
-        return $out;
+        mb_parse_str($queryString, $result);
+        return $result;
     }  
 
     /**
@@ -115,7 +122,7 @@ class Request
     {
         $uriHash = explode('/', trim($this->getPath(), '/'));
         
-        if (!empty($this->router->config['url']['show_script'])) {
+        if (!empty($this->config['url']['show_script'])) {
             array_shift($uriHash);
         }
         

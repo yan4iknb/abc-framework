@@ -45,10 +45,10 @@ class BaseController
     *
     * @return array
     */ 
-    public function getAattribute()
+    public function model()
     {
         if (is_object($this->model)) {
-            return $this->model->getAattribute();       
+            return $this->model;       
         } 
      
         trigger_error(ABC_BAD_METHOD_CALL_EX . 
@@ -66,12 +66,12 @@ class BaseController
     */     
     public function setTpl($template)
     {
+        $this->checkTemplate();
+        
         if (method_exists($this->tpl, 'setTpl')) {
             $this->tpl->setTpl($template);        
         } else {
-            trigger_error(ABC_BAD_METHOD_CALL_EX . 
-                         __METHOD__ . ABC_NO_METHOD_IN_TPL, 
-                         E_USER_WARNING);
+            $this->notFound(__METHOD__);
         }
     } 
     
@@ -85,12 +85,12 @@ class BaseController
     */     
     public function assign($data, $value = null)
     {
+        $this->checkTemplate();
+     
         if (method_exists($this->tpl, 'assign')) {
             $this->tpl->assign($data, $value);       
         } else {
-            trigger_error(ABC_BAD_METHOD_CALL_EX . 
-                         __METHOD__ . ABC_NO_METHOD_IN_TPL, 
-                         E_USER_WARNING);
+            $this->notFound(__METHOD__);
         }  
     } 
     
@@ -104,12 +104,12 @@ class BaseController
     */     
     public function assignHtml($data, $value = null)
     {
+        $this->checkTemplate();
+     
         if (method_exists($this->tpl, 'assignHtml')) {
             $this->tpl->assignHtml($data, $value);        
         } else {
-            trigger_error(ABC_BAD_METHOD_CALL_EX . 
-                         __METHOD__ . ABC_NO_METHOD_IN_TPL, 
-                         E_USER_WARNING);
+            $this->notFound(__METHOD__);
         } 
     }  
     
@@ -122,14 +122,14 @@ class BaseController
     * @return void
     */     
     public function display($layout = null, $block = 'content')
-    { 
+    {
+        $this->checkTemplate();
+     
         if (method_exists($this->tpl, 'extendsTpl')) {
             $layout = @$layout ?: $this->config['settings']['layout'];
             $this->tpl->extendsTpl($layout, $block)->display();        
         } else {
-            trigger_error(ABC_BAD_METHOD_CALL_EX . 
-                         __METHOD__ . ABC_NO_METHOD_IN_TPL, 
-                         E_USER_WARNING);
+            $this->notFound(__METHOD__);
         }
     }
     
@@ -142,6 +142,30 @@ class BaseController
     * @return void
     */     
     public function __call($method, $param)
+    {
+        $this->notFound($method);
+    }
+    
+    /**
+    * Проверка включения шаблонизатора
+    *
+    * @return void
+    */  
+    protected function checkTemplate()
+    {
+        if (false === $this->tpl) {
+            trigger_error(ABC_DOMAIN_EX . 
+                         ABC_TPL_DISABLE, 
+                         E_USER_WARNING);
+        }
+    }
+    
+    /**
+    * Проверка наличия метода
+    *
+    * @return void
+    */  
+    protected function notFound($method)
     {
         trigger_error(ABC_BAD_METHOD_CALL_EX . 
                      $method . ABC_NO_METHOD, 
@@ -179,4 +203,7 @@ class BaseController
 EOD;
         exit($page);
     }
+    
+    
+    
 }

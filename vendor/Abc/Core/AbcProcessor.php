@@ -17,9 +17,6 @@ use ABC\Abc\Core\Debugger\Dbg;
 use ABC\Abc\Core\AbcConstants;
 use ABC\Abc\Core\Configurator;
 use ABC\Abc\Core\Container;
-use ABC\Abc\Core\Router;
-use ABC\Abc\Core\Request;
-use ABC\Abc\Core\AppManager;
 
 use ABC\Abc\Core\Exception\AbcException;
 use ABC\Abc\Core\Exception\Error500Exception;
@@ -60,11 +57,16 @@ class AbcProcessor
     {
         mb_internal_encoding('UTF-8');
         AbcConstants::set(); 
-        $configurator  = new Configurator;
-        $this->config  = $configurator->getConfig($appConfig, $siteConfig);
-        $this->selectErrorMode();          
-        $this->container = new Container; 
+        $configurator = new Configurator;
+        $this->config = $configurator->getConfig($appConfig, $siteConfig);
+        $this->selectErrorMode(); 
+        $this->container = new Container;
         $this->setInStorage('config', $this->config);
+        $this->setInContainer('Router');
+        $this->setInContainer('RouteParser');
+        $this->setInContainer('Request');
+        $this->setInContainer('AppManager');
+        $this->setInContainer('Url');
     }
     
     /**
@@ -74,14 +76,42 @@ class AbcProcessor
     */     
     public function startApplication()
     {
-        $router  = new Router;
-        $router->config = $this->config;
-        $request = new Request($router);
-        $this->setInStorage('Request', $request);
-        $this->manager = new AppManager;
-        $this->manager->config  = $this->config;
-        $this->manager->request = $request;
-        $this->manager->run();
+        $manager = $this->container->get('AppManager');
+        $manager->run();
+    }
+    
+    
+    /**
+    * Помещает объекты ядра в контейнер
+    *
+    * @param string $className
+    *
+    * @return void
+    */     
+    public function setInContainer($className)
+    { 
+        $container = $this->container;
+        $this->container->set($className, 
+               function() use ($className, $container) {
+                   $className = 'ABC\Abc\Core\\' . $className;
+                   return new $className($container);
+               });
+    }
+    
+    /**
+    * Помещает данные в глобальное хранилище
+    *
+    * @param string $id
+    * @param mix $data
+    *
+    * @return void
+    */     
+    public function setInStorage($id, $data)
+    {  
+        $this->container->setGlobal($id, 
+                           function() use ($data) {
+                               return $data;
+                           });
     }
 
     /**
@@ -111,32 +141,17 @@ class AbcProcessor
     }
     
     /**
-    * Помещает данные в глобальное хранилище
-    *
-    * @param string $id
-    * @param mix $data
-    *
-    * @return void
-    */     
-    public function setInStorage($id, $data)
-    {  
-        $this->container->setGlobal($id, 
-                           function() use ($data) {
-                               return $data;
-                           });
-    }
-    
-    /**
     * Получает данные из глобального хранилища
     *
     * @param string $id
     *
     * @return mix
     */     
-    public function getFromStorage($id = null)
+    public function getFromContainer($id = null)
     {  
         return $this->container->get($id);
     }
+    
     
     /**
     * Подготовка билдера

@@ -14,6 +14,10 @@ use ABC\Abc\Resourses\Settings;
  */   
 class Configurator
 {
+    /**
+    * @var array
+    */ 
+    protected $config;
     
     /**
     * Возвращает массив пользовательских настроек 
@@ -37,7 +41,8 @@ class Configurator
         $config   = array_replace_recursive($appConfig, $siteConfig);
         $config   = $this->normaliseConfig($config);
         $settings = Settings::get();
-        return array_replace_recursive($settings, $config); 
+        $this->config = array_replace_recursive($settings, $config);
+        return array_merge($this->config, ['routes' => $this->getRouteRule()]);
     } 
     
     /**
@@ -45,9 +50,23 @@ class Configurator
     *
     * @return array
     */     
-    public function getRoutes()
+    public function getRouteRule()
     { 
-        return $this->prepareRoutes();
+        if (!isset($this->config['route_rule'])) {
+            return [];
+        }
+        
+        if (is_array($this->config['route_rule'])) {
+            return $this->config['route_rule'];
+        }
+        
+        if (is_file($this->config['route_rule'])) {
+            return $this->parseConfigRoutes($this->config['route_rule']);
+        }
+        
+        trigger_error(ABC_BAD_FUNCTION_CALL_EX . 
+                      ABC_UNKNOWN_ROUTES,
+                      E_USER_WARNING);
     }  
 
     /**
@@ -65,31 +84,7 @@ class Configurator
             } 
         } 
         return $config; 
-    }
-    
-    /**
-    * Разбирает настройки маршрутов 
-    *
-    * @return array
-    */     
-    protected function prepareRoutes()
-    { 
-        if (!isset($this->config['routes'])) {
-            return $this->defaultRoute();
-        }
-        
-        if (is_array($this->config['routes'])) {
-            return $this->config['routes'];
-        }
-        
-        if (is_file($this->config['routes'])) {
-            return $this->parseConfigRoutes($this->config['routes']);
-        }
-        
-        trigger_error(ABC_BAD_FUNCTION_CALL_EX . 
-                      ABC_UNKNOWN_ROUTES,
-                      E_USER_WARNING);
-    }     
+    }  
     
     /**
     * Разбирает конфигурационный файл маршрутов и возвращает массив 
@@ -100,21 +95,11 @@ class Configurator
     */     
     protected function parseConfigRoutes($file)
     { 
-        $configRoute = file_get_contents($file);
+        $routeRule = file_get_contents($file);
         // To be continued
-        return [];
+        return $routeRule;
     } 
-    
-    /**
-    * Устанавливает дефолтные правили маршрутизации 
-    *
-    * @return array
-    */     
-    protected function defaultRoute()
-    { 
-        // To be continued
-        return [];
-    }
+
 }
 
 

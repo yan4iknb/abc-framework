@@ -1,8 +1,6 @@
 <?php 
 
-namespace ABC\Abc\Components\Url;
-
-use ABC\Abc;
+namespace ABC\Abc\Core;
 
 /** 
  * Класс Url
@@ -14,17 +12,32 @@ use ABC\Abc;
  */ 
    
 class Url  
-{  
-    public $config;
-    public $request;
-    public $router;
+{ 
+    /**
+    * @var array
+    */ 
+    protected $config;
     
-    public function __construct($request)
+    /**
+    * @var \ABC\Abc\Core\Request
+    */
+    protected $request;
+    
+    /**
+    * @var \ABC\Abc\Core\Router
+    */
+    protected $router;
+    
+    /**
+    * @param object $request
+    */      
+    public function __construct($container)
     {
-        $this->request = $request;
-        $this->router  = $request->router;
+        $this->config  = $container->get('config');
+        $this->router  = $container->get('Router');
+        $this->request = $container->get('Request');
     }
-        
+  
     /**
     * Получаем URL согласно роутам
     *
@@ -79,7 +92,80 @@ class Url
     }
     
     /**
-    * Генерирует URL согласно роутам и режиму
+    * Формирование URL для ссылок.
+    * 
+    * @param string $arg
+    * @param bool|array $mode
+    *
+    * @return string 
+    */      
+    public function href($query, $mode = false)   
+    {  
+        return $this->getUrl($query, $mode);
+    }
+    
+    /**
+    * Формирование ссылок.
+    * 
+    * @param string $text
+    * @param string $query
+    * @param string $attribute
+    * @param bool $abs
+    *
+    * @return string 
+    */      
+    public function linkTo($query, $text, $attribute = null, $mode = false)   
+    { 
+        if (substr($query, 0, 4) !== 'http') {
+            $query = $this->href($query, $mode);
+        }
+        
+        return '<a href="'. $query .'" '
+                          . $attribute .' >'
+                          . $text 
+                          .'</a>';
+    } 
+    
+    /**   
+    * Активация ссылок 
+    *
+    * @param string|array $param
+    * @param mix $default
+    *
+    * @return string
+    */ 
+    public function activeLink($query, $default = false)
+    { 
+        $current = $this->getGet($query);
+     
+        if ($this->request->GET() === $current) {
+            return 'class="act"';        
+        }        
+        
+        preg_match('#(.+?)/<(.*?)>#', $query, $out);
+     
+        if (!empty($out)) {
+         
+            $get = strtolower($this->request->GET('controller') .'/'. $this->request->GET('action'));
+            $get = $this->getUrl($get);
+            array_shift($out);
+            $controller = array_shift($out);
+            
+            $out = explode('|', $out[0]);
+            
+            foreach ($out as $action) {
+             
+                if ($get === strtolower($this->getUrl($controller .'/'. $action))) {
+                    return 'class="act"';
+                }
+            }
+        }
+     
+        return null;
+    } 
+    
+    /**
+    * Генерирует URL согласно роутам или локальному режиму
     *
     * @param string $string
     * @param bool $mode
@@ -102,7 +188,6 @@ class Url
         $hostName   = $this->request->getHostName();
         $scriptName = null;
         
-
         if (!empty($config['show_script'])) {
             $query = trim($_SERVER['PHP_SELF'], '/');
             $scriptName = '/'. explode('/', $query)[0]; 

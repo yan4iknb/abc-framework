@@ -22,6 +22,7 @@ class En
         */ 
         define('ABC_NO_CLASS',     ' class not found');
         define('ABC_NO_METHOD',    ' method offline in class ');
+        define('ABC_TPL_DISABLE',  ' the template disabled');
         /**
         * General settings
         */ 

@@ -15,9 +15,25 @@ use ABC\Abc\Core\BaseView;
  */   
 class AppManager
 {
-    public $request;
-    public $config;
-
+    /**
+    * @var array
+    */ 
+    protected $config;
+    
+    /**
+    * @var \ABC\Abc\Core\Router
+    */
+    protected $router;
+    
+    /**
+    * @param object $container
+    */ 
+    public function __construct($container)
+    {
+        $this->config = $container->get('config');
+        $this->router = $container->get('Router'); 
+    }     
+    
     /**
     * Вызывает контроллер  и, если есть, вьюшку и модель
     *
@@ -101,7 +117,7 @@ class AppManager
     */        
     public function getNameClass()
     {   
-        $nameClass = $this->request->iniGET('controller', 'main');
+        $nameClass = 'main';
         $nameClass = preg_replace('#[^a-z0-9\-_]#ui', '', $nameClass); 
         return mb_convert_case($nameClass, MB_CASE_TITLE);
     }  
@@ -113,7 +129,7 @@ class AppManager
     */        
     public function getAction()
     {   
-        $action = $this->request->iniGET('action', 'index');
+        $action = 'index';
         $action = preg_replace('#[^a-z0-9\-_]#ui', '', $action);
         return 'action'. mb_convert_case($action, MB_CASE_TITLE);
     } 
@@ -121,10 +137,14 @@ class AppManager
     /**
     * Возвращает объект шаблонизатора
     *
-    * @return string
+    * @return bool|object
     */        
     public function getTemplate()
     {   
+        if (isset($this->config['abc_template']) && false === $this->config['abc_template']) {
+            return false;
+        }
+        
         return Abc::getService('Template');
     }     
     

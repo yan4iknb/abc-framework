@@ -2,7 +2,7 @@
 
     return [ 
               'error_mod'       => 'debug', // Включает дебаггер
-              'framework_trace' => true, //Включает в стек дебаггера классы фреймворка 
+              'framework_trace' => false, //Включает в стек дебаггера классы фреймворка 
               
               'error_language'  => 'Ru', // Перевод ошибок
               
@@ -18,5 +18,7 @@
                                'base'  => 'test',
                                'debug' =>  true // Включает режим отладки SQL
                 ],
+                
+              'abc_template' => true, 
     ];
 

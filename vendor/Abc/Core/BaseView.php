@@ -55,12 +55,12 @@ class BaseView
     */     
     public function setTpl($template)
     {
+        $this->checkTemplate(); 
+     
         if (method_exists($this->tpl, 'setTpl')) {
             $this->tpl->setTpl($template);        
         } else {
-            trigger_error(ABC_BAD_METHOD_CALL_EX . 
-                         __METHOD__ . ABC_NO_METHOD_IN_TPL, 
-                         E_USER_WARNING);
+            $this->notFound($method);
         }
     } 
     
@@ -74,12 +74,12 @@ class BaseView
     */     
     public function assign($data, $value = null)
     {
+        $this->checkTemplate(); 
+     
         if (method_exists($this->tpl, 'assign')) {
             $this->tpl->assign($data, $value);       
         } else {
-            trigger_error(ABC_BAD_METHOD_CALL_EX . 
-                         __METHOD__ . ABC_NO_METHOD_IN_TPL, 
-                         E_USER_WARNING);
+            $this->notFound($method);
         }  
     } 
     
@@ -93,12 +93,12 @@ class BaseView
     */     
     public function assignHtml($data, $value = null)
     {
+        $this->checkTemplate(); 
+     
         if (method_exists($this->tpl, 'assignHtml')) {
             $this->tpl->assignHtml($data, $value);        
         } else {
-            trigger_error(ABC_BAD_METHOD_CALL_EX . 
-                         __METHOD__ . ABC_NO_METHOD_IN_TPL, 
-                         E_USER_WARNING);
+            $this->notFound($method);
         } 
     }
     
@@ -111,12 +111,12 @@ class BaseView
     */     
     public function setBlock($blockName)
     {
+        $this->checkTemplate(); 
+     
         if (method_exists($this->tpl, 'setBlock')) {
             $this->tpl->setBlock($blockName);        
         } else {
-            trigger_error(ABC_BAD_METHOD_CALL_EX . 
-                         __METHOD__ . ABC_NO_METHOD_IN_TPL, 
-                         E_USER_WARNING);
+            $this->notFound($method);
         } 
     }
  
@@ -130,14 +130,15 @@ class BaseView
     */     
     public function clearBlock($blockName)
     {
+        $this->checkTemplate(); 
+     
         if (method_exists($this->tpl, 'clearBlock')) {
             $this->tpl->clearBlock($blockName);        
         } else {
-            trigger_error(ABC_BAD_METHOD_CALL_EX . 
-                         __METHOD__ . ABC_NO_METHOD_IN_TPL, 
-                         E_USER_WARNING);
+            $this->notFound($method);
         } 
-    }    
+    } 
+    
     /**
     * Ошибка вызова метода
     *
@@ -147,6 +148,30 @@ class BaseView
     * @return void
     */     
     public function __call($method, $param)
+    {
+        $this->notFound($method);
+    }
+    
+    /**
+    * Проверка включения шаблонизатора
+    *
+    * @return void
+    */  
+    protected function checkTemplate()
+    {
+        if (false === $this->tpl) {
+            trigger_error(ABC_DOMAIN_EX . 
+                         ABC_TPL_DISABLE, 
+                         E_USER_WARNING);
+        }
+    }
+ 
+    /**
+    * Проверка наличия метода
+    *
+    * @return void
+    */  
+    protected function notFound($method)
     {
         trigger_error(ABC_BAD_METHOD_CALL_EX . 
                      $method . ABC_NO_METHOD, 

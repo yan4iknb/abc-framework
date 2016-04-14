@@ -22,6 +22,7 @@ class Ru
         */ 
         define('ABC_NO_CLASS',     ' class not found <br /><span style="color:#400080">(класс не найден)</span><br />');
         define('ABC_NO_METHOD',    ' method offline in class <br /><span style="color:#400080">(метод отсутствует в классе)</span><br />');
+        define('ABC_TPL_DISABLE',  ' the template disabled <br /><span style="color:#400080">(шаблонизатор отключен)</span><br />');
         /**
         * Общие настройки
         */ 

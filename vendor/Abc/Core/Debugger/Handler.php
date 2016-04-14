@@ -62,7 +62,7 @@ abstract class Handler
     */       
     public function __construct($config = []) 
     {
-        if (isset($config['framework_trace'])) {
+        if (isset($config['framework_trace']) && true === $config['framework_trace']) {
             $this->allTrace = true;
         }
      

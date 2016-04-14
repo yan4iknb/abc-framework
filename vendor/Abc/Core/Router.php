@@ -12,8 +12,31 @@ namespace ABC\Abc\Core;
  */   
 class Router
 {
-    public $config;
-
+    /**
+    * @var ABC\Abc\Core\Container
+    */ 
+    protected $container;
+    
+    /**
+    * @var array
+    */ 
+    protected $config;
+    
+    /**
+    * @var array
+    */ 
+    protected $defaultRoute;
+    
+    /**
+    * @param object $container
+    */ 
+    public function __construct($container)
+    {
+        $this->container = $container;
+        $this->config = $container->get('config'); 
+        $this->defaultRoute = $this->config['defaultRoute'];
+    }     
+    
     /**
     * Преобразует строку URL в массив GET
     *
@@ -80,11 +103,10 @@ class Router
         }
        
         return $hash;
-        
     }     
     
     /**
-    * Преобразует массив URI в массив GET
+    * Преобразует массив URI в массив GET согласно роутам
     *
     * @param array $uriHash
     *
@@ -96,7 +118,8 @@ class Router
             return $this->defaultGet($uriHash);
         }
         
-        return $this->routeRule($uriHash);
+        $parser = $this->container->get('RouteParser');  
+        return $parser->routeRule($uriHash);
     }
     
     /**
@@ -108,13 +131,10 @@ class Router
     */    
     public function defaultGet($param)
     {
-        $app = ['controller' => @$param[0] ?: $this->config['defaultRoute']['controller'],
-                'action'     => @$param[1] ?: $this->config['defaultRoute']['action']
-        ];
-     
+        $baseParam = $this->getBaseParam($param);
         $param = array_slice($param, 2);
         $get   = $this->generateGet($param);
-        return array_merge($app, $get);
+        return array_merge($baseParam, $get);
     }    
     
     /**
@@ -140,18 +160,20 @@ class Router
      
         return $get;
     }
-  
+    
     /**
-    * Устанавливает GET согласно роутам
+    * Возвращает системные роуты
     *
     * @param array $uriHash
     *
     * @return array
     */    
-    protected function routeRule($uriHash)
+    protected function getBaseParam($param)
     {
-        // Не реализовано
-        return $this->config->defaultRoute;
-    }
+        return ['controller' => @$param[0] ?: $this->defaultRoute['controller'],
+                'action'     => @$param[1] ?: $this->defaultRoute['action']
+            ];
+    }    
+    
 }
 

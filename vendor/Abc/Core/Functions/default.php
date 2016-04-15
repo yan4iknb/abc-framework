@@ -1,16 +1,24 @@
-<?php 
+<?php
 
-use ABC\Abc;
-
-/** 
- * Шаблонизатор
- * Набор вспомогательных функций 
- * NOTE: Requires PHP version 5.5 or later   
- * @author phpforum.su
- * @copyright © 2015
- * @license http://www.wtfpl.net/ 
- */ 
-// - - - - - - - - - - - - - - - - - - - - - - -
+use ABC\abc;
+use ABC\Abc\Core\Debugger\Dbg;
+    /**
+    * Processing variables for output stream
+    *
+    * @param array $data
+    * 
+    * @return mix
+    */
+    function htmlChars($data)
+    {
+        if (is_array($data)) {
+            $data = array_map([$this, 'htmlChars'], $data);
+        } else {
+            $data = htmlspecialchars($data);
+        }
+        
+        return $data;
+    }
 
     /**
     * Формирование URL.
@@ -51,6 +59,14 @@ use ABC\Abc;
     function activeLink($query, $default = false)
     { 
         return Abc::getService('Url')->activeLink($query, $default);
-    } 
-    
-  
+    }     
+
+    /**
+    * Трассировка скриптов
+    *
+    * @return void
+    */ 
+    function dbg($var = 'stop')
+    {   
+        new Dbg($var);
+    }

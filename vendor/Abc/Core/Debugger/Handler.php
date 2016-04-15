@@ -238,7 +238,7 @@ abstract class Handler
         if (!empty($block['file'][1]) && false !== strpos($block['file'], 'eval')) {
             return false;
         }
-     
+      
         if ($this->allTrace) {
             return $block;
         }
@@ -258,6 +258,10 @@ abstract class Handler
         if (false !== strpos($block['function'], '{closure}')) {
             return false;
         } 
+        
+        //if (basename($block['class']) === 'Dbg') {
+            //return false;
+        //} 
         
         return $block;
     } 

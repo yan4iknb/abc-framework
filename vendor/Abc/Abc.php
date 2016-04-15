@@ -196,17 +196,6 @@ class Abc
     {
         return self::$abc->process->getFromStorage('config')[$key];
     }
-    
-    
-    /**
-    * Метод трассировки скриптов
-    *
-    * @return void
-    */ 
-    public static function dbg($var = 'stop')
-    {   
-        new Dbg($var);
-    }
 }
 
 

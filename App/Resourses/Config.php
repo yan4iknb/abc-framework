@@ -2,14 +2,14 @@
 
     return [ 
               'error_mod'       => 'debug', // Включает дебаггер
-              'framework_trace' => false, //Включает в стек дебаггера классы фреймворка 
+              'framework_trace' => true, //Включает в стек дебаггера классы фреймворка 
               
               'error_language'  => 'Ru', // Перевод ошибок
               
               'url' => ['pretty'      => true, // ЧПУ
                         'absolute'    => false, // Абсолютные ссылки
                         'https'       => false, // HTTPS
-                        'show_script' => true, // Покажет скрипт (index.php?param=)
+                        'show_script' => false, // Покажет скрипт (index.php?param=)
                 ],
                 
               'mysqli'    =>  ['host'  => 'localhost', 
@@ -19,6 +19,6 @@
                                'debug' =>  true // Включает режим отладки SQL
                 ],
                 
-              'abc_template' => true, 
+              //'abc_template' => 'native', 
     ];
 

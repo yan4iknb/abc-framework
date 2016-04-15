@@ -41,6 +41,29 @@ class Request
             $this->GET = $this->parseRequestUri();
         }
     } 
+   
+    /**
+    * Разбирает в массив QUERY_STRING
+    *
+    * @return array
+    */        
+    protected function parseQueryString()
+    {
+        $queryString = urldecode($_SERVER['QUERY_STRING']);
+        mb_parse_str($queryString, $result);
+        return $result;
+    }  
+
+    /**
+    * Разбирает массив HASH в массив GET по правилам роутинга
+    *
+    * @return void
+    */    
+    protected function parseRequestUri()
+    {
+        $uriHash = $this->createUriHash();
+        return $this->router->convertUri($uriHash);
+    }
     
     /**
     * Инициализация GET параметров
@@ -88,29 +111,6 @@ class Request
         } 
         
         return '/';
-    }
-    
-    /**
-    * Разбирает в массив QUERY_STRING
-    *
-    * @return array
-    */        
-    protected function parseQueryString()
-    {
-        $queryString = urldecode($_SERVER['QUERY_STRING']);
-        mb_parse_str($queryString, $result);
-        return $result;
-    }  
-
-    /**
-    * Разбирает массив HASH в массив GET по правилам роутинга
-    *
-    * @return void
-    */    
-    protected function parseRequestUri()
-    {
-        $uriHash = $this->createUriHash();
-        return $this->router->convertUri($uriHash);
     }
     
     /**

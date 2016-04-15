@@ -113,12 +113,12 @@ class Router
     * @return array
     */    
     public function convertUri($uriHash)
-    {
+    {    
         if (empty($this->config['routes'])) {
             return $this->defaultGet($uriHash);
         }
         
-        $parser = $this->container->get('RouteParser');  
+        $parser = $this->container->get('RoutesParser');  
         return $parser->routeRule($uriHash);
     }
     

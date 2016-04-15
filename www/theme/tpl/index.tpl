@@ -10,6 +10,7 @@
             <img src="/theme/img/logo.png" />
         </div>
 <!--// content -->
+<?=$content; ?>
 <!--// content end -->
     </body>
 </html>

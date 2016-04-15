@@ -28,12 +28,12 @@ class Example
         
         //echo DDDDD;
         //echo $a;
-        //Abc::dbg(); 
-        //Abc::dbg($var1); 
-        //Abc::dbg($var2['третий']);
-        //Abc::dbg($var3[2]); 
-        //Abc::dbg(new \ABC\Abc); 
-        //Abc::dbg('ABC\Abc');
+        //dbg(); 
+        //dbg($var1); 
+        //dbg($var2['третий']);
+        //dbg($var3[2]); 
+        //dbg(new \ABC\Abc); 
+        //dbg('ABC\Abc');
         //throw new \Exception('Тестовое исключение');
         //trigger_error(ABC_INVALID_ARGUMENT_EX .'Полный пипец!!!', E_USER_WARNING);
         
@@ -45,7 +45,7 @@ class Example
         // Простые запросы mysqli
 /*
        
-        $mysqli = Abc::getService('Mysqli');
+        $mysqli = getService('Mysqli');
         $mysqli->test = true;
         $mysqli->query("SELECT * FROM `test`");
         
@@ -57,7 +57,7 @@ class Example
         //- - - - - - - - - - - - - - - - - - - - - - - 
         // Продготовленные запросы  mysqli
 /* 
-        $mysqli = Abc::getService('Mysqli');
+        $mysqli = getService('Mysqli');
         $mysqli->test();
         $stmt = $mysqli->prepare("INSERT INTO `test` VALUES (?, ?)");
         
@@ -76,7 +76,7 @@ class Example
         // Простые запросы  PDO
         
 /*         
-        $pdo = Abc::getService('PDO');
+        $pdo = getService('PDO');
         $pdo->test();
         
         $stmt = $pdo->query("SELECT * FROM `test`");  
@@ -89,7 +89,7 @@ class Example
         // Подготовленные запросы  PDO
 /*       
 
-        $pdo = Abc::getService('PDO');
+        $pdo = getService('PDO');
         
         $pdo->test();
 
@@ -106,7 +106,7 @@ class Example
         // Демонстрация IOC
         /*
         
-        $ioc = Abc::getService('DiC');
+        $ioc = getService('DiC');
       
         $ioc->set('dependence',
                    function() {

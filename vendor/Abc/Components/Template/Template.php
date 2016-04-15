@@ -229,7 +229,7 @@ class Template
     *
     * @return object
     */
-    public function extendsTpl($tpl, $block)
+    public function extendsTpl($block, $tpl)
     { 
         $child = $this->parseChild();
         $parentTpl = new $this->class($this->tplDir);
@@ -319,8 +319,7 @@ class Template
         }
         
         $block = $this->includesPhp($block);
-        $block = str_ireplace('<?xml', '<xml', $block);
-        include_once 'functions.php'; 
+        $block = str_ireplace('<?xml', '<xml', $block); 
         extract($this->data);
         ob_start();
             eval('?>'. $block);

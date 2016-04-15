@@ -59,14 +59,17 @@ class AbcProcessor
         AbcConstants::set(); 
         $configurator = new Configurator;
         $this->config = $configurator->getConfig($appConfig, $siteConfig);
-        $this->selectErrorMode(); 
+        $this->selectErrorMode();
+        include_once 'Functions/default.php';
         $this->container = new Container;
         $this->setInStorage('config', $this->config);
         $this->setInContainer('Router');
-        $this->setInContainer('RouteParser');
-        $this->setInContainer('Request');
+        $this->setInContainer('Request');        
+        $this->setInContainer('RoutesParser');
+        $this->setInContainer('BaseTemplate');
         $this->setInContainer('AppManager');
         $this->setInContainer('Url');
+        $this->setInStorage('Abc', $this);
     }
     
     /**

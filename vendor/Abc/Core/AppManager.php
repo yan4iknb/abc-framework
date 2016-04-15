@@ -16,22 +16,28 @@ use ABC\Abc\Core\BaseView;
 class AppManager
 {
     /**
+    * @var \ABC\Abc\Core\Container
+    */
+    protected $container;
+
+    /**
     * @var array
     */ 
-    protected $config;
-    
+    protected $config;    
+
     /**
-    * @var \ABC\Abc\Core\Router
+    * @var \ABC\Abc\Core\Request
     */
-    protected $router;
+    protected $request;
     
     /**
     * @param object $container
     */ 
     public function __construct($container)
     {
-        $this->config = $container->get('config');
-        $this->router = $container->get('Router'); 
+        $this->container = $container;
+        $this->config  = $container->get('config');
+        $this->request = $container->get('Request'); 
     }     
     
     /**
@@ -61,7 +67,7 @@ class AppManager
                     $objView = new $view;
                     $objView->model = class_exists($model) ? new $model : null;
                 } else {
-                    $objView = new BaseView;
+                    $objView = new Base;
                     
                 }
                 
@@ -117,7 +123,7 @@ class AppManager
     */        
     public function getNameClass()
     {   
-        $nameClass = 'main';
+        $nameClass = $this->request->iniGET('controller', 'main');
         $nameClass = preg_replace('#[^a-z0-9\-_]#ui', '', $nameClass); 
         return mb_convert_case($nameClass, MB_CASE_TITLE);
     }  
@@ -129,7 +135,7 @@ class AppManager
     */        
     public function getAction()
     {   
-        $action = 'index';
+        $action = $this->request->iniGET('action', 'index');
         $action = preg_replace('#[^a-z0-9\-_]#ui', '', $action);
         return 'action'. mb_convert_case($action, MB_CASE_TITLE);
     } 
@@ -142,7 +148,9 @@ class AppManager
     public function getTemplate()
     {   
         if (isset($this->config['abc_template']) && false === $this->config['abc_template']) {
-            return false;
+            return null;
+        } elseif (isset($this->config['abc_template']) && $this->config['abc_template'] === 'native') {
+            return $this->container->get('BaseTemplate');
         }
         
         return Abc::getService('Template');

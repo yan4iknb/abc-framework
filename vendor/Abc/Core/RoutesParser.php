@@ -3,14 +3,14 @@
 namespace ABC\Abc\Core;
 
 /** 
- * Класс Router
+ * Класс RouteParser
  * 
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
  * @copyright © 2015
  * @license http://www.wtfpl.net/
  */   
-class RouteParser
+class RoutesParser
 {
     /**
     * @var ABC\Abc\Core\Container
@@ -33,31 +33,20 @@ class RouteParser
     public function __construct($container)
     {
         $this->container = $container;
-        $this->config = $container->get('config'); 
+        $this->config    = $container->get('config'); 
     }     
     
     /**
     * 
     *
-    * @param 
+    * @param $uriHash
     *
-    * @return 
+    * @return array
     */    
     public function routeRule($uriHash)
     {
-    
+
     }     
     
-    /**
-    * 
-    *
-    * @param 
-    *
-    * @return 
-    */    
-    public function c()
-    {
-    
-    } 
 }
 

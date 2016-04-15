@@ -3,6 +3,7 @@
 namespace ABC\App\Views;
 
 use ABC\Abc\Core\BaseView;
+use ABC\App\Example;
 
 /** 
  * Класс MainView
@@ -17,9 +18,10 @@ class MainView extends BaseView
 
     public function createHello()
     {
-        //$this->setTpl('main');
+        $this->setTpl('main');
         $hello = $this->model()->getAattribute()['hello'];
-        //$this->assignHtml('hello', $hello);
-        //$this->setBlock('hello');
+        $this->assignHtml('hello', $hello);
+        $this->setBlock('hello');
+        $this->extendsTpl('content')->display();
     }
 }

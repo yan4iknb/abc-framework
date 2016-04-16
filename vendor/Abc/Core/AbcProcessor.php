@@ -64,8 +64,8 @@ class AbcProcessor
         $this->container = new Container;
         $this->setInStorage('config', $this->config);
         $this->setInContainer('Router');
-        $this->setInContainer('Request');        
-        $this->setInContainer('RoutesParser');
+        $this->setInContainer('RoutesParser');        
+        $this->saredInContainer('Request');
         $this->setInContainer('BaseTemplate');
         $this->setInContainer('AppManager');
         $this->setInContainer('Url');
@@ -83,7 +83,6 @@ class AbcProcessor
         $manager->run();
     }
     
-    
     /**
     * Помещает объекты ядра в контейнер
     *
@@ -95,6 +94,24 @@ class AbcProcessor
     { 
         $container = $this->container;
         $this->container->set($className, 
+               function() use ($className, $container) {
+                   $className = 'ABC\Abc\Core\\' . $className;
+                   return new $className($container);
+               });
+    }
+    
+    
+    /**
+    * Помещает объекты ядра в контейнер
+    *
+    * @param string $className
+    *
+    * @return void
+    */     
+    public function saredInContainer($className)
+    { 
+        $container = $this->container;
+        $this->container->setGlobal($className, 
                function() use ($className, $container) {
                    $className = 'ABC\Abc\Core\\' . $className;
                    return new $className($container);
@@ -115,6 +132,18 @@ class AbcProcessor
                            function() use ($data) {
                                return $data;
                            });
+    }
+    
+    /**
+    * Получает данные из глобального хранилища
+    *
+    * @param string $id
+    *
+    * @return mix
+    */     
+    public function getFromContainer($id = null)
+    {  
+        return $this->container->get($id);
     }
 
     /**
@@ -142,20 +171,7 @@ class AbcProcessor
         $builder = $this->prepareBuilder($service);
         return $builder->getService($service);
     }
-    
-    /**
-    * Получает данные из глобального хранилища
-    *
-    * @param string $id
-    *
-    * @return mix
-    */     
-    public function getFromContainer($id = null)
-    {  
-        return $this->container->get($id);
-    }
-    
-    
+  
     /**
     * Подготовка билдера
     *

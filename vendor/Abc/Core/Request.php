@@ -52,7 +52,30 @@ class Request
         $queryString = urldecode($_SERVER['QUERY_STRING']);
         mb_parse_str($queryString, $result);
         return $result;
-    }  
+    } 
+    
+    /**
+    * Возвращает текущий контроллер
+    *
+    * @return string
+    */    
+    public function getController()
+    {
+        $get = $this->GET;
+        return array_shift($get);
+    }
+    
+    /**
+    * Возвращает текущий экшен
+    *
+    * @return string
+    */    
+    public function getAction()
+    {    
+        $get = $this->GET;
+        array_shift($get);    
+        return array_shift($get);
+    }
 
     /**
     * Разбирает массив HASH в массив GET по правилам роутинга
@@ -62,7 +85,8 @@ class Request
     protected function parseRequestUri()
     {
         $uriHash = $this->createUriHash();
-        return $this->router->convertUri($uriHash);
+        $string  = $this->getPath();
+        return $this->router->convertUri($uriHash, $string);
     }
     
     /**

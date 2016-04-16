@@ -39,16 +39,21 @@ class Url
     }
   
     /**
-    * Получаем URL согласно роутам
+    * Получаем URL
     *
     * @param string $string
     * @param bool|array $mode
     *
     * @return string
     */     
-    public function getUrl($string, $mode = false)
-    {
-        $param = $this->router->hashFromUrl($string); 
+    public function getUrls($string, $mode = false)
+    { 
+        if (isset($config['pretty']) && false === $config['pretty']) {
+            $param = $this->router->hashFromUrl($string);
+        } else {
+            $param = $this->router->hashFromString($string);
+        }
+        
         return $this->createUrl($param, $mode);
     }
     
@@ -61,47 +66,10 @@ class Url
     */     
     public function addParamToUrl($string)
     {
-        $get = Abc::GET();
+        $get = $this->request->iniGET();
         $addition = $this->router->createGetFrom($string);
         $param = array_merge($get, $addition);
         return $this->createUrl($param, $abs = false);
-    }
-    
-    /**
-    * Преобразует строку URL в массив согласно роутам
-    *
-    * @param string $string
-    *
-    * @return array
-    */     
-    public function createGetFrom($string)
-    {
-        return $this->router->createGetFrom($string);
-    }
-    
-    /**
-    * Получает массив GET параметров
-    *
-    * @param string $string
-    *
-    * @return array
-    */     
-    public function getGet($string)
-    {
-        return $this->router->hashFromUrl($string);
-    }
-    
-    /**
-    * Формирование URL для ссылок.
-    * 
-    * @param string $arg
-    * @param bool|array $mode
-    *
-    * @return string 
-    */      
-    public function href($query, $mode = false)   
-    {  
-        return $this->getUrl($query, $mode);
     }
     
     /**
@@ -117,7 +85,7 @@ class Url
     public function linkTo($query, $text, $attribute = null, $mode = false)   
     { 
         if (substr($query, 0, 4) !== 'http') {
-            $query = $this->href($query, $mode);
+            $query = $this->getUrl($query, $mode);
         }
         
         return '<a href="'. $query .'" '
@@ -136,9 +104,9 @@ class Url
     */ 
     public function activeLink($query, $default = false)
     { 
-        $current = $this->getGet($query);
+        $current = $this->router->hashFromUrl($query);
      
-        if ($this->request->GET() === $current) {
+        if ($this->request->GET === $current) {
             return 'class="act"';        
         }        
         
@@ -163,6 +131,27 @@ class Url
      
         return null;
     } 
+    
+    
+    /**
+    * Получаем URL
+    *
+    * @param string $string
+    * @param bool|array $mode
+    *
+    * @return string
+    */   
+    public function getUrl($string, $mode = false)
+    {   
+        if (false !== strpos($string, '?')) {
+            mb_parse_str(trim($string, '/?'), $param); 
+        } else {
+            $param  = explode('/', $string);
+            $param  = $this->router->generateGet($param);
+        }
+
+        return $this->createUrl($param, $mode);    
+    }
     
     /**
     * Генерирует URL согласно роутам или локальному режиму
@@ -196,33 +185,17 @@ class Url
         if (true === $mode) {
             $basePath = $protocol. $hostName . $scriptName ;
         } else {
-            $basePath = !empty($config['absolute']) ? $protocol . $hostName . $scriptName : $scriptName;        
+            $basePath = (isset($config['absolute']) && true === $config['absolute']) 
+                      ? $protocol . $hostName . $scriptName 
+                      : $scriptName;        
         }
      
         if (isset($config['pretty']) && false === $config['pretty']) {
+         
             return $basePath .'?'. http_build_query($param);    
         } else {
-            $param = $this->router->hashFromParam($param);
+            $param = $this->router->hashFromParam($param); 
             return $basePath .'/'. implode('/', $param);
         }
     }
 } 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

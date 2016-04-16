@@ -36,7 +36,7 @@ class AppManager
     public function __construct($container)
     {
         $this->container = $container;
-        $this->config  = $container->get('config');
+        $this->config = $container->get('config');
         $this->request = $container->get('Request'); 
     }     
     
@@ -123,7 +123,7 @@ class AppManager
     */        
     public function getNameClass()
     {   
-        $nameClass = $this->request->iniGET('controller', 'main');
+        $nameClass = $this->request->getController();
         $nameClass = preg_replace('#[^a-z0-9\-_]#ui', '', $nameClass); 
         return mb_convert_case($nameClass, MB_CASE_TITLE);
     }  
@@ -135,7 +135,7 @@ class AppManager
     */        
     public function getAction()
     {   
-        $action = $this->request->iniGET('action', 'index');
+        $action = $this->request->getAction();
         $action = preg_replace('#[^a-z0-9\-_]#ui', '', $action);
         return 'action'. mb_convert_case($action, MB_CASE_TITLE);
     } 

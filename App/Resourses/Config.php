@@ -19,6 +19,11 @@
                                'debug' =>  true // Включает режим отладки SQL
                 ],
                 
-              //'abc_template' => 'native', 
+              //'abc_template' => 'native',
+              
+              'route_rule' => [ 'main'                         => 'main/index',
+                                'main/<id:\d>'                 => 'main', 
+                                'second/<id:\d>'               => 'second'],
+              
     ];
 

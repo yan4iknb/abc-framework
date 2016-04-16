@@ -28,13 +28,18 @@ class Router
     protected $defaultRoute;
     
     /**
+    * @var array
+    */ 
+    protected $hash;
+    
+    /**
     * @param object $container
     */ 
     public function __construct($container)
     {
         $this->container = $container;
         $this->config = $container->get('config'); 
-        $this->defaultRoute = $this->config['defaultRoute'];
+        $this->defaultRoute = arrayStrtolower($this->config['defaultRoute']);
     }     
     
     /**
@@ -60,7 +65,7 @@ class Router
     public function hashFromUrl($string)
     {
         $param = $this->hashFromString($string);
-        return $this->convertUri($param);    
+        return $this->convertUri($param, $string);    
     } 
     
     /**
@@ -71,15 +76,12 @@ class Router
     * @return array
     */    
     public function hashFromString($string)
-    {
-        $string = trim($string, '/?');
-        
-        if (false !== strpos($string, '&')) {
-            mb_parse_str($string, $param); 
+    {   
+        if (false !== strpos($string, '?')) {
+            mb_parse_str(trim($string, '/?'), $param); 
             $param = $this->hashFromParam($param);
         } else {
-            $param  = explode('/', $string);
-            
+            $param  = explode('/', $string);  
         }
      
         return $param;    
@@ -94,15 +96,14 @@ class Router
     */    
     public function hashFromParam($param)
     {
-        $hash = array_values(array_slice($param, 0, 2));
-        $get  = array_slice($param, 2);
-      
+        $this->hash = array_values(array_slice($param, 0, 2));
+        $get   = array_slice($param, 2);
+        
         foreach ($get as $key => $value) {
-            array_push($hash, $key);
-            array_push($hash, $value);
-        }
-       
-        return $hash;
+            array_push($this->hash, $key);
+            array_push($this->hash, $value);
+        }      
+        return $this->hash;
     }     
     
     /**
@@ -112,14 +113,14 @@ class Router
     *
     * @return array
     */    
-    public function convertUri($uriHash)
+    public function convertUri($uriHash, $string = '')
     {    
-        if (empty($this->config['routes'])) {
+        if (empty($this->config['route_rule'])) {
             return $this->defaultGet($uriHash);
         }
-        
+       
         $parser = $this->container->get('RoutesParser');  
-        return $parser->routeRule($uriHash);
+        return $parser->parseRoute($string);
     }
     
     /**
@@ -131,10 +132,8 @@ class Router
     */    
     public function defaultGet($param)
     {
-        $baseParam = $this->getBaseParam($param);
-        $param = array_slice($param, 2);
-        $get   = $this->generateGet($param);
-        return array_merge($baseParam, $get);
+        $get = $this->generateGet($param);
+        return $this->addBaseParam($get);
     }    
     
     /**
@@ -150,9 +149,7 @@ class Router
         
         foreach ($param as $n => $value) {
             if ($n & 1) {
-                if (preg_match('#^[a-z_]+[a-z0-9_\[\]]+$#ui', $key)) {
-                    $get[$key] = $value;                
-                }
+                $get[$key] = $value;  
             } else {
                 $key = $value;
             }
@@ -168,11 +165,9 @@ class Router
     *
     * @return array
     */    
-    protected function getBaseParam($param)
+    protected function addBaseParam($param = [])
     {
-        return ['controller' => @$param[0] ?: $this->defaultRoute['controller'],
-                'action'     => @$param[1] ?: $this->defaultRoute['action']
-            ];
+        return array_merge($this->defaultRoute, $param);
     }    
     
 }

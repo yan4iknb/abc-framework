@@ -19,11 +19,20 @@
                                'debug' =>  true // Включает режим отладки SQL
                 ],
                 
-              //'abc_template' => 'native',
+              //'abc_template' => false, // Выключает встроенный шаблонизатор
               
-              'route_rule' => [ 'main'                         => 'main/index',
-                                'main/<id:\d>'                 => 'main', 
-                                'second/<id:\d>'               => 'second'],
+              // Правила роутинга
+              'route_rules' => [ 
+                                'main'                         => 'main/index',
+                                '<id:\d+>'                     => 'main/index',
+                                '<delete>'                     => 'main/index',
+                                'main/<id:\d+>'                => 'main/index',
+                                'main/<id:\d+>/<num:\d+>'      => 'main/index',
+                                'main/<id:\d+>/<param>'        => 'main/index',
+                                'main/<edit>'                  => 'main/index',
+                                'main/<edit>/<num:\d+>'        => 'main/index',                               
+                                   
+                ],
               
     ];
 

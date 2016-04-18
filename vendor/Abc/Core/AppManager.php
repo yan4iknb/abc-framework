@@ -3,8 +3,7 @@
 namespace ABC\Abc\Core;
 
 use ABC\Abc;
-use ABC\Abc\Core\BaseModel;
-use ABC\Abc\Core\BaseView;
+use ABC\Abc\Core\Base;
 /** 
  * Класс AbcFramework
  * 
@@ -148,8 +147,6 @@ class AppManager
     public function getTemplate()
     {   
         if (isset($this->config['abc_template']) && false === $this->config['abc_template']) {
-            return null;
-        } elseif (isset($this->config['abc_template']) && $this->config['abc_template'] === 'native') {
             return $this->container->get('BaseTemplate');
         }
         
@@ -167,7 +164,7 @@ class AppManager
     */        
     public function create404($search)
     {   
-        $baseController = new BaseController($this->config);
+        $baseController = new Base($this->config);
         $baseController->action404($search);
     }  
 }

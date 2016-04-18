@@ -55,8 +55,8 @@ class AbcProcessor
     */    
     public function __construct($appConfig = [], $siteConfig = [])
     {
-        mb_internal_encoding('UTF-8');
-        AbcConstants::set(); 
+        define('ABC_DS', DIRECTORY_SEPARATOR);
+        mb_internal_encoding('UTF-8'); 
         $configurator = new Configurator;
         $this->config = $configurator->getConfig($appConfig, $siteConfig);
         $this->selectErrorMode();
@@ -129,9 +129,9 @@ class AbcProcessor
     public function setInStorage($id, $data)
     {  
         $this->container->setGlobal($id, 
-                           function() use ($data) {
-                               return $data;
-                           });
+               function() use ($data) {
+                   return $data;
+               });
     }
     
     /**
@@ -182,17 +182,13 @@ class AbcProcessor
     public function prepareBuilder($service = null)
     {    
         if (empty($service) || !is_string($service)) {
-            trigger_error(ABC_INVALID_ARGUMENT_EX . 
-                          ABC_INVALID_SERVICE_NAME,
-                          E_USER_WARNING);
+            Response::invalidArgumentException(INVALID_SERVICE_NAME);
         }
         
         $builder = '\ABC\Abc\Builders\\'. $service .'Builder';
          
         if (!class_exists($builder)) {
-            trigger_error(ABC_BAD_FUNCTION_CALL_EX . 
-                         $service . ABC_NO_SERVICE, 
-                         E_USER_WARNING);
+            Response::badFunctionCallException(ABC_NO_SERVICE);
         }    
         
         $builder = new $builder;

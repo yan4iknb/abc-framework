@@ -2,6 +2,8 @@
 
 namespace ABC\Abc\Components\Pdo;
 
+use ABC\Abc\Core\Response;
+
 /** 
  * Класс Pdo
  * 
@@ -32,9 +34,7 @@ class Pdo extends \PDO
             extract($data);
             
             if (!isset($dsn, $user, $pass)) {
-                trigger_error(ABC_INVALID_ARGUMENT_EX 
-                             .' Component PDO: '. ABC_WRONG_CONNECTION, 
-                              E_USER_WARNING);
+                Response::invalidArgumentException(' Component PDO: '. ABC_WRONG_CONNECTION);
             }
             
             if (!isset($opt)) {
@@ -93,9 +93,7 @@ class Pdo extends \PDO
             $this->debugger->component = 'PDO';
             $this->debugger->run($sql, $result);        
         } elseif (empty($this->debugger) && $this->test) {
-            trigger_error(ABC_BAD_FUNCTION_CALL_EX 
-                         .'Component PDO: '. ABC_NO_SQL_DEBUGGER,
-                          E_USER_NOTICE);
+            Response::badFunctionCallException('Component PDO: '. ABC_NO_SQL_DEBUGGER);
         }
         
         if (!$result) {

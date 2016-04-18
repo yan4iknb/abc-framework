@@ -36,43 +36,43 @@ class AbcException
          
             switch ($type) {
              
-                case ABC_BAD_FUNCTION_CALL_EX :
+                case Answer::BAD_FUNCTION_CALL :
                     $exception = 'BadFunctionCallException';
                 break;
-                case ABC_BAD_METHOD_CALL_EX :
+                case Answer::BAD_METHOD_CALL :
                     $exception = 'BadMethodCallException';
                 break;
-                case ABC_DOMAIN_EX :
+                case Answer::DOMAIN :
                     $exception = 'DomainException';
                 break;
-                case ABC_INVALID_ARGUMENT_EX :
+                case Answer::INVALID_ARGUMENT :
                     $exception = 'InvalidArgumentException';
                 break;
-                case ABC_LENGTH_EX :
+                case Answer::LENGTH :
                     $exception = 'LengthException';
                 break;
-                case ABC_LOGIC_EX :
+                case Answer::LOGIC :
                     $exception = 'LogicException';
                 break;
-                case ABC_OUT_OF_BOUNDS_EX :
+                case Answer::OUT_OF_BOUNDS :
                     $exception = 'OutOfBoundsException';
                 break;
-                case ABC_OUT_OF_RANGE_EX :
+                case Answer::OUT_OF_RANGE :
                     $exception = 'OutOfRangeException';
                 break;
-                case ABC_OVERFLOW_EX :
+                case Answer::OVERFLOW :
                     $exception = 'OverflowException';
                 break;
-                case  ABC_RANGE_EX:
+                case Answer::RANGE:
                     $exception = 'RangeException';
                 break;
-                case  ABC_RUNTIME_EX:
+                case Answer::RUNTIME:
                     $exception = 'RuntimeException';
                 break;
-                case ABC_UNDERFLOW_EX :
+                case Answer::UNDERFLOW :
                     $exception = 'UnderflowException';
                 break;
-                case ABC_UNEXPECTED_VALUE_EX :
+                case Answer::UNEXPECTED_VALUE :
                     $exception = 'UnexpectedValueException';
                 break;
                 default :

@@ -2,7 +2,7 @@
 
 namespace ABC\App\Controllers;
 
-use ABC\Abc\Core\BaseController;
+use ABC\Abc\Core\Base;
 
 /** 
  * Контроллер
@@ -12,7 +12,7 @@ use ABC\Abc\Core\BaseController;
  * @copyright © 2015
  * @license http://abc-framework.com/license/ 
  */   
-class MainController extends BaseController
+class MainController extends Base
 { 
     public function actionIndex()
     {
@@ -20,7 +20,7 @@ class MainController extends BaseController
         
         
         //new \ABC\App\Example;
-    }
+    }      
 }
 
 

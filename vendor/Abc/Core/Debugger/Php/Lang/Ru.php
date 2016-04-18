@@ -25,13 +25,13 @@ class Ru
                  'Missing argument (\d+?) for (.+?), called in (.+?) on line (\d+?) and defined' => 'Missing argument $1 for $2, called in $3 on line $4 and defined <br /><span style="color:#400080">(Отсутствует аргумент $1 для $2, вызванного из $3 на линии $4)</span><br />',
                  'Invalid argument supplied for (.+)' => 'Invalid argument supplied for $1 <br /><span style="color:#400080">(Неверный аргумент передан в $1)</span><br />',
                  'Division by zero' => 'Division by zero<br /><span style="color:#400080">(Деление на ноль)</span><br />',
-                 //'' => '',
-                 //'' => '',
-                 //'' => '',
-                 'ᐃnull'   => 'null',
-                 'ᐃarray'  => 'массив',
-                 'ᐃstring' => 'строка',
-                 'ᐃobject' => 'объект',
+                 //''  => '',
+                 //''  => '',
+                 'ᐃboolean' => 'boolean',
+                 'ᐃnull'    => 'null',
+                 'ᐃarray'   => 'массив',
+                 'ᐃstring'  => 'строка',
+                 'ᐃobject'  => 'объект',
         ];
     }
 

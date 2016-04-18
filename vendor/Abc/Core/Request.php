@@ -36,10 +36,12 @@ class Request
         $this->router = $container->get('Router');
      
         if (!empty($_SERVER['QUERY_STRING'])) {
-            $this->GET = $this->parseQueryString();
+            $_GET = $this->GET = $this->parseQueryString();
         } else {
-            $this->GET = $this->parseRequestUri();
+            $_GET = $this->GET = $this->parseRequestUri();
         }
+        
+        
     } 
    
     /**

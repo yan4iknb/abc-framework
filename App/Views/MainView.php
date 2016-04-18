@@ -2,7 +2,7 @@
 
 namespace ABC\App\Views;
 
-use ABC\Abc\Core\BaseView;
+use ABC\Abc\Core\Base;
 use ABC\App\Example;
 
 /** 
@@ -13,7 +13,7 @@ use ABC\App\Example;
  * @copyright © 2015
  * @license http://www.wtfpl.net/ 
  */   
-class MainView extends BaseView
+class MainView extends Base
 {
 
     public function createHello()

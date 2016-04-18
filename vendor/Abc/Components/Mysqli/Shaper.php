@@ -2,6 +2,8 @@
 
 namespace ABC\Abc\Components\Mysqli;
 
+use ABC\Abc\Core\Response;
+
 /** 
  * Класс Shaper
  * 
@@ -46,9 +48,7 @@ class Shaper extends \mysqli_stmt
     public function bind_param($types, &...$vars)
     {    
         if (strlen($types) !== count($vars)) {
-            trigger_error(ABC_INVALID_ARGUMENT_EX 
-                          .'Component Mysqli: '. ABC_INVALID_MYSQLI_TYPE, 
-                          E_USER_WARNING);
+            Response::invalidArgumentException('Component Mysqli: '. ABC_INVALID_MYSQLI_TYPE);
         }
      
         $this->debugTypes = $types;
@@ -143,9 +143,7 @@ class Shaper extends \mysqli_stmt
                 return "'". $this->mysqli->real_escape_string($param) ."'";
             
             default :
-                trigger_error(ABC_INVALID_ARGUMENT_EX 
-                             .'Component Mysqli: '. ABC_NO_MYSQLI_TYPE . $type, 
-                              E_USER_WARNING);    
+                Response::invalidArgumentException('Component Mysqli: '. ABC_NO_MYSQLI_TYPE . $type);    
         }   
     }
 }

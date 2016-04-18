@@ -143,7 +143,7 @@ class Url
     */   
     public function getUrl($string, $mode = false)
     {   
-        if (false !== strpos($string, '?')) {
+        if ($string[0] === '?') {
             mb_parse_str(trim($string, '/?'), $param); 
         } else {
             $param  = explode('/', $string);
@@ -154,7 +154,7 @@ class Url
     }
     
     /**
-    * Генерирует URL согласно роутам или локальному режиму
+    * Генерирует URL согласно настройкам или локальному режиму
     *
     * @param string $string
     * @param bool $mode
@@ -191,10 +191,8 @@ class Url
         }
      
         if (isset($config['pretty']) && false === $config['pretty']) {
-         
             return $basePath .'?'. http_build_query($param);    
         } else {
-            $param = $this->router->hashFromParam($param); 
             return $basePath .'/'. implode('/', $param);
         }
     }

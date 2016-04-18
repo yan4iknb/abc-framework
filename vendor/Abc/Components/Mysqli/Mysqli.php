@@ -2,6 +2,8 @@
 
 namespace ABC\Abc\Components\Mysqli;
 
+use ABC\Abc\Core\Response;
+
 /** 
  * Класс Mysqli
  * 
@@ -37,9 +39,7 @@ class Mysqli extends \mysqli
             extract($data);
            
             if (!isset($host, $user, $pass, $base)) {
-                trigger_error(ABC_INVALID_ARGUMENT_EX 
-                             .' Component Mysqli: '. ABC_WRONG_CONNECTION, 
-                              E_USER_WARNING);
+                Response::invalidArgumentException(' Component Mysqli: '. ABC_WRONG_CONNECTION);
             } else {
                 $this->host = $host;
                 $this->user = $user;
@@ -61,9 +61,7 @@ class Mysqli extends \mysqli
         parent::__construct($this->host, $this->user, $this->pass, $this->base); 
         
         if ($this->connect_error) {
-            trigger_error(ABC_LOGIC_EX 
-                         .' Component Mysqli: '. $this->connect_error, 
-                          E_USER_WARNING); 
+            Response::logicException(' Component Mysqli: '. $this->connect_error); 
             return false;
         }
         
@@ -98,9 +96,7 @@ class Mysqli extends \mysqli
             $this->debugger->component = 'Mysqli';
             $this->debugger->run($sql, $result);        
         } elseif (empty($this->debugger) && $this->test) {
-            trigger_error(ABC_BAD_FUNCTION_CALL_EX 
-                         .'Component Mysqli: '. ABC_NO_SQL_DEBUGGER,
-                          E_USER_NOTICE);
+            Response::badFunctionCallException('Component Mysqli: '. ABC_NO_SQL_DEBUGGER);
         }
         
         return $result;

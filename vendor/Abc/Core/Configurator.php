@@ -3,7 +3,9 @@
 namespace ABC\Abc\Core;
 
 use ABC\Abc\Resourses\Settings;
-
+use ABC\Abc\Core\Exception\AbcException;
+use ABC\Abc\Core\Exception\Error500Exception;
+use ABC\Abc\Core\Debugger\Php\PhpHandler;
 /** 
  * Конфигуратор
  * 
@@ -19,12 +21,21 @@ class Configurator
     */ 
     protected $config;
     
+    public function __construct($appConfig, $siteConfig)
+    {     
+        define('ABC_DS', DIRECTORY_SEPARATOR);
+        mb_internal_encoding('UTF-8');
+        $this->setConfig($appConfig, $siteConfig);
+        $this->setErrorMode();
+        include_once 'Functions/default.php';
+    }
+   
     /**
-    * Возвращает массив пользовательских настроек 
+    * Устанавливает настрйки фреймворка
     *
     * @return array
     */     
-    public function getConfig($appConfig, $siteConfig)
+    public function setConfig($appConfig, $siteConfig)
     {   
         if (!is_array($appConfig)) {
             Response::invalidArgumentException(ABC_INVALID_CONFIGURE);
@@ -40,6 +51,52 @@ class Configurator
         $this->config = array_replace_recursive($settings, $config);
         return array_merge($this->config, ['route_rules' => $this->getRouteRule()]);
     } 
+    
+    /**
+    * Устанавливает режим обработки ошибок
+    *
+    * @return void
+    */     
+    protected function setErrorMode()
+    {
+        if (isset($this->config['error_mod'])) {
+         
+            if (isset($this->config['error_language'])) {
+                $langusge = '\ABC\Abc\Resourses\Lang\\'. $this->config['error_language'];
+                
+                if (class_exists($langusge)) {
+                    $langusge::set();
+                } else {
+                    \ABC\Abc\Resourses\Lang\En::set();
+                }
+                
+            } else {
+                \ABC\Abc\Resourses\Lang\En::set();
+            }
+         
+            if ($this->config['error_mod'] === 'debug') {  
+                new PhpHandler($this->config);
+            } elseif ($this->config['error_mod'] === 'exception') {
+                new AbcException($this->config);
+            } else {
+                throw new \Exception(ABC_INVALID_DEBUG_SETTING); 
+            }
+            
+        } else {
+            \ABC\Abc\Resourses\Lang\En::set();
+            set_error_handler([$this, 'throwError500Exception']);
+        }
+    }
+   
+    /**
+    * Возвращает массив пользовательских настроек  
+    *
+    * @return array
+    */     
+    public function getConfig()
+    { 
+        return $this->config;
+    }     
     
     /**
     * Возвращает массив маршрутов 
@@ -94,6 +151,18 @@ class Configurator
         return $routeRule;
     } 
 
+    /**
+    * Бросает исключение на отчеты интерпретатора при включеной
+    * опции 500 Internal Server Error
+    *
+    * @return void
+    */
+    public function throwError500Exception($code, $message, $file, $line)
+    { 
+        if (error_reporting() & $code) {
+            throw new Error500Exception($message, $code, $file, $line);
+        }
+    } 
 }
 
 

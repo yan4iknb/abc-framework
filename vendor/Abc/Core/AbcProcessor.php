@@ -12,15 +12,8 @@ use ABC\Abc\Core\Debugger\Dbg;
         new Dbg($var);
     }
 
-
-
-use ABC\Abc\Core\AbcConstants;
 use ABC\Abc\Core\Configurator;
 use ABC\Abc\Core\Container;
-
-use ABC\Abc\Core\Exception\AbcException;
-use ABC\Abc\Core\Exception\Error500Exception;
-use ABC\Abc\Core\Debugger\Php\PhpHandler;
 
 /** 
  * Класс AbcFramework
@@ -54,13 +47,9 @@ class AbcProcessor
     * @param array $siteConfig
     */    
     public function __construct($appConfig = [], $siteConfig = [])
-    {
-        define('ABC_DS', DIRECTORY_SEPARATOR);
-        mb_internal_encoding('UTF-8'); 
-        $configurator = new Configurator;
-        $this->config = $configurator->getConfig($appConfig, $siteConfig);
-        $this->selectErrorMode();
-        include_once 'Functions/default.php';
+    { 
+        $configurator = new Configurator($appConfig, $siteConfig);
+        $this->config = $configurator->getConfig();
         $this->container = new Container;
         $this->setInStorage('config', $this->config);
         $this->setInContainer('Router');
@@ -196,55 +185,5 @@ class AbcProcessor
         $builder->container = $this->container;
         return $builder;
     }
-    
-    
-    /**
-    * Выбирает режим обработки ошибок
-    *
-    * @return void
-    */     
-    protected function selectErrorMode()
-    {
-        if (isset($this->config['error_mod'])) {
-         
-            if (isset($this->config['error_language'])) {
-                $langusge = '\ABC\Abc\Resourses\Lang\\'. $this->config['error_language'];
-                
-                if (class_exists($langusge)) {
-                    $langusge::set();
-                } else {
-                    \ABC\Abc\Resourses\Lang\En::set();
-                }
-                
-            } else {
-                \ABC\Abc\Resourses\Lang\En::set();
-            }
-         
-            if ($this->config['error_mod'] === 'debug') {  
-                new PhpHandler($this->config);
-            } elseif ($this->config['error_mod'] === 'exception') {
-                new AbcException($this->config);
-            } else {
-                throw new \Exception(ABC_INVALID_DEBUG_SETTING); 
-            }
-            
-        } else {
-            \ABC\Abc\Resourses\Lang\En::set();
-            set_error_handler([$this, 'throwError500Exception']);
-        }
-    }
-    
-    /**
-    * Бросает исключение на отчеты интерпретатора при включеной
-    * опции 500 Internal Server Error
-    *
-    * @return void
-    */
-    public function throwError500Exception($code, $message, $file, $line)
-    { 
-        if (error_reporting() & $code) {
-            throw new Error500Exception($message, $code, $file, $line);
-        }
-    } 
 }
 

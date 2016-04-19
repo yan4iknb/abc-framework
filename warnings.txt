@@ -1,9 +1,0 @@
-call_user_func_array() expects parameter 1 to be a valid callback, class 'ABC\Abc\Core\BaseTemplate' is not a subclass of 'ABC\Abc\Core\Base'
-
-str_replace() expects at least 3 parameters, 2 given
-
-Invalid error type specified
-
-Illegal string offset
-
-Array to string conversion

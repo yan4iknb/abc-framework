@@ -169,7 +169,7 @@ class Base
             return $this->tpl->extendsTpl($block, $layout);        
         } else {
             $this->methodNotFound(__METHOD__);
-        } 
+        }
     }     
     
     /**

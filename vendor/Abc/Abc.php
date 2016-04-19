@@ -32,7 +32,7 @@ class Abc
     */
     protected $config;
 
-    protected $autoload = '/Core/Autoloader.php';
+    protected $autoload = '/Autoloader.php';
 
     /**
     * Запуск фреймворка

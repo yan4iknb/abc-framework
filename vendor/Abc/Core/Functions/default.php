@@ -12,7 +12,7 @@ use ABC\Abc\Core\Debugger\Dbg;
     */
     function iniGET($key = null, $default = null)
     {
-        return Abc::getFromStorage('Request')->iniGET($key = null, $default = null);
+        return Abc::getFromStorage('Request')->iniGET($key, $default);
     }
     
     /**
@@ -22,9 +22,9 @@ use ABC\Abc\Core\Debugger\Dbg;
     * 
     * @return mix
     */
-    function ihiPOST($data)
+    function iniPOST($key = null, $default = null)
     {
-        return Abc::getFromStorage('Request')->iniPOST($key = null, $default = null);
+        return Abc::getFromStorage('Request')->iniPOST($key, $default);
     }
 
     /**

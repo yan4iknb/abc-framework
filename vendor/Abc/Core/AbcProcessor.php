@@ -12,7 +12,7 @@ use ABC\Abc\Core\Debugger\Dbg;
         new Dbg($var);
     }
 
-use ABC\Abc\Core\Configurator;
+use ABC\Abc\Core\AbcConfigurator;
 use ABC\Abc\Core\Container;
 
 /** 
@@ -48,7 +48,7 @@ class AbcProcessor
     */    
     public function __construct($appConfig = [], $siteConfig = [])
     { 
-        $configurator = new Configurator($appConfig, $siteConfig);
+        $configurator = new AbcConfigurator($appConfig, $siteConfig);
         $this->config = $configurator->getConfig();
         $this->container = new Container;
         $this->setInStorage('config', $this->config);

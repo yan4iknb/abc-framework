@@ -73,6 +73,7 @@ class AppManager
                 $objView->config = $this->config;
                 $objView->tpl = $this->getTemplate();   
                 $objController->view  = $objView;
+                $objController->config = $this->config;
                 call_user_func([$objController, $action]);
                 
             } else {

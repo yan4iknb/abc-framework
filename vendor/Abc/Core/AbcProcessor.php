@@ -52,11 +52,11 @@ class AbcProcessor
         $this->config = $configurator->getConfig();
         $this->container = new Container;
         $this->setInStorage('config', $this->config);
-        $this->setInContainer('Router');
-        $this->setInContainer('RoutesParser');        
-        $this->saredInContainer('Request');
-        $this->setInContainer('BaseTemplate');
         $this->setInContainer('AppManager');
+        $this->setInContainer('BaseTemplate');        
+        $this->saredInContainer('Request');
+        $this->setInContainer('Router');
+        $this->setInContainer('RoutesParser');
         $this->setInContainer('Url');
     }
     

@@ -61,7 +61,7 @@ class Configurator
     */     
     protected function setErrorMode()
     {
-        if (isset($this->config['error_mod'])) {
+        if (isset($this->config['error_mod']) && false !== $this->config['error_mod']) {
          
             if (isset($this->config['error_language'])) {
                 $langusge = '\ABC\Abc\Resourses\Lang\\'. $this->config['error_language'];

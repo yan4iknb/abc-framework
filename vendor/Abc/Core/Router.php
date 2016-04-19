@@ -21,15 +21,7 @@ class Router
     * @var array
     */ 
     protected $config;
-    
-    /**
-    * @var array
-    */ 
     protected $defaultRoute;
-    
-    /**
-    * @var array
-    */ 
     protected $hash;
     
     /**
@@ -51,7 +43,7 @@ class Router
     */    
     public function createGetFrom($string)
     {
-        $param = $this->hashFromString($string);//dbg($param);
+        $param = $this->hashFromString($string);
         return $this->generateGet($param);    
     }     
     
@@ -161,19 +153,6 @@ class Router
         }
      
         return $get;
-    }
-    
-    /**
-    * Возвращает системные роуты
-    *
-    * @param array $uriHash
-    *
-    * @return array
-    */    
-    public function addBaseParam($param = [])
-    {
-        return array_merge($this->defaultRoute, $param);
     }    
-    
 }
 

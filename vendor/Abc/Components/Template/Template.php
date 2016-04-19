@@ -2,6 +2,8 @@
 
 namespace ABC\Abc\Components\Template;
 
+use ABC\Abc\Core\Response;
+
 /** 
  * Класс Template 
  * Шаблонизатор
@@ -49,7 +51,7 @@ class Template
     */
     public function __construct($tplDir)
     {
-        $this->tplDir = $tplDir; 
+        $this->tplDir = str_replace('\\', ABC_DS, $tplDir); 
     }
     
     /**
@@ -65,9 +67,7 @@ class Template
         $this->endDelim   = $this->rightDelim . $this->rightDelim;
      
         if (false === ($this->tpl = @file_get_contents($path))) {
-            trigger_error(ABC_DOMAIN_EX .
-                          $path . ABC_NO_TEMPLATE,
-                          E_USER_WARNING);
+            Response::domainError($path . ABC_NO_TEMPLATE);
         }
         
         if (!empty($blockParent)) {
@@ -82,9 +82,7 @@ class Template
                                        );
           
             if (false === strpos($this->tpl, $parentOut)) {
-                trigger_error(ABC_DOMAIN_EX .
-                              ' <b>'. $blockParent .'</b>'. ABC_INVALID_BLOCK,
-                              E_USER_WARNING);
+                Response::domainError($blockParent . ABC_INVALID_BLOCK);
             }
         }
      

@@ -123,7 +123,7 @@ class RoutesParser
     protected function generateGet()
     {
         $get = []; 
-
+     
         foreach ($this->patterns as $num => $pattern) {
             if (is_array($pattern)) {
                 if (preg_match('~'. $pattern['value'] .'~', $this->elements[$num])) {
@@ -138,10 +138,10 @@ class RoutesParser
                 }   
             }
         }
+        
         $this->setRoute();
         return $get;    
     }
-
     
     /**
     * Установка маршрутов

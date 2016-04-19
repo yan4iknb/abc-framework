@@ -34,12 +34,12 @@ class Pdo extends \PDO
             extract($data);
             
             if (!isset($dsn, $user, $pass)) {
-                Response::invalidArgumentException(' Component PDO: '. ABC_WRONG_CONNECTION);
+                Response::invalidArgumentError(' Component PDO: '. ABC_WRONG_CONNECTION);
             }
             
             if (!isset($opt)) {
                 $opt = array(
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_Error,
                     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
                 );            
             }
@@ -50,7 +50,7 @@ class Pdo extends \PDO
      
         try {
             @parent::__construct($dsn, $user, $pass, $opt);
-        } catch (\PDOException $e) {
+        } catch (\PDOError $e) {
          
             if (empty($debugger)) {
                 throw $e;
@@ -81,7 +81,7 @@ class Pdo extends \PDO
     {
         try {
             $result = parent::query($sql);
-        } catch (\PDOException $e) {
+        } catch (\PDOError $e) {
             $this->error = $e->getMessage();        
             $result = false;
         } 
@@ -93,7 +93,7 @@ class Pdo extends \PDO
             $this->debugger->component = 'PDO';
             $this->debugger->run($sql, $result);        
         } elseif (empty($this->debugger) && $this->test) {
-            Response::badFunctionCallException('Component PDO: '. ABC_NO_SQL_DEBUGGER);
+            Response::badFunctionCallError('Component PDO: '. ABC_NO_SQL_DEBUGGER);
         }
         
         if (!$result) {

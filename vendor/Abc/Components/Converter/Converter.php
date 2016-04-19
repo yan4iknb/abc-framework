@@ -29,7 +29,7 @@ class Converter
     protected function __construct($language = null)
     {
         if (empty($language)) {
-            Response::invalidArgumentException('Component Converter: no language settings');
+            Response::invalidArgumentError('Component Converter: no language settings');
         } else {
             $this->language = strtolower($language);
         }
@@ -52,7 +52,7 @@ class Converter
             case 'json' :
                 return $this->parseJson($content);
             default :
-                Response::invalidArgumentException('Component Converter: unknown language '. $content);
+                Response::invalidArgumentError('Component Converter: unknown language '. $content);
                 return false;
         }
     }

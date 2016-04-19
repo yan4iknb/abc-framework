@@ -31,7 +31,7 @@ class Container
         $callable  = $this->validateCallable($callable);
       
         if (isset($this->serviceStorage[$serviceId])) {
-            Response::overflowException($serviceId . ABC_ALREADY_SERVICE);
+            Response::overflowError($serviceId . ABC_ALREADY_SERVICE);
         }
      
         $this->serviceStorage[$serviceId] = $callable; 
@@ -74,7 +74,7 @@ class Container
             return $this->serviceStorage[$serviceId]->__invoke();
         }
      
-        Response::outOfBoundsException($serviceId . ABC_NOT_FOUND_SERVICE);
+        Response::outOfBoundsError($serviceId . ABC_NOT_FOUND_SERVICE);
     }
 
     /**
@@ -130,7 +130,7 @@ class Container
     protected function validateService($serviceId)
     {
         if (empty($serviceId) || !is_string($serviceId)) {
-            Response::invalidArgumentException(ABC_INVALID_SERVICE_NAME); 
+            Response::invalidArgumentError(ABC_INVALID_SERVICE_NAME); 
         }
      
         return strtolower($serviceId);
@@ -146,7 +146,7 @@ class Container
     protected function validateCallable($callable)
     {      
         if (!is_callable($callable)) {
-            Response::invalidArgumentException(ABC_INVALID_CALLABLE); 
+            Response::invalidArgumentError(ABC_INVALID_CALLABLE); 
         }
         
         return $callable;

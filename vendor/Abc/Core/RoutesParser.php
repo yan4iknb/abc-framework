@@ -116,9 +116,7 @@ class RoutesParser
     } 
     
     /**
-    * Распознование подходящего правила
-    *
-    * @param string $patterns
+    * Генерация массива GET параметров
     *
     * @return array
     */    

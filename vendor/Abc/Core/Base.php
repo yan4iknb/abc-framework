@@ -53,9 +53,7 @@ class Base
             return $this->model;       
         } 
      
-        trigger_error(ABC_BAD_METHOD_CALL_EX . 
-                      ABC_NO_MODEL, 
-                      E_USER_WARNING);
+        Response::badMethodCallError(ABC_NO_MODEL);
     }
     
     /**
@@ -199,7 +197,7 @@ class Base
     protected function methodNotFound($method)
     {
         $method = explode('::', $method);
-        Response::badMethodCallException(array_pop($method) .'() '. ABC_NO_METHOD);
+        Response::badMethodCallError(array_pop($method) .'() '. ABC_NO_METHOD);
     }
     
     /**

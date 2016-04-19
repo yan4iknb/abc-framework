@@ -51,7 +51,7 @@ class Router
     */    
     public function createGetFrom($string)
     {
-        $param = $this->hashFromString($string);
+        $param = $this->hashFromString($string);//dbg($param);
         return $this->generateGet($param);    
     }     
     
@@ -81,7 +81,7 @@ class Router
             mb_parse_str(trim($string, '/?'), $param); 
             $param = $this->hashFromParam($param);
         } else {
-            $param  = explode('/', $string);  
+            $param  = explode('/', trim($string, '/'));  
         }
      
         return $param;    
@@ -132,8 +132,13 @@ class Router
     */    
     public function defaultGet($param)
     {
-        $get = $this->generateGet($param);
-        return $this->addBaseParam($get);
+        $app = ['controller' => @$param[0] ?: $this->config['defaultRoute']['controller'],
+                'action'     => @$param[1] ?: $this->config['defaultRoute']['action']
+        ];
+     
+        $param = array_slice($param, 2);
+        $get   = $this->generateGet($param);
+        return array_merge($app, $get);
     }    
     
     /**
@@ -146,7 +151,7 @@ class Router
     public function generateGet($param)
     {
         $get = [];
-        
+       
         foreach ($param as $n => $value) {
             if ($n & 1) {
                 $get[$key] = $value;  
@@ -165,7 +170,7 @@ class Router
     *
     * @return array
     */    
-    protected function addBaseParam($param = [])
+    public function addBaseParam($param = [])
     {
         return array_merge($this->defaultRoute, $param);
     }    

@@ -37,25 +37,68 @@ class Url
         $this->router  = $container->get('Router');
         $this->request = $container->get('Request');
     }
-  
+    
     /**
-    * Получаем URL
+    * Генерирует URL согласно настройкам или локальному режиму
     *
     * @param string $string
-    * @param bool|array $mode
+    * @param bool $mode
     *
     * @return string
-    */     
-    public function getUrls($string, $mode = false)
+    */  
+    public function getUrl($queryString, $mode = false)
     { 
-        if (isset($config['pretty']) && false === $config['pretty']) {
-            $param = $this->router->hashFromUrl($string);
-        } else {
-            $param = $this->router->hashFromString($string);
+        $queryString  = trim($queryString, '/'); 
+        
+        if (isset($mode['show_script'])) {
+            unset($mode['show_script']);
         }
         
-        return $this->createUrl($param, $mode);
-    }
+        if (is_array($mode) && !empty($this->config['url'])) {
+            $config = array_merge($this->config['url'], $mode);
+        } elseif (!is_array($mode) && !empty($this->config['url'])) {
+            $config = $this->config['url'];
+        } 
+     
+        $protocol   = !empty($config['https']) ? 'https://' : 'http://';
+        $hostName   = $this->request->getHostName();
+        $scriptName = null;
+        
+        if (!empty($config['show_script'])) {
+            $query = trim($_SERVER['PHP_SELF'], '/');
+            $scriptName = '/'. explode('/', $query)[0]; 
+        }
+       
+        if (true === $mode) {
+            $basePath = $protocol. $hostName . $scriptName ;
+        } else {
+            $basePath = (isset($config['absolute']) && true === $config['absolute']) 
+                      ? $protocol . $hostName . $scriptName 
+                      : $scriptName;        
+        }
+     
+        if (isset($config['pretty']) && false === $config['pretty']) {
+         
+            if ($queryString[0] === '?') {
+                return $basePath .'?'. ltrim($queryString, '?');            
+            } else {
+                $param = explode('/', $queryString);
+                $param = $this->router->defaultGet($param);
+                return $basePath .'?'. http_build_query($param); 
+            }
+            
+        } else {
+         
+            if ($queryString[0] !== '?') {
+                return $basePath .'/'. $queryString;
+            } else {
+                mb_parse_str($queryString, $param); 
+                $param = $this->router->hashFromParam($param);
+                $queryString = implode('/', $param);
+                return $basePath .'/'. $queryString;
+            }
+        }
+    }    
     
     /**
     * Добавляет параметры в URL
@@ -75,10 +118,10 @@ class Url
     /**
     * Формирование ссылок.
     * 
-    * @param string $text
     * @param string $query
+    * @param string $text
     * @param string $attribute
-    * @param bool $abs
+    * @param bool $mode
     *
     * @return string 
     */      
@@ -131,69 +174,4 @@ class Url
      
         return null;
     } 
-    
-    
-    /**
-    * Получаем URL
-    *
-    * @param string $string
-    * @param bool|array $mode
-    *
-    * @return string
-    */   
-    public function getUrl($string, $mode = false)
-    {   
-        if ($string[0] === '?') {
-            mb_parse_str(trim($string, '/?'), $param); 
-        } else {
-            $param  = explode('/', $string);
-            $param  = $this->router->generateGet($param);
-        }
-
-        return $this->createUrl($param, $mode);    
-    }
-    
-    /**
-    * Генерирует URL согласно настройкам или локальному режиму
-    *
-    * @param string $string
-    * @param bool $mode
-    *
-    * @return string
-    */  
-    protected function createUrl($param, $mode = false)
-    { 
-        if (isset($mode['show_script'])) {
-            unset($mode['show_script']);
-        }
-        
-        if (is_array($mode) && !empty($this->config['url'])) {
-            $config = array_merge($this->config['url'], $mode);
-        } elseif (!is_array($mode) && !empty($this->config['url'])) {
-            $config = $this->config['url'];
-        } 
-
-        $protocol   = !empty($config['https']) ? 'https://' : 'http://';
-        $hostName   = $this->request->getHostName();
-        $scriptName = null;
-        
-        if (!empty($config['show_script'])) {
-            $query = trim($_SERVER['PHP_SELF'], '/');
-            $scriptName = '/'. explode('/', $query)[0]; 
-        }
-       
-        if (true === $mode) {
-            $basePath = $protocol. $hostName . $scriptName ;
-        } else {
-            $basePath = (isset($config['absolute']) && true === $config['absolute']) 
-                      ? $protocol . $hostName . $scriptName 
-                      : $scriptName;        
-        }
-     
-        if (isset($config['pretty']) && false === $config['pretty']) {
-            return $basePath .'?'. http_build_query($param);    
-        } else {
-            return $basePath .'/'. implode('/', $param);
-        }
-    }
 } 

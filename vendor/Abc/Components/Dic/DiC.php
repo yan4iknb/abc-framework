@@ -37,25 +37,25 @@ class DiC extends Container
         }
         
         if (isset($this->serviceSynthetic[$newService])) {
-            Response::LogicException($newService . ABC_SYNTHETIC_SERVICE);
+            Response::LogicError($newService . ABC_SYNTHETIC_SERVICE);
         }
      
         $dependenceId = $this->validateService($dependenceId);
         
         if (!empty($property) && !is_array($property)) {
-            Response::invalidArgumentException(ABC_INVALID_PROPERTY); 
+            Response::invalidArgumentError(ABC_INVALID_PROPERTY); 
         }
         
         $objService = $this->get($serviceId);
         
         if (false === $objService) {
-            Response::LogicException($serviceId . ABC_NOT_REGISTERED_SERVICE);
+            Response::LogicError($serviceId . ABC_NOT_REGISTERED_SERVICE);
         }
         
         $objDependence = $this->get($dependenceId);
         
         if (false === $objDependence) {
-            Response::LogicException($dependenceId . ABC_NOT_REGISTERED_SERVICE);
+            Response::LogicError($dependenceId . ABC_NOT_REGISTERED_SERVICE);
         }
         
         $class = get_class($objService);

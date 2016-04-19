@@ -587,7 +587,7 @@ class Template
         
         if (!empty($error)) {
             foreach ($error as $bname => $v) {
-                Response::domainException($bname . ABC_INVALID_BLOCK);
+                Response::domainError($bname . ABC_INVALID_BLOCK);
             }
         }
     }

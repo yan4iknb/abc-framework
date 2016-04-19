@@ -48,7 +48,7 @@ class Shaper extends \mysqli_stmt
     public function bind_param($types, &...$vars)
     {    
         if (strlen($types) !== count($vars)) {
-            Response::invalidArgumentException('Component Mysqli: '. ABC_INVALID_MYSQLI_TYPE);
+            Response::invalidArgumentError('Component Mysqli: '. ABC_INVALID_MYSQLI_TYPE);
         }
      
         $this->debugTypes = $types;
@@ -143,7 +143,7 @@ class Shaper extends \mysqli_stmt
                 return "'". $this->mysqli->real_escape_string($param) ."'";
             
             default :
-                Response::invalidArgumentException('Component Mysqli: '. ABC_NO_MYSQLI_TYPE . $type);    
+                Response::invalidArgumentError('Component Mysqli: '. ABC_NO_MYSQLI_TYPE . $type);    
         }   
     }
 }

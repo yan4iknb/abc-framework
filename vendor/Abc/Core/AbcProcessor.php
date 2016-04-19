@@ -58,11 +58,10 @@ class AbcProcessor
         $this->setInContainer('BaseTemplate');
         $this->setInContainer('AppManager');
         $this->setInContainer('Url');
-        $this->setInStorage('Abc', $this);
     }
     
     /**
-    * Запускает роутер 
+    * Запускает приложение 
     *
     * @return void
     */     
@@ -73,42 +72,7 @@ class AbcProcessor
     }
     
     /**
-    * Помещает объекты ядра в контейнер
-    *
-    * @param string $className
-    *
-    * @return void
-    */     
-    public function setInContainer($className)
-    { 
-        $container = $this->container;
-        $this->container->set($className, 
-               function() use ($className, $container) {
-                   $className = 'ABC\Abc\Core\\' . $className;
-                   return new $className($container);
-               });
-    }
-    
-    
-    /**
-    * Помещает объекты ядра в контейнер
-    *
-    * @param string $className
-    *
-    * @return void
-    */     
-    public function saredInContainer($className)
-    { 
-        $container = $this->container;
-        $this->container->setGlobal($className, 
-               function() use ($className, $container) {
-                   $className = 'ABC\Abc\Core\\' . $className;
-                   return new $className($container);
-               });
-    }
-    
-    /**
-    * Помещает данные в глобальное хранилище
+    * Помещает любые данные в глобальное хранилище
     *
     * @param string $id
     * @param mix $data
@@ -124,7 +88,7 @@ class AbcProcessor
     }
     
     /**
-    * Получает данные из глобального хранилища
+    * Получает содержимое глобального хранилища по ключу
     *
     * @param string $id
     *
@@ -168,22 +132,56 @@ class AbcProcessor
     *
     * @return object
     */     
-    public function prepareBuilder($service = null)
+    protected function prepareBuilder($service = null)
     {    
         if (empty($service) || !is_string($service)) {
-            Response::invalidArgumentException(INVALID_SERVICE_NAME);
+            Response::invalidArgumentError(INVALID_SERVICE_NAME);
         }
         
         $builder = '\ABC\Abc\Builders\\'. $service .'Builder';
          
         if (!class_exists($builder)) {
-            Response::badFunctionCallException(ABC_NO_SERVICE);
+            Response::badFunctionCallError(ABC_NO_SERVICE);
         }    
         
         $builder = new $builder;
         $builder->config  = $this->config;
         $builder->container = $this->container;
         return $builder;
+    }
+    
+    /**
+    * Помещает объекты ядра в контейнер
+    *
+    * @param string $className
+    *
+    * @return void
+    */     
+    protected function setInContainer($className)
+    { 
+        $container = $this->container;
+        $this->container->set($className, 
+               function() use ($className, $container) {
+                   $className = 'ABC\Abc\Core\\' . $className;
+                   return new $className($container);
+               });
+    }
+    
+    /**
+    * Помещает объекты ядра в контейнер по принципу Singletone
+    *
+    * @param string $className
+    *
+    * @return void
+    */     
+    protected function saredInContainer($className)
+    { 
+        $container = $this->container;
+        $this->container->setGlobal($className, 
+               function() use ($className, $container) {
+                   $className = 'ABC\Abc\Core\\' . $className;
+                   return new $className($container);
+               });
     }
 }
 

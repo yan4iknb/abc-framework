@@ -3,6 +3,8 @@
 namespace ABC\Abc\Core;
 
 use ABC\Abc\Resourses\Settings;
+
+use ABC\Abc\Core\Response;
 use ABC\Abc\Core\Exception\AbcException;
 use ABC\Abc\Core\Exception\Error500Exception;
 use ABC\Abc\Core\Debugger\Php\PhpHandler;
@@ -38,11 +40,11 @@ class Configurator
     public function setConfig($appConfig, $siteConfig)
     {   
         if (!is_array($appConfig)) {
-            Response::invalidArgumentException(ABC_INVALID_CONFIGURE);
+            Response::error('Application\'s configuration must be an array');
         }
         
         if (!is_array($siteConfig)) {
-            Response::invalidArgumentException(ABC_INVALID_CONFIGURE_SITE);
+            Response::error('Site configuration must be an array');
         }
      
         $config   = array_replace_recursive($appConfig, $siteConfig);
@@ -121,7 +123,7 @@ class Configurator
     }  
 
     /**
-    * Приводим все ключи к нижнему регистру 
+    * Приводит все ключи к нижнему регистру 
     *
     * @return array
     */     

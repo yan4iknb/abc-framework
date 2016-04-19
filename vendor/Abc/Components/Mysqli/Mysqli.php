@@ -39,7 +39,7 @@ class Mysqli extends \mysqli
             extract($data);
            
             if (!isset($host, $user, $pass, $base)) {
-                Response::invalidArgumentException(' Component Mysqli: '. ABC_WRONG_CONNECTION);
+                Response::invalidArgumentError(' Component Mysqli: '. ABC_WRONG_CONNECTION);
             } else {
                 $this->host = $host;
                 $this->user = $user;
@@ -61,7 +61,7 @@ class Mysqli extends \mysqli
         parent::__construct($this->host, $this->user, $this->pass, $this->base); 
         
         if ($this->connect_error) {
-            Response::logicException(' Component Mysqli: '. $this->connect_error); 
+            Response::logicError(' Component Mysqli: '. $this->connect_error); 
             return false;
         }
         
@@ -96,7 +96,7 @@ class Mysqli extends \mysqli
             $this->debugger->component = 'Mysqli';
             $this->debugger->run($sql, $result);        
         } elseif (empty($this->debugger) && $this->test) {
-            Response::badFunctionCallException('Component Mysqli: '. ABC_NO_SQL_DEBUGGER);
+            Response::badFunctionCallError('Component Mysqli: '. ABC_NO_SQL_DEBUGGER);
         }
         
         return $result;

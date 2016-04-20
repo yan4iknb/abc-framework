@@ -24,9 +24,8 @@ class Example
         //- - - - - - - - - - - - - - - - - - - - - - - 
         // Демонстрация дебаггера  (раскомменчивать по очереди)
         
-        pow(2, 3, 5);
         
-        //echo DDDDD;
+        echo DDDDD;
         //echo $a;
         //dbg(); 
         //dbg($var1); 
@@ -45,7 +44,7 @@ class Example
         // Простые запросы mysqli
 /*
        
-        $mysqli = getService('Mysqli');
+        $mysqli = Abc::getService('Mysqli');
         $mysqli->test = true;
         $mysqli->query("SELECT * FROM `test`");
         
@@ -57,7 +56,7 @@ class Example
         //- - - - - - - - - - - - - - - - - - - - - - - 
         // Продготовленные запросы  mysqli
 /* 
-        $mysqli = getService('Mysqli');
+        $mysqli = Abc::getService('Mysqli');
         $mysqli->test();
         $stmt = $mysqli->prepare("INSERT INTO `test` VALUES (?, ?)");
         
@@ -76,7 +75,7 @@ class Example
         // Простые запросы  PDO
         
 /*         
-        $pdo = getService('PDO');
+        $pdo = Abc::getService('PDO');
         $pdo->test();
         
         $stmt = $pdo->query("SELECT * FROM `test`");  
@@ -89,7 +88,7 @@ class Example
         // Подготовленные запросы  PDO
 /*       
 
-        $pdo = getService('PDO');
+        $pdo = Abc::getService('PDO');
         
         $pdo->test();
 
@@ -106,7 +105,7 @@ class Example
         // Демонстрация IOC
         /*
         
-        $ioc = getService('DiC');
+        $ioc = Abc::getService('DiC');
       
         $ioc->set('dependence',
                    function() {

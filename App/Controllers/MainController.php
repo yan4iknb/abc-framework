@@ -16,10 +16,10 @@ class MainController extends Base
 { 
     public function actionIndex()
     {
-        $this->view->createHello();
+        //$this->view->createHello();
         
         
-        //new \ABC\App\Example;
+        new \ABC\App\Example;
     }      
 }
 

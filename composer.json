@@ -1,0 +1,20 @@
+{
+    "name": "abc-framework/abc-framework",
+    "type": "framework",
+    "description": "A simple Framework for beginners (простой фреймворк для начинающих)",
+    "keywords": ["framework"],
+    "homepage": "http://abc-framework.ru/",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "IRBIS-team",
+            "email": "abcframework@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.5.0"
+    },
+    "autoload": {
+        "psr-0": { "abc-framework": "vendor/" }
+    },
+}

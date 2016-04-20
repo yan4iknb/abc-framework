@@ -66,7 +66,7 @@ class Abc
     *
     * @return void
     */    
-    protected function run($appConfig, $siteConfig)
+    protected function run($appConfig = [], $siteConfig = [])
     {
         $this->autoload = __DIR__ . $this->autoload;
         $this->autoloadSelector();

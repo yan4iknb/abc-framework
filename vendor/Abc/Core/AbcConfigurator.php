@@ -29,8 +29,7 @@ class AbcConfigurator
         mb_internal_encoding('UTF-8');
         $this->setConfig($appConfig, $siteConfig);
         $this->setErrorMode();
-        include_once 'Functions/default.php';
-        
+        include_once 'Functions/default.php';  
     }
    
     /**

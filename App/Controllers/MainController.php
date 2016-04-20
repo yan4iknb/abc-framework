@@ -1,14 +1,14 @@
 <?php
 
-namespace ABC\App\Controllers;
+namespace ABC\\App\\Controllers;
 
-//use Base;
+use ABC\\Abc\\Core\\Base;
 
 /** 
  * Контроллер
  * 
  */   
-class MainController extends \ABC\Abc\Core\Base
+class MainController extends Base
 { 
     public function actionIndex()
     {

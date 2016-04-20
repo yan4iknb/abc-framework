@@ -16,5 +16,5 @@
     },
     "autoload": {
         "psr-0": { "abc-framework": "vendor/" }
-    },
+    }
 }

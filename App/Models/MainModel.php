@@ -3,16 +3,12 @@
 namespace ABC\App\Models;
 
 /** 
- * Класс MainView
+ * Класс MainModel
  * 
- * NOTE: Requires PHP version 5.5 or later   
- * @author irbis-team
- * @copyright © 2015
- * @license http://www.wtfpl.net/ 
  */   
 class MainModel
 {
-    public function getAattribute()
+    public function getContent()
     {
         return ['hello' => 'Привет, Мир!'];
     }

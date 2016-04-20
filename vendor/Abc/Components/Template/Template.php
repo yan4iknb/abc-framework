@@ -323,9 +323,7 @@ class Template
             eval('?>'. $block);
         $block = ob_get_clean();
      
-        $block = stripslashes($block);
         $block = str_ireplace('<xml', '<?xml', $block);
-     
         return $block;
     }
 

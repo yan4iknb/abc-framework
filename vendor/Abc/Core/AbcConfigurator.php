@@ -23,7 +23,7 @@ class AbcConfigurator
     */ 
     protected $config;
     
-    public function __construct($appConfig, $siteConfig)
+    public function __construct($appConfig = [], $siteConfig = [])
     {    
         define('ABC_DS', DIRECTORY_SEPARATOR);
         mb_internal_encoding('UTF-8');

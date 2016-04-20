@@ -47,7 +47,7 @@ class Abc
     *
     * @return void
     */     
-    public static function createApp($appConfig = [], $siteConfig = [])
+    public static function startApp($appConfig = [], $siteConfig = [])
     { 
         if (!empty(self::$abc)) {
             throw new \LogicException('Only one process');  

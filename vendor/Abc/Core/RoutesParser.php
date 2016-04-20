@@ -158,7 +158,7 @@ class RoutesParser
                 if (!empty($this->defaultKeys[$num])) {
                     $this->route[$this->defaultKeys[$num]] = $rout;
                 } else {
-                    Response::logicException(ABC_ERROR_ROUTES_RULE);
+                    Response::logicError(ABC_ERROR_ROUTES_RULE);
                 }
             }
         }

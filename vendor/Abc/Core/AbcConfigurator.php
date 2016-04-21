@@ -4,8 +4,7 @@ namespace ABC\Abc\Core;
 
 use ABC\Abc\Resourses\Settings;
 
-use ABC\Abc\Core\Response;
-use ABC\Abc\Core\Exception\AbcException;
+use ABC\Abc\Core\Exception\AbcError;
 use ABC\Abc\Core\Exception\Error500Exception;
 use ABC\Abc\Core\Debugger\Php\PhpHandler;
 /** 

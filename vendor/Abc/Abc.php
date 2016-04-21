@@ -18,9 +18,8 @@ class Abc
 {
     protected static $autoload = '/Autoloader.php';    
 
-    protected static $abc; 
-    protected static $process;     
     protected static $config;
+    protected static $process;     
 
     /**
     * Запуск фреймворка

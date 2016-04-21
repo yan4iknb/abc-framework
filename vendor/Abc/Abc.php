@@ -164,7 +164,7 @@ class Abc
     */     
     public static function getFromStorage($id = null)
     {
-        return self::$abc->process->getFromContainer($id);
+        return self::$abc->process->getFromStorage($id);
     }
     
     /**

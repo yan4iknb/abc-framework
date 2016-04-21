@@ -94,7 +94,7 @@ class AbcProcessor
     *
     * @return mix
     */     
-    public function getFromContainer($id = null)
+    public function getFromStorage($id = null)
     {  
         return $this->container->get($id);
     }

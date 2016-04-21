@@ -2,7 +2,7 @@
 
 namespace ABC\Abc\Components\Converter;
 
-use ABC\Abc\Core\Response;
+use ABC\Abc\Core\Exception\AbcError;
 use ABC\abc\Components\Converter\Yaml;
 
 /** 
@@ -29,7 +29,7 @@ class Converter
     protected function __construct($language = null)
     {
         if (empty($language)) {
-            Response::invalidArgumentError('Component Converter: no language settings');
+            AbcError::invalidArgument('Component Converter: no language settings');
         } else {
             $this->language = strtolower($language);
         }
@@ -52,7 +52,7 @@ class Converter
             case 'json' :
                 return $this->parseJson($content);
             default :
-                Response::invalidArgumentError('Component Converter: unknown language '. $content);
+                AbcError::invalidArgument('Component Converter: unknown language '. $content);
                 return false;
         }
     }

@@ -22,6 +22,7 @@ class AbcConfigurator
     * @var array
     */ 
     protected $config;
+    protected $contentEnable = true;
     
     public function __construct($appConfig = [], $siteConfig = [])
     {    
@@ -40,19 +41,32 @@ class AbcConfigurator
     public function setConfig($appConfig, $siteConfig)
     {   
         if (!is_array($appConfig)) {
-            Response::error('Application\'s configuration must be an array');
+            AbcError::error('Application\'s configuration must be an array');
         }
         
         if (!is_array($siteConfig)) {
-            Response::error('Site configuration must be an array');
+            AbcError::error('Site configuration must be an array');
         }
      
-        $config   = array_replace_recursive($appConfig, $siteConfig);
-        $config   = $this->normaliseConfig($config);
+        $this->config = array_replace_recursive($appConfig, $siteConfig);
+        $this->config = $this->normaliseConfig($this->config);
         $settings = Settings::get();
-        $this->config = array_replace_recursive($settings, $config);
-        return array_merge($this->config, ['route_rules' => $this->getRouteRule()]);
+        $this->config = array_replace_recursive($settings, $this->config);
     } 
+    
+    /**
+    * Устанавливает настрйки фреймворка
+    *
+    * @return array
+    */     
+    public function getConfig()
+    {   
+        $hardConfig = ['route_rules'      => $this->getRouteRule(),
+                       'content_enable'   => $this->contentEnable
+                  ];
+        
+        return array_merge($this->config, $hardConfig);
+    }    
     
     /**
     * Устанавливает режим обработки ошибок
@@ -79,7 +93,7 @@ class AbcConfigurator
             if ($this->config['error_mode'] === 'debug') {  
                 new PhpHandler($this->config);
             } elseif ($this->config['error_mode'] === 'exception') {
-                new AbcException($this->config);
+                new AbcException();
             } else {
                 throw new \Exception(strip_tags(ABC_INVALID_DEBUG_SETTING)); 
             }
@@ -89,17 +103,7 @@ class AbcConfigurator
             set_error_handler([$this, 'throwError500Exception']);
         }
     }
-   
-    /**
-    * Возвращает массив пользовательских настроек  
-    *
-    * @return array
-    */     
-    public function getConfig()
-    { 
-        return $this->config;
-    }     
-    
+
     /**
     * Возвращает массив маршрутов 
     *
@@ -119,7 +123,7 @@ class AbcConfigurator
             return $this->parseConfigRoutes($this->config['route_rules']);
         }
         
-        Response::badFunctionCall(ABC_UNKNOWN_ROUTES);
+        AbcError::badFunctionCall(ABC_UNKNOWN_ROUTES);
     }  
 
     /**
@@ -160,7 +164,9 @@ class AbcConfigurator
     * @return void
     */
     public function throwError500Exception($code, $message, $file, $line)
-    { 
+    {
+        $this->contentEnable = false;
+        
         if (error_reporting() & $code) {
             throw new Error500Exception($message, $code, $file, $line);
         }

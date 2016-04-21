@@ -2,8 +2,8 @@
 
 namespace ABC\Abc\Components\Dic;
 
-use ABC\Abc\Core\Response;
 use ABC\Abc\Core\Container;
+use ABC\Abc\Core\Exception\AbcError;
 
 /** 
  * DI контейнер
@@ -37,25 +37,25 @@ class DiC extends Container
         }
         
         if (isset($this->serviceSynthetic[$newService])) {
-            Response::LogicError($newService . ABC_SYNTHETIC_SERVICE);
+            AbcError::Logic($newService . ABC_SYNTHETIC_SERVICE);
         }
      
         $dependenceId = $this->validateService($dependenceId);
         
         if (!empty($property) && !is_array($property)) {
-            Response::invalidArgumentError(ABC_INVALID_PROPERTY); 
+            AbcError::invalidArgument(ABC_INVALID_PROPERTY); 
         }
         
         $objService = $this->get($serviceId);
         
         if (false === $objService) {
-            Response::LogicError($serviceId . ABC_NOT_REGISTERED_SERVICE);
+            AbcError::Logic($serviceId . ABC_NOT_REGISTERED_SERVICE);
         }
         
         $objDependence = $this->get($dependenceId);
         
         if (false === $objDependence) {
-            Response::LogicError($dependenceId . ABC_NOT_REGISTERED_SERVICE);
+            AbcError::Logic($dependenceId . ABC_NOT_REGISTERED_SERVICE);
         }
         
         $class = get_class($objService);

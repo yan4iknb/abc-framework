@@ -2,6 +2,8 @@
 
 namespace ABC\Abc\Core;
 
+use ABC\Abc\Core\Exception\AbcError;
+
 /** 
  * Класс RouteParser
  * 
@@ -158,7 +160,7 @@ class RoutesParser
                 if (!empty($this->defaultKeys[$num])) {
                     $this->route[$this->defaultKeys[$num]] = $rout;
                 } else {
-                    Response::logicError(ABC_ERROR_ROUTES_RULE);
+                    AbcError::logic(ABC_ERROR_ROUTES_RULE);
                 }
             }
         }

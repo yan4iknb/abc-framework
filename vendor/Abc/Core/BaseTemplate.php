@@ -11,11 +11,11 @@ namespace ABC\Abc\Core;
  * @license http://www.wtfpl.net/ 
  */   
 class BaseTemplate
-{
+{ 
     /**
     * @var ABC\Abc\Core\Container
     */ 
-    protected $container;
+    protected $container;    
     
     protected $config;
     protected $tplName;

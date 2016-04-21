@@ -2,7 +2,7 @@
 
 namespace ABC\Abc\Components\Mysqli;
 
-use ABC\Abc\Core\Response;
+use ABC\Abc\Core\Exception\AbcError;
 
 /** 
  * Класс Mysqli
@@ -39,7 +39,7 @@ class Mysqli extends \mysqli
             extract($data);
            
             if (!isset($host, $user, $pass, $base)) {
-                Response::invalidArgumentError(' Component Mysqli: '. ABC_WRONG_CONNECTION);
+                AbcError::invalidArgument' Component Mysqli: '. ABC_WRONG_CONNECTION);
             } else {
                 $this->host = $host;
                 $this->user = $user;
@@ -61,7 +61,7 @@ class Mysqli extends \mysqli
         parent::__construct($this->host, $this->user, $this->pass, $this->base); 
         
         if ($this->connect_error) {
-            Response::logicError(' Component Mysqli: '. $this->connect_error); 
+            AbcError::logic(' Component Mysqli: '. $this->connect_error); 
             return false;
         }
         

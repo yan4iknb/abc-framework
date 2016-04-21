@@ -2,7 +2,7 @@
 
 namespace ABC\Abc\Components\Mysqli;
 
-use ABC\Abc\Core\Response;
+use ABC\Abc\Core\Exception\AbcError;
 
 /** 
  * Класс Shaper
@@ -48,7 +48,7 @@ class Shaper extends \mysqli_stmt
     public function bind_param($types, &...$vars)
     {    
         if (strlen($types) !== count($vars)) {
-            Response::invalidArgumentError('Component Mysqli: '. ABC_INVALID_MYSQLI_TYPE);
+            AbcError::invalidArgument('Component Mysqli: '. ABC_INVALID_MYSQLI_TYPE);
         }
      
         $this->debugTypes = $types;

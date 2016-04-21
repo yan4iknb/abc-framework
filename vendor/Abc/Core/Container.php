@@ -2,6 +2,8 @@
 
 namespace ABC\Abc\Core;
 
+use ABC\Abc\Core\Exception\AbcError;
+
 /** 
  * DI контейнер
  * 
@@ -31,7 +33,7 @@ class Container
         $callable  = $this->validateCallable($callable);
       
         if (isset($this->serviceStorage[$serviceId])) {
-            Response::overflowError($serviceId . ABC_ALREADY_SERVICE);
+            AbcError::overflow($serviceId . ABC_ALREADY_SERVICE);
         }
      
         $this->serviceStorage[$serviceId] = $callable; 
@@ -74,7 +76,7 @@ class Container
             return $this->serviceStorage[$serviceId]->__invoke();
         }
      
-        Response::outOfBoundsError($serviceId . ABC_NOT_FOUND_SERVICE);
+        AbcError::outOfBounds($serviceId . ABC_NOT_FOUND_SERVICE);
     }
 
     /**
@@ -130,7 +132,7 @@ class Container
     protected function validateService($serviceId)
     {
         if (empty($serviceId) || !is_string($serviceId)) {
-            Response::invalidArgumentError(ABC_INVALID_SERVICE_NAME); 
+            AbcError::invalidArgument(ABC_INVALID_SERVICE_NAME); 
         }
      
         return strtolower($serviceId);
@@ -146,7 +148,7 @@ class Container
     protected function validateCallable($callable)
     {      
         if (!is_callable($callable)) {
-            Response::invalidArgumentError(ABC_INVALID_CALLABLE); 
+            AbcError::invalidArgument(ABC_INVALID_CALLABLE); 
         }
         
         return $callable;

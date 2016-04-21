@@ -4,6 +4,7 @@ namespace ABC\Abc\Core;
 
 use ABC\Abc\Core\AbcConfigurator;
 use ABC\Abc\Core\Container;
+use ABC\Abc\Core\Exception\AbcError;
 
 /** 
  * Класс AbcFramework
@@ -125,13 +126,13 @@ class AbcProcessor
     protected function prepareBuilder($service = null)
     {    
         if (empty($service) || !is_string($service)) {
-            Response::invalidArgumentError(INVALID_SERVICE_NAME);
+            AbcError::invalidArgument(INVALID_SERVICE_NAME);
         }
         
         $builder = '\ABC\Abc\Builders\\'. $service .'Builder';
          
         if (!class_exists($builder)) {
-            Response::badFunctionCallError(ABC_NO_SERVICE);
+            AbcError::badFunctionCall(ABC_NO_SERVICE);
         }    
         
         $builder = new $builder;

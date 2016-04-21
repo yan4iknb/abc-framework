@@ -19,10 +19,10 @@ class AbcInvalidArgumentException extends \InvalidArgumentException
     * 
     */  
     public function __construct($message, $code) 
-    {var_dump(debug_backtrace());
-        //$this->file = $file;
-        //$this->line = $line;        
-        //parent::__construct($message, $code);
+    {
+        $this->file = $file;
+        $this->line = $line;        
+        parent::__construct($message, $code);
     }
 }  
 

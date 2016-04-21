@@ -108,7 +108,23 @@ class Request
         return isset($this->GET[$key]) ? $this->GET[$key] : $default;
     } 
     
-
+    /**
+    * Инициализация POST параметров 
+    *
+    * @param string $key
+    * @param string $default
+    *
+    * @return string
+    */        
+    public function iniPOST($key = null, $default = null)
+    {
+        if (empty($key)) {
+            return @$_POST;
+        }
+        
+        return isset($_POST[$key]) ? $_POST[$key] : $default;
+    }
+    
     /**
     * Возвращает HOST
     *

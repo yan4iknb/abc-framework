@@ -3,6 +3,7 @@
 namespace ABC\Abc\Core;
 
 use ABC\Abc\Core\BaseTemplate;
+use ABC\Abc\Core\Exception\AbcError;
 
 /** 
  * Класс Base
@@ -53,7 +54,7 @@ class Base
             return $this->model;       
         } 
      
-        Response::badMethodCallError(ABC_NO_MODEL);
+        AbcError::badMethodCallError(ABC_NO_MODEL);
     }
     
     /**
@@ -197,7 +198,7 @@ class Base
     protected function methodNotFound($method)
     {
         $method = explode('::', $method);
-        Response::badMethodCallError(array_pop($method) .'() '. ABC_NO_METHOD);
+        AbcError::badMethodCallError(array_pop($method) .'() '. ABC_NO_METHOD);
     }
     
     /**

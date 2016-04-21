@@ -37,14 +37,14 @@ class Abc
     public static function startApp($appConfig = [], $siteConfig = [])
     { 
         if (!empty(self::$process)) {
-            throw new \LogicException('Only one process');  
+            throw new \Exception('Only one process');  
         }
         
         self::$config = array_merge($appConfig, $siteConfig);
         self::$autoload = __DIR__ . self::$autoload;
         self::autoloadSelector();
         self::$process = new AbcProcessor($appConfig, $siteConfig);
-        self::$process->startApp();
+        self::$process->startApp();    
     }
     
     /**

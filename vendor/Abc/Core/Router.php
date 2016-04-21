@@ -31,7 +31,7 @@ class Router
     {
         $this->container = $container;
         $this->config = $container->get('config'); 
-        $this->defaultRoute = arrayStrtolower($this->config['defaultRoute']);
+        $this->defaultRoute = arrayStrtolower($this->config['default_route']);
     }     
     
     /**
@@ -124,8 +124,8 @@ class Router
     */    
     public function defaultGet($param)
     {
-        $app = ['controller' => @$param[0] ?: $this->config['defaultRoute']['controller'],
-                'action'     => @$param[1] ?: $this->config['defaultRoute']['action']
+        $app = ['controller' => @$param[0] ?: $this->defaultRoute['controller'],
+                'action'     => @$param[1] ?: $this->defaultRoute['action']
         ];
      
         $param = array_slice($param, 2);

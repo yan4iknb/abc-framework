@@ -34,7 +34,7 @@ class RoutesParser
     {
         $this->container = $container;
         $this->config    = $container->get('config'); 
-        $this->defaultRoute = arrayStrtolower($this->config['defaultRoute']);
+        $this->defaultRoute = arrayStrtolower($this->config['default_route']);
         $this->routeRules = $this->config['route_rules'];
     }     
     

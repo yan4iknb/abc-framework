@@ -18,7 +18,7 @@ class Settings
                                     'layout'          => 'index'
                 ],       
          
-                'defaultRoute' => [
+                'default_route' => [
                                     'controller' => 'Main', 
                                     'action'     => 'Index'
                 ],

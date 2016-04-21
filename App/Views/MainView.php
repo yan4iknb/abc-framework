@@ -14,6 +14,6 @@ class MainView extends Base
     public function createHello()
     {  
         $content = $this->model->getContent();
-        echo $content['hello']; Abc::getService('ttt');;
+        echo $content['hello']; 
     }
 }

@@ -70,8 +70,8 @@ class Abc
     {
         $this->autoload = __DIR__ . $this->autoload;
         $this->autoloadSelector();
-         $this->process = new AbcProcessor($appConfig, $siteConfig);
-         $this->process->startApplication();
+        $this->process = new AbcProcessor($appConfig, $siteConfig);
+        $this->process->startApplication();
     }
     
     /**

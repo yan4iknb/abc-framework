@@ -119,7 +119,7 @@ use ABC\Abc\Core\Debugger\Dbg;
     */ 
     function activeLink($query, $default = false)
     { 
-        return Abc::getService('Url')->activeLink($query, $default);
+        return Abc::getFromStorage('Url')->activeLink($query, $default);
     }     
 
     /**

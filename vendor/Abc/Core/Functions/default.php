@@ -1,6 +1,6 @@
 <?php
 
-use ABC\abc;
+use ABC\Abc;
 use ABC\Abc\Core\Debugger\Dbg;
 
     /**

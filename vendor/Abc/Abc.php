@@ -174,7 +174,7 @@ class Abc
     */     
     public static function GET($key = null, $default = null)
     {
-        return self::getService('Request')->iniGET($key, $default);
+        return self::$abc->process->getFromStorage('Request')->iniGET($key, $default);
     }
     
     /**
@@ -184,7 +184,7 @@ class Abc
     */     
     public static function POST($key = null, $default = null)
     {
-        return self::getService('Request')->iniPOST($key, $default);
+        return self::$abc->process->getFromStorage('Request')->iniPOST($key, $default);
     }
     
     /**

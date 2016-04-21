@@ -16,23 +16,11 @@ use ABC\Abc\Core\AbcProcessor;
  
 class Abc
 {
-    
-    /**
-    * @var Abc 
-    */
+    protected static $autoload = '/Autoloader.php';    
+
     protected static $abc; 
-    
-    /**
-    * @var AbcProcess
-    */
-    protected $process;     
-
-    /**
-    * @var config 
-    */
-    protected $config;
-
-    protected $autoload = '/Autoloader.php';
+    protected static $process;     
+    protected static $config;
 
     /**
     * Запуск фреймворка
@@ -49,29 +37,15 @@ class Abc
     */     
     public static function startApp($appConfig = [], $siteConfig = [])
     { 
-        if (!empty(self::$abc)) {
+        if (!empty(self::$process)) {
             throw new \LogicException('Only one process');  
         }
         
-        self::$abc = new self;
-        self::$abc->run($appConfig, $siteConfig);
-    }
- 
-    /**
-    * Формирует настройки, подключает автолоадер классов,
-    * запускает фреймворк и приложение
-    *
-    * @param array $appConfig
-    * @param array $siteConfig
-    *
-    * @return void
-    */    
-    protected function run($appConfig = [], $siteConfig = [])
-    {
-        $this->autoload = __DIR__ . $this->autoload;
-        $this->autoloadSelector();
-        $this->process = new AbcProcessor($appConfig, $siteConfig);
-        $this->process->startApplication();
+        self::$config = array_merge($appConfig, $siteConfig);
+        self::$autoload = __DIR__ . self::$autoload;
+        self::autoloadSelector();
+        self::$process = new AbcProcessor($appConfig, $siteConfig);
+        self::$process->startApp();
     }
     
     /**
@@ -86,16 +60,16 @@ class Abc
     * 
     * @return void
     */    
-    protected function autoloadSelector()
+    protected static function autoloadSelector()
     {
-        if (empty($this->config['composer']) && !empty($this->config['autoload_path'])) {        
-            $this->autoload = $this->config['autoload_path'];
+        if (empty(self::$config['composer']) && !empty(self::$config['autoload_path'])) {        
+            self::$autoload = self::$config['autoload_path'];
             
-        } elseif (!empty($this->config['composer'])) {         
-            $this->autoload = __DIR__ .'/../autoload.php';
+        } elseif (!empty(self::$config['composer'])) {         
+            self::$autoload = __DIR__ .'/../autoload.php';
         }
         
-        $this->autoloadInclude();
+        self::autoloadInclude();
     }
  
     /**
@@ -103,9 +77,9 @@ class Abc
     *
     * @return void
     */    
-    protected function autoloadInclude()
+    protected static function autoloadInclude()
     {
-        include $this->autoload;
+        include self::$autoload;
     } 
   
     /**
@@ -115,7 +89,7 @@ class Abc
     */     
     public static function process()
     {
-        return self::$abc->process;
+        return self::$process;
     }
     
     /**
@@ -127,7 +101,7 @@ class Abc
     */     
     public static function getService($service = null)
     {
-        return self::$abc->process->getService($service);
+        return self::$process->getService($service);
     }
     
     /**
@@ -139,7 +113,7 @@ class Abc
     */ 
     public static function newService($service = null)
     {
-        return self::$abc->process->newService($service);
+        return self::$process->newService($service);
     }
 
     /**
@@ -152,7 +126,7 @@ class Abc
     */     
     public static function setInStorage($id, $data)
     {
-        self::$abc->process->setInStorage($id, $data);
+        self::$process->setInStorage($id, $data);
     }    
 
     /**
@@ -164,7 +138,7 @@ class Abc
     */     
     public static function getFromStorage($id = null)
     {
-        return self::$abc->process->getFromStorage($id);
+        return self::$process->getFromStorage($id);
     }
     
     /**
@@ -174,7 +148,7 @@ class Abc
     */     
     public static function GET($key = null, $default = null)
     {
-        return self::$abc->process->getFromStorage('Request')->iniGET($key, $default);
+        return self::$process->getFromStorage('Request')->iniGET($key, $default);
     }
     
     /**
@@ -184,7 +158,7 @@ class Abc
     */     
     public static function POST($key = null, $default = null)
     {
-        return self::$abc->process->getFromStorage('Request')->iniPOST($key, $default);
+        return self::$process->getFromStorage('Request')->iniPOST($key, $default);
     }
     
     /**
@@ -194,7 +168,7 @@ class Abc
     */     
     public static function getConfig($key = null)
     {
-        return self::$abc->process->getFromStorage('config')[$key];
+        return self::$process->getFromStorage('config')[$key];
     }
 }
 

@@ -61,7 +61,7 @@ class AbcConfigurator
     */     
     protected function setErrorMode()
     {
-        if (isset($this->config['error_mod']) && false !== $this->config['error_mod']) {
+        if (isset($this->config['error_mode']) && false !== $this->config['error_mode']) {
          
             if (isset($this->config['error_language'])) {
                 $langusge = '\ABC\Abc\Resourses\Lang\\'. $this->config['error_language'];
@@ -76,9 +76,9 @@ class AbcConfigurator
                 \ABC\Abc\Resourses\Lang\En::set();
             }
          
-            if ($this->config['error_mod'] === 'debug') {  
+            if ($this->config['error_mode'] === 'debug') {  
                 new PhpHandler($this->config);
-            } elseif ($this->config['error_mod'] === 'exception') {
+            } elseif ($this->config['error_mode'] === 'exception') {
                 new AbcException($this->config);
             } else {
                 throw new \Exception(strip_tags(ABC_INVALID_DEBUG_SETTING)); 

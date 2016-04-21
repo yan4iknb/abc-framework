@@ -1,6 +1,6 @@
 <?php
 
     return [
-              'error_mod'       => 'debug',
-              'framework_trace' => true, 
+              'error_mod'        => 'debug',
+              'error_language'   => 'Ru',
     ];

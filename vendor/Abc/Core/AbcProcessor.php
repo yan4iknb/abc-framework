@@ -55,7 +55,7 @@ class AbcProcessor
     *
     * @return void
     */     
-    public function startApplication()
+    public function startApp()
     {
         $manager = $this->container->get('AppManager');
         $manager->run();

@@ -14,8 +14,8 @@ class Ru
 {
     protected static function errorReportings() 
     {
-        return [ 'Undefined variable:(.+)'        => 'Undefined variable:<b>$1</b><br /><span style="color:#400080">(Не определена переменная: <b>$1</b>)</span><br />',
-                'Undefined property:(.+)'        => 'Undefined property:<b>$1</b><br /><span style="color:#400080">(Не определено свойство)</span><br />',
+        return [ 'Undefined variable: (.+)'        => 'Undefined variable: <b>$$1</b><br /><span style="color:#400080">(Не определена переменная: $<b>$1</b>)</span><br />',
+                'Undefined property: (.+)'        => 'Undefined property:<b>$1</b><br /><span style="color:#400080">(Не определено свойство)</span><br />',
                  'Undefined offset'          => 'Undefined offset <br /><span style="color:#400080">(Не определено смещение (номер элемента массива))</span><br />',
                  'Undefined index'           => 'Undefined index <br /><span style="color:#400080">(Не определен индекс массива)</span>',
                  'Use of undefined constant(.*)' => 'Use of undefined constant <br /><span style="color:#400080">(Используется неопределенная константа)</span><br />',

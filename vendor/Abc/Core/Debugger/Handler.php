@@ -259,9 +259,9 @@ abstract class Handler
             return false;
         } 
         
-        //if (basename($block['class']) === 'Dbg') {
-            //return false;
-        //} 
+        if (basename($block['class']) === 'Dbg') {
+            return false;
+        } 
         
         return $block;
     } 

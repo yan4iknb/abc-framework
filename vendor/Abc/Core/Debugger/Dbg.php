@@ -20,7 +20,7 @@ use ABC\Abc\Core\Debugger\Php\TraceVariable;
 class Dbg extends PhpHandler
 {
 
-    public $container = 'ABC\abc\components\Dic\DiC';
+    public $containerName = 'ABC\abc\components\Dic\DiC';
     
     /**
     * @var TraceClass|TraceContainer|TraceObject|TraceVariable 
@@ -58,9 +58,9 @@ class Dbg extends PhpHandler
             $this->reflection = true;  
         } elseif (is_object($var)) {
          
-            if ($this->container === get_class($var)) {
+            if ($this->containerName === get_class($var)) {
                 $this->tracer = new TraceContainer($this->painter, $this->view);
-                $this->tracer->container = $this->container;
+                $this->tracer->containerName = $this->containerName;
                 $this->reflection = true;            
                 $var = $this->tracer->getValue();        
             } else {

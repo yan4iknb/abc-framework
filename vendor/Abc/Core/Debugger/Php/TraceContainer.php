@@ -15,7 +15,7 @@ class TraceContainer
 {
     public $message = ABC_TRACING_CONTAINER;
     public $adds = true;    
-    public $container;
+    public $containerName;
     
     protected $painter;
     protected $view;
@@ -71,7 +71,7 @@ class TraceContainer
     */ 
     protected function reflectionContainer() 
     { // Не реализовано
-        return new $this->container;
+        return new $this->containerName;
     }    
     
     /**

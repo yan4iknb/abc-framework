@@ -29,8 +29,7 @@ class AbcConfigurator
         define('ABC_DS', DIRECTORY_SEPARATOR);
         mb_internal_encoding('UTF-8');
         $this->setConfig($appConfig, $siteConfig);
-        $this->setErrorMode();
-        include_once 'Functions/default.php';  
+        $this->setErrorMode();  
     }
    
     /**

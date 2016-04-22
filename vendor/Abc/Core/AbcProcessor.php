@@ -50,6 +50,7 @@ class AbcProcessor
         $this->setInContainer('RoutesParser');
         $this->setInContainer('Url');
         $this->saredInContainer('Response');
+        include_once 'Functions/default.php';
     }
     
     /**

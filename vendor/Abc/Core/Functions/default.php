@@ -128,6 +128,7 @@ use ABC\Abc\Core\Debugger\Dbg;
     * @return void
     */ 
     function dbg($var = 'stop')
-    {   
+    {  
         new Dbg($var);
     }
+  

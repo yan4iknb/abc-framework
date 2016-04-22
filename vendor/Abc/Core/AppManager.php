@@ -154,7 +154,10 @@ class AppManager
         if (empty($this->config['template'])) {
             $tpl = $this->abc->getService('Template');        
             $tpl->tplPhp = empty($this->config['tpl_php_disable']); 
-        } else {
+        } elseif (true === $this->config['template']) {
+            $tpl = null;
+        }
+        else {
             $tpl = $this->container->get('BaseTemplate');
         }
         

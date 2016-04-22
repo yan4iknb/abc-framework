@@ -88,7 +88,8 @@ class BaseTemplate
     /**
     * Наследование шаблона 
     *
-    * @param string $blockName
+    * @param string $block
+    * @param string $layout
     *
     * @return void
     */     
@@ -102,12 +103,9 @@ class BaseTemplate
     }  
     
     /**
-    * Рендер
+    * Возвращает заполненный шаблон
     *
-    * @param string $layout
-    * @param string $block
-    *
-    * @return void
+    * @return string
     */     
     public function parseTpl()
     {
@@ -115,15 +113,25 @@ class BaseTemplate
             return $this->execute($this->template);
         }
         
-
-    }      
+        return $this->html;
+    }  
     
     /**
-    * Наследование шаблона 
+    * Returns the content
+    * 
+    * @return string
+    */
+    public function getContent()
+    {       
+        return $this->html;
+    }  
+    
+    /**
+    * Эмуляция наследования 
     *
-    * @param string $blockName
+    * @param string $template
     *
-    * @return void
+    * @return string
     */     
     protected function execute($template)
     {

@@ -205,6 +205,21 @@ class Template
         return $this->prepareTpl();
     }
 
+
+    /**
+    * Returns the content
+    * 
+    * @return string
+    */
+    public function getContent()
+    {       
+        if (empty($this->total)) {
+            $this->total = $this->parseTpl();
+        }
+        
+        return $this->total;
+    }    
+    
     /**
     * Rendering the template
     * 

@@ -153,7 +153,7 @@ class AbcProcessor
     protected function addToContainer($className)
     { 
         $container = $this->container;
-        $this->container->set($className, 
+        $this->container->setGlobal($className, 
                function() use ($className, $container) {
                    $className = 'ABC\Abc\Core\\' . $className;
                    return new $className($container);

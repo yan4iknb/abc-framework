@@ -160,11 +160,25 @@ class Base
             $this->methodNotFound(__METHOD__);
         } 
     } 
+    
+    /**
+    * Вывод контента в переменную
+    *
+    * @return string
+    */     
+    protected function getContent()
+    {
+        if (method_exists($this->tpl, 'getContent')) {
+            return $this->tpl->getContent();        
+        } else {
+            $this->methodNotFound(__METHOD__);
+        } 
+    } 
  
     /**
     * Наследование шаблона 
     *
-    * @param string $blockName
+    * @param string $block
     *
     * @return void
     */     
@@ -172,7 +186,8 @@ class Base
     {
         if (method_exists($this->tpl, 'extendsTpl')) {
             $layout = @$layout ?: $this->config['settings']['layout'];
-            return $this->tpl->extendsTpl($block, $layout);        
+            
+            $this->tpl->extendsTpl($block, $layout);        
         } else {
             $this->methodNotFound(__METHOD__);
         }
@@ -188,10 +203,10 @@ class Base
     */     
     protected function display($content = null)
     {
-        if (empty($content)) {
-            $content = $this->parseTpl();
+        if (is_null($content)) {
+            $content = $this->getContent();
         }
-        
+     
         $this->container->get('Response')->sendContent($content);
     }
     
@@ -203,7 +218,7 @@ class Base
     protected function methodNotFound($method)
     {
         $method = explode('::', $method);
-        AbcError::badMethodCallError(array_pop($method) .'() '. ABC_NO_METHOD);
+        AbcError::badMethodCall(array_pop($method) .'() '. ABC_NO_METHOD);
     }
     
     /**

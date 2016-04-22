@@ -15,6 +15,11 @@ use ABC\Abc\Core\Exception\AbcError;
  */   
 class Base
 {
+
+    /**
+    * @var array
+    */     
+    public $container;
     /**
     * @var array
     */     
@@ -150,7 +155,7 @@ class Base
     protected function parseTpl()
     {
         if (method_exists($this->tpl, 'parseTpl')) {
-            return $this->tpl->parseTpl($layout, $block);        
+            return $this->tpl->parseTpl();        
         } else {
             $this->methodNotFound(__METHOD__);
         } 
@@ -183,11 +188,8 @@ class Base
     */     
     protected function display()
     {
-        if (method_exists($this->tpl, 'display')) {
-            $this->tpl->display();        
-        } else {
-            $this->methodNotFound(__METHOD__);
-        }
+        $content = $this->parseTpl();
+        $this->container->get('Response')->sendContent($content);
     }
     
     /**

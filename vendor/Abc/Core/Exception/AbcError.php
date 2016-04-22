@@ -1,21 +1,16 @@
 <?php
-
 namespace ABC\Abc\Core\Exception;
-
 /** 
- * Класс AbcException 
- * Адаптирует trigger_error к Exception
- * для корректного выброса исключения
+ * Класс AbcError 
+ * 
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
  * @copyright © 2015
  * @license http://www.wtfpl.net/
  */  
-
 class AbcError
 {
     public static $marker;
-
     /**
     * Константы кодов иерархии исключений SPL
     */  
@@ -33,7 +28,6 @@ class AbcError
     const RUNTIME           = '[011]';    
     const UNDERFLOW         = '[012]';
     const UNEXPECTED_VALUE  = '[013]';
-
     /**
     * Конструктор
     * 
@@ -56,43 +50,43 @@ class AbcError
          
             switch ($type) {
              
-                case Answer::BAD_FUNCTION_CALL :
+                case self::BAD_FUNCTION_CALL :
                     $exception = 'BadFunctionCallException';
                 break;
-                case Answer::BAD_METHOD_CALL :
+                case self::BAD_METHOD_CALL :
                     $exception = 'BadMethodCallException';
                 break;
-                case Answer::DOMAIN :
+                case self::DOMAIN :
                     $exception = 'DomainException';
                 break;
-                case Answer::INVALID_ARGUMENT :
+                case self::INVALID_ARGUMENT :
                     $exception = 'InvalidArgumentException';
                 break;
-                case Answer::LENGTH :
+                case self::LENGTH :
                     $exception = 'LengthException';
                 break;
-                case Answer::LOGIC :
+                case self::LOGIC :
                     $exception = 'LogicException';
                 break;
-                case Answer::OUT_OF_BOUNDS :
+                case self::OUT_OF_BOUNDS :
                     $exception = 'OutOfBoundsException';
                 break;
-                case Answer::OUT_OF_RANGE :
+                case self::OUT_OF_RANGE :
                     $exception = 'OutOfRangeException';
                 break;
-                case Answer::OVERFLOW :
+                case self::OVERFLOW :
                     $exception = 'OverflowException';
                 break;
-                case Answer::RANGE:
+                case self::RANGE:
                     $exception = 'RangeException';
                 break;
-                case Answer::RUNTIME:
+                case self::RUNTIME:
                     $exception = 'RuntimeException';
                 break;
-                case Answer::UNDERFLOW :
+                case self::UNDERFLOW :
                     $exception = 'UnderflowException';
                 break;
-                case Answer::UNEXPECTED_VALUE :
+                case self::UNEXPECTED_VALUE :
                     $exception = 'UnexpectedValueException';
                 break;
                 default :
@@ -220,7 +214,6 @@ class AbcError
         self::$marker = self::UNEXPECTED_VALUE;
         self::error($message);
     }
-
     /**
     * 
     */ 

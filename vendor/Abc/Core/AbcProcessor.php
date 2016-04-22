@@ -49,6 +49,7 @@ class AbcProcessor
         $this->setInContainer('Router');
         $this->setInContainer('RoutesParser');
         $this->setInContainer('Url');
+        $this->saredInContainer('Response');
     }
     
     /**

@@ -5,6 +5,7 @@ namespace ABC\Abc\Core;
 use ABC\Abc\Resourses\Settings;
 
 use ABC\Abc\Core\Exception\AbcError;
+use ABC\Abc\Core\Exception\AbcError500Exception;
 use ABC\Abc\Core\Exception\Error500Exception;
 use ABC\Abc\Core\Debugger\Php\PhpHandler;
 /** 
@@ -74,8 +75,14 @@ class AbcConfigurator
     */     
     protected function setErrorMode()
     {
-        if (isset($this->config['error_mode']) && false !== $this->config['error_mode']) {
-         
+        if (isset($this->config['abc_500']) && false === $this->config['abc_500']) {
+            throw new \ErrorException('500', 500);
+        } else {
+            set_error_handler([$this, 'throwError500Exception']);
+        }
+        
+        if (isset($this->config['abc_debugger'])) {
+          
             if (isset($this->config['error_language'])) {
                 $langusge = '\ABC\Abc\Resourses\Lang\\'. $this->config['error_language'];
                 
@@ -88,18 +95,15 @@ class AbcConfigurator
             } else {
                 \ABC\Abc\Resourses\Lang\En::set();
             }
-         
-            if ($this->config['error_mode'] === 'debug') {  
+            
+            if (true === $this->config['abc_debugger']) {  
                 new PhpHandler($this->config);
-            } elseif ($this->config['error_mode'] === 'exception') {
-                new AbcException();
+            } elseif (false === $this->config['abc_debugger']) {
+                new AbcError;
             } else {
                 throw new \Exception(strip_tags(ABC_INVALID_DEBUG_SETTING)); 
             }
-            
-        } else {
-            \ABC\Abc\Resourses\Lang\En::set();
-            set_error_handler([$this, 'throwError500Exception']);
+             
         }
     }
 
@@ -167,7 +171,7 @@ class AbcConfigurator
         $this->contentEnable = false;
         
         if (error_reporting() & $code) {
-            throw new Error500Exception($message, $code, $file, $line);
+            throw new AbcError500Exception($message, $code, $file, $line);
         }
     } 
 }

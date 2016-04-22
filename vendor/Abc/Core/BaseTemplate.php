@@ -109,13 +109,13 @@ class BaseTemplate
     *
     * @return void
     */     
-    public function display()
+    public function parseTpl()
     {
         if (!empty($this->html)) {
-            echo $this->html;
-        } else {
-            echo $this->execute($this->template);
+            return $this->execute($this->template);
         }
+        
+
     }      
     
     /**

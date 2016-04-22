@@ -12,7 +12,7 @@ namespace ABC\Abc\Core\Exception;
  * @license http://www.wtfpl.net/
  */  
 
-class Error500Exception extends \Exception 
+class AbcError500Exception extends \Exception 
 {
     /**
     * Генерирует сзаголовок Error 500 Internal Server Error

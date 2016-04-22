@@ -2,8 +2,8 @@
 
 namespace ABC\Abc\Core;
 
-use ABC\Abc;
 use ABC\Abc\Core\Base;
+
 /** 
  * Класс AbcFramework
  * 
@@ -35,8 +35,9 @@ class AppManager
     public function __construct($container)
     {
         $this->container = $container;
-        $this->config = $container->get('config');
-        $this->request = $container->get('Request'); 
+        $this->abc = $container->get('Abc');
+        $this->config    = $container->get('config');
+        $this->request   = $container->get('Request'); 
     }     
     
     /**
@@ -149,14 +150,16 @@ class AppManager
     * @return bool|object
     */        
     public function getTemplate()
-    {   
-        if (isset($this->config['abc_template']) && false === $this->config['abc_template']) {
-            return $this->container->get('BaseTemplate');
+    { 
+        if (empty($this->config['template'])) {
+            $tpl = $this->abc->getService('Template');        
+            $tpl->tplPhp = empty($this->config['tpl_php_disable']); 
+        } else {
+            $tpl = $this->container->get('BaseTemplate');
         }
         
-        return Abc::getService('Template');
+        return $tpl;
     }     
-    
     
     /**
     * Если не найден контроллер или экшен, активирует 

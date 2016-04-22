@@ -14,7 +14,7 @@ use ABC\Abc\Core\Exception\AbcError;
  * @copyright © 2015
  * @license http://www.wtfpl.net/ 
  */   
-class AbcProcessor
+class Abc
 {
     /**
     * @var array
@@ -51,6 +51,7 @@ class AbcProcessor
         $this->addToContainer('Url');
         $this->addToContainer('Response');
         include_once 'Functions/default.php';
+        $this->setToStorage('Abc', $this);
     }
     
     /**

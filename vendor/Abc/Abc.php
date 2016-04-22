@@ -2,9 +2,6 @@
 
 namespace ABC;
 
-use ABC\Abc\Core\Debugger\Dbg;
-use ABC\Abc\Core\AbcProcessor;
-
 /** 
  * Класс Abc 
  * Стартует фреймворк
@@ -43,7 +40,7 @@ class Abc
         self::$config = array_merge($appConfig, $siteConfig);
         self::$autoload = __DIR__ . self::$autoload;
         self::autoloadSelector();
-        self::$process = new AbcProcessor($appConfig, $siteConfig);
+        self::$process = new \ABC\Abc\Core\Abc($appConfig, $siteConfig);
         self::$process->startApp();    
     }
     

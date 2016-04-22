@@ -67,7 +67,7 @@ class Template
         $this->endDelim   = $this->rightDelim . $this->rightDelim;
      
         if (false === ($this->tpl = @file_get_contents($path))) {
-            Response::domainError($path . ABC_NO_TEMPLATE);
+            AbcError::domain('AbcTemplate: '. $path . ABC_NO_TEMPLATE);
         }
         
         if (!empty($blockParent)) {
@@ -82,7 +82,7 @@ class Template
                                        );
           
             if (false === strpos($this->tpl, $parentOut)) {
-                Response::domainError($blockParent . ABC_INVALID_BLOCK);
+                AbcError::domain('AbcTemplate: '. $blockParent . ABC_INVALID_BLOCK);
             }
         }
      
@@ -598,7 +598,7 @@ class Template
         
         if (!empty($error)) {
             foreach ($error as $bname => $v) {
-                AbcError::domain($bname . ABC_INVALID_BLOCK);
+                AbcError::domain('AbcTemplate: '. $bname . ABC_INVALID_BLOCK);
             }
         }
     }
@@ -613,6 +613,6 @@ class Template
     public function __call($method, $param)
     {
         $method = explode('::', $method);
-        AbcError::badMethodCall(array_pop($method) .'() '. ABC_NO_METHOD);
+        AbcError::badMethodCall('AbcTemplate: '. array_pop($method) .'() '. ABC_NO_METHOD);
     } 
 } 

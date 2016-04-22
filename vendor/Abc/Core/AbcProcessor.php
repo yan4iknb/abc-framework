@@ -42,14 +42,14 @@ class AbcProcessor
         $configurator = new AbcConfigurator($appConfig, $siteConfig);
         $this->config = $configurator->getConfig();
         $this->container = new Container;
-        $this->setInStorage('config', $this->config);
-        $this->setInContainer('AppManager');
-        $this->setInContainer('BaseTemplate');        
-        $this->saredInContainer('Request');
-        $this->setInContainer('Router');
-        $this->setInContainer('RoutesParser');
-        $this->setInContainer('Url');
-        $this->saredInContainer('Response');
+        $this->setToStorage('config', $this->config);
+        $this->addToContainer('AppManager');
+        $this->addToContainer('BaseTemplate');        
+        $this->addToContainer('Request');
+        $this->addToContainer('Router');
+        $this->addToContainer('RoutesParser');
+        $this->addToContainer('Url');
+        $this->addToContainer('Response');
         include_once 'Functions/default.php';
     }
     
@@ -72,7 +72,7 @@ class AbcProcessor
     *
     * @return void
     */     
-    public function setInStorage($id, $data)
+    public function setToStorage($id, $data)
     {  
         $this->container->setGlobal($id, 
                function() use ($data) {
@@ -150,27 +150,10 @@ class AbcProcessor
     *
     * @return void
     */     
-    protected function setInContainer($className)
+    protected function addToContainer($className)
     { 
         $container = $this->container;
         $this->container->set($className, 
-               function() use ($className, $container) {
-                   $className = 'ABC\Abc\Core\\' . $className;
-                   return new $className($container);
-               });
-    }
-    
-    /**
-    * Помещает объекты ядра в контейнер по принципу Singletone
-    *
-    * @param string $className
-    *
-    * @return void
-    */     
-    protected function saredInContainer($className)
-    { 
-        $container = $this->container;
-        $this->container->setGlobal($className, 
                function() use ($className, $container) {
                    $className = 'ABC\Abc\Core\\' . $className;
                    return new $className($container);

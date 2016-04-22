@@ -20,14 +20,13 @@ class AppManager
     protected $container;
 
     /**
-    * @var array
-    */ 
-    protected $config;    
-
-    /**
     * @var \ABC\Abc\Core\Request
     */
     protected $request;
+    
+
+    protected $config;    
+    protected $settings;
     
     /**
     * @param object $container
@@ -35,9 +34,10 @@ class AppManager
     public function __construct($container)
     {
         $this->container = $container;
-        $this->abc = $container->get('Abc');
+        $this->abc       = $container->get('Abc');
         $this->config    = $container->get('config');
-        $this->request   = $container->get('Request'); 
+        $this->request   = $container->get('Request');
+        $this->settings  = $this->config['settings'];
     }     
     
     /**
@@ -96,7 +96,7 @@ class AppManager
     */        
     public function getControllersDir()
     {
-        return $this->config['settings']['application'] .'\\'. $this->config['settings']['dir_controllers'];
+        return $this->settings['application'] .'\\'. $this->settings['dir_controllers'];
     } 
     
     /**
@@ -106,7 +106,7 @@ class AppManager
     */        
     public function getViewsDir()
     {
-        return $this->config['settings']['application'] .'\\'. $this->config['settings']['dir_views'];
+        return $this->settings['application'] .'\\'. $this->settings['dir_views'];
     }
     
     
@@ -117,7 +117,7 @@ class AppManager
     */        
     public function getModelsDir()
     {
-        return $this->config['settings']['application'] .'\\'. $this->config['settings']['dir_models'];
+        return $this->settings['application'] .'\\'. $this->settings['dir_models'];
     }
     
     /**

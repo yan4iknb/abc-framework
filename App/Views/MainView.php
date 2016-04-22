@@ -13,9 +13,7 @@ class MainView extends Base
 {
     public function createHello()
     {  
-
         $content = $this->model->getContent();
-        $this->display($content['hello']); echo $a;
-
+        $this->display($content['hello']);
     }
 }

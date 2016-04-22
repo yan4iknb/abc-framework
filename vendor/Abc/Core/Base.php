@@ -186,9 +186,12 @@ class Base
     *
     * @return void
     */     
-    protected function display()
+    protected function display($content = null)
     {
-        $content = $this->parseTpl();
+        if (empty($content)) {
+            $content = $this->parseTpl();
+        }
+        
         $this->container->get('Response')->sendContent($content);
     }
     

@@ -139,5 +139,19 @@ class BaseTemplate
         extract($this->vareables);
         include_once $template;        
         return ob_get_clean();
-    }     
+    }  
+    
+    /**
+    * Ошибка вызова метода
+    *
+    * @param string $method
+    * @param mix $param
+    *
+    * @return void
+    */     
+    public function __call($method, $param)
+    {
+        $method = explode('::', $method);
+        AbcError::badMethodCall(array_pop($method) .'() '. ABC_NO_METHOD);
+    } 
 }

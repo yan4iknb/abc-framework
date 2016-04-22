@@ -2,7 +2,7 @@
 
 namespace ABC\Abc\Components\Template;
 
-use ABC\Abc\Core\Response;
+use ABC\Abc\Core\Exception\AbcError;
 
 /** 
  * Класс Template 
@@ -598,9 +598,21 @@ class Template
         
         if (!empty($error)) {
             foreach ($error as $bname => $v) {
-                Response::domainError($bname . ABC_INVALID_BLOCK);
+                AbcError::domain($bname . ABC_INVALID_BLOCK);
             }
         }
     }
-
+    /**
+    * Ошибка вызова метода
+    *
+    * @param string $method
+    * @param mix $param
+    *
+    * @return void
+    */     
+    public function __call($method, $param)
+    {
+        $method = explode('::', $method);
+        AbcError::badMethodCall(array_pop($method) .'() '. ABC_NO_METHOD);
+    } 
 } 

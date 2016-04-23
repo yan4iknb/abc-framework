@@ -151,7 +151,7 @@ class AppManager
     */        
     public function getTemplate()
     { 
-        if (empty($this->config['template'])) {
+        if (!isset($this->config['template'])) {
             $tpl = $this->abc->getService('Template');        
             $tpl->tplPhp = empty($this->config['tpl_php_disable']); 
         } elseif (true === $this->config['template']) {

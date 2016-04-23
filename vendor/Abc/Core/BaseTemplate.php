@@ -2,6 +2,8 @@
 
 namespace ABC\Abc\Core;
 
+use ABC\Abc\Core\Exception\AbcError;
+
 /** 
  * Класс BaseView
  * 
@@ -58,7 +60,7 @@ class BaseTemplate
     public function assign($data, $value = null)
     {
         if (is_array($data)) {
-            $this->vareables = array_merge($this->data, $data);
+            $this->vareables = array_merge($data, $data);
         } else {
             $this->vareables[$data] = $value;
         }

@@ -12,8 +12,8 @@ use ABC\Abc\Core\Base;
 class MainView extends Base
 {
     public function createHello()
-    {  
+    { 
         $content = $this->model->getContent();
-        $this->display($content['hello']);
+        echo $content['hello'];
     }
 }

@@ -15,10 +15,10 @@ use ABC\Abc\Core\Base;
 class AppManager
 {
     /**
-    * @var \ABC\Abc\Core\Container
+    * @var \ABC\Abc\Core\Abc
     */
-    protected $container;
-
+    protected $abc;
+    
     /**
     * @var \ABC\Abc\Core\Request
     */
@@ -33,7 +33,6 @@ class AppManager
     */ 
     public function __construct($container)
     {
-        $this->container = $container;
         $this->abc       = $container->get('Abc');
         $this->config    = $container->get('config');
         $this->request   = $container->get('Request');
@@ -54,7 +53,6 @@ class AppManager
      
         if (class_exists($controller)) {
             $objController = new $controller($this->config);
-            $objController->tpl = $this->getTemplate();
           
             if (method_exists($objController, $action)) {
                 $viewsDir = $this->getViewsDir();
@@ -71,13 +69,17 @@ class AppManager
                     
                 }
                 
-                $objView->container = $this->container;
-                $objView->config = $this->config;
-                $objView->tpl = $this->getTemplate();
+                $tplName = $this->getTemplate();
                 
-                $objController->container = $this->container;
-                $objController->view  = $objView;
-                $objController->config = $this->config;
+                $objView->abc       = $this->abc;
+                $objView->config    = $this->config;
+                $objView->tplName   = $tplName;
+                
+                $objController->abc       = $this->abc;
+                $objController->view      = $objView;
+                $objController->config    = $this->config;
+                $objController->tplName   = $tplName;
+                
                 call_user_func([$objController, $action]);
                 
             } else {
@@ -151,17 +153,16 @@ class AppManager
     */        
     public function getTemplate()
     { 
-        if (!isset($this->config['template'])) {
-            $tpl = $this->abc->getService('Template');        
-            $tpl->tplPhp = empty($this->config['tpl_php_disable']); 
-        } elseif (true === $this->config['template']) {
-            $tpl = null;
+        if (!isset($this->config['abc_template']) || true === $this->config['abc_template']) {
+            $tplName = 'Template';
+        } elseif (false === $this->config['abc_template']) {
+            $tplName = 'Native';
         }
         else {
-            $tpl = $this->container->get('BaseTemplate');
+            AbcError::badFunctionCall(ABC_INVALID_DEBUG_SETTING);
         }
         
-        return $tpl;
+        return $tplName;
     }     
     
     /**

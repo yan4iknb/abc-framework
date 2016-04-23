@@ -19,7 +19,7 @@ class Base
     /**
     * @var array
     */     
-    public $container;
+    public $abc;
     /**
     * @var array
     */     
@@ -33,21 +33,24 @@ class Base
     /**
     * @var Template
     */  
-    public $tpl;    
-
+    public $tplName;  
+    
     /**
-    * Ошибка вызова метода
+    * Установка шаблона
     *
     * @param string $method
     * @param mix $param
     *
     * @return void
     */     
-    public function __call($method, $param)
+    public function selectTpl($template)
     {
-        $method = explode('::', $method);
-        AbcError::badMethodCall(array_pop($method) .'() '. ABC_NO_METHOD);
-    }    
+        $this->tpl = $this->abc->getService($this->tplName);   
+        $this->tpl->setTpl($template);
+    }     
+    
+
+   
     
     /**
     * Возвращает объект модели
@@ -62,6 +65,20 @@ class Base
      
         AbcError::badMethodCall(ABC_NO_MODEL);
     }
+    
+    /**
+    * Ошибка вызова метода
+    *
+    * @param string $method
+    * @param mix $param
+    *
+    * @return void
+    */     
+    public function __call($method, $param)
+    {
+        $method = explode('::', $method);
+        AbcError::badMethodCall(array_pop($method) .'() '. ABC_NO_METHOD);
+    } 
     
     /**
     * Генерирует 404 Not Found

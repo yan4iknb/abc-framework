@@ -15,19 +15,9 @@ use ABC\Abc\Core\Exception\AbcError;
  */   
 class Base
 {
-
-    /**
-    * @var array
-    */     
-    public $abc;
-    /**
-    * @var array
-    */     
-    public $config;
-
-    /**
-    * @var Model
-    */     
+    
+    public $abc;   
+    public $config;  
     public $model;
     
     /**
@@ -49,9 +39,12 @@ class Base
     *
     * @return void
     */     
-    public function render()
+    public function render($content = null)
     {
-        $content = $this->tpl->getContent();
+        if (is_object($this->tpl)) {
+            $content = $this->tpl->getContent();
+        }
+       
         $this->abc->getFromStorage('Response')->sendContent($content);
     }    
  
@@ -60,7 +53,7 @@ class Base
     *
     * @return bool|object
     */        
-    public function getTplType()
+    protected function getTplType()
     { 
         if (!isset($this->config['abc_template']) || true === $this->config['abc_template']) {
             $tplName = 'Template';

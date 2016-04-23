@@ -12,25 +12,19 @@ namespace ABC\Abc\Core;
  */   
 class Router
 {
-    /**
-    * @var ABC\Abc\Core\Container
-    */ 
-    protected $container;
-    
-    /**
-    * @var array
-    */ 
+
     protected $config;
+    protected $parser;    
     protected $defaultRoute;
     protected $hash;
     
     /**
-    * @param object $container
+    * @param object $abc
     */ 
-    public function __construct($container)
+    public function __construct($abc)
     {
-        $this->container = $container;
-        $this->config = $container->get('config'); 
+        $this->parser = $abc->getService('RouteParser');
+        $this->config = $abc->getFromStorage('config'); 
         $this->defaultRoute = arrayStrtolower($this->config['default_route']);
     }     
     
@@ -89,7 +83,7 @@ class Router
     public function hashFromParam($param)
     {
         $this->hash = array_values(array_slice($param, 0, 2));
-        $get   = array_slice($param, 2);
+        $get = array_slice($param, 2);
         
         foreach ($get as $key => $value) {
             array_push($this->hash, $key);
@@ -110,9 +104,8 @@ class Router
         if (empty($this->config['route_rules'])) {
             return $this->defaultGet($uriHash);
         }
-       
-        $parser = $this->container->get('RoutesParser');  
-        return $parser->parseRoutes($string);
+         
+        return $this->parser->parseRoutes($string);
     }
     
     /**

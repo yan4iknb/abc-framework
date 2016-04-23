@@ -3,6 +3,17 @@
 use ABC\Abc;
 use ABC\Abc\Core\Debugger\Dbg;
 
+    function abcForFunctions($abc = null)
+    {
+        static $ABC;
+        
+        if (null === $ABC) {
+            $ABC = $abc;        
+        } 
+        
+        return $ABC; 
+    }
+    
     /**
     * Обработка переменных для вывода в поток
     *
@@ -12,7 +23,8 @@ use ABC\Abc\Core\Debugger\Dbg;
     */
     function iniGET($key = null, $default = null)
     {
-        return Abc::getFromStorage('Request')->iniGET($key, $default);
+        $abc = abcForFunctions();
+        return $abc->getFromStorage('Request')->iniGET($key, $default);
     }
     
     /**
@@ -24,7 +36,8 @@ use ABC\Abc\Core\Debugger\Dbg;
     */
     function iniPOST($key = null, $default = null)
     {
-        return Abc::getFromStorage('Request')->iniPOST($key, $default);
+        $abc = abcForFunctions();
+        return $abc->getFromStorage('Request')->iniPOST($key, $default);
     }
 
     /**
@@ -91,7 +104,8 @@ use ABC\Abc\Core\Debugger\Dbg;
     */      
     function href($query, $mode = false)   
     {  
-        return Abc::getFromStorage('Url')->getUrl($query, $mode);
+        $abc = abcForFunctions();
+        return $abc->getService('Url')->getUrl($query, $mode);
     }
     
     /**
@@ -106,7 +120,8 @@ use ABC\Abc\Core\Debugger\Dbg;
     */      
     function linkTo($query, $text, $attribute = null, $mode = false)   
     { 
-        return Abc::getFromStorage('Url')->linkTo($query, $text, $attribute, $mode);
+        $abc = abcForFunctions();
+        return $abc->getService('Url')->linkTo($query, $text, $attribute, $mode);
     } 
     
     /**   
@@ -119,7 +134,8 @@ use ABC\Abc\Core\Debugger\Dbg;
     */ 
     function activeLink($query, $default = false)
     { 
-        return Abc::getFromStorage('Url')->activeLink($query, $default);
+        $abc = abcForFunctions();
+        return $abc->getService('Url')->activeLink($query, $default);
     }     
 
     /**
@@ -128,7 +144,8 @@ use ABC\Abc\Core\Debugger\Dbg;
     * @return void
     */ 
     function dbg($var = 'stop')
-    {  
-        new Dbg($var);
+    { 
+        $abc = abcForFunctions();
+        new Dbg($var, $abc);
     }
   

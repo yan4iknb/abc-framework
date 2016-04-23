@@ -5,13 +5,7 @@ namespace ABC\Abc\Builders;
 use ABC\Abc\Builders\AbcBuilder;
 
 /** 
- * Сборка дебаггера SQL 
- */ 
-use ABC\Abc\Components\Sqldebug\SqlDebug;
-use ABC\Abc\Components\Sqldebug\View;
-
-/** 
- * Класс DicBuilder
+ * Класс MysqliBuilder
  * 
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
@@ -19,30 +13,33 @@ use ABC\Abc\Components\Sqldebug\View;
  * @license http://www.wtfpl.net/ 
  */  
 
-class DicBuilder extends AbcBuilder
+class UrlBuilder extends AbcBuilder
 {
     /**
     * @var array
     */ 
-    protected $service = 'DiC';
-
+    protected $service = 'Url';
+    
     /**
     * Строит сервис.
     * 
     * @param bool $global
     *
     * @return void
-    */        
+    */ 
     protected function buildService($global = false)
-    { 
+    {
         $component = '\ABC\Abc\Components\\'. $this->service .'\\'. $this->service;
         $typeService = $global ? 'setGlobal' : 'set';
-        
+        $config = $this->config;
+        $abc = $this->container->get('Abc');
         $this->container->$typeService(
-            $this->service, 
-            function() use ($component) {
-                return new $component;
+            $this->service,
+            function() use ($component, $abc) {
+                return new $component($abc);
             }
         );
+     
+        $this->container->serviceSynthetic($this->service);
     }   
 }

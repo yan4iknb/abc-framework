@@ -1,5 +1,5 @@
 <style type="text/css">
-.abc_dedugger{margin:20px;font-size:14px;padding:0px;text-align:left;font-weight:normal}
+.abc_dedugger{margin:20px;font-size:14px;padding:0px;text-align:left;font-weight:normal;margin-bottom:400px}
 .abc_dedugger a{color:#0000DD; text-decoration:none;}
 .abc_dedugger a:hover{color:#FF7575;}
 .abc_dedugger pre{margin:0}
@@ -53,6 +53,7 @@
         {$listing}           
         {$stack}  
 </div> 
+
 <script type="text/javascript" language="javascript">
     function ge(id)
     {

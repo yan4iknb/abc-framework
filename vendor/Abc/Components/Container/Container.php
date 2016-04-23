@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Core;
+namespace ABC\Abc\Components\Container;
 
 use ABC\Abc\Core\Exception\AbcError;
 
@@ -121,7 +121,89 @@ class Container
     {
         $serviceId = $this->validateService($serviceId); 
         $this->serviceSynthetic[$serviceId] = true;
-    }     
+    } 
+    
+    
+    /**
+    * Внедряет один сервис в другой, создавая третий
+    *
+    * @param string $dependenceId
+    * @param string $serviceId    
+    * @param string $newService
+    * @param array $property
+    *
+    * @return object
+    */ 
+    public function injection($dependenceId, $serviceId, $newService = null, $property = [])
+    {
+        $serviceId = $this->validateService($serviceId);
+        
+        if (empty($newService)) {
+            $newService = $serviceId;
+        } else {
+            $newService = $this->validateService($newService);        
+        }
+        
+        if (isset($this->serviceSynthetic[$newService])) {
+            AbcError::Logic($newService . ABC_SYNTHETIC_SERVICE);
+        }
+     
+        $dependenceId = $this->validateService($dependenceId);
+        
+        if (!empty($property) && !is_array($property)) {
+            AbcError::invalidArgument(ABC_INVALID_PROPERTY); 
+        }
+        
+        $objService = $this->get($serviceId);
+        
+        if (false === $objService) {
+            AbcError::Logic($serviceId . ABC_NOT_REGISTERED_SERVICE);
+        }
+        
+        $objDependence = $this->get($dependenceId);
+        
+        if (false === $objDependence) {
+            AbcError::Logic($dependenceId . ABC_NOT_REGISTERED_SERVICE);
+        }
+        
+        $class = get_class($objService);
+     
+        $newCallable = function() use ($class, $objDependence, $property) {
+            $obj = new $class($objDependence);
+         
+            foreach ($property as $key => $value) {
+                $obj->$key = $value;
+            }
+            
+            return $obj;
+        };
+     
+        unset($objService);
+        unset($objDependence);
+        
+        $this->serviceStorage[$newService] = $newCallable;
+        $this->serviceSynthetic[$newService] = true;
+    }
+    
+    /**
+    * Удаляет объект из хранилища
+    *
+    * @param string $serviceId
+    *
+    * @return void
+    */       
+    public function unsetService($serviceId)
+    {
+        $serviceId = $this->validateService($serviceId);
+        
+        if (!isset($this->serviceStorage[$serviceId])) {
+            return false;
+        }
+     
+        unset($this->serviceStorage[$serviceId]);
+        unset(self::$objectStorage[$serviceId]);
+    }
+    
     /**
     * Проверяет корректность ID сервиса 
     *
@@ -153,4 +235,6 @@ class Container
         
         return $callable;
     }
+    
+    
 }

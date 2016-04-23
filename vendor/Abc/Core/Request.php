@@ -12,28 +12,18 @@ namespace ABC\Abc\Core;
  */   
 class Request
 {
-    /**
-    * @var array
-    */     
+   
     protected $GET;
-    
-    /**
-    * @var array
-    */ 
     protected $uriHash;
-    
-    /**
-    * @var array
-    */ 
     protected $config; 
     
     /**
-    * @param object $container
+    * @param object $abc
     */ 
-    public function __construct($container)
+    public function __construct($abc)
     {
-        $this->config = $container->get('config');
-        $this->router = $container->get('Router');
+        $this->config = $abc->getFromStorage('config');
+        $this->router = $abc->getFromStorage('Router');
      
         if (!empty($_SERVER['QUERY_STRING'])) {
             $this->GET = $this->parseQueryString();

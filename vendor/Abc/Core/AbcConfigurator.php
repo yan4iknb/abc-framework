@@ -3,11 +3,10 @@
 namespace ABC\Abc\Core;
 
 use ABC\Abc\Resourses\Settings;
-
 use ABC\Abc\Core\Exception\AbcError;
 use ABC\Abc\Core\Exception\AbcError500Exception;
 use ABC\Abc\Core\Exception\Error500Exception;
-use ABC\Abc\Core\Debugger\Php\PhpHandler;
+
 /** 
  * Конфигуратор
  * 
@@ -29,7 +28,7 @@ class AbcConfigurator
         define('ABC_DS', DIRECTORY_SEPARATOR);
         mb_internal_encoding('UTF-8');
         $this->setConfig($appConfig, $siteConfig);
-        $this->setErrorMode();  
+        $this->setError500mode();  
     }
    
     /**
@@ -66,44 +65,19 @@ class AbcConfigurator
         
         return array_merge($this->config, $hardConfig);
     }    
-    
+   
     /**
     * Устанавливает режим обработки ошибок
     *
     * @return void
     */     
-    protected function setErrorMode()
+    protected function setError500mode()
     {
         if (isset($this->config['abc_500']) && false === $this->config['abc_500']) {
             throw new \ErrorException('500', 500);
         } else {
             set_error_handler([$this, 'throwError500Exception']);
-        }
-        
-        if (isset($this->config['abc_debugger'])) {
-          
-            if (isset($this->config['error_language'])) {
-                $langusge = '\ABC\Abc\Resourses\Lang\\'. $this->config['error_language'];
-                
-                if (class_exists($langusge)) {
-                    $langusge::set();
-                } else {
-                    \ABC\Abc\Resourses\Lang\En::set();
-                }
-                
-            } else {
-                \ABC\Abc\Resourses\Lang\En::set();
-            }
-            
-            if (true === $this->config['abc_debugger']) {  
-                new PhpHandler($this->config);
-            } elseif (false === $this->config['abc_debugger']) {
-                new AbcError;
-            } else {
-                throw new \Exception(strip_tags(ABC_INVALID_DEBUG_SETTING)); 
-            }
-             
-        }
+        }    
     }
 
     /**

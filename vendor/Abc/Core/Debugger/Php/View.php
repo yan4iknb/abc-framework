@@ -26,6 +26,17 @@ class View
     }  
     
     /**
+    * Отправляет в поток HTML отчета об ошибках
+    *
+    * @return string
+    */ 
+    public function getReport($data)
+    {
+        $tpl = $this->getTpl(__DIR__ .'/tpl/report.tpl');
+        return $this->parseTpl($tpl, $data);
+    } 
+    
+    /**
     * Возвращает HTML блока отчета
     *
     * @return string

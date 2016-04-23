@@ -17,34 +17,12 @@ abstract class Handler
     
     protected $exception = true;
 
-    /**
-    * $var string
-    */      
-    protected $message; 
-    
-    /**
-    * $var string
-    */      
-    protected $file;
-    
-    /**
-    * $var int
-    */  
+    protected $response;
+    protected $message;    
+    protected $file;  
     protected $line;
-    
-    /**
-    * $var array
-    */  
     protected $trace;
-    
-    /**
-    * $var int
-    */  
     protected $code;
-    
-    /**
-    * $var array
-    */  
     protected $data;
     
     protected $E_Lavel = [
@@ -60,18 +38,14 @@ abstract class Handler
     * @param string $message
     * @param int $errorLevel
     */       
-    public function __construct($config = []) 
+    public function __construct($abc) 
     {
+        $config = $abc->getFromStorage('config'); 
+        $this->language = $config['error_language'];
+        $this->response = $abc->getFromStorage('Response');
+        
         if (isset($config['framework_trace']) && true === $config['framework_trace']) {
             $this->allTrace = true;
-        }
-     
-        if (isset($config['space_prexix'])) {
-            $this->spacePrefix = $config['space_prexix'];
-        }
-        
-        if (isset($config['error_language'])) {
-            $this->language = $config['error_language'];
         }
         
         set_exception_handler([$this, 'exceptionHandler']);
@@ -96,9 +70,9 @@ abstract class Handler
     */   
     public function exceptionHandler($e) 
     {
+        $trace = $e->getTrace();
         $this->message   = $e->getMessage();
         $this->code      = $e->getCode();        
-        $trace = $e->getTrace();
         $this->backTrace = $this->prepareTrace($trace);
         $this->createReport();  
     }
@@ -109,7 +83,7 @@ abstract class Handler
     * @return void
     */   
     public function triggerErrorHandler($code, $message, $file, $line) 
-    {  
+    {
         if (error_reporting() & $code) {
             $this->exception = false;
          
@@ -132,10 +106,8 @@ abstract class Handler
             $trace = $this->prepareTrace($trace);
             $this->backTrace = array_reverse($trace);
             $this->createReport();
-            die;            
+            $this->response->contentEnable = false;           
         } 
-        
-
     }
     
     /**

@@ -3,8 +3,9 @@
 namespace ABC\Abc\Core;
 
 use ABC\Abc\Core\AbcConfigurator;
-use ABC\Abc\Core\Container;
 use ABC\Abc\Core\Exception\AbcError;
+use ABC\Abc\Components\Container\Container;
+use ABC\Abc\Core\Debugger\Php\PhpHandler;
 
 /** 
  * Класс AbcFramework
@@ -22,14 +23,9 @@ class Abc
     protected $config; 
     
     /**
-    * @var Container
+    * @var ABC\Abc\Components\Container\Container
     */ 
     protected $container;
-    
-    /**
-    * @var Router
-    */ 
-    protected $router;
     
     /**
     * Конструктор
@@ -38,22 +34,54 @@ class Abc
     * @param array $siteConfig
     */    
     public function __construct($appConfig = [], $siteConfig = [])
-    { 
+    {         
         $configurator = new AbcConfigurator($appConfig, $siteConfig);
         $this->config = $configurator->getConfig();
         $this->container = new Container;
         $this->setToStorage('config', $this->config);
-        $this->addToContainer('AppManager');
-        $this->addToContainer('BaseTemplate');        
+        $this->setToStorage('Abc', $this);
+        $this->addToContainer('AppManager');       
         $this->addToContainer('Request');
         $this->addToContainer('Router');
-        $this->addToContainer('RoutesParser');
-        $this->addToContainer('Url');
         $this->addToContainer('Response');
-        include_once 'Functions/default.php';
-        $this->setToStorage('Abc', $this);
+        $this->includeFunction();
+        $this->setErrorMode();
     }
+ 
     
+    /**
+    * Устанавливает режим обработки ошибок
+    *
+    * @return void
+    */     
+    protected function setErrorMode()
+    {
+        if (isset($this->config['abc_debugger'])) {
+          
+            if (isset($this->config['error_language'])) {
+                $langusge = '\ABC\Abc\Resourses\Lang\\'. $this->config['error_language'];
+                
+                if (class_exists($langusge)) {
+                    $langusge::set();
+                } else {
+                    \ABC\Abc\Resourses\Lang\En::set();
+                }
+                
+            } else {
+                \ABC\Abc\Resourses\Lang\En::set();
+            }
+            
+            if (true === $this->config['abc_debugger']) {  
+                new PhpHandler($this);
+            } elseif (false === $this->config['abc_debugger']) {
+                new AbcError;
+            } else {
+                throw new \Exception(strip_tags(ABC_INVALID_DEBUG_SETTING)); 
+            }
+             
+        }
+    }    
+   
     /**
     * Запускает приложение 
     *
@@ -153,12 +181,24 @@ class Abc
     */     
     protected function addToContainer($className)
     { 
-        $container = $this->container;
+        $abc = $this;
         $this->container->setGlobal($className, 
-               function() use ($className, $container) {
+               function() use ($className, $abc) {
                    $className = 'ABC\Abc\Core\\' . $className;
-                   return new $className($container);
+                   return new $className($abc);
                });
     }
+    
+    /**
+    * Подключает файл функций 
+    *
+    * @return void
+    */     
+    protected function includeFunction()
+    {
+        include_once 'Functions/default.php';
+        abcForFunctions($this);
+    }
+    
 }
 

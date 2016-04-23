@@ -2,9 +2,9 @@
 
 namespace ABC\Abc\Builders;
 
-
 use ABC\Abc\Builders\AbcBuilder;
-use ABC\Abc\Core\Router;
+
+
 /** 
  * Класс DicBuilder
  * 
@@ -14,18 +14,18 @@ use ABC\Abc\Core\Router;
  * @license http://www.wtfpl.net/ 
  */  
 
-class RequestBuilder extends AbcBuilder
+class ContainerBuilder extends AbcBuilder
 {
     /**
     * @var array
     */ 
-    protected $service = 'Request';
+    protected $service = 'Conainer';
 
     /**
     * Строит сервис.
     * 
     * @param bool $global
-    * 
+    *
     * @return void
     */        
     protected function buildService($global = false)
@@ -36,7 +36,7 @@ class RequestBuilder extends AbcBuilder
         $this->container->$typeService(
             $this->service, 
             function() use ($component) {
-                return new $component(new Router);
+                return new $component;
             }
         );
     }   

@@ -14,33 +14,28 @@ namespace ABC\Abc\Core;
 
 class Response
 {
-    /**
-    * @var \ABC\Abc\Core\Container
-    */
-    protected $container;
 
-    /**
-    * @var array
-    */ 
-    protected $config;    
+    public $contentEnable;    
     
     /**
-    * @param object $container
+    * @param object $abc
     */ 
-    public function __construct($container)
+    public function __construct($abc)
     {
-        $this->container = $container;
-        $this->config = $container->get('config');
+        $this->config = $abc->getFromStorage('config');
+        $this->contentEnable = $this->config['content_enable'];
     } 
-        
+   
     /**
     * Отправляет контент в поток
     *
-    * @return string
+    * @param object $content
+    * 
+    * @return void
     */        
     public function sendContent($content)
     {
-        if ($this->config['content_enable']) {
+        if ($this->contentEnable) {
             echo $content;
         }
     }     

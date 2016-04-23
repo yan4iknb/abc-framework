@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Core;
+namespace ABC\Abc\Components\RouteParser;
 
 use ABC\Abc\Core\Exception\AbcError;
 
@@ -12,7 +12,7 @@ use ABC\Abc\Core\Exception\AbcError;
  * @copyright © 2015
  * @license http://www.wtfpl.net/
  */   
-class RoutesParser
+class RouteParser
 {
     /**
     * @var ABC\Abc\Core\Container
@@ -32,12 +32,11 @@ class RoutesParser
     /**
     * @param object $container
     */ 
-    public function __construct($container)
+    public function __construct($config)
     {
-        $this->container = $container;
-        $this->config    = $container->get('config'); 
+        $this->config = $config; 
         $this->defaultRoute = arrayStrtolower($this->config['default_route']);
-        $this->routeRules = $this->config['route_rules'];
+        $this->routeRules   = $this->config['route_rules'];
     }     
     
     /**

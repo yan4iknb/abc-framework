@@ -20,7 +20,7 @@ use ABC\Abc\Core\Debugger\Php\TraceVariable;
 class Dbg extends PhpHandler
 {
 
-    public $containerName = 'ABC\abc\components\Dic\DiC';
+    public $containerName = 'ABC\abc\components\Container\Container';
     
     /**
     * @var TraceClass|TraceContainer|TraceObject|TraceVariable 
@@ -37,9 +37,11 @@ class Dbg extends PhpHandler
     * @param mixed $var
     * @param mixed $no
     */    
-    public function __construct($var = 'stop')
+    public function __construct($var = 'stop', $abc)
     {
-        parent::__construct();
+        $response = $abc->getFromStorage('Response');
+        $response->contentEnable = false;
+        parent::__construct($abc);
         $this->tracersSelector($var);
     }
 
@@ -137,6 +139,5 @@ class Dbg extends PhpHandler
         ];
         
         $this->action();
-        die;
     }  
 }

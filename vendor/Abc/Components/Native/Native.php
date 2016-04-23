@@ -119,7 +119,7 @@ class Native
     * @return string
     */
     public function getContent()
-    {       
+    {        
         return $this->html;
     }  
     

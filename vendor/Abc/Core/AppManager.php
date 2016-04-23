@@ -29,13 +29,13 @@ class AppManager
     protected $settings;
     
     /**
-    * @param object $container
+    * @param object $abc
     */ 
-    public function __construct($container)
+    public function __construct($abc)
     {
-        $this->abc       = $container->get('Abc');
-        $this->config    = $container->get('config');
-        $this->request   = $container->get('Request');
+        $this->abc = $abc;
+        $this->config    = $abc->getFromStorage('config');
+        $this->request   = $abc->getFromStorage('Request');
         $this->settings  = $this->config['settings'];
     }     
     

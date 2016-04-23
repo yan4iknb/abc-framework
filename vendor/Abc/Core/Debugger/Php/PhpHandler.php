@@ -37,9 +37,9 @@ class PhpHandler extends Handler
     *
     * $param $blockCont
     */       
-    public function __construct($config = []) 
+    public function __construct($abc) 
     {
-        parent::__construct($config);
+        parent::__construct($abc);
         $this->view    = new View;
         $this->painter = new Painter;
     }

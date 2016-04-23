@@ -1,6 +1,6 @@
 <?php 
 
-namespace ABC\Abc\Core;
+namespace ABC\Abc\Components\Url;
 
 /** 
  * Класс Url
@@ -31,11 +31,11 @@ class Url
     /**
     * @param object $request
     */      
-    public function __construct($container)
+    public function __construct($abc)
     {
-        $this->config  = $container->get('config');
-        $this->router  = $container->get('Router');
-        $this->request = $container->get('Request');
+        $this->config  = $abc->getFromStorage('config');
+        $this->router  = $abc->getFromStorage('Router');
+        $this->request = $abc->getFromStorage('Request');
     }
     
     /**

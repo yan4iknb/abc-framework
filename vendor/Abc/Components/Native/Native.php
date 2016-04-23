@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Core;
+namespace ABC\Abc\Components\Native;
 
 use ABC\Abc\Core\Exception\AbcError;
 
@@ -12,26 +12,21 @@ use ABC\Abc\Core\Exception\AbcError;
  * @copyright © 2015
  * @license http://www.wtfpl.net/ 
  */   
-class BaseTemplate
-{ 
-    /**
-    * @var ABC\Abc\Core\Container
-    */ 
-    protected $container;    
+class Native
+{   
     
     protected $config;
     protected $tplName;
     protected $tplDir;
     protected $template;
-    protected $vareables = [];
+    protected $data = [];
     
     /**
     * @param object $container
     */ 
-    public function __construct($container)
+    public function __construct($config)
     {
-        $this->container = $container;
-        $this->config = $container->get('config'); 
+        $this->config = $config; 
     }
     
     /**
@@ -60,9 +55,9 @@ class BaseTemplate
     public function assign($data, $value = null)
     {
         if (is_array($data)) {
-            $this->vareables = array_merge($data, $data);
+            $this->data = array_merge($data, $data);
         } else {
-            $this->vareables[$data] = $value;
+            $this->data[$data] = $value;
         }
         
         return $this;
@@ -79,9 +74,9 @@ class BaseTemplate
     public function assignHtml($data, $value = null)
     {
         if (is_array($data)) {
-            $this->vareables = array_merge($this->data, $data);
+            $this->data = array_merge($this->data, $data);
         } else {
-            $this->vareables[$data] = htmlChars($value);
+            $this->data[$data] = htmlChars($value);
         }
         
         return $this;
@@ -138,7 +133,7 @@ class BaseTemplate
     protected function execute($template)
     {
         ob_start();
-        extract($this->vareables);
+        extract($this->data);
         include_once $template;        
         return ob_get_clean();
     }  
@@ -154,6 +149,6 @@ class BaseTemplate
     public function __call($method, $param)
     {
         $method = explode('::', $method);
-        AbcError::badMethodCall(array_pop($method) .'() '. ABC_NO_METHOD);
+        AbcError::badMethodCall('Native Template: '. array_pop($method) .'() '. ABC_NO_METHOD);
     } 
 }

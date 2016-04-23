@@ -65,20 +65,15 @@ class AppManager
                     $objView = new $view;
                     $objView->model = class_exists($model) ? new $model : null;
                 } else {
-                    $objView = new Base;
-                    
+                    $objView = new Base;  
                 }
-                
-                $tplName = $this->getTemplate();
-                
+             
                 $objView->abc       = $this->abc;
                 $objView->config    = $this->config;
-                $objView->tplName   = $tplName;
                 
                 $objController->abc       = $this->abc;
                 $objController->view      = $objView;
                 $objController->config    = $this->config;
-                $objController->tplName   = $tplName;
                 
                 call_user_func([$objController, $action]);
                 
@@ -145,26 +140,7 @@ class AppManager
         $action = preg_replace('#[^a-z0-9\-_]#ui', '', $action);
         return 'action'. mb_convert_case($action, MB_CASE_TITLE);
     } 
-    
-    /**
-    * Возвращает объект шаблонизатора
-    *
-    * @return bool|object
-    */        
-    public function getTemplate()
-    { 
-        if (!isset($this->config['abc_template']) || true === $this->config['abc_template']) {
-            $tplName = 'Template';
-        } elseif (false === $this->config['abc_template']) {
-            $tplName = 'Native';
-        }
-        else {
-            AbcError::badFunctionCall(ABC_INVALID_DEBUG_SETTING);
-        }
-        
-        return $tplName;
-    }     
-    
+ 
     /**
     * Если не найден контроллер или экшен, активирует 
     * базовый контроллер с генерацией 404 заголовка

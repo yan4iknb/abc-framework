@@ -31,26 +31,47 @@ class Base
     public $model;
     
     /**
-    * @var Template
-    */  
-    public $tplName;  
-    
-    /**
-    * Установка шаблона
+    * Выбор шаблонизатора и установка шаблона
     *
-    * @param string $method
-    * @param mix $param
+    * @param string $template
     *
     * @return void
     */     
     public function selectTpl($template)
     {
-        $this->tpl = $this->abc->getService($this->tplName);   
+        $tplType = $this->getTplType();
+        $this->tpl = $this->abc->getService($tplType);   
         $this->tpl->setTpl($template);
     }     
     
-
-   
+    /**
+    * Вывод в поток
+    *
+    * @return void
+    */     
+    public function render()
+    {
+        $content = $this->tpl->getContent();
+        $this->abc->getFromStorage('Response')->sendContent($content);
+    }    
+ 
+    /**
+    * Возвращает объект шаблонизатора
+    *
+    * @return bool|object
+    */        
+    public function getTplType()
+    { 
+        if (!isset($this->config['abc_template']) || true === $this->config['abc_template']) {
+            $tplName = 'Template';
+        } elseif (false === $this->config['abc_template']) {
+            $tplName = 'Native';
+        } else {
+            AbcError::badFunctionCall(ABC_INVALID_DEBUG_SETTING);
+        }
+        
+        return $tplName;
+    }    
     
     /**
     * Возвращает объект модели

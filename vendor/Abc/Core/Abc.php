@@ -61,7 +61,7 @@ class Abc
     */     
     public function startApp()
     {
-        $manager = $this->container->get('AppManager');
+        $manager = $this->getFromStorage('AppManager');
         $manager->run();
     }
     

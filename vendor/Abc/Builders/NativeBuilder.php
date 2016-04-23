@@ -13,12 +13,12 @@ use ABC\Abc\Builders\AbcBuilder;
  * @license http://www.wtfpl.net/ 
  */  
 
-class TemplateBuilder extends AbcBuilder
+class NativeBuilder extends AbcBuilder
 {
     /**
     * @var array
     */ 
-    protected $service = 'Template';
+    protected $service = 'Native';
     
     /**
     * Строит сервис.

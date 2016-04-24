@@ -3,8 +3,10 @@
 namespace ABC\Abc\Core;
 
 use ABC\Abc\Core\AbcConfigurator;
-use ABC\Abc\Core\Exception\AbcError;
+use ABC\Abc\Core\Builder;
 use ABC\Abc\Components\Container\Container;
+
+use ABC\Abc\Core\Exception\AbcError;
 use ABC\Abc\Core\Debugger\Php\PhpHandler;
 
 /** 
@@ -94,6 +96,16 @@ class Abc
     }
     
     /**
+    * Возвращает контейнер
+    *
+    * @return object
+    */     
+    public function getContainer()
+    {  
+        return $this->container;
+    }
+    
+    /**
     * Помещает любые данные в глобальное хранилище
     *
     * @param string $id
@@ -103,7 +115,7 @@ class Abc
     */     
     public function setToStorage($id, $data)
     {  
-        $this->container->setGlobal($id, 
+        $this->container->setAsShared($id, 
                function() use ($data) {
                    return $data;
                });
@@ -128,10 +140,10 @@ class Abc
     *
     * @return object
     */     
-    public function newService($service = null)
+    public function newService($serviceId = null)
     {   
-        $builder = $this->prepareBuilder($service);
-        return $builder->newService($service);
+        $builder = $this->getBuilder($serviceId);
+        return $builder->newService($serviceId);
     }
     
     /**
@@ -141,10 +153,10 @@ class Abc
     *
     * @return object
     */     
-    public function getService($service = null)
+    public function getService($serviceId = null)
     {  
-        $builder = $this->prepareBuilder($service);
-        return $builder->getService($service);
+        $builder = $this->getBuilder($serviceId);
+        return $builder->getService($serviceId);
     }
   
     /**
@@ -154,21 +166,13 @@ class Abc
     *
     * @return object
     */     
-    protected function prepareBuilder($service = null)
+    protected function getBuilder($serviceId = null)
     {    
-        if (empty($service) || !is_string($service)) {
+        if (empty($serviceId) || !is_string($serviceId)) {
             AbcError::invalidArgument(INVALID_SERVICE_NAME);
-        }
+        } 
         
-        $builder = '\ABC\Abc\Builders\\'. $service .'Builder';
-         
-        if (!class_exists($builder)) {
-            AbcError::badFunctionCall(ABC_NO_SERVICE);
-        }    
-        
-        $builder = new $builder;
-        $builder->config  = $this->config;
-        $builder->container = $this->container;
+        $builder = new Builder($serviceId, $this);
         return $builder;
     }
     
@@ -182,7 +186,7 @@ class Abc
     protected function addToContainer($className)
     { 
         $abc = $this;
-        $this->container->setGlobal($className, 
+        $this->container->setAsShared($className, 
                function() use ($className, $abc) {
                    $className = 'ABC\Abc\Core\\' . $className;
                    return new $className($abc);

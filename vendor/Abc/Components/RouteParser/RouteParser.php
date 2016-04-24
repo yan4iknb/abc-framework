@@ -32,9 +32,9 @@ class RouteParser
     /**
     * @param object $container
     */ 
-    public function __construct($config)
+    public function __construct($abc)
     {
-        $this->config = $config; 
+        $this->config = $abc->getFromStorage('config'); 
         $this->defaultRoute = arrayStrtolower($this->config['default_route']);
         $this->routeRules   = $this->config['route_rules'];
     }     

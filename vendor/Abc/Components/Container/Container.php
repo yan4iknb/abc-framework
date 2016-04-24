@@ -47,7 +47,7 @@ class Container
     *
     * @return void
     */  
-    public function setGlobal($serviceId, $callable)
+    public function setAsShared($serviceId, $callable)
     { 
         $this->set($serviceId, $callable);
         $this->serviceFrozen[strtolower($serviceId)]  = true;    

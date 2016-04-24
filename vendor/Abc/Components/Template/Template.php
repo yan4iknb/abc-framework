@@ -52,9 +52,10 @@ class Template
     *
     * @param string $tplDir      Path to templates directory
     */
-    public function __construct($config)
+    public function __construct($abc)
     {
-        $this->config = $config; 
+        $this->abc = $abc; 
+        $this->config = $abc->getFromStorage('config'); 
     }
     
     /**
@@ -249,7 +250,7 @@ class Template
     public function extendsTpl($block, $tpl)
     { 
         $child = $this->parseChild();
-        $parentTpl = new $this->class($this->config);
+        $parentTpl = new $this->class($this->abc);
         $parentTpl->setTpl($tpl, $block);
         $parentTpl->assign($block, $child);
       

@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Core;
+namespace ABC\Abc\Components;
 
 /** 
  * Класс Builder

@@ -26,7 +26,7 @@ class Converter
      * @param $language
      * 
      */
-    protected function __construct($language = null)
+    protected function __construct($abc)
     {
         if (empty($language)) {
             AbcError::invalidArgument('Component Converter: no language settings');

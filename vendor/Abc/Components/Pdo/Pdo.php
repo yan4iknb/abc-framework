@@ -27,8 +27,11 @@ class Pdo extends \PDO
     *
     * @return void
     */     
-    public function __construct($data = [])
+    public function __construct($abc)
     {
+        $config = $abc->getFromStorage('config');
+        $data = @$config['pdo'] ?: null;
+        
         if (!empty($data)) {
          
             extract($data);

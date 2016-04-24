@@ -32,14 +32,17 @@ class Mysqli extends \mysqli
     * @param array $data
     *
     */     
-    public function __construct($data = [])
+    public function __construct($abc)
     {
+        $config = $abc->getFromStorage('config');
+        $data = @$config['mysqli'] ?: null;
+     
         if (!empty($data)) {
          
             extract($data);
            
             if (!isset($host, $user, $pass, $base)) {
-                AbcError::invalidArgument' Component Mysqli: '. ABC_WRONG_CONNECTION);
+                AbcError::invalidArgument(' Component Mysqli: '. ABC_WRONG_CONNECTION);
             } else {
                 $this->host = $host;
                 $this->user = $user;

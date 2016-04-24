@@ -3,7 +3,8 @@
 namespace ABC\Abc\Core;
 
 use ABC\Abc\Core\AbcConfigurator;
-use ABC\Abc\Core\Builder;
+
+use ABC\Abc\Components\Builder;
 use ABC\Abc\Components\Container\Container;
 
 use ABC\Abc\Core\Exception\AbcError;

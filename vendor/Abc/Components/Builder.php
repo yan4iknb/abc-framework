@@ -2,6 +2,8 @@
 
 namespace ABC\Abc\Components;
 
+use ABC\Abc\Core\Exception\AbcError;
+
 /** 
  * Класс Builder
  * 
@@ -69,8 +71,12 @@ class Builder
         
         $this->container->$typeService(
             $this->serviceId,
-            function() use ($component, $abc) {   
-                return new $component($abc);
+            function() use ($component, $abc) {
+                if (class_exists($component)) {
+                    return new $component($abc);
+                } else {
+                    AbcError::badFunctionCall('<strong>'. $this->serviceId .'</strong>' . ABC_NO_SERVICE);
+                }
             }
         );
     }  

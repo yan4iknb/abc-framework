@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Core\Debugger;
+namespace ABC\Abc\Core\Debugger\Php;
 
 use ABC\Abc\Core\Debugger\Php\PhpHandler;
 use ABC\Abc\Core\Debugger\Php\TraceClass;

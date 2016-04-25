@@ -112,7 +112,7 @@ class PhpHandler extends Handler
         } else {
             return null;
         }
-     
+        
         $arguments = $this->prepareValue(@$block['args']);
         
         $ext = ceil($this->sizeListing / 2);
@@ -138,11 +138,18 @@ class PhpHandler extends Handler
         if (!$this->exception && $num === false) {
             $arguments = 'null';
         }
+        $ext = pathinfo($this->file)['extension']; 
+        
+        if ($ext === 'tpl') {
+            $total = $this->painter->highlightStringTpl($blockCont, $position, $this->sizeListing);
+        } else {
+            $total = $this->painter->highlightString($blockCont, $position, $this->sizeListing);
+        }
         
         $data = ['num'       => $num,
                  'arguments' => $this->painter->highlightVar($arguments),
                  'lines'     => [$lines],
-                 'total'     => $this->painter->highlightString($blockCont, $position, $this->sizeListing),
+                 'total'     => $total,
         ];
       
         return $this->view->createBlock($data);
@@ -205,6 +212,6 @@ class PhpHandler extends Handler
     public function action() 
     {       
         $this->data['num']  = $this->num;
-        $this->view->displayReport($this->data);
+        $this->abc->debugReport = $this->view->getReport($this->data);
     }
 }

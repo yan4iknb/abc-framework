@@ -33,7 +33,6 @@ class Ru
         /**
         * Настройки дебаггера
         */ 
-        define('ABC_INVALID_DEBUG_SETTING',    ' Incorrect configuration debugging <br /><span style="color:#400080">(некорректная настройка дебаггинга)</span><br />');
         define('ABC_TRACING_VARIABLE',         ' Tracing Variable <br /><span style="color:#400080">(трассировка переменной)</span><br />');
         define('ABC_TRACING_OBJECT',           ' Tracing Object <br /><span style="color:#400080">(трассировка объекта)</span><br />');
         define('ABC_TRACING_CONTAINER',        ' Tracing Container <br /><span style="color:#400080">(трассировка контейнера)</span><br />');        

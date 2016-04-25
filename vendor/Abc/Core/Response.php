@@ -22,6 +22,7 @@ class Response
     */ 
     public function __construct($abc)
     {
+        $this->abc = $abc;
         $this->contentEnable = $abc->getConfig('content_enable');
     } 
    
@@ -36,6 +37,10 @@ class Response
     {
         if ($this->contentEnable) {
             echo $content;
+        }
+        
+        if (!empty($this->abc->debugReport)) {
+            echo $this->abc->debugReport;
         }
     }     
     

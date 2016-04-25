@@ -34,11 +34,32 @@ class Painter
     */    
     public function highlightString($blockCont, $position, $size)
     {
-        $descr = preg_match('~^[\r\n\s\t]*?<\?php~uis', $blockCont) ? '' : '<?php ';
+        $descr = preg_match('~^[\r\n\s\t]*?<\?php~uis', $blockCont) ? null : '<?php ';
         $blockCont = highlight_string($descr . $blockCont, true);
         $lines = preg_split('~<br[\s/]*?>~ui', $blockCont);       
         $lines = array_slice($lines, $position, $size);
         return implode('<br />', $lines);
+    }
+    
+    /**
+    * Подсветка шаблонов
+    *
+    * @param string $blockCont
+    * @param int $position
+    *
+    * @return string
+    */    
+    public function highlightStringTpl($blockCont, $position, $size)
+    { 
+        $blockCont = highlight_string($blockCont, true);
+        $lines = preg_split('~<br[\s/]*?>~ui', $blockCont);       
+        $lines = array_slice($lines, $position, $size);
+        
+        foreach ($lines as $line) {
+            $tpl_lines[] = preg_replace('~(&lt;!--//(.+?)--&gt;)~is', '<span style="color:#35CABB">\\1</span>', $line);
+        }
+        
+        return implode('<br />', $tpl_lines);
     } 
     
     /**

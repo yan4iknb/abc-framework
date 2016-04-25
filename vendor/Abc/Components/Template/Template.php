@@ -36,7 +36,8 @@ class Template
     protected $tplDir; 
     protected $tpl;
     protected $startDelim;
-    protected $endDelim;    
+    protected $endDelim; 
+    protected $layout;    
 
     protected $data        = [];
     protected $blocks      = [];
@@ -55,7 +56,9 @@ class Template
     public function __construct($abc)
     {
         $this->abc = $abc; 
-        $this->config = $abc->getConfig(); 
+        $this->config = $abc->getConfig('template'); 
+        $this->tplDir = str_replace('\\', ABC_DS, $this->config['dir_template']);
+        $this->layout = $this->config['layout'];
     }
     
     /**
@@ -66,7 +69,6 @@ class Template
     */
     public function setTpl($tplName, $blockParent = '')
     {
-        $this->tplDir = str_replace('\\', ABC_DS, $this->config['settings']['dir_template']);
         $path = $this->tplDir . $tplName .'.'. $this->tplExt;
         $this->startDelim = $this->leftDelim . $this->leftDelim;
         $this->endDelim   = $this->rightDelim . $this->rightDelim;
@@ -247,8 +249,9 @@ class Template
     *
     * @return object
     */
-    public function extendsTpl($block, $tpl)
+    public function extendsTpl($block, $tpl = null)
     { 
+        $tpl = !empty($tpl) ? $tpl : $this->layout;
         $child = $this->parseChild();
         $parentTpl = new $this->class($this->abc);
         $parentTpl->setTpl($tpl, $block);

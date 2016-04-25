@@ -40,6 +40,7 @@ abstract class Handler
     */       
     public function __construct($abc) 
     {
+        $this->abc = $abc;
         $config = $abc->getFromStorage('config'); 
         $this->language = $config['error_language'];
         $this->response = $abc->getFromStorage('Response');

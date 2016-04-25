@@ -30,6 +30,7 @@ class Abc
     */ 
     protected $container;
     
+    public $debugReport = null;
     /**
     * Конструктор
     * 

@@ -137,7 +137,7 @@ class Abc
     /**
     * Выбирает и запускает сервис
     *
-    * @param string $service
+    * @param string $serviceId
     *
     * @return object
     */     
@@ -150,7 +150,7 @@ class Abc
     /**
     * Выбирает и запускает синглтон сервиса
     *
-    * @param string $service
+    * @param string $serviceId
     *
     * @return object
     */     
@@ -163,12 +163,14 @@ class Abc
     /**
     * Получает настройку конфигурации
     *
+    * @param string $key
+    *
     * @return string
     */     
     public function getConfig($key = null)
     {
         $config = $this->container->get('config');
-    
+     
         if (empty($key)) {
             return $config;
         } elseif (!is_string($key)) {
@@ -180,9 +182,9 @@ class Abc
     }
   
     /**
-    * Подготовка билдера
+    * Возвращает объект билдера
     *
-    * @param string $service
+    * @param string $serviceId
     *
     * @return object
     */     

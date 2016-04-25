@@ -91,26 +91,26 @@ class Abc
     /**
     * Инициализирует новый объект сервиса
     *
-    * @param string $service
+    * @param string $serviceId
     *
     * @return object
     */ 
-    public static function newService($service = null)
+    public static function newService($serviceId = null)
     {
-        return self::$process->newService($service);
+        return self::$process->newService($serviceId);
     }
 
     
     /**
     * Возвращает объект сервиса (singltone)
     *
-    * @param string $service
+    * @param string $serviceId
     *
     * @return object
     */     
-    public static function sharedService($service = null)
+    public static function sharedService($serviceId = null)
     {
-        return self::$process->sharedService($service);
+        return self::$process->sharedService($serviceId);
     }    
     
     /**
@@ -141,6 +141,9 @@ class Abc
     /**
     * Инициализация GET параметра
     *
+    * @param string $key
+    * @param string $default
+    *
     * @return string
     */     
     public static function GET($key = null, $default = null)
@@ -151,6 +154,9 @@ class Abc
     /**
     * Инициализация POST параметра
     *
+    * @param string $key
+    * @param string $default
+    *
     * @return string
     */     
     public static function POST($key = null, $default = null)
@@ -160,6 +166,8 @@ class Abc
     
     /**
     * Получает настройку конфигурации
+    *
+    * @param string $key
     *
     * @return string
     */     

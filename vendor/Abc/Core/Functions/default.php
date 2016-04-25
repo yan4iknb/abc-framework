@@ -105,7 +105,7 @@ use ABC\Abc\Core\Debugger\Dbg;
     function href($query, $mode = false)   
     {  
         $abc = abcForFunctions();
-        return $abc->getService('Url')->getUrl($query, $mode);
+        return $abc->sharedService('Url')->getUrl($query, $mode);
     }
     
     /**
@@ -121,7 +121,7 @@ use ABC\Abc\Core\Debugger\Dbg;
     function linkTo($query, $text, $attribute = null, $mode = false)   
     { 
         $abc = abcForFunctions();
-        return $abc->getService('Url')->linkTo($query, $text, $attribute, $mode);
+        return $abc->sharedService('Url')->linkTo($query, $text, $attribute, $mode);
     } 
     
     /**   
@@ -135,7 +135,7 @@ use ABC\Abc\Core\Debugger\Dbg;
     function activeLink($query, $default = false)
     { 
         $abc = abcForFunctions();
-        return $abc->getService('Url')->activeLink($query, $default);
+        return $abc->sharedService('Url')->activeLink($query, $default);
     }     
 
     /**

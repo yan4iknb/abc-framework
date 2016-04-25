@@ -18,17 +18,15 @@ class Ru
     public static function set() 
     {
         /**
-        * General constants
+        * Общие константы
         */ 
         define('ABC_NO_CLASS',     ' class not found <br /><span style="color:#400080">(класс не найден)</span><br />');
         define('ABC_NO_METHOD',    ' method offline in framework <br /><span style="color:#400080">(метод не поддержиается фреймворком)</span><br />');
         define('ABC_TPL_DISABLE',  ' the template disabled <br /><span style="color:#400080">(шаблонизатор отключен)</span><br />');
-        
-        /**
-        * Общие настройки
-        */ 
         define('ABC_INVALID_CONFIGURE_APP',    ' Configuring the application is to be performed array <br /><span style="color:#400080">(конфигурация приложения должна быть массивом)</span><br />');
         define('ABC_INVALID_CONFIGURE_SITE',   ' Configuring the site is to be performed array <br /><span style="color:#400080">(конфигурация сайта должна быть массивом)</span><br />');
+        define('ABC_NO_CONFIGURE',   ' Setting is not specified in the configuration file <br /><span style="color:#400080">(настройка не задана в конфигурационном файле)</span><br />');
+        define('ABC_INVALID_CONFIGURE',   'Setup key must be a string <br /><span style="color:#400080">(ключ настройки должен быть строкой)</span><br />');        
         define('ABC_UNKNOWN_ROUTES',           ' Unknown type of routing data <br /><span style="color:#400080">(неизвестный тип маршрутизации)</span><br />');
         define('ABC_ERROR_ROUTES_RULE',           ' Error in the routing rules <br /><span style="color:#400080">(ошибка в правилах роутинга)</span><br />');
         

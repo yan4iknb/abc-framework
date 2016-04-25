@@ -47,7 +47,7 @@ class Builder
     *
     * @return object
     */    
-    public function getService()
+    public function sharedService()
     { 
         if (!$this->container->checkService($this->serviceId)) { 
             $this->buildService(true);
@@ -75,7 +75,7 @@ class Builder
                 if (class_exists($component)) {
                     return new $component($abc);
                 } else {
-                    AbcError::badFunctionCall('<strong>'. $this->serviceId .'</strong>' . ABC_NO_SERVICE);
+                    AbcError::badFunctionCall('<strong>'. $this->serviceId .'</strong>' . ABC_NOT_FOUND_SERVICE);
                 }
             }
         );

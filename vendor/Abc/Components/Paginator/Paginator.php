@@ -29,6 +29,13 @@ class Paginator
     protected $param;
     protected $total;
 
+    /**
+    * @param object $abc
+    */    
+    public function setNums($abc) 
+    {
+        $this->url = $abc->newService('Url');
+    } 
 
     /**
     * Setting the starting position

@@ -73,7 +73,7 @@ class AbcConfigurator
     */     
     protected function setError500mode()
     {
-        if (isset($this->config['abc_500']) && false === $this->config['abc_500']) {
+        if (false === $this->config['abc_500']) {
             throw new \ErrorException('500', 500);
         } else {
             set_error_handler([$this, 'throwError500Exception']);
@@ -141,9 +141,8 @@ class AbcConfigurator
     */
     public function throwError500Exception($code, $message, $file, $line)
     {
-        $this->contentEnable = false;
-        
         if (error_reporting() & $code) {
+            $this->contentEnable = false;
             throw new AbcError500Exception($message, $code, $file, $line);
         }
     } 

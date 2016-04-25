@@ -33,7 +33,7 @@ class Url
     */      
     public function __construct($abc)
     {
-        $this->config  = $abc->getFromStorage('config');
+        $this->config  = $abc->getConfig();
         $this->router  = $abc->getFromStorage('Router');
         $this->request = $abc->getFromStorage('Request');
     }

@@ -87,19 +87,7 @@ class Abc
     {
         return self::$process;
     }
-    
-    /**
-    * Возвращает объект сервиса
-    *
-    * @param string $service
-    *
-    * @return object
-    */     
-    public static function getService($service = null)
-    {
-        return self::$process->getService($service);
-    }
-    
+   
     /**
     * Инициализирует новый объект сервиса
     *
@@ -112,6 +100,19 @@ class Abc
         return self::$process->newService($service);
     }
 
+    
+    /**
+    * Возвращает объект сервиса (singltone)
+    *
+    * @param string $service
+    *
+    * @return object
+    */     
+    public static function sharedService($service = null)
+    {
+        return self::$process->sharedService($service);
+    }    
+    
     /**
     * Помещает данные в глобальное хранилище
     *
@@ -164,7 +165,7 @@ class Abc
     */     
     public static function getConfig($key = null)
     {
-        return self::$process->getFromStorage('config')[$key];
+        return self::$process->getConfig($key);
     }
 }
 

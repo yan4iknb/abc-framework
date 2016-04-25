@@ -55,7 +55,7 @@ class Template
     public function __construct($abc)
     {
         $this->abc = $abc; 
-        $this->config = $abc->getFromStorage('config'); 
+        $this->config = $abc->getConfig(); 
     }
     
     /**

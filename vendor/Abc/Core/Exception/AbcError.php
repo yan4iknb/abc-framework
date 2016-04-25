@@ -32,9 +32,11 @@ class AbcError
     * Конструктор
     * 
     */     
-    public function __construct() 
+    public function __construct($exception = false) 
     {
-        set_error_handler([$this, 'triggerErrorException']);
+        if ($exception) {
+            set_error_handler([$this, 'triggerErrorException']);
+        }
     }
     
     /**

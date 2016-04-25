@@ -23,8 +23,8 @@ class Router
     */ 
     public function __construct($abc)
     {
-        $this->parser = $abc->getService('RouteParser');
-        $this->config = $abc->getFromStorage('config'); 
+        $this->parser = $abc->newService('RouteParser');
+        $this->config = $abc->getConfig(); 
         $this->defaultRoute = arrayStrtolower($this->config['default_route']);
     }     
     

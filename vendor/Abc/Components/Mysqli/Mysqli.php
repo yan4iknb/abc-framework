@@ -34,8 +34,7 @@ class Mysqli extends \mysqli
     */     
     public function __construct($abc)
     {
-        $config = $abc->getFromStorage('config');
-        $data = @$config['mysqli'] ?: null;
+        $data = $abc->getConfig('mysqli');
      
         if (!empty($data)) {
          

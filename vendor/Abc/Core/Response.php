@@ -22,8 +22,7 @@ class Response
     */ 
     public function __construct($abc)
     {
-        $this->config = $abc->getFromStorage('config');
-        $this->contentEnable = $this->config['content_enable'];
+        $this->contentEnable = $abc->getConfig('content_enable');
     } 
    
     /**

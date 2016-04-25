@@ -59,7 +59,7 @@ class Abc
     */     
     protected function setErrorMode()
     {
-        if (isset($this->config['abc_debugger'])) {
+        if (isset($this->config['abc_debug'])) {
           
             if (isset($this->config['error_language'])) {
                 $langusge = '\ABC\Abc\Resourses\Lang\\'. $this->config['error_language'];
@@ -74,14 +74,13 @@ class Abc
                 \ABC\Abc\Resourses\Lang\En::set();
             }
             
-            if (true === $this->config['abc_debugger']) {  
+            if (true === $this->config['abc_debug']) {  
                 new PhpHandler($this);
-            } elseif (false === $this->config['abc_debugger']) {
-                new AbcError;
+            } elseif (false === $this->config['abc_debug']) {
+                new AbcError(true);
             } else {
                 throw new \Exception(strip_tags(ABC_INVALID_DEBUG_SETTING)); 
-            }
-             
+            }   
         }
     }    
    
@@ -154,10 +153,29 @@ class Abc
     *
     * @return object
     */     
-    public function getService($serviceId = null)
+    public function sharedService($serviceId = null)
     {  
         $builder = $this->getBuilder($serviceId);
-        return $builder->getService($serviceId);
+        return $builder->sharedService($serviceId);
+    }
+    
+    /**
+    * Получает настройку конфигурации
+    *
+    * @return string
+    */     
+    public function getConfig($key = null)
+    {
+        $config = $this->container->get('config');
+    
+        if (empty($key)) {
+            return $config;
+        } elseif (!is_string($key)) {
+            AbcError::invalidArgument(ABC_INVALID_CONFIGURE);        
+        } elseif (empty($config[$key])) {
+            AbcError::invalidArgument('<strong>'. $key .'</strong>'. ABC_NO_CONFIGURE);
+        }
+            return $config[$key];
     }
   
     /**
@@ -170,7 +188,7 @@ class Abc
     protected function getBuilder($serviceId = null)
     {    
         if (empty($serviceId) || !is_string($serviceId)) {
-            AbcError::invalidArgument(INVALID_SERVICE_NAME);
+            AbcError::invalidArgument(ABC_INVALID_SERVICE_NAME);
         } 
         
         $builder = new Builder($serviceId, $this);

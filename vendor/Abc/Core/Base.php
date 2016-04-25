@@ -17,7 +17,7 @@ class Base
 {
     
     public $abc;   
-    public $config;  
+    public $TplConfig;  
     public $model;
     
     /**
@@ -29,8 +29,9 @@ class Base
     */     
     public function selectTpl($template)
     {
+        $this->TplConfig = $this->abc->getConfig('template');
         $tplType = $this->getTplType();
-        $this->tpl = $this->abc->getService($tplType);   
+        $this->tpl = $this->abc->newService($tplType);   
         $this->tpl->setTpl($template);
     }     
     
@@ -55,10 +56,10 @@ class Base
     */        
     protected function getTplType()
     { 
-        if (!isset($this->config['abc_template']) || true === $this->config['abc_template']) {
+        if (!isset($this->TplConfig['abc_template']) || true === $this->TplConfig['abc_template']) {
             $tplName = 'Template';
-        } elseif (false === $this->config['abc_template']) {
-            $tplName = 'Native';
+        } elseif (false === $this->TplConfig['abc_template']) {
+            $tplName = 'TplNative';
         } else {
             AbcError::badFunctionCall(ABC_INVALID_DEBUG_SETTING);
         }

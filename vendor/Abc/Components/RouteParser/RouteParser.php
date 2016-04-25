@@ -34,7 +34,7 @@ class RouteParser
     */ 
     public function __construct($abc)
     {
-        $this->config = $abc->getFromStorage('config'); 
+        $this->config = $abc->getConfig(); 
         $this->defaultRoute = arrayStrtolower($this->config['default_route']);
         $this->routeRules   = $this->config['route_rules'];
     }     

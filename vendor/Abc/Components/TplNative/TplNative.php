@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Components\Native;
+namespace ABC\Abc\Components\TplNative;
 
 use ABC\Abc\Core\Exception\AbcError;
 
@@ -12,10 +12,10 @@ use ABC\Abc\Core\Exception\AbcError;
  * @copyright © 2015
  * @license http://www.wtfpl.net/ 
  */   
-class Native
+class TplNative
 {   
     
-    protected $config;
+    protected $TplConfig;
     protected $tplName;
     protected $tplDir;
     protected $template;
@@ -24,9 +24,9 @@ class Native
     /**
     * @param object $container
     */ 
-    public function __construct($config)
+    public function __construct($abc)
     {
-        $this->config = $config; 
+        $this->TplConfig = $abc->getConfig('template'); 
     }
     
     /**
@@ -39,8 +39,9 @@ class Native
     */     
     public function setTpl($tplName)
     {
-        $this->tplDir   = str_replace('\\', ABC_DS, $this->config['settings']['dir_template']);
-        $this->template = $this->tplDir . str_replace('\\', ABC_DS, $tplName) .'.tpl';
+        $this->tplDir   = str_replace('\\', ABC_DS, $this->TplConfig['dir_template']);
+        $tplName        = str_replace('\\', ABC_DS, $tplName);
+        $this->template = $this->tplDir . $tplName .'.'. $this->TplConfig['ext'];
         return $this;
     } 
     
@@ -94,8 +95,8 @@ class Native
     {
         $template = $this->execute($this->template);
         $this->assign($block, $template);
-        $layout = @$layout ?: $this->config['settings']['layout'];
-        $this->html = $this->execute($this->tplDir . $layout .'.tpl');
+        $layout = @$layout ?: $this->TplConfig['layout'];
+        $this->html = $this->execute($this->tplDir . $layout .'.'. $this->TplConfig['ext']);
         return $this;
     }  
     

@@ -67,7 +67,7 @@ class Template
     * @param string $tplName      The name of the template
     * @param string $blockParent  The name of the parent block
     */
-    public function setTpl($tplName, $blockParent = '')
+    public function selectTpl($tplName, $blockParent = '')
     {
         $path = $this->tplDir . $tplName .'.'. $this->tplExt;
         $this->startDelim = $this->leftDelim . $this->leftDelim;

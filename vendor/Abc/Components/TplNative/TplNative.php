@@ -37,7 +37,7 @@ class TplNative
     *
     * @return void
     */     
-    public function setTpl($tplName)
+    public function selectTpl($tplName)
     {
         $this->tplDir   = str_replace('\\', ABC_DS, $this->TplConfig['dir_template']);
         $tplName        = str_replace('\\', ABC_DS, $tplName);
@@ -51,7 +51,7 @@ class TplNative
     * @param string|array $data
     * @param mix $value
     *
-    * @return void
+    * @return $this
     */     
     public function assign($data, $value = null)
     {

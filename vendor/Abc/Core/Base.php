@@ -32,7 +32,7 @@ class Base
         $this->TplConfig = $this->abc->getConfig('template');
         $tplType = $this->getTplType();
         $this->tpl = $this->abc->newService($tplType);   
-        $this->tpl->setTpl($template);
+        $this->tpl->selectTpl($template);
     }     
     
     /**

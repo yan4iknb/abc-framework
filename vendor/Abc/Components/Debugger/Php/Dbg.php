@@ -1,12 +1,12 @@
 <?php
 
-namespace ABC\Abc\Core\Debugger\Php;
+namespace ABC\Abc\Components\Debugger\Php;
 
-use ABC\Abc\Core\Debugger\Php\PhpHandler;
-use ABC\Abc\Core\Debugger\Php\TraceClass;
-use ABC\Abc\Core\Debugger\Php\TraceObject;
-use ABC\Abc\Core\Debugger\Php\TraceContainer;
-use ABC\Abc\Core\Debugger\Php\TraceVariable;
+use ABC\Abc\Components\Debugger\Php\ErrorHandler;
+use ABC\Abc\Components\Debugger\Php\TraceClass;
+use ABC\Abc\Components\Debugger\Php\TraceObject;
+use ABC\Abc\Components\Debugger\Php\TraceContainer;
+use ABC\Abc\Components\Debugger\Php\TraceVariable;
 
 /** 
  * Класс Dbg
@@ -17,7 +17,7 @@ use ABC\Abc\Core\Debugger\Php\TraceVariable;
  * @license http://www.wtfpl.net/  
  */   
 
-class Dbg extends PhpHandler
+class Dbg extends ErrorHandler
 {
 
     public $containerName = 'ABC\abc\components\Container\Container';

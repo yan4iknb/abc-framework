@@ -1,7 +1,7 @@
 <?php
 
 use ABC\Abc;
-use ABC\Abc\Core\Debugger\Php\Dbg;
+use ABC\Abc\Components\Debugger\Php\Dbg;
 
     function abcForFunctions($abc = null)
     {

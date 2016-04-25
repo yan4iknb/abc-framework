@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Core\Debugger\Php;
+namespace ABC\Abc\Components\Debugger\Php;
 
 /** 
  * Класс View

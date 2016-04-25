@@ -8,7 +8,7 @@ use ABC\Abc\Components\Builder;
 use ABC\Abc\Components\Container\Container;
 
 use ABC\Abc\Core\Exception\AbcError;
-use ABC\Abc\Core\Debugger\Php\PhpHandler;
+use ABC\Abc\Components\Debugger\Php\ErrorHandler;
 
 /** 
  * Класс AbcFramework
@@ -76,7 +76,7 @@ class Abc
             }
             
             if (true === $this->config['abc_debug']) {  
-                new PhpHandler($this);
+                new ErrorHandler($this);
             } elseif (false === $this->config['abc_debug']) {
                 new AbcError(true);
             } else {

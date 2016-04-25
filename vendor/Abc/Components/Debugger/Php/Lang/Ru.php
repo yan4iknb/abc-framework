@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Core\Debugger\Php\Lang;
+namespace ABC\Abc\Components\Debugger\Php\Lang;
 
 /** 
  * Класс En

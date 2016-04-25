@@ -38,7 +38,8 @@ class Template
     protected $startDelim;
     protected $endDelim; 
     protected $layout;    
-
+    protected $path;
+    
     protected $data        = [];
     protected $blocks      = [];
     protected $parsed      = [];    
@@ -69,11 +70,11 @@ class Template
     */
     public function selectTpl($tplName, $blockParent = '')
     {
-        $path = $this->tplDir . $tplName .'.'. $this->tplExt;
+        $this->path = $this->tplDir . $tplName .'.'. $this->tplExt;
         $this->startDelim = $this->leftDelim . $this->leftDelim;
         $this->endDelim   = $this->rightDelim . $this->rightDelim;
      
-        if (false === ($this->tpl = @file_get_contents($path))) {
+        if (false === ($this->tpl = @file_get_contents($this->path))) {
             AbcError::domain('AbcTemplate: '. $path . ABC_NO_TEMPLATE);
         }
         
@@ -254,7 +255,7 @@ class Template
         $tpl = !empty($tpl) ? $tpl : $this->layout;
         $child = $this->parseChild();
         $parentTpl = new $this->class($this->abc);
-        $parentTpl->setTpl($tpl, $block);
+        $parentTpl->selectTpl($tpl, $block);
         $parentTpl->assign($block, $child);
       
         foreach ($this->stack as $stack) {
@@ -343,13 +344,25 @@ class Template
         $block = str_ireplace('<?xml', '<xml', $block); 
         extract($this->data);
         ob_start();
-            eval('?>'. $block);
+        set_exception_handler(null);
+        set_error_handler(null);
+            $return = eval('?>'. $block);
+if ( $return === false && ( $error = error_get_last() ) ) {
+$o = new \ABC\Abc\Core\Debugger\Php\PhpHandler($this->abc);
+        //set_exception_handler([$o, 'exceptionHandler']);
+        //set_error_handler([$o, 'triggerErrorHandler']);
+        trigger_error($this->path .$error['line']);
+    
+}
         $block = ob_get_clean();
      
         $block = str_ireplace('<xml', '<?xml', $block);
         return $block;
     }
 
+    
+    
+    
     /**
     * Replacing instruction "include" to contents of the include file
     *

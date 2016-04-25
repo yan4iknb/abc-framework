@@ -76,6 +76,7 @@ class Abc
     protected static function autoloadInclude()
     {
         include self::$autoload;
+        new \Autoloader(self::$config);
     } 
   
     /**

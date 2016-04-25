@@ -1,10 +1,10 @@
 <?php
 
-namespace ABC\abc\core\debugger;
+namespace ABC\Abc\Components\Debugger\Php;
 
 /** 
- * Класс ExceptionHandler
- * Обработчик исключений 
+ * Класс Handler
+ * 
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
  * @copyright © 2015
@@ -89,7 +89,7 @@ abstract class Handler
             $this->exception = false;
          
             if (!empty($this->language)) {
-                $lang = '\ABC\Abc\Core\Debugger\Php\Lang\\'. $this->language;
+                $lang = '\ABC\Abc\Components\Debugger\Php\Lang\\'. $this->language;
                 $this->message = $lang::translate($message);            
             } else {
                 $this->message = $message;
@@ -251,8 +251,7 @@ abstract class Handler
         if (empty($beforeClass)) {
             return false;
         }
-     
-        $spacePrefix = preg_quote($this->spacePrefix);        
-        return preg_match('#^'. $spacePrefix .'\\\abc.*#iu', $beforeClass);
+        
+        return preg_match('#^'. preg_quote($this->spacePrefix) .'\\\abc.*#iu', $beforeClass);
     }     
 }

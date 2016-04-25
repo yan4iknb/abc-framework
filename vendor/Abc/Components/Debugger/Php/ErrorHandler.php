@@ -1,10 +1,10 @@
 <?php
 
-namespace ABC\Abc\Core\Debugger\Php;
+namespace ABC\Abc\Components\Debugger\Php;
 
-use ABC\Abc\Core\Debugger\Handler;
-use ABC\Abc\Core\Debugger\Php\View;
-use ABC\Abc\Core\Debugger\Php\Painter;
+use ABC\Abc\Components\Debugger\Php\Handler;
+use ABC\Abc\Components\Debugger\Php\View;
+use ABC\Abc\Components\Debugger\Php\Painter;
 
 /** 
  * Класс PhpHandler
@@ -15,7 +15,7 @@ use ABC\Abc\Core\Debugger\Php\Painter;
  * @license http://www.wtfpl.net/ 
  * 
  */   
-class PhpHandler extends Handler
+class ErrorHandler extends Handler
 {
     public $sizeListing = 20;
     

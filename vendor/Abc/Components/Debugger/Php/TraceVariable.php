@@ -1,26 +1,27 @@
 <?php
 
-namespace ABC\Abc\Core\Debugger\Php;
+namespace ABC\Abc\Components\Debugger\Php;
 
+ 
+  defined('ABC_TRACING_VARIABLE') or define('ABC_TRACING_VARIABLE', ' Tracing Variable<br />');
+ 
 /** 
- * Класс TrasseObject
- * Трассировка объекта.
+ * Класс TraceVariable
+ * Трассировка переменной.
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
  * @copyright © 2015 
  * @license http://www.wtfpl.net/
  */   
-
-class TraceObject
+class TraceVariable
 {
-    public $message = ABC_TRACING_OBJECT;
-    public $adds = true;
-    
+    public $message = ABC_TRACING_VARIABLE;
+    public $adds = true;    
+  
     /**
     * @var object 
     */        
     protected $painter;
-    
     /**
     * @var object 
     */    
@@ -31,7 +32,7 @@ class TraceObject
     *
     * @param object $painter
     * @param object $view 
-    */   
+    */      
     public function __construct($painter, $view) 
     { 
         $this->view = $view;
@@ -44,26 +45,23 @@ class TraceObject
     * @param string $var
     *
     * @return string
-    */   
+    */  
     public function getListing($var) 
     {
-        $data['total'] = $this->painter->highlightObject($var);
-        $data['lines'] = $this->createLine($var);
+        $data['lines'] = $this->createLine($var);        
+        $data['total'] = $this->painter->highlightVar($var);
         return $this->view->createListingVariable($data);
-    }  
-    
-    /**
-    * Генерирует массив столбика нумерации линий
-    *
-    * @param string $blockCont
-    *
-    * @return array
-    */     
-    protected function createLine($blockCont) 
-    { 
-        $linesCnt = range(1, substr_count((string)$blockCont, "\n") + 3);
-        return [$linesCnt];
     } 
 
+    /**
+    * Генерирует столбик нумерации линий
+    *
+    * @return string
+    */     
+    protected function createLine($blockCont) 
+    {   
+        $linesCnt = range(1, substr_count((string)$blockCont, "\n") + 3);
+        return [$linesCnt];
+    }  
 }
 

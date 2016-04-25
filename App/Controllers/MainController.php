@@ -11,7 +11,7 @@ use ABC\Abc\Core\Base;
 class MainController extends Base
 { 
     public function actionIndex()
-    {
+    {echo $a;
         $this->view->createHello();
     }      
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Components\Debugger\Php;
+namespace ABC\Abc\Components\Debugger;
 
 /** 
  * Класс Handler
@@ -89,7 +89,7 @@ abstract class Handler
             $this->exception = false;
          
             if (!empty($this->language)) {
-                $lang = '\ABC\Abc\Components\Debugger\Php\Lang\\'. $this->language;
+                $lang = '\ABC\Abc\Components\Debugger\Lang\\'. $this->language;
                 $this->message = $lang::translate($message);            
             } else {
                 $this->message = $message;
@@ -112,7 +112,7 @@ abstract class Handler
     }
     
     /**
-    * Обработчик исключений
+    * Подготавливает отчет
     *
     * @return void
     */   

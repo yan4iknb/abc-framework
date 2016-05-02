@@ -3,6 +3,7 @@
 namespace ABC\Abc\Components\TplNative;
 
 use ABC\Abc\Core\Exception\AbcError;
+use ABC\Abc\Components\Debugger\Syntax\SyntaxHandler;
 
 /** 
  * Класс BaseView
@@ -15,7 +16,7 @@ use ABC\Abc\Core\Exception\AbcError;
 class TplNative
 {   
     
-    protected $TplConfig;
+    protected $config;
     protected $tplName;
     protected $tplDir;
     protected $template;
@@ -26,7 +27,7 @@ class TplNative
     */ 
     public function __construct($abc)
     {
-        $this->TplConfig = $abc->getConfig('template'); 
+        $this->config = $abc->getConfig(); 
     }
     
     /**
@@ -39,9 +40,9 @@ class TplNative
     */     
     public function selectTpl($tplName)
     {
-        $this->tplDir   = str_replace('\\', ABC_DS, $this->TplConfig['dir_template']);
+        $this->tplDir   = str_replace('\\', ABC_DS, $this->config['template']['dir_template']);
         $tplName        = str_replace('\\', ABC_DS, $tplName);
-        $this->template = $this->tplDir . $tplName .'.'. $this->TplConfig['ext'];
+        $this->template = $this->tplDir . $tplName .'.'. $this->config['template']['ext'];
         return $this;
     } 
     
@@ -95,8 +96,8 @@ class TplNative
     {
         $template = $this->execute($this->template);
         $this->assign($block, $template);
-        $layout = @$layout ?: $this->TplConfig['layout'];
-        $this->html = $this->execute($this->tplDir . $layout .'.'. $this->TplConfig['ext']);
+        $layout = @$layout ?: $this->config['template']['layout'];
+        $this->html = $this->execute($this->tplDir . $layout .'.'. $this->config['template']['ext']);
         return $this;
     }  
     
@@ -123,9 +124,9 @@ class TplNative
     {        
         return $this->html;
     }  
-    
+ 
     /**
-    * Эмуляция наследования 
+    * Разбор шаблона
     *
     * @param string $template
     *
@@ -133,11 +134,25 @@ class TplNative
     */     
     protected function execute($template)
     {
+        if (isset($this->config['abc_debug'])) {
+            $content = file_get_contents($template);
+            
+            ob_start();
+            $return = @eval('?>'. $content);
+            ob_end_clean();
+            
+            if (false === $return && ($error = error_get_last())) {   
+                $debug = new SyntaxHandler($this->config);
+                $debug->triggerErrorHandler($error['type'], $error['message'], $template, $error['line']);
+                exit;
+            }
+        } 
+        
         ob_start();
         extract($this->data);
         include_once $template;        
         return ob_get_clean();
-    }  
+    }     
     
     /**
     * Ошибка вызова метода

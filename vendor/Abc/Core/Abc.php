@@ -8,7 +8,7 @@ use ABC\Abc\Components\Builder;
 use ABC\Abc\Components\Container\Container;
 
 use ABC\Abc\Core\Exception\AbcError;
-use ABC\Abc\Components\Debugger\Php\ErrorHandler;
+use ABC\Abc\Components\Debugger\Trace\ErrorHandler;
 
 /** 
  * Класс AbcFramework
@@ -38,7 +38,7 @@ class Abc
     * @param array $siteConfig
     */    
     public function __construct($appConfig = [], $siteConfig = [])
-    {         
+    {       
         $configurator = new AbcConfigurator($appConfig, $siteConfig);
         $this->config = $configurator->getConfig();
         $this->container = new Container;
@@ -222,7 +222,7 @@ class Abc
     */     
     protected function includeFunction()
     {
-        include_once 'Functions/default.php';
+        include_once __DIR__ .'/Functions/default.php';
         abcForFunctions($this);
     }
     

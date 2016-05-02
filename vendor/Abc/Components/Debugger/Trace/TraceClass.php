@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Components\Debugger\Php;
+namespace ABC\Abc\Components\Debugger\Trace;
 
 /** 
  * Класс TraceClass

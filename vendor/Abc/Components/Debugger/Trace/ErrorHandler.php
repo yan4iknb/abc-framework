@@ -1,10 +1,10 @@
 <?php
 
-namespace ABC\Abc\Components\Debugger\Php;
+namespace ABC\Abc\Components\Debugger\Trace;
 
-use ABC\Abc\Components\Debugger\Php\Handler;
-use ABC\Abc\Components\Debugger\Php\View;
-use ABC\Abc\Components\Debugger\Php\Painter;
+use ABC\Abc\Components\Debugger\Painter;
+use ABC\Abc\Components\Debugger\View;
+use ABC\Abc\Components\Debugger\Handler;
 
 /** 
  * Класс PhpHandler

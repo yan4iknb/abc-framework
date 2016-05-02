@@ -3,7 +3,7 @@
 namespace ABC\Abc\Components\Template;
 
 use ABC\Abc\Core\Exception\AbcError;
-
+use ABC\Abc\Components\Debugger\Syntax\SyntaxHandler;
 /** 
  * Класс Template 
  * Шаблонизатор
@@ -18,7 +18,7 @@ class Template
     /**      
     * @var bool     
     */       
-    public  $tplPhp    = true; 
+    public  $tplPhp    = false; 
  
     /**        
     * @var string     
@@ -29,7 +29,7 @@ class Template
     */       
     public  $inialize    = true; 
     
-    protected $leftDelim   = '{';
+    protected $leftDelim   = '{$';
     protected $rightDelim  = '}';
     
     protected $config; 
@@ -57,9 +57,11 @@ class Template
     public function __construct($abc)
     {
         $this->abc = $abc; 
-        $this->config = $abc->getConfig('template'); 
-        $this->tplDir = str_replace('\\', ABC_DS, $this->config['dir_template']);
-        $this->layout = $this->config['layout'];
+        $this->config = $abc->getConfig(); 
+        $this->tplDir = str_replace('\\', ABC_DS, $this->config['template']['dir_template']);
+        $this->layout = $this->config['template']['layout'];
+        $this->tplExt = $this->config['template']['ext'];
+        $this->tplPhp = $this->config['template']['php'];
     }
     
     /**
@@ -100,14 +102,6 @@ class Template
     /**
     * Assign a variable.
     *
-    * @example Simplest case:
-    * @example $tpl->assign('name', 'value');
-    * @example <?=$name ?> in template
-    *
-    * @example Array assign:
-    * @example $tpl->assign(array('name' => 'value', 'name2' => 'value2'));
-    * @example <?=$name ?>  <?=$name2 ?>  in template
-    *
     * @param string/array $data
     * @param string/array $value
     * 
@@ -126,6 +120,7 @@ class Template
         if (!$this->tplPhp) {
             $this->normalise($this->data);
         }
+        
         return $this;
     }
 
@@ -344,16 +339,14 @@ class Template
         $block = str_ireplace('<?xml', '<xml', $block); 
         extract($this->data);
         ob_start();
-        set_exception_handler(null);
-        set_error_handler(null);
-            $return = eval('?>'. $block);
-if ( $return === false && ( $error = error_get_last() ) ) {
-$o = new \ABC\Abc\Core\Debugger\Php\PhpHandler($this->abc);
-        //set_exception_handler([$o, 'exceptionHandler']);
-        //set_error_handler([$o, 'triggerErrorHandler']);
-        trigger_error($this->path .$error['line']);
-    
-}
+            $return = @eval('?>'. $block);
+            
+            if (false === $return && ($error = error_get_last())) {   
+                $debug = new SyntaxHandler($this->config);
+                $debug->triggerErrorHandler($error['type'], $error['message'], $this->path, $error['line']);
+                exit;
+            }
+            
         $block = ob_get_clean();
      
         $block = str_ireplace('<xml', '<?xml', $block);
@@ -441,7 +434,7 @@ $o = new \ABC\Abc\Core\Debugger\Php\PhpHandler($this->abc);
     {
         $names  = array_keys($this->data);
         $valyes = array_values($this->data);
-     
+    
         $block  = preg_replace_callback('~'. preg_quote($this->leftDelim, '~')
                                            .'FILE ([a-z0-9\._]+?)'
                                            . preg_quote($this->rightDelim, '~')
@@ -483,18 +476,15 @@ $o = new \ABC\Abc\Core\Debugger\Php\PhpHandler($this->abc);
     * 
     * @return void
     */
-    protected function normalise($data, $html = false)
+    protected function normalise($data)
     {
         foreach ($data as $name => $value)  {
             if (is_array($value)) {
                 foreach ($value as $key => $val) {
-                    if ($html) {
-                        $val = htmlspecialchars($val);
-                    }
                     $names[$name .'.'. $key]  = $val;
                 }
             } else {
-                $names[$name] = htmlspecialchars($value);
+                $names[$name] = $value;
             }
         }
      

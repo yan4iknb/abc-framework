@@ -32,7 +32,7 @@ class AppManager
     * @param object $abc
     */ 
     public function __construct($abc)
-    {
+    {  
         $this->abc = $abc;
         $this->config    = $abc->getFromStorage('config');
         $this->request   = $abc->getFromStorage('Request');

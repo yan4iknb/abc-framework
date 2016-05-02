@@ -25,7 +25,7 @@ class AbcConfigurator
     
     public function __construct($appConfig = [], $siteConfig = [])
     {    
-        define('ABC_DS', DIRECTORY_SEPARATOR);
+        defined('ABC_DS') or define('ABC_DS', DIRECTORY_SEPARATOR);
         mb_internal_encoding('UTF-8');
         $this->setConfig($appConfig, $siteConfig);
         $this->setError500mode();  
@@ -76,7 +76,7 @@ class AbcConfigurator
         if (false === $this->config['abc_500']) {
             throw new \ErrorException('500', 500);
         } else {
-            set_error_handler([$this, 'throwError500Exception']);
+            //set_error_handler([$this, 'throwError500Exception']);
         }    
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Components\Debugger\Php;
+namespace ABC\Abc\Components\Debugger;
 
 /** 
  * Класс View
@@ -81,6 +81,7 @@ class View
         $tpl = $this->getTpl(__DIR__ .'/tpl/listing.tpl');
         return $this->parseTpl($tpl, $data);
     } 
+    
  
     /**
     * Возвращает HTML листинга с содержимым класса
@@ -132,7 +133,35 @@ class View
         
         $tpl = $this->getTpl(__DIR__ .'/tpl/listing.tpl');
         return $this->parseTpl($tpl, $data);
-    }  
+    } 
+/////////////////////////////////////////////////////////////////////
+//                       SQL
+    /**
+    * Генерирует листинг SQL
+    *
+    * @param 
+    *
+    * @return void
+    */    
+    public function createReportSql($data)
+    { 
+        $data['num'] = implode('<br>', $data['num']);
+        $tpl = $this->getTpl(__DIR__ .'/tpl/report_sql.tpl');
+        $this->display($this->parseTpl($tpl, $data));
+    }      
+    
+    /**
+    * Генерирует EXPLAIN
+    *
+    * @param string $data
+    *
+    * @return void
+    */     
+    public function createExplain($data)
+    { 
+        $tpl = $this->getTpl(__DIR__ .'/tpl/explain.tpl');
+        return $this->parseTpl($tpl, $data);
+    }    
     
     /**
     * Возвращает HTML листинга с содержимым контейнера
@@ -145,7 +174,8 @@ class View
         $tpl = $this->getTpl(__DIR__ .'/tpl/listing.tpl');
         return $this->parseTpl($tpl, $data);
     } 
-    
+////////////////////////////////////////////////////////////////
+
     /**
     * Читает шаблон
     *
@@ -168,12 +198,25 @@ class View
     */     
     public function parseTpl($tpl, $data)
     {
-        $tpl = preg_replace('#\{\$(.+?)\}#i', '<?=$\\1?>', $tpl);
+        $tpl = preg_replace('#\{\$(.+?)\}#i', '<?=$\\1;?>', $tpl);
         extract($data);
         ob_start();
+        include __DIR__ .'/tpl/style.css';        
         eval('?>'. $tpl);
         return ob_get_clean();
     }
+    
+    /**
+    * Выдает результат в поток
+    *
+    * @param string $html
+    *
+    * @return void
+    */     
+    public function display($html)
+    {
+        echo $html;
+    }     
     
     /**
     * Картинка для открытия всех аннотаций

@@ -115,7 +115,8 @@ class UrlManager
         $get = $this->request->iniGET();
         $addition = $this->router->createGetFrom($queryString);
         $param = array_merge($get, $addition);
-        return $this->createUrl($param, $mode);
+        $queryString = '?'. http_build_query($param); 
+        return $this->createUrl($queryString, $mode);
     }
     
     /**
@@ -150,33 +151,28 @@ class UrlManager
     * Активация ссылок 
     *
     * @param string $returnUrl
-    * @param string $css
+    * @param string $activeCss
     *
     * @return string
     */ 
-    public function activeLink($returnUrl, $css = 'class="active"')
+    public function activeLink($returnUrl, $activeCss = 'class="active"')
     {
-        $current = $this->router->hashFromUrl($returnUrl);
+        $current = strtolower(iniGET('controller') .'/'. iniGET('action'));
      
-        if (iniGET() === $current) {
-            return $css;        
+        if ($current === $returnUrl) {
+            return $activeCss;        
         }        
-        
+       
         preg_match('#(.+?)/<(.*?)>#', $returnUrl, $out);
-     
+      
         if (!empty($out)) {
-         
-            $get = strtolower(iniGET('controller') .'/'. iniGET('action'));
-            $get = $this->createUrl($get);
-            array_shift($out);
-            $controller = array_shift($out);
+        
+            $check = explode('|', $out[2]);
             
-            $out = explode('|', $out[0]);
-            
-            foreach ($out as $action) {
+            foreach ($check as $action) {
              
-                if ($get === strtolower($this->createUrl($controller .'/'. $action))) {
-                    return $css;
+                if ($current === $out[1] .'/'. $action) {
+                    return $activeCss;
                 }
             }
         }

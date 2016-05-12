@@ -5,20 +5,24 @@
                 'framework_trace'  => true,
                 
                 // Вид URL в ссылках
-                'urlManager'  => [
+                'url_manager'  => [
                                     // ЧПУ (Человеко Приятный Урл)
-                                    'pretty'      => false,
+                                    'pretty'      => true,
                                     // Показать/скрыть имя скрипта
                                     'show_script' => false,
                                     // HTTPS
                                     'https'       => false,
                                     // Абсолютный путь
-                                    'absolute'    => true,
+                                    'absolute'    => false,
                 ],
                 
-                'route_rules' => [  '/'                           => 'main/index',
-                                    'docs/<paragraph>'            => 'docs/index',
-                                    'docs/<paragraph>/<section>'  => 'docs/section',
-                ],
+                //'route_rules' => [  '/'                  => 'main/index',
+                                    //'docs/<post>'        => 'main/index',
+                                    //'docs/<id:\w+>'      => 'docs/section',
+                //],
+                
+                'template' => [ 
+                                    'abc_template'    => true, 
+                ], 
                 
     ];

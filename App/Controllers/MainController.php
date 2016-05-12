@@ -13,7 +13,12 @@ class MainController extends Base
     public function actionIndex()
     {
         $this->view->createHello();
-    }      
+    }
+    
+    public function actionSecond()
+    {
+        $this->view->createHello();
+    }  
 }
 
 

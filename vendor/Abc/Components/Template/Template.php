@@ -444,7 +444,7 @@ class Template
                                            $block);
                                            
         $block  = preg_replace_callback('~'. preg_quote($this->leftDelim, '~')
-                                           .'(([^\$]+)\s*\((.+?)\))+?'
+                                           .'(([^\$]+?)\s*\((.+?)\)+?)'
                                            . preg_quote($this->rightDelim, '~')
                                            .'~uis',
                                            [$this, 'parseFunct'],

@@ -10,7 +10,7 @@
             <img src="/theme/img/logo.png" />
         </div>
 <!--// content -->
-<?=$content; ?>
+<?php echo $content; ?>
 <!--// content end -->
     </body>
 </html>

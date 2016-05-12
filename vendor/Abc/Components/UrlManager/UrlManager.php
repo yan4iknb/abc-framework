@@ -29,7 +29,12 @@ class UrlManager
     protected $router;
     
     /**
-    * @param object $request
+    * @var ABC\Abc\Components\RouteParser\RouteParser
+    */
+    protected $parser;
+    
+    /**
+    * @param object $abc
     */      
     public function __construct($abc)
     {

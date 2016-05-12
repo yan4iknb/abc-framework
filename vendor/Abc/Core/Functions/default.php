@@ -105,7 +105,7 @@ use ABC\Abc\Components\Debugger\Trace\Dbg;
     function createUrl($queryString, $mode = false)   
     {  
         $abc = abcForFunctions();
-        return $abc->sharedService('Url')->createUrl($queryString, $mode);
+        return $abc->sharedService('UrlManager')->createUrl($queryString, $mode);
     }
     
     /**
@@ -120,7 +120,7 @@ use ABC\Abc\Components\Debugger\Trace\Dbg;
     function createLink($queryString, $text, $param = [])   
     { 
         $abc = abcForFunctions();
-        return $abc->sharedService('Url')->createLink($queryString, $text, $param);
+        return $abc->sharedService('UrlManager')->createLink($queryString, $text, $param);
     } 
     
     /**   
@@ -134,7 +134,7 @@ use ABC\Abc\Components\Debugger\Trace\Dbg;
     function activeLink($returnUrl, $css = 'class="active"')
     { 
         $abc = abcForFunctions();
-        return $abc->sharedService('Url')->activeLink($returnUrl, $css);
+        return $abc->sharedService('UrlManager')->activeLink($returnUrl, $css);
     }     
 
     /**

@@ -36,6 +36,7 @@ class UrlManager
         $this->config  = $abc->getConfig();
         $this->router  = $abc->getFromStorage('Router');
         $this->request = $abc->getFromStorage('Request');
+        $this->parser  = $abc->getFromStorage('RouteParser');
     }
     
     /**
@@ -53,11 +54,11 @@ class UrlManager
         }
      
         $queryString  = trim($queryString, '/'); 
-        
-        if (is_array($mode) && !empty($this->config['url'])) {
-            $config = array_merge($this->config['url'], $mode);
-        } elseif (!is_array($mode) && !empty($this->config['url'])) {
-            $config = $this->config['url'];
+     
+        if (is_array($mode) && !empty($this->config['url_manager'])) {
+            $config = array_merge($this->config['url_manager'], $mode);
+        } elseif (!is_array($mode) && !empty($this->config['url_manager'])) {
+            $config = $this->config['url_manager'];
         } 
      
         $protocol   = !empty($config['https']) ? 'https://' : 'http://';
@@ -84,8 +85,7 @@ class UrlManager
             if ($queryString[0] === '?') {
                 return $basePath .'?'. ltrim($queryString, '?');            
             } else {
-                $param = explode('/', $queryString);
-                $param = $this->router->defaultGet($param);
+                $param = $this->parser->parseRoutes($queryString);
                 return $basePath .'?'. http_build_query($param); 
             }
             

@@ -39,8 +39,6 @@ class Dbg extends ErrorHandler
     */    
     public function __construct($var = 'stop', $abc)
     {
-        $response = $abc->getFromStorage('Response');
-        $response->contentEnable = false;
         parent::__construct($abc);
         $this->tracersSelector($var);
     }

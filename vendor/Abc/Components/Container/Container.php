@@ -127,14 +127,14 @@ class Container
     /**
     * Внедряет один сервис в другой, создавая третий
     *
-    * @param string $dependenceId
-    * @param string $serviceId    
+    * @param string $serviceId
+    * @param string $dependenceId    
     * @param string $newService
     * @param array $property
     *
     * @return object
     */ 
-    public function injection($dependenceId, $serviceId, $newService = null, $property = [])
+    public function injection($serviceId, $dependenceId, $newService = null, $property = [])
     {
         $serviceId = $this->validateService($serviceId);
         
@@ -235,6 +235,4 @@ class Container
         
         return $callable;
     }
-    
-    
 }

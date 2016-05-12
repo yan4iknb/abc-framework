@@ -205,13 +205,15 @@ class ErrorHandler extends Handler
     }  
     
     /**
-    * Рендер
+    * Подготавливает отчет
     *
     * @return void
     */   
     public function action() 
     {       
         $this->data['num']  = $this->num;
-        $this->abc->debugReport = $this->view->getReport($this->data);
+        $debugReport = $this->view->getReport($this->data);
+        $this->response->sendContent($debugReport);
+        exit();
     }
 }

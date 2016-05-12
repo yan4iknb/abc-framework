@@ -16,7 +16,6 @@ class Response
 {
 
     public $contentEnable;    
-    
     /**
     * @param object $abc
     */ 
@@ -37,10 +36,6 @@ class Response
     {
         if ($this->contentEnable) {
             echo $content;
-        }
-        
-        if (!empty($this->abc->debugReport)) {
-            echo $this->abc->debugReport;
         }
     }     
     

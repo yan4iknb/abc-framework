@@ -29,7 +29,7 @@ class Template
     */       
     public  $inialize    = true; 
     
-    protected $leftDelim   = '{$';
+    protected $leftDelim   = '{';
     protected $rightDelim  = '}';
     
     protected $config; 
@@ -40,6 +40,7 @@ class Template
     protected $layout;    
     protected $path;
     
+    protected $functions   = ['createUrl', 'createLink', 'activeLink'];
     protected $data        = [];
     protected $blocks      = [];
     protected $parsed      = [];    
@@ -82,7 +83,7 @@ class Template
         
         if (!empty($blockParent)) {
             $parentOut = $this-> tplPhp ? '<?=$'. $blockParent .'; ?>'
-                                          : $this->leftDelim . $blockParent . $this->rightDelim;
+                                          : $this->leftDelim .'$'. $blockParent . $this->rightDelim;
          
             $this->tpl = preg_replace('~<!--//\s+('
                                       . preg_quote($blockParent, '~')
@@ -386,7 +387,7 @@ class Template
     * 
     * @return string
     */
-    protected function includesPsd($match)
+    protected function pseudoIncludes($match)
     {
         $md5  = md5($match[1]);
         $this->data[$md5] = $this->includes($match[1], $md5);
@@ -436,21 +437,44 @@ class Template
         $valyes = array_values($this->data);
     
         $block  = preg_replace_callback('~'. preg_quote($this->leftDelim, '~')
-                                           .'FILE ([a-z0-9\._]+?)'
+                                           .'include\s*?([a-z0-9\._]+?)'
                                            . preg_quote($this->rightDelim, '~')
                                            .'~uis',
-                                           [$this, 'includesPsd'],
+                                           [$this, 'pseudoIncludes'],
                                            $block);
-     
+                                           
+        $block  = preg_replace_callback('~'. preg_quote($this->leftDelim, '~')
+                                           .'(([^\$]+)\s*\((.+?)\))+?'
+                                           . preg_quote($this->rightDelim, '~')
+                                           .'~uis',
+                                           [$this, 'parseFunct'],
+                                           $block);
+      
         $tags   = preg_replace('~([a-z0-9\._]+)~uis',
-                              $this->leftDelim .'$1'. $this->rightDelim,
+                              $this->leftDelim .'$$1'. $this->rightDelim,
                               $names
                               );
      
         $block = str_replace($tags, $valyes, $block);
         return  preg_replace('~<\?[^x].*?\?>~uis', '', $block);
     }
-
+    
+    /**
+    * Processing functions 
+    *
+    * @param array $data
+    * 
+    * @return mix
+    */
+    protected function parseFunct($match)
+    {
+        if (in_array($match[2], $this->functions)) {
+            return eval('return '. $match[1].';');      
+        }
+        
+        return null;
+    }
+    
     /**
     * Processing variables for output stream
     *

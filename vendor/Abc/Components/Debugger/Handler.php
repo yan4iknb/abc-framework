@@ -40,10 +40,9 @@ abstract class Handler
     */       
     public function __construct($abc) 
     {
-        $this->abc = $abc;
+        $this->response = $abc->getFromStorage('Response');
         $config = $abc->getFromStorage('config'); 
         $this->language = $config['error_language'];
-        $this->response = $abc->getFromStorage('Response');
         
         if (isset($config['framework_trace']) && true === $config['framework_trace']) {
             $this->allTrace = true;
@@ -95,9 +94,9 @@ abstract class Handler
                 $this->message = $message;
             }
          
-            $this->code      = $code; 
-            $this->file      = $file;
-            $this->line      = $line; 
+            $this->code = $code; 
+            $this->file = $file;
+            $this->line = $line; 
             $trace = debug_backtrace();
          
             if (in_array($code, $this->E_Lavel)) {
@@ -106,8 +105,7 @@ abstract class Handler
          
             $trace = $this->prepareTrace($trace);
             $this->backTrace = array_reverse($trace);
-            $this->createReport();
-            $this->response->contentEnable = false;           
+            $this->createReport();          
         } 
     }
     

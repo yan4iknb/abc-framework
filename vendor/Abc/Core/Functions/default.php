@@ -97,45 +97,44 @@ use ABC\Abc\Components\Debugger\Trace\Dbg;
     /**
     * Формирование URL.
     * 
-    * @param string $arg
+    * @param string $queryString
     * @param bool|array $mode
     *
     * @return string 
     */      
-    function href($query, $mode = false)   
+    function createUrl($queryString, $mode = false)   
     {  
         $abc = abcForFunctions();
-        return $abc->sharedService('Url')->getUrl($query, $mode);
+        return $abc->sharedService('Url')->createUrl($queryString, $mode);
     }
     
     /**
     * Формирование ссылок.
     * 
+    * @param string $queryString
     * @param string $text
-    * @param string $query
-    * @param string $attribute
-    * @param bool $abs
+    * @param array $param
     *
     * @return string 
     */      
-    function linkTo($query, $text, $attribute = null, $mode = false)   
+    function createLink($queryString, $text, $param = [])   
     { 
         $abc = abcForFunctions();
-        return $abc->sharedService('Url')->linkTo($query, $text, $attribute, $mode);
+        return $abc->sharedService('Url')->createLink($queryString, $text, $param);
     } 
     
     /**   
     * Активация ссылок 
     *
-    * @param string|array $param
-    * @param mix $default
+    * @param string $returnUrl
+    * @param string $css
     *
     * @return string
     */ 
-    function activeLink($query, $default = false)
+    function activeLink($returnUrl, $css = 'class="active"')
     { 
         $abc = abcForFunctions();
-        return $abc->sharedService('Url')->activeLink($query, $default);
+        return $abc->sharedService('Url')->activeLink($returnUrl, $css);
     }     
 
     /**

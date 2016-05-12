@@ -30,7 +30,6 @@ class Abc
     */ 
     protected $container;
     
-    public $debugReport = null;
     /**
     * Конструктор
     * 
@@ -38,18 +37,18 @@ class Abc
     * @param array $siteConfig
     */    
     public function __construct($appConfig = [], $siteConfig = [])
-    {       
+    {  
         $configurator = new AbcConfigurator($appConfig, $siteConfig);
-        $this->config = $configurator->getConfig();
-        $this->container = new Container;
+        $this->config = $configurator->getConfig();        
+        $this->container = new Container;  
         $this->setToStorage('config', $this->config);
         $this->setToStorage('Abc', $this);
+        $this->addToContainer('Response');
+        $this->setErrorMode();        
         $this->addToContainer('AppManager');       
         $this->addToContainer('Request');
         $this->addToContainer('Router');
-        $this->addToContainer('Response');
         $this->includeFunction();
-        $this->setErrorMode();
     }
  
     
@@ -75,8 +74,8 @@ class Abc
                 \ABC\Abc\Resourses\Lang\En::set();
             }
             
-            if (true === $this->config['abc_debug']) {  
-                new ErrorHandler($this);
+            if (true === $this->config['abc_debug']) { 
+                new ErrorHandler($this); 
             } elseif (false === $this->config['abc_debug']) {
                 new AbcError(true);
             } else {

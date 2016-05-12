@@ -1,6 +1,6 @@
 <?php 
 
-namespace ABC\Abc\Components\Url;
+namespace ABC\Abc\Components\UrlManager;
 
 /** 
  * Класс Url
@@ -11,7 +11,7 @@ namespace ABC\Abc\Components\Url;
  * @license http://www.wtfpl.net/ 
  */ 
    
-class Url  
+class UrlManager  
 { 
     /**
     * @var array
@@ -41,18 +41,18 @@ class Url
     /**
     * Генерирует URL согласно настройкам или локальному режиму
     *
-    * @param string $string
-    * @param bool $mode
+    * @param string $queryString
+    * @param bool|array $mode
     *
     * @return string
     */  
-    public function getUrl($queryString, $mode = false)
+    public function createUrl($queryString, $mode = false)
     { 
-        $queryString  = trim($queryString, '/'); 
-        
-        if (isset($mode['show_script'])) {
-            unset($mode['show_script']);
+        if (substr($queryString, 0, 4) === 'http') {
+            return $queryString;
         }
+     
+        $queryString  = trim($queryString, '/'); 
         
         if (is_array($mode) && !empty($this->config['url'])) {
             $config = array_merge($this->config['url'], $mode);
@@ -70,7 +70,9 @@ class Url
         }
        
         if (true === $mode) {
-            $basePath = $protocol. $hostName . $scriptName ;
+            $basePath = $protocol. $hostName . $scriptName;
+        } elseif (false === $mode) {
+            $basePath = $scriptName;
         } else {
             $basePath = (isset($config['absolute']) && true === $config['absolute']) 
                       ? $protocol . $hostName . $scriptName 
@@ -103,35 +105,42 @@ class Url
     /**
     * Добавляет параметры в URL
     *
-    * @param string $string
+    * @param string $queryString
+    * @param bool|array $mode
     *
     * @return string
     */     
-    public function addParamToUrl($string)
+    public function addParamToUrl($queryString, $mode = false)
     {
         $get = $this->request->iniGET();
-        $addition = $this->router->createGetFrom($string);
+        $addition = $this->router->createGetFrom($queryString);
         $param = array_merge($get, $addition);
-        return $this->createUrl($param, $abs = false);
+        return $this->createUrl($param, $mode);
     }
     
     /**
     * Формирование ссылок.
     * 
-    * @param string $query
+    * @param string $queryString
     * @param string $text
-    * @param string $attribute
-    * @param bool $mode
+    * @param array  $param
     *
     * @return string 
     */      
-    public function linkTo($query, $text, $attribute = null, $mode = false)   
+    public function createLink($queryString, $text, $param = [])   
     { 
-        if (substr($query, 0, 4) !== 'http') {
-            $query = $this->getUrl($query, $mode);
-        }
+        $attribute = !empty($param['attribute']) ? $param['attribute'] : null;
         
-        return '<a href="'. $query .'" '
+        if (!empty($param['returnUrl']) && !empty($param['css'])) {
+            $attribute .= $this->activeLink($param['returnUrl'], $param['css']); 
+        } elseif (!empty($param['returnUrl'])) {
+            $attribute .= $this->activeLink($param['returnUrl']);
+        }        
+            
+        $mode = !empty($param['mode']) ? $param['mode'] : false; 
+        $queryString = $this->createUrl($queryString, $mode);  
+        
+        return '<a href="'. $queryString .'" '
                           . $attribute .' >'
                           . $text 
                           .'</a>';
@@ -140,25 +149,25 @@ class Url
     /**   
     * Активация ссылок 
     *
-    * @param string|array $param
-    * @param mix $default
+    * @param string $returnUrl
+    * @param string $css
     *
     * @return string
     */ 
-    public function activeLink($query, $default = false)
-    { 
-        $current = $this->router->hashFromUrl($query);
+    public function activeLink($returnUrl, $css = 'class="active"')
+    {
+        $current = $this->router->hashFromUrl($returnUrl);
      
-        if ($this->request->GET === $current) {
-            return 'class="act"';        
+        if (iniGET() === $current) {
+            return $css;        
         }        
         
-        preg_match('#(.+?)/<(.*?)>#', $query, $out);
+        preg_match('#(.+?)/<(.*?)>#', $returnUrl, $out);
      
         if (!empty($out)) {
          
-            $get = strtolower($this->request->GET('controller') .'/'. $this->request->GET('action'));
-            $get = $this->getUrl($get);
+            $get = strtolower(iniGET('controller') .'/'. iniGET('action'));
+            $get = $this->createUrl($get);
             array_shift($out);
             $controller = array_shift($out);
             
@@ -166,8 +175,8 @@ class Url
             
             foreach ($out as $action) {
              
-                if ($get === strtolower($this->getUrl($controller .'/'. $action))) {
-                    return 'class="act"';
+                if ($get === strtolower($this->createUrl($controller .'/'. $action))) {
+                    return $css;
                 }
             }
         }

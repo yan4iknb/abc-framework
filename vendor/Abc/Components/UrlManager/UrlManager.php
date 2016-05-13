@@ -3,7 +3,7 @@
 namespace ABC\Abc\Components\UrlManager;
 
 /** 
- * Класс Url
+ * Класс UrlManager 
  * 
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
@@ -162,7 +162,7 @@ class UrlManager
     */ 
     public function activeLink($returnUrl, $activeCss = 'class="active"')
     {
-        $current = strtolower(iniGET('controller') .'/'. iniGET('action'));
+        $current = strtolower($this->request->getController() .'/'. $this->request->getAction());
      
         if ($current === $returnUrl) {
             return $activeCss;        

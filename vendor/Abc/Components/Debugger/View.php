@@ -69,6 +69,8 @@ class View
     {
         return $this->getTpl(__DIR__ .'/tpl/stack_row.tpl');
     } 
+    
+    
    
     /**
     * Возвращает HTML листинга с содержимым переменной

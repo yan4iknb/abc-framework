@@ -3,6 +3,7 @@
 namespace ABC\Abc\Components\Mysqli;
 
 use ABC\Abc\Core\Exception\AbcError;
+use ABC\Abc\Components\Debugger\Sql\Sqldebug;
 
 /** 
  * Класс Mysqli
@@ -22,7 +23,7 @@ class Mysqli extends \mysqli
     public $base;
     
     /**
-    * @var ABC\Abc\Components\Sqldebug\SqlDebug
+    * @var ABC\Abc\Components\Debugger\Sql\Sqldebug
     */     
     public $debugger;
 
@@ -39,6 +40,8 @@ class Mysqli extends \mysqli
         if (!empty($data)) {
          
             extract($data);
+            
+            $this->debugger  = !empty($debug) ? new SqlDebug() : null;
            
             if (!isset($host, $user, $pass, $base)) {
                 AbcError::invalidArgument(' Component Mysqli: '. ABC_WRONG_CONNECTION);
@@ -78,6 +81,7 @@ class Mysqli extends \mysqli
     public function test()
     {
        $this->test = true;
+       return $this;
     }
     
     /**

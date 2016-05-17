@@ -15,11 +15,12 @@ use ABC\Abc\Components\Debugger\Trace\Dbg;
     }
     
     /**
-    * Обработка переменных для вывода в поток
+    * Инициализация GET
     *
-    * @param array $data
+    * @param array $key
+    * @param array $default
     * 
-    * @return mix
+    * @return string
     */
     function iniGET($key = null, $default = null)
     {
@@ -28,18 +29,33 @@ use ABC\Abc\Components\Debugger\Trace\Dbg;
     }
     
     /**
-    * Обработка переменных для вывода в поток
+    * Инициализация POST
     *
-    * @param array $data
+    * @param array $key
+    * @param array $default
     * 
-    * @return mix
+    * @return string
     */
     function iniPOST($key = null, $default = null)
     {
         $abc = abcForFunctions();
         return $abc->getFromStorage('Request')->iniPOST($key, $default);
     }
-
+    
+    /**
+    * Инициализация COOKIE
+    *
+    * @param array $key
+    * @param array $default
+    * 
+    * @return string
+    */
+    function iniCOOKIE($key = null, $default = null)
+    {
+        $abc = abcForFunctions();
+        return $abc->getFromStorage('Request')->iniCOOKIE($key, $default);
+    }
+    
     /**
     * Обработка переменных для вывода в поток
     *

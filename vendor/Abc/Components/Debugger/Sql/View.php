@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Components\Sqldebug;
+namespace ABC\Abc\Components\Debugger\Sql;
 
 /** 
  * Класс View
@@ -34,7 +34,7 @@ class View
     public function createReport($data)
     { 
         $data['num'] = implode('<br>', $data['num']);
-        $tpl = $this->getTpl(__DIR__ .'/tpl/report.tpl');
+        $tpl = $this->getTpl(__DIR__ .'/../tpl/report_sql.tpl');
         $this->display($this->parseTpl($tpl, $data));
     }    
     
@@ -47,7 +47,7 @@ class View
     */     
     public function createExplain($data)
     { 
-        $tpl = $this->getTpl(__DIR__ .'/tpl/explain.tpl');
+        $tpl = $this->getTpl(__DIR__ .'/../tpl/explain.tpl');
         return $this->parseTpl($tpl, $data);
     }
     
@@ -89,7 +89,7 @@ class View
     public function createPhp($data)
     {
         $data['num'] = implode('<br>', $data['num']);
-        $tpl = $this->getTpl(__DIR__ .'/tpl/php.tpl');
+        $tpl = $this->getTpl(__DIR__ .'/../tpl/php.tpl');
         return $this->parseTpl($tpl, $data);
     }     
     /**
@@ -117,6 +117,7 @@ class View
         $tpl = preg_replace('#\{\$(.+?)\}#i', '<?=$\\1;?>', $tpl);
         extract($data);
         ob_start();
+        include __DIR__ .'/../tpl/style.css'; 
         eval('?>'. $tpl);
         return ob_get_clean();
     }

@@ -1,6 +1,8 @@
 <?php
 
-namespace ABC\Abc\Components\Sqldebug;
+namespace ABC\Abc\Components\Debugger\Sql;
+
+use ABC\Abc\Components\Debugger\Sql\View;
 
 /** 
  * Класс SqlDedug

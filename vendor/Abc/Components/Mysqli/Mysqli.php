@@ -35,13 +35,13 @@ class Mysqli extends \mysqli
     */     
     public function __construct($abc)
     {
-        $data = $abc->getConfig('mysqli');
+        $config = $abc->getConfig('mysqli');
      
-        if (!empty($data)) {
+        if (!empty($config)) {
          
-            extract($data);
+            extract($config);
             
-            $this->debugger  = !empty($debug) ? new SqlDebug() : null;
+            $this->debugger  = !empty($debug) ? new SqlDebug($config) : null;
            
             if (!isset($host, $user, $pass, $base)) {
                 AbcError::invalidArgument(' Component Mysqli: '. ABC_WRONG_CONNECTION);

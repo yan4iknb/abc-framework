@@ -9,7 +9,8 @@
             <th>id</th>
             <th>select_type</th>
             <th>table</th>        
-            <th>type</th>        
+            <th>partitions</th>  
+           <th>type</th> 
             <th>possible_keys</th>        
             <th>key</th>
             <th>key_len</th>
@@ -21,6 +22,7 @@
             <td>{$id}</td>
             <td>{$select_type}</td>        
             <td>{$table}</td>
+            <td>{$partitions}</td>
             <td>{$type}</td>        
             <td>{$possible_keys}</td>        
             <td>{$key}</td>        

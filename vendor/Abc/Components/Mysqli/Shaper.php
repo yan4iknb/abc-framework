@@ -69,11 +69,11 @@ class Shaper extends \mysqli_stmt
         ];
      
         $sql = $this->createSqlString($params);
-        
+               
         $this->mysqli->autocommit(false);  
         $this->mysqli->query($sql);
         $this->mysqli->rollback();
-        
+
         if (empty($this->mysqli->error)) {        
             $bindParams = $this->boundParams($params);
             call_user_func_array(['parent', 'bind_param'], $bindParams);
@@ -143,7 +143,7 @@ class Shaper extends \mysqli_stmt
                 return "'". $this->mysqli->real_escape_string($param) ."'";
             
             default :
-                Response::invalidArgumentError('Component Mysqli: '. ABC_NO_MYSQLI_TYPE . $type);    
+                AbcError::invalidArgument('Component Mysqli: '. ABC_NO_MYSQLI_TYPE . $type);    
         }   
     }
 }

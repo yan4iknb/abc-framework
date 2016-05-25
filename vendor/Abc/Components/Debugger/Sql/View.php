@@ -117,7 +117,7 @@ class View
         $tpl = preg_replace('#\{\$(.+?)\}#i', '<?=$\\1;?>', $tpl);
         extract($data);
         ob_start();
-        include __DIR__ .'/../tpl/style.css'; 
+        include_once __DIR__ .'/../tpl/style.css'; 
         eval('?>'. $tpl);
         return ob_get_clean();
     }

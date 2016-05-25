@@ -28,6 +28,7 @@ class SqlDebug
     protected $explain;    
     protected $file;
     protected $line;
+    protected $lang;
     protected $message = 'SQL error: ';    
     
     /**
@@ -36,9 +37,13 @@ class SqlDebug
     * @param object $mysqli
     * @param object $view
     */        
-    public function __construct()
+    public function __construct($сonfig)
     { 
         $this->view = new View;
+       
+        if (!empty($сonfig['lang'])) {
+            $this->lang = '\ABC\Abc\Components\Debugger\Lang\\'. $сonfig['lang'];
+        } 
     }
     
     /**
@@ -51,7 +56,7 @@ class SqlDebug
     public function run($sql, $result)
     {
         if (false === $result || $this->db->test) {
-         
+          
             if (false === $result) {
                 $this->errorReport($sql);
             } else {
@@ -71,11 +76,18 @@ class SqlDebug
     * @return void
     */        
     public function errorReport($sql)
-    { 
+    {
         $raw = $this->prepareSqlListing($sql, $this->db->error);
+    
+        if (!empty($this->lang)) {
+            $class = $this->lang;
+            $error = $class::translateSql($this->db->error);           
+        } else {
+            $error = $this->db->error;
+        }
         
         $data = ['message' => 'Component '. $this->component .': <b>'. $this->message .'</b>',
-                 'error'   => htmlSpecialChars($this->db->error),
+                 'error'   => $error,
                  'num'     => $raw['num'],
                  'sql'     => $raw['sql'],
                  'explain' => $this->explain,
@@ -99,10 +111,10 @@ class SqlDebug
     * @return void
     */       
     public function testReport($sql)
-    {  
+    {    
         $this->message = null;
         $start = microtime(true);       
-        $this->db->rawQuery($sql);
+        $this->db->rawQuery($sql); 
         $time = sprintf("%01.4f", microtime(true) - $start);
         $this->explain = $this->performExplain($sql, $time);
         $this->errorReport($sql);        
@@ -143,8 +155,12 @@ class SqlDebug
     * @return null
     */    
     protected function performExplain($sql, $time)
-    {     
-        $res = $this->db->rawQuery("EXPLAIN ". $sql);
+    {    
+        if (!preg_match('~^select.+~is', trim($sql))) {
+            return null;
+        }
+        
+        $res = $this->db->rawQuery("EXPLAIN PARTITIONS ". $sql);
         
         if (is_object($res)) {
          

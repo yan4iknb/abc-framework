@@ -15,17 +15,13 @@ use ABC\Abc\Components\Debugger\Sql\Sqldebug;
  */  
 class Mysqli extends \mysqli
 {
-
+    public $prefix;
     public $test = false;
-    public $host;    
-    public $user;    
-    public $pass;    
-    public $base;
-    
+
     /**
     * @var ABC\Abc\Components\Debugger\Sql\Sqldebug
     */     
-    public $debugger;
+    protected $debugger;
 
     /**
     * Конструктор
@@ -38,21 +34,9 @@ class Mysqli extends \mysqli
         $config = $abc->getConfig('mysqli');
      
         if (!empty($config)) {
-         
-            extract($config);
-            
-            $this->debugger  = !empty($debug) ? new SqlDebug($config) : null;
-           
-            if (!isset($host, $user, $pass, $base)) {
-                AbcError::invalidArgument(' Component Mysqli: '. ABC_WRONG_CONNECTION);
-            } else {
-                $this->host = $host;
-                $this->user = $user;
-                $this->pass = $pass;
-                $this->base = $base;
-                defined('ABC_DBPREFIX') or define('ABC_DBPREFIX', @$prefix);
-                $this->newConnect();
-            }
+            $this->newConnect($config);  
+        } else {
+            AbcError::invalidArgument(' Component Mysqli: '. ABC_WRONG_CONNECTION);
         }
     }
     
@@ -61,9 +45,17 @@ class Mysqli extends \mysqli
     *
     * @return void
     */     
-    public function newConnect()
+    public function newConnect($config = [])
     {
-        parent::__construct($this->host, $this->user, $this->pass, $this->base); 
+        if (!$this->checkConfig($config)) {
+            return false;
+        }
+     
+        extract($config); 
+        parent::__construct($host, $user, $pass, $base); 
+        
+        $this->debugger  = !empty($debug) ? new SqlDebug($config) : null;     
+        $this->prefix = @$prefix; 
         
         if ($this->connect_error) {
             AbcError::logic(' Component Mysqli: '. $this->connect_error); 
@@ -116,7 +108,7 @@ class Mysqli extends \mysqli
     * @return void
     */     
     public function prepare($sql)
-    {    
+    {   
         if (!empty($this->debugger)) {
             return new Shaper($this, $sql);        
         }
@@ -134,5 +126,24 @@ class Mysqli extends \mysqli
     public function rawQuery($sql)
     {
         return parent::query($sql);
-    }     
+    } 
+    
+    /**
+    * Проверка корректности настроек
+    *
+    * @param string $config
+    *    
+    * @return bool
+    */     
+    protected function checkConfig($config = [])
+    {
+        extract($config);
+        
+        if (!isset($host, $user, $pass, $base)) {
+            AbcError::invalidArgument(' Component Mysqli: '. ABC_WRONG_CONNECTION);
+            return false;
+        }
+        
+        return true;
+    }  
 }

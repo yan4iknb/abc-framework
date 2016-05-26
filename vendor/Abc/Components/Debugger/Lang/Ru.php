@@ -15,6 +15,7 @@ class Ru
     protected static function errorReportings() 
     {
         return [
+'(.*?)Unknown database(.+)' => 'Unknown database$2<br /><span class="translate">(Неизвестная база данных$2)</span><br />',
 'syntax error, unexpected(.+)expecting(.+)or(.+)' => 'Synᐃtax error, unexpected$1expecting$2or$3<br /><span class="translate">(Синтаксическая ошибка, неожиденное:<b>$1</b>, ожидалось <b>$2</b>ᐃ<b>$3</b>)</span><br />',
 'syntax error, unexpected (\'.+?\')' => 'Syntax error, unexpected $1<br /><span class="translate">(Синтаксическая ошибка, неожиденное: <b>$1</b>)</span><br />',        
 
@@ -30,6 +31,8 @@ class Ru
 'Missing argument (\d+?) for (.+?), called in (.+?) on line (\d+?) and defined' => 'Missing argument $1 for $2, called in $3 on line $4 and defined <br /><span class="translate">(Отсутствует аргумент $1 для $2, вызванного из $3 на линии $4)</span><br />',
 'Invalid argument supplied for (.+)' => 'Invalid argument supplied for $1 <br /><span class="translate">(Неверный аргумент передан в $1)</span><br />',
 'Division by zero' => 'Division by zero<br /><span class="translate">(Деление на ноль)</span><br />',
+'Trying to get property of non-object' => 'Trying to get property of non-object<br /><span class="translate">(Попытка получить свойство не из объекта)</span><br />',
+'Creating default object from empty value' => 'Creating default object from empty value<br /><span class="translate">(Создание объекта из пустого значения)</span><br />',
                  //''  => '',
                  'Synᐃtax'  => 'Syntax',
                  'ᐃboolean' => 'boolean',
@@ -42,7 +45,7 @@ class Ru
     }
 
     public static function translate($message) 
-    {
+    {//dbg($message);
         $reporting = self::errorReportings();
         $patterns = [];
      
@@ -55,8 +58,10 @@ class Ru
     protected static function errorReportingsSql() 
     {
         return [
-'Table(.+)doesn\'t exist' => 'Table$1doesn\'t exist<br /><span class="translate">(Таблица$1не существует)</span><br />',
-'You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near(.+)at line (.+)' => 'You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near$1at line $2<br /><span class="translate">(Ошибка SQL синтаксиса. Обратитесь к мануалу, соответствующему Вашей версии MySQL сервера, чтобы использовать верно строку$1на линии $2)</span><br />'
+'Base Table or view not found: (\d*?)(.+)' => ' $2 ',        
+'Table(.+)doesn\'t exist' => 'Table$1doesn\'t exist<br /><span class="translate">(Таблица<strong>$1</strong>не существует)</span><br />',
+'You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near(.+)at line (.+)' => 'You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near$1at line $2<br /><span class="translate">(Ошибка SQL синтаксиса. Обратитесь к мануалу, соответствующему Вашей версии MySQL сервера, чтобы использовать верно строку$1на линии $2)</span><br />',
+
         ];
     }
 

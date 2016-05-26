@@ -68,7 +68,7 @@ class Mysqli extends \mysqli
     /**
     * Включает тестовый режим
     *
-    * @return void
+    * @return object
     */     
     public function test()
     {

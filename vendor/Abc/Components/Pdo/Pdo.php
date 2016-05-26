@@ -3,6 +3,7 @@
 namespace ABC\Abc\Components\Pdo;
 
 use ABC\Abc\Core\Exception\AbcError;
+use ABC\Abc\Components\Debugger\Sql\Sqldebug;
 
 /** 
  * Класс Pdo
@@ -29,47 +30,60 @@ class Pdo extends \PDO
     */     
     public function __construct($abc)
     {
-        $data = $abc->getConfig('pdo');
+        $config = $abc->getConfig('pdo');
         
-        if (!empty($data)) {
-         
-            extract($data);
-            
-            if (!isset($dsn, $user, $pass)) {
-                AbcError::invalidArgument(' Component PDO: '. ABC_WRONG_CONNECTION);
-            }
-            
-            if (!isset($opt)) {
-                $opt = array(
-                    PDO::ATTR_ERRMODE => PDO::ERRMODE_Error,
-                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-                );            
-            }
-            
-            defined('ABC_DBPREFIX') or define('ABC_DBPREFIX', @$prefix);
-            $this->debugger = $debugger;
-        }
-     
-        try {
-            @parent::__construct($dsn, $user, $pass, $opt);
-        } catch (\PDOError $e) {
-         
-            if (empty($debugger)) {
-                throw $e;
-            }
-            
-            $this->error = $e->getMessage();
+        if (!empty($config)) {
+            $this->newConnect($config);  
+        } else {
+            AbcError::invalidArgument(' Component PDO: '. ABC_WRONG_CONNECTION);
         }
     }
-
+    
+    /**
+    * Коннектор
+    *
+    * @return void
+    */     
+    public function newConnect($config = [])
+    {
+        if (!$this->checkConfig($config)) {
+            return false;
+        }
+        
+        extract($config);
+        
+        if (!isset($dsn, $user, $pass)) {
+            AbcError::invalidArgument(' Component PDO: '. ABC_WRONG_CONNECTION);
+            return false;
+        }
+        
+        if (empty($opt)) {
+            $opt = [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ];            
+        }
+       
+        $this->debugger  = !empty($debug) ? new SqlDebug($config) : null;    
+        $this->prefix = @$prefix; 
+     
+        try {
+            parent::__construct($dsn, $user, $pass, $opt);
+        } catch (\PDOException $e) {
+            AbcError::invalidArgument($e->getMessage());
+        }
+        
+    }
+    
     /**
     * Включает тестовый режим
     *
-    * @return void
+    * @return object
     */     
     public function test()
     {
        $this->test = true;
+       return $this;
     }    
     
     /**
@@ -83,7 +97,7 @@ class Pdo extends \PDO
     {
         try {
             $result = parent::query($sql);
-        } catch (\PDOError $e) {
+        } catch (\PDOException $e) {
             $this->error = $e->getMessage();        
             $result = false;
         } 
@@ -132,6 +146,26 @@ class Pdo extends \PDO
     {
         return parent::query($sql);
     } 
+    
+    
+    /**
+    * Проверка корректности настроек
+    *
+    * @param string $config
+    *    
+    * @return bool
+    */     
+    protected function checkConfig($config = [])
+    {
+        extract($config);
+        
+        if (!isset($dsn, $user, $pass)) {
+            AbcError::invalidArgument(' Component PDO: '. ABC_WRONG_CONNECTION);
+            return false;
+        }
+        
+        return true;
+    }
 }
 
 

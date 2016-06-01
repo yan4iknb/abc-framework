@@ -6,7 +6,7 @@ use ABC\Abc\Core\Exception\AbcError;
 
 /** 
  * Класс Paginator 
- * Шаблонизатор
+ * Пагинатор
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
  * @copyright © 2015
@@ -199,14 +199,3 @@ class Paginator
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-

@@ -2,7 +2,7 @@
 
 namespace ABC\Abc\Components\Paginator;
 
-use ABC\Abc;
+use ABC\Abc\Core\Exception\AbcError;
 
 /** 
  * Класс Paginator 
@@ -15,30 +15,28 @@ use ABC\Abc;
    
 class Paginator
 {
-
-    public $get;
     /**
-    * @var ABC\Abc\Components\Url\Url
+    * @var ABC\Abc\Components\UrlManager\UrlManager
     */
-    public $url;
+    protected $url;
 
     protected $startPage;
     protected $numPage; 
     protected $numRows;   
     protected $numColumns;
     protected $param;
-    protected $total;
-
+    protected $total = null;
+    
     /**
     * @param object $abc
     */    
-    public function setNums($abc) 
+    public function __construct($abc) 
     {
-        $this->url = $abc->newService('Url');
-    } 
+        $this->url = $abc->newService('UrlManager');
+    }
 
     /**
-    * Setting the starting position
+    * Устанавливает значения для пагинации.
     *
     * @param int $page
     * @param int $rows 
@@ -54,8 +52,10 @@ class Paginator
     } 
     
     /**
-    * Calculates a position and prepares a limit for inquiry
+    * Генерирует лимит для SQL запроса.
     * 
+    * @param int $count 
+    *
     * @return string
     */    
     public function createLimit($count)
@@ -85,7 +85,7 @@ class Paginator
     } 
     
     /**
-    * Generates the navigation menu
+    * Генерирует меню навигации
     * 
     * @param string $param
     *
@@ -93,6 +93,10 @@ class Paginator
     */    
     public function createMenu($param = 'num')
     { 
+        if (is_null($this->total)) {
+            AbcError::overflow(ABC_NO_TOTAL);
+        }
+     
         $this->param = $param;
        
         $count = ceil($this->total / $this->numRows / $this->numColumns);
@@ -171,10 +175,11 @@ class Paginator
     }
 
     /**
-    * Makes a hyperlink
+    * Возвращает подготовленную ссылку
     *
     * @param int $page
-    * @param string $link, $class
+    * @param string $link 
+    * @param string $class
     * @param bolean $active
     * 
     * @return string

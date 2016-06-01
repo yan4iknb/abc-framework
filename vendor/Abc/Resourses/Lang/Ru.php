@@ -65,7 +65,14 @@ class Ru
         define('ABC_INVALID_BLOCK',            ' block does not exist or incorrect syntax <br /><span style="color:red">(блок отсутствует, либо имеет некорректный синтаксис)</span><br />');
         define('ABC_NO_METHOD_IN_TPL',         ' templating method is not supported <br /><span style="color:red">(метод не поддерживается шаблонизатором)</span><br />');
         
+        /**
+        * Ошибки конфигурации
+        */ 
         define('ABC_NO_MODEL',                 ' model is not implemented <br /><span style="color:red">(модель не реализована)</span><br />');
+        
+        /**
+        * Ошибки использования пагинатора
+        */         
+        define('ABC_NO_TOTAL',                 ' limit is not set <br /><span style="color:red">(лимит не установлен)</span><br />');
     }
-
 }

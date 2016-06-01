@@ -102,8 +102,8 @@ class Container
     public function getNew($serviceId)
     {
         $serviceId = $this->validateService($serviceId);
-        
-        if (isset($this->serviceStorage[$serviceId])) {
+      
+        if (isset($this->serviceStorage[$serviceId])) {  
             return $this->serviceStorage[$serviceId]->__invoke();
         }
      

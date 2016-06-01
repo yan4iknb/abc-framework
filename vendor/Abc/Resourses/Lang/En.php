@@ -69,7 +69,15 @@ class En
         define('ABC_INVALID_BLOCK',            ' parent block does not exist or incorrect syntax ');
         define('ABC_NO_METHOD_IN_TPL',         ' templating method is not supported ');
         
+        /**
+        * Errors configuration
+        */
         define('ABC_NO_MODEL',                 ' model is not implemented ');
+        
+        /**
+        * Errors paginator
+        */         
+        define('ABC_NO_TOTAL',                 ' limit is not set ');
     }
 
 }

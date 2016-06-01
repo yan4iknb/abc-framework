@@ -94,7 +94,7 @@ class Paginator
     public function createMenu($param = 'num')
     { 
         if (is_null($this->total)) {
-            AbcError::overflow(ABC_NO_TOTAL);
+            AbcError::logic(ABC_NO_TOTAL);
         }
      
         $this->param = $param;
@@ -197,5 +197,4 @@ class Paginator
         
         return '<span class="'. $class .'">'. $link .'</span>';
     }
-
 }

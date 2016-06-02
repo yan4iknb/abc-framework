@@ -1,5 +1,7 @@
 <?php
-
+/** 
+* @TODO To clean in release 
+*/
 $start = microtime(true);
 $startMemory = memory_get_usage();
 

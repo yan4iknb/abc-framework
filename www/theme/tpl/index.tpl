@@ -2,7 +2,6 @@
 <html>
     <head>
         <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-        <meta content="origin" name="referrer">
         <title>ABC-framework</title>
     </head>
     <body>
@@ -10,7 +9,7 @@
             <img src="/theme/img/logo.png" />
         </div>
 <!--// content -->
-<?php echo $content; ?>
+<?=$content; ?>
 <!--// content end -->
     </body>
 </html>

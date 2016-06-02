@@ -14,11 +14,6 @@ class MainController extends Base
     {
         $this->view->createHello();
     }
-    
-    public function actionSecond()
-    {
-        $this->view->createHello();
-    }  
 }
 
 

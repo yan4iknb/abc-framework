@@ -59,7 +59,7 @@ use ABC\Abc\Components\Debugger\Trace\Dbg;
     /**
     * Обработка переменных для вывода в поток
     *
-    * @param array $data
+    * @param string|array $data
     * 
     * @return mix
     */

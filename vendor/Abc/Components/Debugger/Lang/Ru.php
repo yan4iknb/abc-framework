@@ -33,6 +33,7 @@ class Ru
 'Division by zero' => 'Division by zero<br /><span class="translate">(Деление на ноль)</span><br />',
 'Trying to get property of non-object' => 'Trying to get property of non-object<br /><span class="translate">(Попытка получить свойство не из объекта)</span><br />',
 'Creating default object from empty value' => 'Creating default object from empty value<br /><span class="translate">(Создание объекта из пустого значения)</span><br />',
+'Cannot modify header information - headers already sent by \(output started at(.+?)\)' => 'Cannot modify header information - headers already sent by (output started at $1)<br /><span class="translate">(Не удается изменить информацию в заголовке - заголовки уже отправлены (отправка начата на $1))', 
                  //''  => '',
                  'Synᐃtax'  => 'Syntax',
                  'ᐃboolean' => 'boolean',
@@ -45,7 +46,7 @@ class Ru
     }
 
     public static function translate($message) 
-    {//dbg($message);
+    {
         $reporting = self::errorReportings();
         $patterns = [];
      

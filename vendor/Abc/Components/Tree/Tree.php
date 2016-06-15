@@ -4,12 +4,12 @@ namespace ABC\Abc\Components\Tree;
 
 /**  
 * Класс формирования древовидного вывода результата 
- * 
- * NOTE: Requires PHP version 5.5 or later   
- * @author phpforum.su
- * @copyright © 2015
- * @license http://www.wtfpl.net/ 
- */  
+* 
+* NOTE: Requires PHP version 5.5 or later   
+* @author phpforum.su
+* @copyright © 2015
+* @license http://www.wtfpl.net/ 
+*/  
 
 class Tree 
 { 
@@ -98,5 +98,5 @@ class Tree
         
         return $arr; 
     } 
-
-} 
+}
+ 

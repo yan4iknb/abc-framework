@@ -80,7 +80,7 @@ class Paginator
             $this->startPage = 0;
         }
         
-        return ' LIMIT '. $this->startPage .', '. $this->numRows * $this->numColumns;
+        return  $this->startPage .', '. $this->numRows * $this->numColumns;
      
     } 
     

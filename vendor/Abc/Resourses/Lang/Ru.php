@@ -57,6 +57,7 @@ class Ru
         define('ABC_NO_SQL_DEBUGGER',          ' SQL debugger is inactive. Set to true debug configuration. <br /><span style="color:red">(SQL дебаггер не установлен. Установите настройку в конфигурационном файле)</span><br />');    
         define('ABC_INVALID_MYSQLI_TYPE',      ' Number of elements in type definition string doesn\'t match number of bind variables  <br /><span style="color:red">(количество элементов типа отличается от количества аргументов)</span><br />');
         define('ABC_NO_MYSQLI_TYPE',           ' Unknown type of the parameter  <br /><span style="color:red">(неизвестный тип параметра)</span><br />');
+        define('ABC_SQL_ERROR',                ' Query build error  <br /><span style="color:red">(Ошибка построения запроса)</span><br />');
         
         /**
         * Ошибки использования шаблонизатора

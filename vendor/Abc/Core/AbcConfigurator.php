@@ -25,12 +25,45 @@ class AbcConfigurator
     
     public function __construct($appConfig = [], $siteConfig = [])
     {    
-        define('ABC_DS', DIRECTORY_SEPARATOR);
+        defined('ABC_DS') or define('ABC_DS', DIRECTORY_SEPARATOR);
         mb_internal_encoding('UTF-8');
         $this->setConfig($appConfig, $siteConfig);
         $this->setError500mode();  
     }
    
+    /**
+    * Устанавливает режим обработки ошибок
+    *
+    * @return void
+    */     
+    protected function setErrorMode()
+    {
+        if (isset($this->config['abc_debug'])) {
+          
+            if (isset($this->config['error_language'])) {
+                $langusge = '\ABC\Abc\Resourses\Lang\\'. $this->config['error_language'];
+                
+                if (class_exists($langusge)) {
+                    $langusge::set();
+                } else {
+                    \ABC\Abc\Resourses\Lang\En::set();
+                }
+                
+            } else {
+                \ABC\Abc\Resourses\Lang\En::set();
+            }
+            
+            if (true === $this->config['abc_debug']) { 
+                           
+                new ErrorHandler($this);new AbcError(true); 
+            } elseif (false === $this->config['abc_debug']) {
+                new AbcError(true);
+            } else {
+                throw new \Exception(strip_tags(ABC_INVALID_DEBUG_SETTING)); 
+            }   
+        }
+    }  
+    
     /**
     * Устанавливает настрйки фреймворка
     *
@@ -76,7 +109,7 @@ class AbcConfigurator
         if (false === $this->config['abc_500']) {
             throw new \ErrorException('500', 500);
         } else {
-            set_error_handler([$this, 'throwError500Exception']);
+            //set_error_handler([$this, 'throwError500Exception']);
         }    
     }
 
@@ -128,7 +161,7 @@ class AbcConfigurator
     */     
     protected function parseConfigRoutes($file)
     { 
-        $routeRule = include $file;
+        $routeRule = file_get_contents($file);
         // To be continued
         return $routeRule;
     } 
@@ -147,3 +180,9 @@ class AbcConfigurator
         }
     } 
 }
+
+
+
+
+
+

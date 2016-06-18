@@ -26,7 +26,7 @@ class Mysqli extends \mysqli
     /**
     * Конструктор
     *
-    * @param array $data
+    * @param object $abc
     *
     */     
     public function __construct($abc)

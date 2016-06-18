@@ -126,10 +126,10 @@ class Pdo extends \PDO
     *    
     * @return void
     */     
-    public function prepare($sql, $options = null)
+    public function prepare($sql, $options = [])
     {    
         if (!empty($this->debugger)) {
-            return new Shaper($this, $sql);        
+            new Shaper($this, $sql);
         }
         
         return parent::prepare($sql, $options);

@@ -169,7 +169,7 @@ class UrlManager
         }        
        
         preg_match('#(.+?)/<(.*?)>#', $returnUrl, $out);
-     
+      
         if (!empty($out)) {
         
             $check = explode('|', $out[2]);

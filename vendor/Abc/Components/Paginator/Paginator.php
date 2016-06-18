@@ -80,8 +80,20 @@ class Paginator
             $this->startPage = 0;
         }
         
-        return  $this->startPage .', '. $this->numRows * $this->numColumns;
+        return  $this->startPage;
      
+    } 
+    
+    /**
+    * Генерирует лимит для SQL запроса.
+    * 
+    * @param int $count 
+    *
+    * @return string
+    */    
+    public function createOffset()
+    { 
+        return  $this->numRows * $this->numColumns;
     } 
     
     /**

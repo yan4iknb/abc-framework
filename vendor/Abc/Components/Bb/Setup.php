@@ -75,7 +75,7 @@ class Setup
                                        '<p align="left">'                         =>   '</p>',  
                                        '<p align="right">'                        =>   '</p>',  
                                        '<p align="center">'                       =>   '</p>', 
-                                       '<b>Цитата:</b><div style="bb_quote">'     =>   '</div>', 
+                                       '<p class="quote"><b>цитата:</b><br />'    =>   '</p>', 
                                        '<ol>'                                     =>   '</ol>', 
                                        '<ul>'                                     =>   '</ul>',                                        
                                        '<li>'                                     =>   '</li>', 

@@ -46,7 +46,7 @@ class Abc
         $this->addToContainer('Response');
         $this->setErrorMode();        
         $this->addToContainer('AppManager');       
-        $this->addToContainer('Request');
+        $this->addToContainer('Request');    
         $this->addToContainer('Router');
         $this->includeFunction();
     }

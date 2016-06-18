@@ -123,7 +123,7 @@ class BB
         $text = str_replace($this->bbOpen, '', $text); 
         $text = str_replace($this->bbClose, '', $text); 
         $text = str_replace($this->bbSingle, '', $text); 
-        $text = preg_replace('~\\[(url|img)[^\s]*?\].*?\[/\\1\]~usi', '', $text);       
+        $text = preg_replace('~\\[(code|url|img|html)[^\s]*?\].*?\[/\\1\]~usi', '', $text);       
         return $text; 
     }      
   

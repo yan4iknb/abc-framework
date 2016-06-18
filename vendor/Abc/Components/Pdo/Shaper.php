@@ -48,8 +48,9 @@ class Shaper extends \PDOStatement
     public function bindParam($param, &$value, $type = PDO::PARAM_STR, $length = 0, $driver = null)
     {
         $this->bound[$param] = ['value' => &$value,
-                                'type'  => $datatype
-                            ];  
+                                'type'  => $type
+        ]; 
+     
         return parent::bindParam($param, $value, $type, $length, $driver);
     }
     
@@ -66,7 +67,8 @@ class Shaper extends \PDOStatement
     {
         $this->bound[$param] = ['value' => $value,
                                 'type'  => $type
-                            ];
+        ];
+     
         return parent::bindValue($param, $value, $type);
     }
     
@@ -85,9 +87,9 @@ class Shaper extends \PDOStatement
         $this->pdo->query($sql);
         $this->pdo->rollback();
      
-        return parent::execute($params);
+        return parent::execute();
     }
-    
+
     /**
     * Генерирует результирующий SQL.
     *    

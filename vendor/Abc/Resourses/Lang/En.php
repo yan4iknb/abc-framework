@@ -61,7 +61,7 @@ class En
         define('ABC_NO_SQL_DEBUGGER',          ' SQL debugger is inactive. Set to true debug configuration.');    
         define('ABC_INVALID_MYSQLI_TYPE',      ' Number of elements in type definition string doesn\'t match number of bind variables ');
         define('ABC_NO_MYSQLI_TYPE',           ' Unknown type of the parameter ');
-     
+        define('ABC_SQL_ERROR',                ' Query build error  ');
         /**
         * Errors template
         */ 

@@ -15,7 +15,7 @@ class Tree
 { 
 
     protected $shift;
-    protected $shiftCcnt = 0;
+    protected $shiftCnt = 0;
     protected $maxNest; 
     protected $result = ''; 
 
@@ -66,7 +66,7 @@ class Tree
         $cnt   = count($arr); 
         $style = ''; 
        
-        if (!empty($shift) && ++$this->shiftCcnt < $this->maxNest) { 
+        if (!empty($shift) && ++$this->shiftCnt < $this->maxNest) { 
             $style = ' style="padding-left:'. $shift .'px;"'; 
         }
         

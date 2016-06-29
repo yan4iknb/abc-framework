@@ -31,10 +31,21 @@ class MysqlConstruct
             $columns = ['*'];
         } elseif (!is_array($params[0])) {
             $columns = preg_split('/\s*,\s*/', trim($params[0]), -1, PREG_SPLIT_NO_EMPTY);
+        } elseif (is_array($params[0])) {
+         
+            foreach ($params[0] as $param) {
+             
+                if (is_object($param)) {
+                    $columns[] = '('. $param->getSql() .')';
+                } else {
+                    $columns[] = $param;              
+                }
+            }
+         
         } else {
-            $columns = $params[0];
+            AbcError::logic(' Component DbCommand: '. ABC_SQL_ERROR);
         }
-        
+       
         $options = !empty($params[1]) ? $params[1] : null;
         $columns = Quote::wrap($columns);
         $this->sql = "SELECT ". $options .' '. implode(', ', $columns);

@@ -31,7 +31,7 @@ class Pdo
     }
     
     /**
-    * Конструктор
+    * Проксирование вызовов методов конструктора
     *
     */     
     public function __call($method, $params)
@@ -41,8 +41,12 @@ class Pdo
     }
     
     /**
-    * 
+    * Выполняет запрос из подготовленного выражения с привязкой параметров
     *
+    * @param string $sql
+    * @param array $params
+    *
+    * @return object
     */     
     public function createCommand($sql = null, $params = [])
     {
@@ -57,8 +61,11 @@ class Pdo
     }
 
     /**
-    * 
+    * Обертка PDO::prepare()
     *
+    * @param string $sql
+    *
+    * @return object
     */     
     public function prepare($sql)
     {
@@ -67,18 +74,26 @@ class Pdo
     }
     
     /**
-    * 
+    * Обертка PDO::bindValue()
     *
-    */     
-    public function bindValue($name, $value, $type = PDO::PARAM_STR)
+    * @param string $name
+    * @param mix $value
+    * @param int $type
+    *
+    * @return object
+    */    
+    public function bindValue($name, $value, $type = \PDO::PARAM_STR)
     {
         $this->stmt->bindValue($name, $value, $type);
         return $this;
     } 
     
     /**
-    * 
+    * Обертка PDO::bindValue() для массива
     *
+    * @param array $params
+    *
+    * @return object
     */     
     public function bindValues($params)
     {
@@ -91,7 +106,7 @@ class Pdo
                     $type  = $param[1];
                 } else {
                     $value = $param;
-                    $type  = PDO::PARAM_STR;
+                    $type  = \PDO::PARAM_STR;
                 }
                 
                 $this->stmt->bindValue($name, $value, $type);
@@ -102,8 +117,9 @@ class Pdo
     } 
  
     /**
-    * 
+    * Обертка PDO::execute()
     *
+    * @return object
     */     
     public function execute()
     {
@@ -117,8 +133,7 @@ class Pdo
     */     
     public function all()
     {
-        $sql = $this->mysql->getSql();
-        $this->createCommand($sql);
+        $this->createCommand($this->getSql());
         return $this->stmt->fetchAll();
     }  
     
@@ -128,10 +143,18 @@ class Pdo
     */     
     public function column()
     {
-        $sql = $this->mysql->getSql();
-        $this->createCommand($sql);
+        $this->createCommand($this->getSql());
         return $this->stmt->fetchColumn();
     }
+    
+    /**
+    * 
+    *
+    */     
+    public function getSql()
+    {
+        return $this->mysql->getSql();
+    } 
     
     /**
     * 

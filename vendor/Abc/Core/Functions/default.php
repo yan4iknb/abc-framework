@@ -66,12 +66,10 @@ use ABC\Abc\Components\Debugger\Trace\Dbg;
     function htmlChars($data)
     {
         if (is_array($data)) {
-            $data = array_map('htmlChars', $data);
+            return array_map('htmlChars', $data);
         } else {
-            $data = htmlspecialchars($data);
+            return htmlspecialchars($data);
         }
-        
-        return $data;
     }
     
     /**
@@ -84,12 +82,10 @@ use ABC\Abc\Components\Debugger\Trace\Dbg;
     function arrayStrtolower($data)
     {
         if (is_array($data)) {
-            $data = array_map('arrayStrtolower', $data);
+            return array_map('arrayStrtolower', $data);
         } else {
-            $data = mb_strtolower($data);
+            return mb_strtolower($data);
         }
-        
-        return $data;
     }
     
     /**
@@ -102,12 +98,10 @@ use ABC\Abc\Components\Debugger\Trace\Dbg;
     function arrayStrtoupper($data)
     {
         if (is_array($data)) {
-            $data = array_map('arrayStrtoupper', $data);
+            return array_map('arrayStrtoupper', $data);
         } else {
-            $data = mb_strtoupper($data);
+            return mb_strtoupper($data);
         }
-        
-        return $data;
     }
 
     /**

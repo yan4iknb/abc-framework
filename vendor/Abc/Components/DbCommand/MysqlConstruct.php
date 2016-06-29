@@ -10,20 +10,22 @@ use ABC\Abc\Core\Exception\AbcError;
  * 
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
- * @copyright © 2015
+ * @copyright © 2016
  * @license http://www.wtfpl.net/ 
  */  
 class MysqlConstruct
 {
     protected $sql;
     protected $operands = [];
+    
     /**
-    * 
+    * Метод оператора SELECT
     *
+    * @param array $params
     */     
     public function select($params)
     {
-        $this->checkSql('select');
+        $this->checkDuble('select');
         
         if (empty($params[0])) {
             $columns = ['*'];
@@ -40,12 +42,14 @@ class MysqlConstruct
     }
     
     /**
-    * 
+    * Метод оператора FROM
     *
+    * @param array $params
     */     
     public function from($params)
     {
-        $this->checkSql('from');
+        $this->check('select');
+        $this->checkDuble('from');
         $this->sql .= "\nFROM ";
        
         foreach ($params as $table) {
@@ -55,26 +59,29 @@ class MysqlConstruct
         $this->sql = rtrim($this->sql, ', ');
         $this->operands['from'] = true;
     }
-    
-    
+ 
     /**
-    * 
+    * Метод оператора WHERE
     *
+    * @param array $condition
     */     
     public function where($condition)
     {
-        $this->checkSql('where');
+        $this->checkDuble('where');
         $this->sql .= "\nWHERE ". $condition[0];
         $this->operands['from'] = true;
     }
     
     /**
-    * 
+    * Метод оператора ORDER BY
     *
-    */     
+    * @param array $params
+    */      
     public function orderBy($params)
     {
-        $this->checkSql('orderBy');
+        $this->check('select');
+        $this->check('from');
+        $this->checkDuble('orderBy');
         $this->sql .= "\nORDER BY ";
      
         if (!is_array($params[0])) {
@@ -92,42 +99,61 @@ class MysqlConstruct
     } 
    
     /**
-    * 
+    * Метод оператора LIMIT
     *
-    */     
+    * @param array $param
+    */    
     public function limit($param)
     {
-        $this->checkSql('limit');
+        $this->check('select');
+        $this->check('from');
+        $this->checkDuble('limit');
         $this->sql .= "\nLIMIT ". (int)$param[0];
-        $this->operands['orderBy'] = true;
+        $this->operands['limit'] = true;
     } 
     
     /**
-    * 
+    * Метод оператора OFFSET
     *
+    * @param array $param
     */     
     public function offset($param)
     {
-        $this->checkSql('offset');
-        $this->sql .= ", ". (int)$param[0];
+        $this->check('limit');
+        $this->checkDuble('offset'); 
+        $this->sql .= " OFFSET ". (int)$param[0];
         $this->operands['offset'] = true;
     } 
     
     /**
-    * 
+    * Метод проверки оператора
     *
-    */     
-    public function checkSql($operand)
+    * @param array $operand
+    */    
+    public function check($operand)
     {
-        if (isset($this->operands[$operand])) {
+        if (!isset($this->operands[$operand])) {
             AbcError::logic(' Component DbCommand: '. ABC_SQL_ERROR);
         }
     } 
     
     /**
-    * 
+    * Метод проверки повтора оператора
     *
-    */     
+    * @param array $operand
+    */      
+    public function checkDuble($operand)
+    {
+        if (isset($this->operands[$operand])) {
+            AbcError::logic(' Component DbCommand: '. ABC_SQL_ERROR);
+        }
+    }  
+    
+    /**
+    * Возвращает текст запроса
+    *
+    * @return string
+    */       
     public function getSql()
     {
         $this->operands = [];

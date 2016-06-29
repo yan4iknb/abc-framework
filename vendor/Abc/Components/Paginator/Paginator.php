@@ -52,13 +52,13 @@ class Paginator
     } 
     
     /**
-    * Генерирует лимит для SQL запроса.
+    * Генерирует положение сдвига.
     * 
     * @param int $count 
     *
     * @return string
     */    
-    public function createLimit($count)
+    public function getOffset($count)
     { 
         $this->total = intval(($count - $this->numColumns) / $this->numRows * $this->numColumns) - 1;
      
@@ -91,7 +91,7 @@ class Paginator
     *
     * @return string
     */    
-    public function createOffset()
+    public function getLimit()
     { 
         return  $this->numRows * $this->numColumns;
     } 

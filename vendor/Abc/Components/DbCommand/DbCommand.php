@@ -13,7 +13,6 @@ namespace ABC\Abc\Components\DbCommand;
  */  
 class DbCommand
 {
-    public $prefix;
     protected $driver;
     protected $abc;
     
@@ -28,7 +27,6 @@ class DbCommand
         $driver = $abc->getConfig('db_command')['driver'];
         $this->driver = 'ABC\Abc\Components\DbCommand\\'. $driver;
         $this->command = new $this->driver($this->abc);
-        $this->prefix = $this->command->prefix;
     }
     
     /**
@@ -42,7 +40,7 @@ class DbCommand
     }  
   
     /**
-    * Проксирование вызовов методов конструктора
+    * Проксирование вызовов методов конструктора запросов
     *
     */     
     public function __call($method, $param)

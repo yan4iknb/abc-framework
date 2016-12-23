@@ -15,8 +15,19 @@ use ABC\Abc\Core\Exception\AbcError;
  */  
 class MysqlConstruct
 {
+    public $prefix;
     protected $sql;
     protected $operands = [];
+    
+    /**
+    * Конструктор
+    *
+    * @param string $prefix
+    */     
+    public function __construct($prefix)
+    {
+        $this->prefix = $prefix;
+    }
     
     /**
     * Метод оператора SELECT
@@ -59,12 +70,12 @@ class MysqlConstruct
     */     
     public function from($params)
     {
-        $this->check('select');
+        $this->check('select', 'delete');
         $this->checkDuble('from');
         $this->sql .= "\nFROM ";
        
         foreach ($params as $table) {
-            $this->sql .= Quote::wrap($table) .',  ';
+            $this->sql .= Quote::wrap($this->prefix . $table) .',  ';
         }
         
         $this->sql = rtrim($this->sql, ', ');
@@ -80,7 +91,7 @@ class MysqlConstruct
     {
         $this->checkDuble('where');
         $this->sql .= "\nWHERE ". $condition[0];
-        $this->operands['from'] = true;
+        $this->operands['where'] = true;
     }
     
     /**
@@ -141,11 +152,17 @@ class MysqlConstruct
     *
     * @param array $operand
     */    
-    public function check($operand)
+    public function check()
     {
-        if (!isset($this->operands[$operand])) {
-            AbcError::logic(' Component DbCommand: '. ABC_SQL_ERROR);
+        $operands = func_get_args();
+        
+        foreach ($operands as $operand) {
+            if (isset($this->operands[$operand])) {
+                return true;
+            }
         }
+        
+        AbcError::logic(' Component DbCommand: '. ABC_SQL_ERROR);        
     } 
     
     /**
@@ -167,7 +184,6 @@ class MysqlConstruct
     */       
     public function getSql()
     {
-        $this->operands = [];
         return $this->sql;
     }     
 }

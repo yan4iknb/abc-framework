@@ -25,9 +25,9 @@ class Pdo
     */     
     public function __construct($abc)
     {
-        $this->db = $abc->sharedService('Pdo');
+        $this->db = $abc->sharedService('PDO');
         $this->prefix = $this->db->prefix;
-        $this->mysql = new MysqlConstruct();
+        $this->mysql = new MysqlConstruct($this->prefix);
     }
     
     /**

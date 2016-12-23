@@ -50,9 +50,9 @@ class Base
     }    
  
     /**
-    * Возвращает объект шаблонизатора
+    * Возвращает тип шаблонизатора
     *
-    * @return bool|object
+    * @return string
     */        
     protected function getTplType()
     { 

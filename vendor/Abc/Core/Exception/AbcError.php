@@ -231,7 +231,7 @@ class AbcError
             $message = strip_tags($message);
         }
         
-        if (!self::$exception) {
+        if (self::$exception) {
             $message = self::$marker . $message;
         }
     

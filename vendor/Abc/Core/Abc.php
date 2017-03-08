@@ -3,12 +3,8 @@
 namespace ABC\Abc\Core;
 
 use ABC\Abc\Core\AbcConfigurator;
-
 use ABC\Abc\Components\Builder;
 use ABC\Abc\Components\Container\Container;
-
-use ABC\Abc\Core\Exception\AbcError;
-use ABC\Abc\Components\Debugger\Trace\ErrorHandler;
 
 /** 
  * Класс AbcFramework
@@ -42,47 +38,12 @@ class Abc
         $this->config = $configurator->getConfig();        
         $this->container = new Container;  
         $this->setToStorage('config', $this->config);
-        $this->setToStorage('Abc', $this);
-        $this->addToContainer('Response');
-        $this->setErrorMode();        
+        $this->setToStorage('Abc', $this); 
         $this->addToContainer('AppManager');       
         $this->addToContainer('Request');    
         $this->addToContainer('Router');
         $this->includeFunction();
-    }
- 
-    
-    /**
-    * Устанавливает режим обработки ошибок
-    *
-    * @return void
-    */     
-    protected function setErrorMode()
-    {
-        if (isset($this->config['abc_debug'])) {
-          
-            if (isset($this->config['error_language'])) {
-                $langusge = '\ABC\Abc\Resourses\Lang\\'. $this->config['error_language'];
-                
-                if (class_exists($langusge)) {
-                    $langusge::set();
-                } else {
-                    \ABC\Abc\Resourses\Lang\En::set();
-                }
-                
-            } else {
-                \ABC\Abc\Resourses\Lang\En::set();
-            }
-            
-            if (true === $this->config['abc_debug']) { 
-                new ErrorHandler($this); 
-            } elseif (false === $this->config['abc_debug']) {
-                new AbcError(true);
-            } else {
-                throw new \Exception(strip_tags(ABC_INVALID_DEBUG_SETTING)); 
-            }   
-        }
-    }    
+    } 
    
     /**
     * Запускает приложение 

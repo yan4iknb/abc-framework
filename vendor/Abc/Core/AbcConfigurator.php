@@ -3,9 +3,9 @@
 namespace ABC\Abc\Core;
 
 use ABC\Abc\Resourses\Settings;
+use ABC\Abc\Core\PhpBugsnare\Bugsnare;
 use ABC\Abc\Core\Exception\AbcError;
 use ABC\Abc\Core\Exception\AbcError500Exception;
-use ABC\Abc\Core\Exception\Error500Exception;
 
 /** 
  * Конфигуратор
@@ -28,7 +28,7 @@ class AbcConfigurator
         defined('ABC_DS') or define('ABC_DS', DIRECTORY_SEPARATOR);
         mb_internal_encoding('UTF-8');
         $this->setConfig($appConfig, $siteConfig);
-        $this->setError500mode();  
+        $this->setErrorMode(); 
     }
    
     /**
@@ -38,31 +38,46 @@ class AbcConfigurator
     */     
     protected function setErrorMode()
     {
-        if (isset($this->config['abc_debug'])) {
-          
-            if (isset($this->config['error_language'])) {
-                $langusge = '\ABC\Abc\Resourses\Lang\\'. $this->config['error_language'];
-                
-                if (class_exists($langusge)) {
-                    $langusge::set();
-                } else {
-                    \ABC\Abc\Resourses\Lang\En::set();
-                }
-                
+        if (isset($this->config['debug']['language'])) {
+            $langusge = '\ABC\Abc\Resourses\Lang\\'. $this->config['debug']['language'];
+            
+            if (class_exists($langusge)) {
+                $langusge::set();
             } else {
-                \ABC\Abc\Resourses\Lang\En::set();
+                throw new \Exception('This language is not supported');
             }
             
-            if (true === $this->config['abc_debug']) { 
-                           
-                new ErrorHandler($this);new AbcError(true); 
-            } elseif (false === $this->config['abc_debug']) {
-                new AbcError(true);
-            } else {
-                throw new \Exception(strip_tags(ABC_INVALID_DEBUG_SETTING)); 
-            }   
+        } else {
+            \ABC\Abc\Resourses\Lang\En::set();
+        }
+        
+        new AbcError($this->config['debug']);        
+     
+        if (!empty($this->config['debug']['page_500'])) {
+            error_reporting($this->config['debug']['level_500']);
+            ob_start(); 
+            register_shutdown_function([$this, 'error500']);
+        }
+        
+        if (!empty($this->config['debug']['bugsnare'])) {
+            new Bugsnare($this->config['debug']);
         }
     }  
+    
+    /**
+    * Обработка ошибок с помощью страницы 500 Internal Server Error
+    *
+    * @return void
+    */
+    public function error500()
+    {
+        if ($error = error_get_last() AND $error['type'] & $this->config['debug']['level_500']) {
+            ob_end_clean();
+            throw new AbcError500Exception();
+        } else {
+            ob_flush();
+        }
+    }
     
     /**
     * Устанавливает настрйки фреймворка
@@ -92,26 +107,10 @@ class AbcConfigurator
     */     
     public function getConfig()
     {   
-        $hardConfig = ['route_rules'      => $this->getRouteRule(),
-                       'content_enable'   => $this->contentEnable
-                  ];
+        $hardConfig = ['route_rules' => $this->getRouteRule()];
         
         return array_merge($this->config, $hardConfig);
     }    
-   
-    /**
-    * Устанавливает режим обработки ошибок
-    *
-    * @return void
-    */     
-    protected function setError500mode()
-    {
-        if (false === $this->config['abc_500']) {
-            throw new \ErrorException('500', 500);
-        } else {
-            //set_error_handler([$this, 'throwError500Exception']);
-        }    
-    }
 
     /**
     * Возвращает массив маршрутов 
@@ -164,20 +163,6 @@ class AbcConfigurator
         $routeRule = file_get_contents($file);
         // To be continued
         return $routeRule;
-    } 
-
-    /**
-    * Бросает исключение на отчеты интерпретатора при включеной
-    * опции 500 Internal Server Error
-    *
-    * @return void
-    */
-    public function throwError500Exception($code, $message, $file, $line)
-    {
-        if (error_reporting() & $code) {
-            $this->contentEnable = false;
-            throw new AbcError500Exception($message, $code, $file, $line);
-        }
     } 
 }
 

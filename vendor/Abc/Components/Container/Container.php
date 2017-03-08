@@ -31,9 +31,9 @@ class Container
     {
         $serviceId = $this->validateService($serviceId);
         $callable  = $this->validateCallable($callable);
-      
+    
         if (isset($this->serviceStorage[$serviceId])) {
-            AbcError::overflow($serviceId . ABC_ALREADY_SERVICE);
+            AbcError::overflow('<strong>'. $serviceId .'</strong>'. ABC_ALREADY_SERVICE);
         }
      
         $this->serviceStorage[$serviceId] = $callable; 

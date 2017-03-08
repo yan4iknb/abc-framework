@@ -43,13 +43,14 @@ class Settings
     ],
     // Конструктор запросов
     'db_command'    => [
-                            'driver' => 'PDO'// Драйвер СУБД по умолчанию
+                            'driver' => 'pdo'// Драйвер СУБД по умолчанию
     ],
     
-    // Режим отображения 500 Internal Server Error
-    'abc_500'         => true,
-    // Язык перевода отчета об ошибках
-    'error_language'   => 'Ru',
+    'debug' => [    // Язык перевода отчета об ошибках
+                    'language'         => 'Ru',
+                    // Режим отображения 500 Internal Server Error
+                    'level_500'        => E_ALL & ~E_NOTICE,
+                ],    
         ];
     }
 }

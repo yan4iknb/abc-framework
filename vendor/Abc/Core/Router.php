@@ -117,8 +117,8 @@ class Router
     */    
     public function defaultGet($param)
     {
-        $app = ['controller' => @$param[0] ?: $this->defaultRoute['controller'],
-                'action'     => @$param[1] ?: $this->defaultRoute['action']
+        $app = ['controller' => empty($param[0]) ? $this->defaultRoute['controller'] : $param[0],
+                'action'     => empty($param[1]) ? $this->defaultRoute['action'] : $param[1]
         ];
      
         $param = array_slice($param, 2);

@@ -14,7 +14,7 @@ namespace ABC\Abc\Core\Exception;
 
 class InvalidArgumentException extends \InvalidArgumentException
 {
-    /**
+    /** 
     * Конструктор
     * 
     */  

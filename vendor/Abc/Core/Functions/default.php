@@ -1,7 +1,7 @@
 <?php
 
 use ABC\Abc;
-use ABC\Abc\Components\Debugger\Trace\Dbg;
+use ABC\Abc\Core\PhpBugsnare\Debugger;
 
     function abcForFunctions($abc = null)
     {
@@ -66,10 +66,12 @@ use ABC\Abc\Components\Debugger\Trace\Dbg;
     function htmlChars($data)
     {
         if (is_array($data)) {
-            return array_map('htmlChars', $data);
+            $data = array_map('htmlChars', $data);
         } else {
-            return htmlspecialchars($data);
+            $data = htmlspecialchars($data);
         }
+        
+        return $data;
     }
     
     /**
@@ -82,10 +84,12 @@ use ABC\Abc\Components\Debugger\Trace\Dbg;
     function arrayStrtolower($data)
     {
         if (is_array($data)) {
-            return array_map('arrayStrtolower', $data);
+            $data = array_map('arrayStrtolower', $data);
         } else {
-            return mb_strtolower($data);
+            $data = mb_strtolower($data);
         }
+        
+        return $data;
     }
     
     /**
@@ -98,10 +102,12 @@ use ABC\Abc\Components\Debugger\Trace\Dbg;
     function arrayStrtoupper($data)
     {
         if (is_array($data)) {
-            return array_map('arrayStrtoupper', $data);
+            $data = array_map('arrayStrtoupper', $data);
         } else {
-            return mb_strtoupper($data);
+            $data = mb_strtoupper($data);
         }
+        
+        return $data;
     }
 
     /**
@@ -155,6 +161,7 @@ use ABC\Abc\Components\Debugger\Trace\Dbg;
     function dbg($var = 'stop')
     { 
         $abc = abcForFunctions();
-        new Dbg($var, $abc);
+        $config = $abc->getConfig();
+        new Debugger($var, $config);
     }
   

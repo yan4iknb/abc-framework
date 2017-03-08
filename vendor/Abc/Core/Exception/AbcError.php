@@ -11,6 +11,9 @@ namespace ABC\Abc\Core\Exception;
 class AbcError
 {
     public static $marker;
+    protected static $exception;
+    protected static $bugsnare;
+
     /**
     * Константы кодов иерархии исключений SPL
     */  
@@ -32,11 +35,14 @@ class AbcError
     * Конструктор
     * 
     */     
-    public function __construct($exception = false) 
+    public function __construct($config) 
     {
-        if ($exception) {
+        if (!empty($config['exception'])) {
+            self::$exception = true;
             set_error_handler([$this, 'triggerErrorException']);
         }
+        
+        self::$bugsnare = !empty($config['bugsnare']);
     }
     
     /**
@@ -221,6 +227,14 @@ class AbcError
     */ 
     public static function error($message)
     {
-        trigger_error(self::$marker . $message, E_USER_WARNING);
+        if (!self::$bugsnare) {
+            $message = strip_tags($message);
+        }
+        
+        if (!self::$exception) {
+            $message = self::$marker . $message;
+        }
+    
+        trigger_error($message, E_USER_WARNING);
     }    
 }

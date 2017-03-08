@@ -46,13 +46,13 @@ class Base
             $content = $this->tpl->getContent();
         }
        
-        $this->abc->getFromStorage('Response')->sendContent($content);
+        echo $content;
     }    
  
     /**
-    * Возвращает тип шаблонизатора
+    * Возвращает объект шаблонизатора
     *
-    * @return string
+    * @return bool|object
     */        
     protected function getTplType()
     { 

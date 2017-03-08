@@ -36,7 +36,6 @@ class En
         /**
         * Debugger settings 
         */ 
-        define('ABC_INVALID_DEBUG_SETTING',    ' Incorrect configuration debugging');
         define('ABC_TRACING_VARIABLE',         ' Tracing Variable ');
         define('ABC_TRACING_OBJECT',           ' Tracing Object ');
         define('ABC_TRACING_CONTAINER',        ' Tracing Container ');        

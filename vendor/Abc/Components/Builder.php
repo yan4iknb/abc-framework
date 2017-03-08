@@ -14,15 +14,26 @@ use ABC\Abc\Core\Exception\AbcError;
  */  
 class Builder 
 {
- 
     protected $serviceId; 
     protected $container;
+    protected $dir;
+    protected $subDir = [
+        'DbCommand'   => 'Sql',
+        'Mysqli'      => 'Sql',
+        'Pdo'         => 'Sql',
+        'SqlDebug'    => 'Sql',
+        'Template'    => 'Tpl',
+        'TplNative'   => 'Tpl',
+        'RouteParser' => 'Url',
+        'UrlManager'  => 'Url',
+    ];
     
     public function __construct($serviceId, $abc)
     {
         $this->serviceId = $serviceId;
         $this->abc = $abc;
         $this->container = $abc->getContainer();
+        $this->dir = !empty($this->subDir[$serviceId]) ? $this->subDir[$serviceId] .'\\' : null;
     }
     
     /**
@@ -66,9 +77,9 @@ class Builder
     protected function buildService($global = false)
     {
         $abc = $this->abc;    
-        $component = '\ABC\Abc\Components\\'. $this->serviceId .'\\'. $this->serviceId;   
+        $component = '\ABC\Abc\Components\\'. $this->dir . $this->serviceId .'\\'. $this->serviceId;   
         $typeService = $global ? 'setAsShared' : 'set';
-        
+       
         $this->container->$typeService(
             $this->serviceId,
             function() use ($component, $abc) {
@@ -81,4 +92,5 @@ class Builder
         );
     }  
     
+   
 }

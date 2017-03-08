@@ -25,7 +25,7 @@ class AbcError500Exception extends \Exception
     *
     * @return void
     */     
-    public function __construct($message, $code = null, $file = null, $line = null) 
+    public function __construct() 
     {
         header("HTTP/1.1 500 Internal Server Error");
         $page = <<<EOD

@@ -1,7 +1,5 @@
 <?php
 
-use \ABC\Abc\Components\Debugger\Syntax\SyntaxHandler;
-
 /** 
 *
 * При инициализации класса попытается загрузить файл
@@ -54,7 +52,7 @@ class Autoloader
     {
         $class = preg_replace('#^ABC\\\#u', '', $class);
      
-        $files[] = $this->repositoryName .'/'. $class;    
+        $files[] = $this->repositoryName . DIRECTORY_SEPARATOR . $class;    
         $files[] = $this->versionsName . $class;
      
         foreach ($files as $file) {   

@@ -151,7 +151,8 @@ class AppManager
     */        
     public function create404($search)
     {   
-        $baseController = new Base($this->config);
+        $baseController = new Base();
+        $baseController->config = $this->config;
         $baseController->action404($search);
     }  
 }

@@ -28,6 +28,7 @@ class AbcConfigurator
         defined('ABC_DS') or define('ABC_DS', DIRECTORY_SEPARATOR);
         mb_internal_encoding('UTF-8');
         $this->setConfig($appConfig, $siteConfig);
+        error_reporting($this->config['errors']['error_reporting']);
         $this->setErrorMode(); 
     }
    
@@ -52,15 +53,15 @@ class AbcConfigurator
         }
         
         new AbcError($this->config['debug']);        
-     
-        if (!empty($this->config['debug']['page_500'])) {
-            error_reporting($this->config['debug']['level_500']);
-            ob_start(); 
-            register_shutdown_function([$this, 'error500']);
-        }
-        
+
         if (!empty($this->config['debug']['bugsnare'])) {
             new Bugsnare($this->config['debug']);
+        }
+        
+        if (!empty($this->config['errors']['abc_500'])) {
+            error_reporting($this->config['errors']['level_500']);
+            ob_start(); 
+            register_shutdown_function([$this, 'error500']);
         }
     }  
     
@@ -71,7 +72,7 @@ class AbcConfigurator
     */
     public function error500()
     {
-        if ($error = error_get_last() AND $error['type'] & $this->config['debug']['level_500']) {
+        if ($error = error_get_last() AND $error['type'] & $this->config['errors']['level_500']) {
             ob_end_clean();
             throw new AbcError500Exception();
         } else {

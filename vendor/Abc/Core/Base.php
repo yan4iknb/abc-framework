@@ -104,8 +104,8 @@ class Base
     */    
     public function action404($search = null)
     {
-        if (isset($this->config['error_mod']) && $this->config['error_mod'] === 'debug') {
-            throw new \DomainException('404 <b>'. $search .'</b> not found ', E_USER_WARNING); 
+        if (empty($this->config['errors']['abc_404'])) {
+            AbcError::domain('404 <b>'. $search .'</b> not found '); 
         }
         
         header("HTTP/1.1 404 Not Found");

@@ -12,11 +12,11 @@ class Bugsnare
     public function __construct($config)
     {
         ob_start();
-        error_reporting(-1);   
-     
+        error_reporting(-1);
+        
+        new NoFatal($config);     
         $fatal = new Fatal($config);
-        register_shutdown_function([$fatal, 'errorHandler']);
-        new NoFatal($config); 
+        register_shutdown_function([$fatal, 'errorHandler']); 
     }
     
     public static function getReport()

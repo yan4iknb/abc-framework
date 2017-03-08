@@ -161,7 +161,8 @@ class Handler
                        'line'     => $this->line,                       
                        'stack'    => $this->getStack(),
         ];
-     
+        
+        $this->mainBlock = true;
         $this->action();
     }    
     
@@ -369,10 +370,10 @@ class Handler
     {       
         $this->data['num']  = $this->num;
         $debugReport = $this->view->getReport($this->data);
-       
+     
         if ($this->exception) {
             ob_end_clean();
-            exit($debugReport);
+            print($debugReport);
         } else {
             Hoarder::add($debugReport);        
         }

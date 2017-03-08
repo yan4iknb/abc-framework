@@ -35,7 +35,6 @@ class Fatal extends Handler
         if (!empty($report)) {
             ob_end_clean();
             echo $report;
-            return;
         }
      
         if ($error = error_get_last() AND $error['type'] & (E_ERROR | E_PARSE | E_COMPILE_ERROR | E_CORE_ERROR)) {

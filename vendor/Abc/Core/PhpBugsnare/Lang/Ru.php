@@ -35,6 +35,7 @@ class Ru
 'Creating default object from empty value' => 'Creating default object from empty value<br /><span class="translate">(Создание объекта из пустого значения)</span><br />',
 'Cannot modify header information - headers already sent by \(output started at(.+?)\)' => 'Cannot modify header information - headers already sent by (output started at $1)<br /><span class="translate">(Не удается изменить информацию в заголовке - заголовки уже отправлены (отправка начата на $1))</span><br />',
 'Array to string conversion' => 'Array to string conversion<br /><span class="translate">(Массив преобразуется в строку)</span><br />',
+'Call to a member function (.+?)on null'  => 'Call to a member function <strong>$1</strong> on null<br /><span class="translate">(Вызов метода <strong>$1</strong> из NULL)</span><br />',
 'Call to undefined method'   => 'Call to undefined method<br /><span class="translate">(Вызов неопределенного метода)</span><br />',
 
 

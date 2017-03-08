@@ -88,7 +88,8 @@ class Router
         foreach ($get as $key => $value) {
             array_push($this->hash, $key);
             array_push($this->hash, $value);
-        }      
+        }
+        
         return $this->hash;
     }     
     
@@ -96,6 +97,7 @@ class Router
     * Преобразует массив URI в массив GET согласно роутам
     *
     * @param array $uriHash
+    * @param string $string
     *
     * @return array
     */    
@@ -104,7 +106,7 @@ class Router
         if (empty($this->config['route_rules'])) {
             return $this->defaultGet($uriHash);
         }
-         
+     
         return $this->parser->parseRoutes($string);
     }
     
@@ -123,13 +125,14 @@ class Router
      
         $param = array_slice($param, 2);
         $get   = $this->generateGet($param);
+        
         return array_merge($app, $get);
     }    
     
     /**
     * Генерирует GET из HASH
     *
-    * @param array $uriHash
+    * @param array $param
     *
     * @return array
     */    
@@ -148,4 +151,3 @@ class Router
         return $get;
     }    
 }
-

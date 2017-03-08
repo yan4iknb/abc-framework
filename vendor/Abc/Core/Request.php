@@ -39,7 +39,7 @@ class Request
     * @param string $key
     * @param string $default
     *
-    * @return string
+    * @return string|array
     */        
     public function iniGET($key = null, $default = null)
     {
@@ -56,7 +56,7 @@ class Request
     * @param string $key
     * @param string $default
     *
-    * @return string
+    * @return string|array
     */        
     public function iniPOST($key = null, $default = null)
     {
@@ -156,7 +156,6 @@ class Request
     */    
     public function getBaseUrl()
     {
-
         return $this->getProtocol() .'://'. $this->getHostName();
     }
     
@@ -185,7 +184,7 @@ class Request
     /**
     * Преобразует URI в массив HASH
     *
-    * @return void
+    * @return array
     */    
     protected function createUriHash()
     {
@@ -198,11 +197,10 @@ class Request
         return $uriHash;
     }
     
-
     /**
     * Разбирает массив HASH в массив GET по правилам роутинга
     *
-    * @return void
+    * @return array
     */    
     protected function parseRequestUri()
     {
@@ -211,5 +209,3 @@ class Request
         return $this->router->convertUri($uriHash, $string);
     }
 }
-
-

@@ -14,9 +14,6 @@ use ABC\Abc\Core\Exception\AbcError;
  */   
 class RouteParser
 {
-    /**
-    * @var ABC\Abc\Core\Container
-    */ 
     protected $container;
     protected $config;
 
@@ -30,7 +27,7 @@ class RouteParser
     protected $patterns;
     
     /**
-    * @param object $container
+    * @param object $abc
     */ 
     public function __construct($abc)
     {
@@ -127,9 +124,11 @@ class RouteParser
      
         foreach ($this->patterns as $num => $pattern) {
             if (is_array($pattern)) {
+             
                 if (preg_match('~'. $pattern['value'] .'~', $this->elements[$num])) {
                     $get[$pattern['name']] = $this->elements[$num];
                 }
+                
             } else {
                 $elements = $this->elements;
                 $path = array_shift($elements);
@@ -156,6 +155,7 @@ class RouteParser
         } else {
          
             foreach ($this->routes as $num => $rout) {
+             
                 if (!empty($this->defaultKeys[$num])) {
                     $this->route[$this->defaultKeys[$num]] = $rout;
                 } else {

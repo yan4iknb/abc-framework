@@ -73,7 +73,7 @@ class Shaper extends \mysqli_stmt
         $this->mysqli->autocommit(false);  
         $this->mysqli->query($sql);
         $this->mysqli->rollback();
-
+     
         if (empty($this->mysqli->error)) {        
             $bindParams = $this->boundParams($params);
             call_user_func_array(['parent', 'bind_param'], $bindParams);

@@ -13,24 +13,10 @@ namespace ABC\Abc\Components\Url\UrlManager;
    
 class UrlManager  
 { 
-    /**
-    * @var array
-    */ 
+
     protected $config;
-    
-    /**
-    * @var \ABC\Abc\Core\Request
-    */
     protected $request;
-    
-    /**
-    * @var \ABC\Abc\Core\Router
-    */
     protected $router;
-    
-    /**
-    * @var ABC\Abc\Components\RouteParser\RouteParser
-    */
     protected $parser;
     
     /**

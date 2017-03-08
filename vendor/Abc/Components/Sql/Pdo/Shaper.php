@@ -142,6 +142,5 @@ class Shaper extends \PDOStatement
             default :
                 return $this->pdo->quote($param['value']);
         }   
-    }
-  
+    } 
 }

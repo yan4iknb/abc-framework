@@ -15,18 +15,9 @@ use ABC\Abc\Core\Exception\AbcError;
    
 class Template  
 {  
-    /**      
-    * @var bool     
-    */       
-    public  $tplPhp    = false; 
- 
-    /**        
-    * @var string     
-    */       
-    public  $tplExt     = 'tpl';  
-    /**        
-    * @var bool    
-    */       
+
+    public  $tplPhp    = false;      
+    public  $tplExt     = 'tpl';        
     public  $inialize    = true; 
     
     protected $leftDelim   = '{';
@@ -215,7 +206,6 @@ class Template
         return $this->prepareTpl();
     }
 
-
     /**
     * Returns the content
     * 
@@ -354,9 +344,6 @@ class Template
         return $block;
     }
 
-    
-    
-    
     /**
     * Replacing instruction "include" to contents of the include file
     *

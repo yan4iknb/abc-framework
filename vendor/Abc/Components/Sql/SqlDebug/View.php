@@ -126,7 +126,6 @@ class View
         return ob_get_clean();
     }
     
-    
     /**
     * Sends the result to the stream
     *

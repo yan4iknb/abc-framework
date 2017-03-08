@@ -69,8 +69,7 @@ class Pdo extends \PDO
             parent::__construct($config['dsn'], $config['user'], $config['pass'], $opt);
         } catch (\PDOException $e) {
             AbcError::invalidArgument($e->getMessage());
-        }
-        
+        }  
     }
     
     /**
@@ -101,7 +100,7 @@ class Pdo extends \PDO
         } 
         
         if (!empty($this->debugger)) {
-
+         
             $this->debugger->trace = debug_backtrace();
             $this->debugger->db = $this;
             $this->debugger->component = 'PDO';
@@ -145,7 +144,6 @@ class Pdo extends \PDO
         return parent::query($sql);
     } 
     
-    
     /**
     * Проверка корректности настроек
     *
@@ -165,11 +163,3 @@ class Pdo extends \PDO
         return true;
     }
 }
-
-
-
-
-
-
-
-

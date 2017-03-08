@@ -17,9 +17,7 @@ use ABC\Abc\Core\Exception\AbcError500Exception;
  */   
 class AbcConfigurator
 {
-    /**
-    * @var array
-    */ 
+
     protected $config;
     protected $contentEnable = true;
     
@@ -45,7 +43,7 @@ class AbcConfigurator
             if (class_exists($langusge)) {
                 $langusge::set();
             } else {
-                throw new \Exception('This language is not supported');
+                throw new \Exception($this->config['debug']['language'] .' language is not supported');
             }
             
         } else {
@@ -166,9 +164,3 @@ class AbcConfigurator
         return $routeRule;
     } 
 }
-
-
-
-
-
-

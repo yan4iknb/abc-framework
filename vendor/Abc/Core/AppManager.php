@@ -14,14 +14,7 @@ use ABC\Abc\Core\Base;
  */   
 class AppManager
 {
-    /**
-    * @var \ABC\Abc\Core\Abc
-    */
     protected $abc;
-    
-    /**
-    * @var \ABC\Abc\Core\Request
-    */
     protected $request;
     
 
@@ -156,5 +149,3 @@ class AppManager
         $baseController->action404($search);
     }  
 }
-
-

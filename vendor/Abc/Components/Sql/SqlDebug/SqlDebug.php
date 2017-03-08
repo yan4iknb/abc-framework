@@ -19,7 +19,6 @@ class SqlDebug
     public $db;   
     public $trace;
     
-
     protected $view; 
     protected $explain;    
     protected $file;

@@ -16,14 +16,8 @@ use ABC\Abc\Components\Container\Container;
  */   
 class Abc
 {
-    /**
-    * @var array
-    */ 
+
     protected $config; 
-    
-    /**
-    * @var ABC\Abc\Components\Container\Container
-    */ 
     protected $container;
     
     /**
@@ -184,7 +178,5 @@ class Abc
     {
         include_once __DIR__ .'/Functions/default.php';
         abcForFunctions($this);
-    }
-    
+    }   
 }
-

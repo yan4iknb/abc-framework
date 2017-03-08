@@ -105,11 +105,16 @@ class Base
     public function action404($search = null)
     {
         if (empty($this->config['errors']['abc_404'])) {
-            AbcError::domain('404 <b>'. $search .'</b> not found '); 
+            AbcError::domain('404 <b>'. $search .'</b> not found ');
+            return;
         }
         
         header("HTTP/1.1 404 Not Found");
-        $page = <<<EOD
+        
+        if (file_exists($this->config['errors']['abc_404'])) {
+            $page = file_get_contents($this->config['errors']['abc_404']);
+        } else {
+            $page = <<<EOD
 <!DOCTYPE html>
 <html>
   <head>
@@ -124,6 +129,8 @@ class Base
     </body>
 </html>
 EOD;
+        }
+        
         exit($page);
     }
 }

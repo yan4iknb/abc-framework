@@ -18,17 +18,18 @@ class AbcError500Exception extends \Exception
     * Генерирует сзаголовок Error 500 Internal Server Error
     * на сообщения об ошибках  
     *
-    * @param string $message
-    * @param string $code
-    * @param string $file 
-    * @param string $line 
+    * @param array $config
     *
     * @return void
     */     
-    public function __construct() 
+    public function __construct($config) 
     {
         header("HTTP/1.1 500 Internal Server Error");
-        $page = <<<EOD
+        
+        if (file_exists($config['abc_404'])) {
+            $page = file_get_contents($this->config['errors']['abc_404']);
+        } else {
+            $page = <<<EOD
 <!DOCTYPE html>
 <html>
   <head>
@@ -43,6 +44,8 @@ class AbcError500Exception extends \Exception
     </body>
 </html>
 EOD;
+        }
+        
         exit($page);
     }
 }  

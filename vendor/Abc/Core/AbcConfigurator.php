@@ -74,7 +74,7 @@ class AbcConfigurator
     {
         if ($error = error_get_last() AND $error['type'] & $this->config['errors']['level_500']) {
             ob_end_clean();
-            throw new AbcError500Exception();
+            throw new AbcError500Exception($this->config['errors']);
         } else {
             ob_flush();
         }

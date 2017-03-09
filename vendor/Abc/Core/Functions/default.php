@@ -162,6 +162,6 @@ use ABC\Abc\Core\PhpBugsnare\Debugger;
     { 
         $abc = abcForFunctions();
         $config = $abc->getConfig();
-        new Debugger($var, $config);
+        new Debugger($var, $config['debug']);
     }
   

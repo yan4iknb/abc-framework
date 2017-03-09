@@ -62,7 +62,7 @@ class AbcConfigurator
         } elseif (!empty($this->config['debug']['bugsnare'])) {
             new Bugsnare($this->config['debug']);
         } 
-    } 
+    }  
     
     /**
     * Обработка ошибок с помощью страницы 500 Internal Server Error

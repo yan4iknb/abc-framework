@@ -184,6 +184,9 @@ class MysqlConstruct
     */       
     public function getSql()
     {
-        return $this->sql;
+        $sql = $this->sql;
+        $this->sql = null;
+        $this->operands = [];
+        return $sql;
     }     
 }

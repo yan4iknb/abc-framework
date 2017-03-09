@@ -25,7 +25,7 @@ class DbCommand
     {
         $this->abc = $abc;
         $driver = $abc->getConfig('db_command')['driver'];
-        $this->driver = 'ABC\Abc\Components\DbCommand\\'. $driver;
+        $this->driver = 'ABC\Abc\Components\Sql\DbCommand\\'. $driver;
         $this->command = new $this->driver($this->abc);
     }
     

@@ -25,7 +25,7 @@ class Pdo
     */     
     public function __construct($abc)
     {
-        $this->db = $abc->sharedService('PDO');
+        $this->db = $abc->sharedService('Pdo');
         $this->prefix = $this->db->prefix;
         $this->mysql = new MysqlConstruct($this->prefix);
     }
@@ -131,7 +131,7 @@ class Pdo
     * 
     *
     */     
-    public function all()
+    public function fetchAll()
     {
         $this->createCommand($this->getSql());
         return $this->stmt->fetchAll();
@@ -141,7 +141,7 @@ class Pdo
     * 
     *
     */     
-    public function column()
+    public function fetchColumn()
     {
         $this->createCommand($this->getSql());
         return $this->stmt->fetchColumn();

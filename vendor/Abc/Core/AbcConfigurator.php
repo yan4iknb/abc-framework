@@ -19,7 +19,6 @@ class AbcConfigurator
 {
 
     protected $config;
-    protected $contentEnable = true;
     
     public function __construct($appConfig = [], $siteConfig = [])
     {    
@@ -27,8 +26,25 @@ class AbcConfigurator
         mb_internal_encoding('UTF-8');
         $this->setConfig($appConfig, $siteConfig);
         error_reporting($this->config['errors']['error_reporting']);
+        $this->setErrorLanguage();
         $this->setErrorMode(); 
     }
+    
+    /**
+    * Устанавливает язык отчета об ошибках
+    *
+    * @return void
+    */     
+    protected function setErrorLanguage()
+    {
+        $langusge = '\ABC\Abc\Resourses\Lang\\'. $this->config['debug']['language'];
+        
+        if (class_exists($langusge)) {
+            $langusge::set();
+        } else {
+            throw new \Exception($this->config['debug']['language'] .' language is not supported');
+        }
+    } 
    
     /**
     * Устанавливает режим обработки ошибок
@@ -37,21 +53,8 @@ class AbcConfigurator
     */     
     protected function setErrorMode()
     {
-        if (isset($this->config['debug']['language'])) {
-            $langusge = '\ABC\Abc\Resourses\Lang\\'. $this->config['debug']['language'];
-            
-            if (class_exists($langusge)) {
-                $langusge::set();
-            } else {
-                throw new \Exception($this->config['debug']['language'] .' language is not supported');
-            }
-            
-        } else {
-            \ABC\Abc\Resourses\Lang\En::set();
-        }
-        
         new AbcError($this->config['debug']);        
-
+     
         if (!empty($this->config['debug']['bugsnare'])) {
             new Bugsnare($this->config['debug']);
         }
@@ -61,7 +64,7 @@ class AbcConfigurator
             ob_start(); 
             register_shutdown_function([$this, 'error500']);
         }
-    }  
+    } 
     
     /**
     * Обработка ошибок с помощью страницы 500 Internal Server Error
@@ -143,10 +146,12 @@ class AbcConfigurator
         $config = array_change_key_case($config); 
         
         foreach ($config as $key => $array) { 
+         
             if (is_array($array)) { 
                 $config[$key] = $this->normaliseConfig($array); 
             } 
-        } 
+        }
+        
         return $config; 
     }  
     

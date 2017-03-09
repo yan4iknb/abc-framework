@@ -54,16 +54,14 @@ class AbcConfigurator
     protected function setErrorMode()
     {
         new AbcError($this->config['debug']);        
-     
-        if (!empty($this->config['debug']['bugsnare'])) {
-            new Bugsnare($this->config['debug']);
-        }
-        
+       
         if (!empty($this->config['errors']['abc_500'])) {
             error_reporting($this->config['errors']['level_500']);
             ob_start(); 
             register_shutdown_function([$this, 'error500']);
-        }
+        } elseif (!empty($this->config['debug']['bugsnare'])) {
+            new Bugsnare($this->config['debug']);
+        } 
     } 
     
     /**

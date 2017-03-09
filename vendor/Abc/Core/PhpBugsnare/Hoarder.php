@@ -34,6 +34,6 @@ class Hoarder
     */   
     public static function getReports() 
     { 
-        return implode('<hr><br>', self::$allReports) .'<hr><br>';
+        return implode('<br />', self::$allReports);
     }    
 }

@@ -17,4 +17,5 @@
 .dedugger .explain th{border:#8C999D 1px solid;background:#D8D8D8;text-align:center}
 .dedugger .explain td{border:#8C999D 1px solid;background:#F0F0F0;text-align:center}
 .dedugger .php_line{background:#FFFFB0;width:100%;display:inline-block}
+.dedugger .translate{color:red}
 </style>

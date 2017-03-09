@@ -2,6 +2,7 @@
 
 namespace ABC\Abc\Components\Sql\Pdo;
 
+use ABC\Abc\Components\Sql\Pdo\Shaper;
 use ABC\Abc\Core\Exception\AbcError;
 
 /** 

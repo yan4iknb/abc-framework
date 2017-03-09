@@ -38,7 +38,7 @@ class Handler
    
     public function __construct($config) 
     {
-        $this->language  = $config['language'];
+        $this->language = $config['language'];
 
         if (isset($config['framework_trace']) && true === $config['framework_trace']) {
             $this->allTrace = true;

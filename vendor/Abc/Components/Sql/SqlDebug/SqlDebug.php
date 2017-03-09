@@ -18,15 +18,17 @@ class SqlDebug
     public $sizeListing = 30; 
     public $db;   
     public $trace;
-    
+ 
     protected $view; 
     protected $explain;    
     protected $file;
     protected $line;
     protected $message = 'SQL error: ';    
+    protected $language;
     
-    public function __construct()
+    public function __construct($abc)
     { 
+        $this->language = $abc->getConfig('debug')['language'];
         $this->view = new View;
     }
     
@@ -62,7 +64,7 @@ class SqlDebug
         $error = $this->db->error;
         
         $data = ['message' => $this->component .': <b>'. $this->message .'</b>',
-                 'error'   => $error,
+                 'error'   => $this->translateError($error),
                  'num'     => $raw['num'],
                  'sql'     => $raw['sql'],
                  'explain' => $this->explain,
@@ -91,6 +93,22 @@ class SqlDebug
         $this->explain = $this->performExplain($sql, $time);
         $this->errorReport($sql);        
     }
+    
+    /**
+    * Translane message
+    *
+    * @return string
+    */        
+    protected function translateError($error)
+    {
+        $language = '\ABC\Abc\Components\Sql\SqlDebug\Lang\\'. $this->language;
+        
+        if (class_exists($language)) {
+            $error = $language::translate($error);
+        }
+        
+        return $error;
+    } 
 
     /**
     * Prepares listing SQL
@@ -113,7 +131,7 @@ class SqlDebug
             }
         }
         
-        $cnt = substr_count($sql, "\r") + 2;
+        $cnt = substr_count($sql, "\r") + 4;
         $num = range(1, $cnt);
         return ['num' => $num, 'sql' => $sql];
     }
@@ -154,9 +172,13 @@ class SqlDebug
         $php = '';
         $i = 0;
         $block = $this->trace[0]; 
-        
+      
         if (basename($block['file']) === 'Shaper.php') {
             $block = $this->trace[1]; 
+        }
+        
+        if (basename(dirname($block['file'])) === 'DbCommand') {
+            $block = $this->trace[3]; 
         }
         
         $this->file = $block['file'];

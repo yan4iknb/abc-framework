@@ -18,6 +18,7 @@ class Pdo
     
     protected $db;
     protected $stmt;
+    protected $config;
     
     /**
     * Конструктор
@@ -26,8 +27,9 @@ class Pdo
     public function __construct($abc)
     {
         $this->db = $abc->sharedService('Pdo');
+        $this->config = $abc->getConfig('pdo');
         $this->prefix = $this->db->prefix;
-        $this->mysql = new MysqlConstruct($this->prefix);
+        $this->mysql  = new MysqlConstruct($this->prefix);
     }
     
     /**
@@ -56,7 +58,7 @@ class Pdo
             $this->bindValues($params);
         }
         
-        $this->execute();
+        $this->execute($sql);
         return $this;
     }
 
@@ -121,8 +123,14 @@ class Pdo
     *
     * @return object
     */     
-    public function execute()
+    public function execute($sql = null)
     {
+        if (!empty($this->config['debug'])) {
+            $this->db->beginTransaction();
+            $this->db->query($sql);
+            $this->db->rollback();
+        }
+        
         $this->stmt->execute();
         return $this;
     } 

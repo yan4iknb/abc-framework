@@ -234,7 +234,7 @@ class AbcError
         if (self::$exception) {
             $message = self::$marker . $message;
         }
-    
+     
         trigger_error($message, E_USER_WARNING);
     }    
 }

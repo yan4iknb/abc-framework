@@ -12,7 +12,7 @@ namespace ABC\Abc\Core\PhpBugsnare\Tracer;
  */   
 class TraceVariable
 {
-    public $message = ' Tracing Variable<br />';
+    public $message = ' Tracing <br />';
     public $adds = true;    
 
     protected $painter;

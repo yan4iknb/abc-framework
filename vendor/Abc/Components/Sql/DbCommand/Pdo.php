@@ -2,7 +2,8 @@
 
 namespace ABC\Abc\Components\Sql\DbCommand;
 
-use ABC\Abc\Components\Sql\DbCommand\Mysql;
+use ABC\Abc\Components\Sql\DbCommand\SqlConstruct;
+use ABC\Abc\Components\Sql\DbCommand\Expression;
 
 /** 
  * Конструктор для PDO
@@ -27,9 +28,9 @@ class Pdo
     public function __construct($abc)
     {
         $this->db = $abc->sharedService('Pdo');
-        $this->config = $abc->getConfig('pdo');
-        $this->prefix = $this->db->prefix;
-        $this->mysql  = new MysqlConstruct($this->prefix);
+        $dbType = $abc->getConfig('db_command')['db_type'];
+        $prefix = $abc->getConfig('pdo')['prefix'];
+        $this->mysql  = new SqlConstruct($dbType, $prefix);
     }
     
     /**
@@ -139,7 +140,7 @@ class Pdo
     * 
     *
     */     
-    public function fetchAll()
+    public function queryAll()
     {
         $this->createCommand($this->getSql());
         return $this->stmt->fetchAll();
@@ -149,10 +150,91 @@ class Pdo
     * 
     *
     */     
-    public function fetchColumn()
+    public function queryColumn($num = 0)
     {
-        $this->createCommand($this->getSql());
+        if(empty($this->stmt)){
+            $this->createCommand($this->getSql());
+        }
+        
+        $num = !empty($num[0]) ? $num[0] : 0;
+        return $this->stmt->fetchColumn($num);
+    }
+    
+    /**
+    * 
+    *
+    */     
+    public function queryRow()
+    {
+        if(empty($this->stmt)){
+            $this->createCommand($this->getSql());
+        }
+        
+        return $this->stmt->fetch(\PDO::FETCH_NUM);
+    }
+    
+    /**
+    * 
+    *
+    */     
+    public function queryOne()
+    {
+        return $this->queryRow();
+    } 
+    
+    /**
+    * 
+    *
+    */     
+    public function queryScalar()
+    {
+        $this->createCommand($this->getSql());  
         return $this->stmt->fetchColumn();
+    }
+    
+    /**
+    * 
+    *
+    */     
+    public function delete()
+    {
+        $this->mysql->delete(func_get_args()[0]);
+        $this->createCommand($this->getSql());
+        $this->stmt->execute();
+        return $this;
+    }
+    
+    /**
+    * 
+    *
+    */     
+    public function insert()
+    {
+        $this->mysql->insert(func_get_args()[0]);
+        $this->createCommand($this->getSql());
+        $this->stmt->execute();
+        return $this;
+    }
+    
+    /**
+    * 
+    *
+    */     
+    public function update()
+    {
+        $this->mysql->update(func_get_args()[0]);
+        $this->createCommand($this->getSql());
+        $this->stmt->execute();
+        return $this;
+    }
+    
+    /**
+    * 
+    *
+    */     
+    public function expression($params)
+    {
+        return new Expression($params);
     }
     
     /**

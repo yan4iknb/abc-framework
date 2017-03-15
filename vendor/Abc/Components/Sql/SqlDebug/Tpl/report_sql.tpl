@@ -12,13 +12,15 @@
         <div class="listing">
             <div class="num">
                <code>
+            <br />
                {$num}
+            <br /> 
+            <br /> 
                </code>
             </div>
             <div class="code">
                 <code>
                     <pre style="color:#990099">
-                    
                         {$sql}
                     </pre>
                 </code>

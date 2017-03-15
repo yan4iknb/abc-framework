@@ -24,7 +24,7 @@ class Ru
 'Undefined offset: (.+)' => 'Undefined offset: <strong>$1</strong> <br /><span class="translate">(Не определено смещение (номер элемента массива))</span><br />',
 'Undefined index: (.+)' => 'Undefined index: <strong>$1</strong><br /><span class="translate">(Не определен индекс массива)</span><br />',
 'Use of undefined constant(.*)' => 'Use of undefined constant <br /><span class="translate">(Используется неопределенная константа)</span><br />',
-'(.+?)expects parameter (\d+?) to be (.+?), (.+?) given' => '<b>$1</b> expects parameter $2 to be $3, $4 given <br /><span class="translate">(<b>$1</b> ожидает, что $2-м параметром будет ᐃ$3, а используется ᐃ$4)</span><br />',
+'(.+?)expects parameter (\d+?) to be (.+?), (.+?) given' => '<b>$1</b> expects parameter $2 to be $3, $4 given <br /><span class="translate">(<b>$1</b> ожидает, что $2-м параметром будет $3, а используется ᐃ$4)</span><br />',
 '(.+?): Empty delimiter' => '<b>$1</b>: Empty delimiter <br /><span class="translate">(<b>$1</b>: отсутствует разделитель)</span><br />',
 '(.+?)expects exactly (\d+?) parameter[s]*, (\d+?) given' => '<b>$1</b> expects exactly $2 parameters, $3 given <br /><span class="translate">(<b>$1</b> ожидает  параметров: $2, а используется $3)</span><br />',
 'Declaration of (.+?) should be compatible with (.+)' => 'Declaration of <b>$1</b> should be compatible with <b>$2</b> <br /><span class="translate">(Задекларированный <b>$1</b> должен быть совместим с <b>$2</b>)</span><br />',

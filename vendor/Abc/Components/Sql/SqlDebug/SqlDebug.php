@@ -28,7 +28,15 @@ class SqlDebug
     
     public function __construct($abc)
     { 
-        $this->language = $abc->getConfig('debug')['language'];
+        $language = $abc->getConfig('debug')['language'];
+        
+        $language = '\ABC\Abc\Components\Sql\SqlDebug\Lang\\'. $language;
+        
+        if (class_exists($language)) {
+            $this->language = $language;
+        }
+        
+        $language::setConstants();        
         $this->view = new View;
     }
     
@@ -62,9 +70,10 @@ class SqlDebug
     {
         $raw = $this->prepareSqlListing($sql, $this->db->error);
         $error = $this->db->error;
+        $language = $this->language;
         
         $data = ['message' => $this->component .': <b>'. $this->message .'</b>',
-                 'error'   => $this->translateError($error),
+                 'error'   => $language::translate($error),
                  'num'     => $raw['num'],
                  'sql'     => $raw['sql'],
                  'explain' => $this->explain,
@@ -93,22 +102,6 @@ class SqlDebug
         $this->explain = $this->performExplain($sql, $time);
         $this->errorReport($sql);        
     }
-    
-    /**
-    * Translane message
-    *
-    * @return string
-    */        
-    protected function translateError($error)
-    {
-        $language = '\ABC\Abc\Components\Sql\SqlDebug\Lang\\'. $this->language;
-        
-        if (class_exists($language)) {
-            $error = $language::translate($error);
-        }
-        
-        return $error;
-    } 
 
     /**
     * Prepares listing SQL
@@ -130,8 +123,8 @@ class SqlDebug
                 $sql = $this->view->highlightLocation($sql, $location[1]);
             }
         }
-        
-        $cnt = substr_count($sql, "\r") + 4;
+     
+        $cnt = substr_count($sql, "\n") + 1;
         $num = range(1, $cnt);
         return ['num' => $num, 'sql' => $sql];
     }
@@ -204,7 +197,7 @@ class SqlDebug
        
         $data['num'] = array_slice($lines, $position, $this->sizeListing);
         $data['total'] = $this->view->highlightString($php, $position, $this->sizeListing);
-        $cnt = substr_count($data['total'], "\r") + 2;
+        $cnt = substr_count($data['total'], "\n") + 2;
         return $this->view->createPhp($data);
     }
 }

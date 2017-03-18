@@ -51,12 +51,9 @@ class AppManager
                 $viewsDir = $this->getViewsDir();
                 $view = '\ABC\\'. $viewsDir .'\\'. $nameClass .'View';
                 
-                $modelsDir = $this->getModelsDir();
-                $model = '\ABC\\'. $modelsDir .'\\'. $nameClass .'Model';
-                
                 if (class_exists($view)) {
                     $objView = new $view;
-                    $objView->model = class_exists($model) ? new $model : null;
+
                 } else {
                     $objView = new Base;  
                 }
@@ -97,17 +94,6 @@ class AppManager
     public function getViewsDir()
     {
         return $this->settings['application'] .'\\'. $this->settings['dir_views'];
-    }
-    
-    
-    /**
-    * Возвращает директорию с пользовательскими вьюшками
-    *
-    * @return string
-    */        
-    public function getModelsDir()
-    {
-        return $this->settings['application'] .'\\'. $this->settings['dir_models'];
     }
     
     /**

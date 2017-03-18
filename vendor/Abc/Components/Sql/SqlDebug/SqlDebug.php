@@ -16,14 +16,15 @@ class SqlDebug
 {
    
     public $sizeListing = 30; 
-    public $db;   
+    public $db; 
+    public $error;
     public $trace;
  
     protected $view; 
     protected $explain;    
     protected $file;
     protected $line;
-    protected $message = 'SQL error: ';    
+    protected $message = 'SQL error: ';      
     protected $language;
     
     public function __construct($abc)
@@ -69,11 +70,10 @@ class SqlDebug
     public function errorReport($sql)
     {
         $raw = $this->prepareSqlListing($sql, $this->db->error);
-        $error = $this->db->error;
         $language = $this->language;
         
         $data = ['message' => $this->component .': <b>'. $this->message .'</b>',
-                 'error'   => $language::translate($error),
+                 'error'   => $language::translate($this->error),
                  'num'     => $raw['num'],
                  'sql'     => $raw['sql'],
                  'explain' => $this->explain,
@@ -124,7 +124,7 @@ class SqlDebug
             }
         }
      
-        $cnt = substr_count($sql, "\n") + 1;
+        $cnt = substr_count($sql, "\n") + 2;
         $num = range(1, $cnt);
         return ['num' => $num, 'sql' => $sql];
     }
@@ -144,10 +144,10 @@ class SqlDebug
         }
         
         $res = $this->db->rawQuery("EXPLAIN PARTITIONS ". $sql);
-        
+       
         if (is_object($res)) {
-         
-            $data = $res->fetch_array(MYSQLI_ASSOC);
+            $data = (basename(get_class($this->db)) == 'Pdo') ? $res->fetchAll()[0] : $res->fetch_array(MYSQLI_ASSOC);
+          
             $data['queryTime'] = $time;
             return $this->view->createExplain($data);
         }
@@ -164,14 +164,17 @@ class SqlDebug
     {
         $php = '';
         $i = 0;
-        $block = $this->trace[0]; 
-      
-        if (basename($block['file']) === 'Shaper.php') {
-            $block = $this->trace[1]; 
-        }
-        
-        if (basename(dirname($block['file'])) === 'DbCommand') {
-            $block = $this->trace[3]; 
+        $hide = ['Shaper.php', 'DbCommand'];
+     
+        foreach ($this->trace as $block) {
+            $name = basename($block['file']);
+            $dir  = basename(dirname($block['file']));
+            
+            if (in_array($name, $hide) || in_array($dir, $hide)) {
+                continue; 
+            }    
+            
+            break;        
         }
         
         $this->file = $block['file'];

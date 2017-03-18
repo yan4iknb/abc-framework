@@ -13,7 +13,7 @@ use ABC\Abc\Components\Sql\DbCommand\Expression;
  * @copyright © 2015
  * @license http://www.wtfpl.net/ 
  */  
-class Pdo
+class Mysqli
 {
     public $db;
     public $prefix;    
@@ -30,22 +30,23 @@ class Pdo
     */     
     public function __construct($abc, $command = null)
     {
-        $this->db = $abc->sharedService('Pdo');
+        $this->db = $abc->sharedService('Mysqli');
         $dbType = $abc->getConfig('db_command')['db_type'];
-        $this->config  = $abc->getConfig('pdo');
+        $this->config  = $abc->getConfig('Mysqli');
         $this->command = $command;        
-        $this->construct = new SqlConstruct($this->config['prefix'], $dbType, 'Pdo');
-    }
-    
+        $this->construct = new SqlConstruct($this->config['prefix'], $dbType, 'Mysqli');
+    }  
+
     /**
     * Проксирование вызовов методов конструктора
     *
     */     
     public function __call($method, $params)
     { 
-        $this->construct->$method($params);
+        $this->sqlConctruct->$method($params);
         return $this;
     }
+    
     
     /**
     * Выполняет запрос из подготовленного выражения с привязкой параметров
@@ -91,23 +92,7 @@ class Pdo
     */     
     public function bindValues($params)
     {
-        if (!empty($params[0])) {
-         
-            foreach ($params[0] as $name => $param) {
-                
-                if (is_array($param)) {
-                    $value = $param[0];
-                    $type  = $param[1];
-                } else {
-                    $value = $param;
-                    $type  = \PDO::PARAM_STR;
-                }
-                
-                $this->stmt->bindValue($name, $value, $type);
-            }
-        }
-        
-        return $this->command;
+
     } 
     
     /**
@@ -119,9 +104,7 @@ class Pdo
     */    
     public function bindValue($params)
     {
-        $type = !empty($params[2]) ? $params[2] : \PDO::PARAM_STR;
-        $this->stmt->bindValue($params[0], $params[1], $type);
-        return $this->command;
+
     } 
  
     /**
@@ -131,14 +114,7 @@ class Pdo
     */     
     public function execute()
     {
-        $values = $this->command->getValues();
-        
-        if (!empty($values)) {
-            $this->bindValues([$values]);
-        }
-        
-        $this->stmt->execute();
-        return $this->stmt->rowCount();
+
     } 
     
     /**
@@ -150,7 +126,6 @@ class Pdo
     public function queryAll()
     {
         $this->implementQuery();
-        return $this->stmt->fetchAll();
     }  
     
     /**
@@ -164,9 +139,6 @@ class Pdo
         if(empty($this->stmt)){
             $this->implementQuery();
         }
-        
-        $num = !empty($num) ? $num : 0;
-        return $this->stmt->fetchColumn($num);
     }
     
     /**
@@ -180,8 +152,6 @@ class Pdo
         if(empty($this->stmt)){
             $this->implementQuery();
         }
-        
-        return $this->stmt->fetch(\PDO::FETCH_NUM);
     }
     
     /**
@@ -202,8 +172,7 @@ class Pdo
     */     
     public function queryScalar()
     {
-        $this->implementQuery();
-        return $this->stmt->fetchColumn();
+
     }
     
     /**
@@ -213,8 +182,7 @@ class Pdo
     */     
     public function delete()
     {
-        $this->construct->delete(func_get_args()[0]);
-        $this->prepareQuery();
+
         return $this;    
     }
     
@@ -225,8 +193,7 @@ class Pdo
     */     
     public function insert()
     {
-        $this->construct->insert(func_get_args()[0]);
-        $this->prepareQuery();
+
         return $this;
     }
     
@@ -237,8 +204,7 @@ class Pdo
     */ 
     public function batchInsert()
     {
-        $this->construct->batchInsert(func_get_args()[0]);
-        $this->prepareQuery();
+
         return $this;
     }
     
@@ -249,8 +215,7 @@ class Pdo
     */     
     public function update()
     {
-        $this->construct->update(func_get_args()[0]);
-        $this->prepareQuery();
+
         return $this;
     }
     
@@ -271,7 +236,7 @@ class Pdo
     */     
     public function beginTransaction()
     {
-        $this->db->beginTransaction();
+
     }
     
     /**
@@ -281,7 +246,7 @@ class Pdo
     */     
     public function transactionCommit()
     {
-        $this->db->commit();
+
     }
     
     /**
@@ -291,7 +256,7 @@ class Pdo
     */     
     public function transactionRollback()
     {
-        $this->db->rollback();
+
     }
     
     /**

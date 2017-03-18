@@ -15,9 +15,10 @@ use ABC\Abc\Core\Exception\AbcError;
 class SqlConstruct
 {
     public $prefix;
-    public $query;
+    public $rescuer;    
 
-    protected $rescuer;
+    protected $disable = false;
+    protected $query;    
     protected $sql = [];
     protected $params = [];
     protected $component = ' Component DbCommand: ';
@@ -27,12 +28,11 @@ class SqlConstruct
     *
     * @param string config
     */     
-    public function __construct($dbType, $prefix)
+    public function __construct($prefix, $dbType, $driver)
     {
         $this->prefix  = $prefix;
         $rescuer = 'ABC\Abc\Components\Sql\DbCommand\\'. $dbType . 'Quote';
-        $this->rescuer = new $rescuer;
-        
+        $this->rescuer = new $rescuer($driver); 
     }
     
     /**
@@ -69,17 +69,18 @@ class SqlConstruct
        
         $options = !empty($params[1]) ? $params[1] : null;
         $columns = $this->rescuer->wrapFields($columns);
-
+     
         $this->sql['select'] = $options .' '. implode(', ', $columns);
     }
     
     /**
-    * Метод оператора SELECT
+    * Метод оператора SELECT DISTINCT
     *
     * @param array $params
     */     
     public function selectDistinct(...$params)
     {
+        $this->isDisable();    
         $this->checkDuble('select');
         $this->checkDuble('select distinct');
         $this->select($params[0]);
@@ -94,17 +95,13 @@ class SqlConstruct
     */     
     public function from($params)
     {
-        if (is_array($params[0])) {
-            $params = $params[0];
-        }
-        
+        $this->isDisable();
         $this->checkSequence('select', 'select distinct', 'delete');
         $this->checkDuble('from');
       
         foreach ($params as $table) {
             
             if (false === strpos($table, '(')) {
-         
                 $alias = '';
                 $a = preg_split('~\s+~', trim($table), -1, PREG_SPLIT_NO_EMPTY);
                 $table = !empty($a[0]) ? $a[0] : $table;
@@ -133,6 +130,7 @@ class SqlConstruct
     */  
     public function join($params)
     {
+        $this->isDisable();    
         $this->joinInternal('inner join', $params);
     }      
     
@@ -144,6 +142,7 @@ class SqlConstruct
     */ 
     public function leftJoin($params)
     {
+        $this->isDisable();    
         $this->joinInternal('left join', $params);
     }    
     
@@ -155,6 +154,7 @@ class SqlConstruct
     */ 
     public function rightJoin($params)
     {
+        $this->isDisable();    
         $this->joinInternal('right join', $params);
     }
     
@@ -166,6 +166,7 @@ class SqlConstruct
     */ 
     public function crossJoin($params)
     {
+        $this->isDisable();    
         $this->joinInternal('cross join', $params);
     }    
     
@@ -177,6 +178,7 @@ class SqlConstruct
     */ 
     public function naturalJoin($params)
     {
+        $this->isDisable();    
         $this->joinInternal('natural join', $params);
     }
     
@@ -187,6 +189,7 @@ class SqlConstruct
     */     
     public function where($params)
     {
+        $this->isDisable();    
         $this->checkDuble('where');
      
         if (!empty($params[1]) && is_array($params[1])) {
@@ -210,6 +213,7 @@ class SqlConstruct
     */ 
     public function andWhere($params)
     {
+        $this->isDisable();    
         $this->checkSequence('where');
         $this->addExpressions($params, 'and');
     }
@@ -221,6 +225,7 @@ class SqlConstruct
     */ 
     public function orWhere($params)
     {
+        $this->isDisable();    
         $this->checkSequence('where');
         $this->addExpressions($params, 'or');
     }
@@ -232,6 +237,7 @@ class SqlConstruct
     */     
     public function having($params)
     {
+        $this->isDisable();    
         $this->checkDuble('having');
      
         if (!empty($params[1]) && is_array($params[1])) {
@@ -254,6 +260,7 @@ class SqlConstruct
     */      
     public function order($params)
     {
+        $this->isDisable();    
         $this->checkSequence('select', 'select_distinct', 'from');
         $this->checkDuble('order by');
         $columns = $params[0];
@@ -291,6 +298,7 @@ class SqlConstruct
     */  
     public function group($params)
     {
+        $this->isDisable();
         $this->checkSequence('select', 'select distinct', 'from');
         $this->checkDuble('group by');
         
@@ -324,6 +332,7 @@ class SqlConstruct
     */    
     public function limit($params)
     {
+        $this->isDisable();    
         $this->checkSequence('select', 'select distinct', 'from');
         $this->checkDuble('limit');
         $this->sql['limit'] = (int)$params[0];
@@ -340,6 +349,7 @@ class SqlConstruct
     */     
     public function offset($params)
     {
+        $this->isDisable();    
         $this->checkSequence('limit');
         $this->checkDuble('offset'); 
         $this->sql['offset'] = (int)$params[0];
@@ -352,6 +362,8 @@ class SqlConstruct
     */  
     public function union($params)
     {
+        $this->isDisable();    
+     
         if (isset($this->sql['union']) && is_string($this->sql['union'])) {
             $this->sql['union'] = [$this->sql['union']];
         }
@@ -366,6 +378,8 @@ class SqlConstruct
     */  
     public function delete($params)
     {
+        $this->isDisable();
+        $this->checkDuble('delete from');        
         $this->sql['delete from'] = $this->rescuer->wrapTable($params[0], $this->prefix);
         
         if (!empty($params[2]) && is_array($params[2])) {
@@ -375,7 +389,7 @@ class SqlConstruct
             }
         }    
         
-        if(($where = $this->expressionsInternal($params[1])) != '')
+        if(!empty($params[1]) && ($where = $this->expressionsInternal($params[1])) != '')
             $this->sql['delete from'] .= ' WHERE '. $where;
             
         return $this->getSql();
@@ -388,29 +402,26 @@ class SqlConstruct
     */  
     public function insert($params)
     {
+        $this->isDisable();
         $this->checkDuble('insert into');
         $this->sql['insert into'] = $this->rescuer->wrapTable($params[0], $this->prefix);
-        
-        foreach ($params[1] as $name => $value) {
-            $set[$name] = $this->rescuer->wrapFields($name);
-         
-            if (is_object($value)) {
-                $params = $value->getParams();
-                $expression = $value->getExpression();
-                
-                foreach ($params as $p => $v) {
-                    $set[$name] .= ' = '. str_replace($p, $this->rescuer->escape($v), $expression);
-                }
-                
-            } else {
-                $set[$name] .= ' = '. $this->rescuer->escape($value);               
-            }
-        }
-        
-        $this->sql['set'] = implode(",\n    ", $set); 
+        $this->sql['insert into'] .= "\n    (". implode(', ', $this->rescuer->wrapFields(array_keys($params[1]))) .")";
+        $this->values([array_values($params[1])]);
+    }
+    /**
+    * Множественный INSERT
+    *
+    * @param array $params
+    */  
+    public function batchInsert($params)
+    {
+        $this->isDisable();
+        $this->checkDuble('insert into');
+        $this->sql['insert into'] = $this->rescuer->wrapTable($params[0], $this->prefix);
+        $this->sql['insert into'] .= "\n    (". implode(', ', $this->rescuer->wrapFields($params[1])) .")";
+        $this->values($params[2]);
     }
     
-
     /**
     * Метод оператора UPDATE
     *
@@ -418,26 +429,11 @@ class SqlConstruct
     */  
     public function update($params)
     {
+        $this->isDisable();
         $this->checkDuble('update');
         $this->sql['update'] = $this->rescuer->wrapTable($params[0], $this->prefix);
         
-        foreach ($params[1] as $name => $value) {
-            $set[$name] = $this->rescuer->wrapFields($name);
-         
-            if (is_object($value)) {
-                $paramsExpr = $value->getParams();
-                $expression = $value->getExpression();
-                
-                foreach ($paramsExpr as $p => $v) {
-                    $set[$name] .= ' = '. str_replace($p, $this->rescuer->escape($v), $expression);
-                }
-                
-            } else {
-                $set[$name] .= ' = '. $this->rescuer->escape($value);               
-            }
-        }
-        
-        $this->sql['set'] = implode(",\n    ", $set); 
+        $this->set($params);
      
         if (!empty($params[2])) {
             $params[3] = !empty($params[3]) ? $params[3] : null;           
@@ -452,7 +448,7 @@ class SqlConstruct
             $this->where([$params[2], $params[3]]);   
         }
     }
- 
+
     /**
     * Возвращает текст запроса
     *
@@ -477,7 +473,7 @@ class SqlConstruct
             }
         }
         
-        return $this->query;
+        return ltrim($this->query, "\n ");
     } 
     
     /**
@@ -487,8 +483,32 @@ class SqlConstruct
     */       
     public function reset()
     {
-        $this->sql = $this->params = [];
+        $this->sql = [];
+        $this->params = [];
         $this->query = null;
+        $this->disable = false;
+    } 
+    
+    /**
+    * Блокирует конструктор
+    *
+    * @return void
+    */       
+    public function disable()
+    {
+        $this->disable = true;
+    } 
+    
+    /**
+    * Проверка на блокировку
+    *
+    * @return void
+    */       
+    public function isDisable()
+    {
+        if ($this->disable) {
+            AbcError::logic($this->component . ABC_SQL_DISABLE);
+        }
     } 
     
     /**
@@ -666,6 +686,82 @@ class SqlConstruct
         }        
         
         $this->sql[$type][] = $this->replace(' '. $table . $conditions);
+    }
+    
+    /**
+    * Метод оператора VALUES
+    *
+    * @param array $params
+    */  
+    protected function values($params)
+    {
+        $this->isDisable();
+        $this->checkSequence('insert into');
+        $group = '';        
+     
+        foreach ($params as $values) {
+            
+            foreach ($values as $name => $value) {
+                $values[$name] = '';
+                
+                if (is_object($value)) { 
+                    $params = $value->getParams();
+                    $expression = $value->getExpression();
+                   
+                    if (!empty($params)) {
+                     
+                        foreach ($params as $p => $v) {
+                            $values[$name] .= str_replace($p, $this->rescuer->escape($v), $expression);
+                        }
+                        
+                    } else {
+                        $values[$name] .= $expression;
+                    }
+                    
+                } else {
+                    $values[$name] = $this->rescuer->escape($value);               
+                } 
+            }
+            
+            $group .= "\n    (". implode(', ', $values) ."),"; 
+        }
+        
+        $this->sql['values'] = trim($group, ',');
+    }
+    
+    /**
+    * Метод оператора SET
+    *
+    * @param array $params
+    */  
+    protected function set($params)
+    {
+        $this->isDisable();
+        $this->checkSequence('insert into', 'update');
+        
+        foreach ($params[1] as $name => $value) {
+            $set[$name] = $this->rescuer->wrapFields($name);
+           
+            if (is_object($value)) { 
+                $params = $value->getParams();
+                $expression = $value->getExpression();
+               
+                if (!empty($params)) {
+                 
+                    foreach ($params as $p => $v) {
+                        $set[$name] .= ' = '. str_replace($p, $this->rescuer->escape($v), $expression);
+                    }
+                    
+                } else {
+                    $set[$name] .= ' = '. $expression;
+                }
+                
+            } else {
+                $set[$name] .= ' = '. $this->rescuer->escape($value);               
+            }
+        }
+        
+        $this->sql['set'] = implode(",\n    ", $set); 
     }
 }
 

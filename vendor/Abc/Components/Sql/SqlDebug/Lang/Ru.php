@@ -21,7 +21,8 @@ class Ru
         define('ABC_SQL_COUNT_VALUES',        ' Insufficient values for the operator <br /><span style="color:red">(недостаточно значений для оператора)</span><br />');
         define('ABC_SQL_INVALID_CONDITIONS',  ' Error in setting conditions <br /><span style="color:red">(ошибка в задании условий)</span><br />');
         define('ABC_SQL_INVALID_VALUES',      ' Error in setting values <br /><span style="color:red">(ошибка в задании значений)</span><br />');
-        define('ABC_SQL_INVALID_OPERATOR',    ' Operator not supported <br /><span style="color:red">(оператор не поддерживается)</span><br />');  
+        define('ABC_SQL_INVALID_OPERATOR',    ' Operator not supported <br /><span style="color:red">(оператор не поддерживается)</span><br />'); 
+        define('ABC_SQL_DISABLE',             ' The request is generated and executed. Changes are not allowed. <br /><span style="color:red">(Запрос сформирован и выполнен. Изменения не допустимы.)</span><br />');
     }
 
 

@@ -61,6 +61,10 @@ class En
         define('ABC_INVALID_MYSQLI_TYPE',      ' Number of elements in type definition string doesn\'t match number of bind variables ');
         define('ABC_NO_MYSQLI_TYPE',           ' Unknown type of the parameter ');
         define('ABC_SQL_ERROR',                ' Query build error  ');
+        define('ABC_TRANSACTION_EXIST',        ' There is already an active transaction');
+        define('ABC_TRANSACTION_ERROR',        ' Transaction error: '); 
+        define('ABC_NO_SUPPORT',               ' This type of table is not supported by the debugger); 
+        
         /**
         * Errors template
         */ 

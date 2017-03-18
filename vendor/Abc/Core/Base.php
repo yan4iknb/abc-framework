@@ -30,6 +30,7 @@ class Base
     public function selectTpl($template)
     {
         $this->TplConfig = $this->abc->getConfig('template');
+        $this->settings  = $this->abc->getConfig('settings');
         $tplType = $this->getTplType();
         $this->tpl = $this->abc->newService($tplType);   
         $this->tpl->selectTpl($template);
@@ -70,15 +71,20 @@ class Base
     /**
     * Возвращает объект модели
     *
-    * @return array
+    * @param string $modelName
+    *
+    * @return object
     */ 
-    protected function model()
+    protected function getModel($modelName)
     {
-        if (is_object($this->model)) {
-            return $this->model;       
+        $space = '\ABC\\'. $this->settings['application'] .'\\'. $this->settings['dir_models'] .'\\';
+        $model = $space . $modelName;
+      
+        if (class_exists($model)) {
+            return new $model;       
         } 
      
-        AbcError::badMethodCall(ABC_NO_MODEL);
+        AbcError::badMethodCall('<strong>'. $model .'</strong> '. ABC_NO_MODEL);
     }
     
     /**

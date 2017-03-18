@@ -86,12 +86,13 @@ class Mysqli extends \mysqli
         $result = parent::query($sql, $resultMode);
         
         if (!empty($this->debugger)) {
+            $this->debugger->error = $this->error;
             $this->debugger->trace = debug_backtrace();
             $this->debugger->db = $this;
             $this->debugger->component = 'Mysqli';
             $this->debugger->run($sql, $result);        
         } elseif (empty($this->debugger) && $this->test) {
-            Response::badFunctionCallError('Component Mysqli: '. ABC_NO_SQL_DEBUGGER);
+            AbcError::badFunctionCallError('Component Mysqli: '. ABC_NO_SQL_DEBUGGER);
         }
         
         return $result;

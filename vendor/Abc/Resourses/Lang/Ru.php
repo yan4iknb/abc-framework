@@ -58,6 +58,9 @@ class Ru
         define('ABC_INVALID_MYSQLI_TYPE',      ' Number of elements in type definition string doesn\'t match number of bind variables  <br /><span style="color:red">(количество элементов типа отличается от количества аргументов)</span><br />');
         define('ABC_NO_MYSQLI_TYPE',           ' Unknown type of the parameter  <br /><span style="color:red">(неизвестный тип параметра)</span><br />');
         define('ABC_SQL_ERROR',                ' Query build error  <br /><span style="color:red">(Ошибка построения запроса)</span><br />');
+        define('ABC_TRANSACTION_EXIST',        ' There is already an active transaction  <br /><span style="color:red">(Уже есть активная транзакция)</span><br />');
+        define('ABC_TRANSACTION_ERROR',        ' Transaction error:  <br /><span style="color:red">Ошибка транзакции: </span><br />'); 
+        define('ABC_NO_SUPPORT',               ' This type of table is not supported by the debugger  <br /><span style="color:red">(Этот тип таблицы не поддерживается дебаггером.)</span><br />'); 
         
         /**
         * Ошибки использования шаблонизатора

@@ -15,12 +15,10 @@ use ABC\Abc\Core\PhpBugsnare\Handler;
  */   
 class Fatal extends Handler
 {
-    protected $language;
     
     public function __construct($config) 
     {
         parent::__construct($config); 
-        $this->language = $config['language'];
     }
 
     /**
@@ -40,18 +38,12 @@ class Fatal extends Handler
         if ($error = error_get_last() AND $error['type'] & (E_ERROR | E_PARSE | E_COMPILE_ERROR | E_CORE_ERROR)) {
          
             ob_end_clean();
-            
-            if (!empty($this->language)) {
-                $lang = '\ABC\Abc\Core\PhpBugsnare\Lang\\'. $this->language;
-                $this->message = $lang::translate($error['message']);            
-            } else {
-                $this->message = $error['message'];
-            }
-            
+            $this->message = $error['message'];
             $this->code = $error['type']; 
             $this->file = $error['file'];
             $this->line = $error['line'];
-            $this->createReport(); 
+            $this->createReport();
+            
         } else {
             @ob_flush();
         }
@@ -68,6 +60,11 @@ class Fatal extends Handler
                   'line' => $this->line,
                   ];
      
+        if (class_exists($this->language)) {
+            $lang = $this->language;
+            $this->message = $lang::translate($this->message);
+        } 
+        
         $this->data = ['message'  => $this->message,
                        'adds'     => true,
                        'level'    => $this->lewelMessage($this->code),

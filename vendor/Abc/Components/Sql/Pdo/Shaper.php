@@ -2,6 +2,8 @@
 
 namespace ABC\Abc\Components\Sql\Pdo;
 
+use ABC\Abc\Core\Exception\AbcError;
+
 /** 
  * Класс Shaper
  * 
@@ -12,12 +14,9 @@ namespace ABC\Abc\Components\Sql\Pdo;
  */  
 class Shaper extends \PDOStatement
 {
-    /**
-    * @var ABC\Abc\Components\Pdo\Pdo
-    */  
-    protected $pdo;
+    public $rawSql;   
 
-    protected $rawSql;    
+    protected $pdo;   
     protected $bound;
 
     
@@ -28,10 +27,9 @@ class Shaper extends \PDOStatement
     * @param string $sql
     *    
     */     
-    public function __construct($pdo, $sql)
+    protected function __construct($pdo)
     {
         $this->pdo = $pdo;
-        $this->rawSql = $sql;
     }
     
     /**
@@ -82,17 +80,30 @@ class Shaper extends \PDOStatement
     public function execute($params = null)
     {
         $sql = $this->createSqlString($params);
-       
-        $this->pdo->beginTransaction();
-        $this->pdo->query($sql);
-        $this->pdo->rollback();
+        
+        if (false === $this->pdo->checkEngine($sql)) {
+            AbcError::logic(' Component PDO: '. ABC_NO_SUPPORT);
+            return false;
+        }
      
-        return parent::execute();
+        if ($this->pdo->inTransaction()) {
+            $this->pdo->exec("SAVEPOINT sqldebug");
+            $this->pdo->query($sql);            
+            $this->pdo->exec("ROLLBACK TO SAVEPOINT sqldebug");
+        } else {
+            $this->pdo->beginTransaction();
+            $this->pdo->query($sql);
+            $this->pdo->rollback();        
+        }
+        
+        return parent::execute($params);
     }
 
     /**
     * Генерирует результирующий SQL.
-    *    
+    * 
+    * @param array $params
+    *
     * @return string
     */ 
     protected function createSqlString($params = null)

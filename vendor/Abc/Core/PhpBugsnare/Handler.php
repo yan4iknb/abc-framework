@@ -39,11 +39,12 @@ class Handler
     public function __construct($config) 
     {
         $this->language = $config['language'];
-
+        $this->language = '\ABC\Abc\Core\PhpBugsnare\Lang\\'. $this->language;
+     
         if (isset($config['framework_trace']) && true === $config['framework_trace']) {
             $this->allTrace = true;
         }
-    
+      
         $this->painter  = new Painter;
         $this->view     = new View;
     }
@@ -153,6 +154,11 @@ class Handler
     */   
     protected function createReport() 
     {
+        if (class_exists($this->language)) {
+            $lang = $this->language;
+            $this->message = $lang::translate($this->message);
+        } 
+        
         $this->data = ['message'  => $this->message,
                        'adds'     => isset($this->line),
                        'level'    => $this->lewelMessage($this->code),

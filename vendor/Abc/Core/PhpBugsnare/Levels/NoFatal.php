@@ -15,12 +15,10 @@ use ABC\Abc\Core\PhpBugsnare\Handler;
  */   
 class NoFatal extends Handler
 {
-    protected $language;
 
     public function __construct($config) 
     {
         parent::__construct($config);
-        $this->language = $config['language'];
         set_exception_handler([$this, 'exceptionHandler']);
         set_error_handler([$this, 'triggerErrorHandler']);
     }
@@ -49,13 +47,7 @@ class NoFatal extends Handler
         if (error_reporting() & $code) {
             $this->exception = false;
             
-            if (!empty($this->language)) {
-                $lang = '\ABC\Abc\Core\PhpBugsnare\Lang\\'. $this->language;
-                $this->message = $lang::translate($message);            
-            } else {
-                $this->message = $message;
-            }
-         
+            $this->message = $message;
             $this->code = $code; 
             $this->file = $file;
             $this->line = $line; 

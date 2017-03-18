@@ -13,6 +13,17 @@ namespace ABC\Abc\Components\Sql\DbCommand;
 class MysqlQuote
 {
 
+    protected $driver;
+    
+    /**
+    * @param string $driver
+    */  
+    public function __construct($driver)
+    {
+        $this->driver = $driver;
+    }
+
+    
     /**
     * Экранирует имена таблиц и добавляет префикс
     *
@@ -63,18 +74,46 @@ class MysqlQuote
     */     
     public function escape($values)
     {
-        $pdo = \ABC\Abc::sharedService('Pdo');
-        
-        if (!is_array($values)) {
-            return $pdo->quote($values);
+        switch ($this->driver) {
+         
+            case 'Pdo' :
+                $pdo = \ABC\Abc::sharedService('Pdo');
+                
+                if (!is_array($values)) {
+                    return $pdo->quote($values);
+                }
+                
+                foreach ($values as $value) {
+                    $result[] = $pdo->quote($value);                
+                }
+                
+            break;
+            
+            case 'Mysqli' :
+                $mysqli = \ABC\Abc::sharedService('Mysqli');
+                
+                if (!is_array($values)) {
+                    return "'". $mysqli->escape_string($values) ."'";
+                }
+                
+                foreach ($values as $value) {
+                    $result[] = "'". $mysqli->escape_string($values) ."'";                
+                }
+                
+            break;
         }
         
-        foreach ($values as $value) {
-            $result[] = $pdo->quote($value);                
-        }
-     
         return $result;
-    }     
+    }      
+    
+    /**
+    * 
+    *
+    */     
+    public function quoteFields($sql)
+    {   
+        return str_replace(['[[', ']]', '{{', '}}'], '`', $sql);                
+    } 
     
     /**
     * 
@@ -98,5 +137,5 @@ class MysqlQuote
         }
         
         return $table . $field;                
-    }    
+    } 
 }

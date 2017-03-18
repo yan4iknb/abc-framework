@@ -21,6 +21,7 @@
             <div class="code">
                 <code>
                     <pre style="color:#990099">
+                    
                         {$sql}
                     </pre>
                 </code>

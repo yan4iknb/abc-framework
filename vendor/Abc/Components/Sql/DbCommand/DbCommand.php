@@ -2,6 +2,8 @@
 
 namespace ABC\Abc\Components\Sql\DbCommand;
 
+use ABC\Abc\Core\Exception\AbcError;
+use ABC\Abc\Components\Sql\DbCommand\Transaction;
 
 /** 
  * Конструктор запросов
@@ -13,8 +15,10 @@ namespace ABC\Abc\Components\Sql\DbCommand;
  */  
 class DbCommand
 {
-    protected $driver;
     protected $abc;
+    protected $driver;
+    protected $values = [];
+    protected $transaction;
     
     /**
     * Конструктор
@@ -26,7 +30,7 @@ class DbCommand
         $this->abc = $abc;
         $driver = $abc->getConfig('db_command')['driver'];
         $this->driver = 'ABC\Abc\Components\Sql\DbCommand\\'. $driver;
-        $this->command = new $this->driver($this->abc);
+        $this->command = new $this->driver($this->abc, $this);
     }
     
     /**
@@ -46,5 +50,68 @@ class DbCommand
     public function __call($method, $param)
     {
         return $this->command->$method($param);
+    } 
+    
+    /**
+    * 
+    *
+    */     
+    public function bindParam($name, &$value)
+    {
+        $this->values[$name] = &$value;
+        return $this;
     }  
+    
+    /**
+    * 
+    *
+    */  
+    public function getValues()
+    {
+        return $this->values;
+    }  
+    
+    /**
+    * Старт транзакции
+    *
+    */
+    public function beginTransaction()
+    {
+        if (empty($this->transaction)) {
+            $this->transaction = new Transaction($this->command);
+        }
+        
+        $this->transaction->begin();
+        return $this->transaction;
+    }
+    
+    /**
+    * Транзакция
+    *
+    * @param array $params
+    */
+    public function transaction(callable $callback)
+    {
+        $result = false;
+        $this->beginTransaction();
+        
+        try { 
+         
+            if (!empty($this->transaction)) {
+                $result = call_user_func($callback, $this);        
+                $this->transaction->commit();
+            } else {
+                throw new \Exception('DbCommand: ' . ABC_TRANSACTION_EXISTS);
+            }
+            
+        } catch (\Exception $e) {
+            $this->transaction->rollback();
+            AbcError::logic('DbCommand: ' . ABC_TRANSACTION_ERROR . $e->getMessage());
+        } catch (\Throwable $e) {
+            $this->transaction->rollback();
+            AbcError::logic('DbCommand: ' . ABC_TRANSACTION_ERROR . $e->getMessage());
+        }
+        
+        return $result;
+    }    
 }

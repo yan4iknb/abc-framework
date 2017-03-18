@@ -86,6 +86,12 @@ class Mysqli extends \mysqli
         $result = parent::query($sql, $resultMode);
         
         if (!empty($this->debugger)) {
+         
+            if (false === $this->checkEngine($sql)) {
+                AbcError::logic(' Component PDO: '. ABC_NO_SUPPORT);
+                return false;
+            }
+         
             $this->debugger->error = $this->error;
             $this->debugger->trace = debug_backtrace();
             $this->debugger->db = $this;
@@ -124,7 +130,29 @@ class Mysqli extends \mysqli
     public function rawQuery($sql)
     {
         return parent::query($sql);
-    } 
+    }
+    
+    /**
+    * Пытается получить имя таблицы.
+    *    
+    * @return bool
+    */     
+    public function checkEngine($sql)
+    {    
+        $sql = str_replace('`', '', trim($sql)) .' ';
+        $sql = str_ireplace(['IGNORE', 'LOW_PRIORITY', 'DELAYED', 'INTO', 'FROM', 'QUICK'], ' ', $sql);
+        preg_match('~^[INSERT|UPDATE|DELETE]+?[\s]+(.+?)[\s]+.*~i', $sql, $match); 
+        $table = preg_replace('~.*?\.~', '', $match[1]);
+       
+        $stmt  = $this->rawQuery("SELECT ENGINE 
+                                     FROM INFORMATION_SCHEMA.TABLES
+                                     WHERE TABLE_NAME =  ". $this->quote($table) 
+                                  );
+     
+        $result = $stmt->fetch_row()[0];
+        
+        return  (false === $result || $result === 'InnoDB');
+    }
     
     /**
     * Проверка корректности настроек

@@ -146,7 +146,7 @@ class SqlDebug
         $res = $this->db->rawQuery("EXPLAIN PARTITIONS ". $sql);
        
         if (is_object($res)) {
-            $data = (basename(get_class($this->db)) == 'Pdo') ? $res->fetchAll()[0] : $res->fetch_array(MYSQLI_ASSOC);
+            $data = (basename(get_class($this->db)) == 'Pdo') ? $res->fetchAll()[0] : $res->fetch_assoc();
           
             $data['queryTime'] = $time;
             return $this->view->createExplain($data);

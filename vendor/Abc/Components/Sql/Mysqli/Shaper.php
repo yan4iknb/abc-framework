@@ -69,7 +69,22 @@ class Shaper extends \mysqli_stmt
         ];
      
         $sql = $this->createSqlString($params);
-               
+        
+        if (false === $this->pdo->checkEngine($sql)) {
+            AbcError::logic(' Component PDO: '. ABC_NO_SUPPORT);
+            return false;
+        }
+        
+        if ($this->pdo->inTransaction()) {
+            $this->mysqli->rawQuery("SAVEPOINT sqldebug");
+            $this->mysqli->query($sql);            
+            $this->mysqli->rawQuery("ROLLBACK TO SAVEPOINT sqldebug");
+        } else {
+            $this->mysqli->autocommit(false);  
+            $this->mysqli->query($sql);
+            $this->mysqli->rollback();        
+        }
+        
         $this->mysqli->autocommit(false);  
         $this->mysqli->query($sql);
         $this->mysqli->rollback();

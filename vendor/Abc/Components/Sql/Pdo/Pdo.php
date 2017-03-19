@@ -57,7 +57,7 @@ class Pdo extends \PDO
         
         if (empty($config['opt'])) {
             $opt = [
-                PDO::ATTR_ERRMODE => (!empty($config['debug']) ? PDO::ERRMODE_WARNING : PDO::ERRMODE_EXCEPTION),
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                 PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
             ];            
         } else {
@@ -71,6 +71,7 @@ class Pdo extends \PDO
         
         if (!empty($config['debug'])) {
             $this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [$this->shaper, [$this]]); 
+            $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING); 
         }
     }
     

@@ -133,10 +133,12 @@ class Mysqli extends \mysqli
     }
     
     /**
-    * Пытается получить имя таблицы.
+    * Пытается получить имя таблицы и проверить её транзакционность.
+    *
+    * @param string $sql
     *    
     * @return bool
-    */     
+    */    
     public function checkEngine($sql)
     {    
         $sql = str_replace('`', '', trim($sql)) .' ';

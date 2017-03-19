@@ -146,7 +146,9 @@ class Pdo extends \PDO
     
     
     /**
-    * Пытается получить имя таблицы.
+    * Пытается получить имя таблицы и проверить её транзакционность.
+    *
+    * @param string $sql
     *    
     * @return bool
     */     
@@ -185,5 +187,4 @@ class Pdo extends \PDO
         
         return true;
     }
-
 }

@@ -33,6 +33,7 @@ class Ru
 'Table(.+)doesn\'t exist' => 'Table$1doesn\'t exist<br /><span class="translate">(Таблица<strong>$1</strong>не существует)</span><br />',
 'You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near(.+)at line (.+)' => 'You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near$1at line $2<br /><span class="translate">(Ошибка SQL синтаксиса. Обратитесь к мануалу, соответствующему Вашей версии MySQL сервера, чтобы использовать верно строку$1на линии $2)</span><br />',
 'Field \'(.+?)\' doesn\'t have a default value' => 'Field \'$1\' doesn\'t have a default value<br /><span class="translate">Поле <strong>\'$1\'</strong> не имеет значения по умолчанию</span><br />',
+'Query was empty' => 'Query was empty<br /><span class="translate">Пустой запрос</span><br />',
 
         ];
     }

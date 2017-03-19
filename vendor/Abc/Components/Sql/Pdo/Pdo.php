@@ -144,7 +144,6 @@ class Pdo extends \PDO
         return parent::query($sql);
     } 
     
-    
     /**
     * Пытается получить имя таблицы и проверить её транзакционность.
     *
@@ -156,7 +155,12 @@ class Pdo extends \PDO
     {    
         $sql = str_replace('`', '', trim($sql)) .' ';
         $sql = str_ireplace(['IGNORE', 'LOW_PRIORITY', 'DELAYED', 'INTO', 'FROM', 'QUICK'], ' ', $sql);
-        preg_match('~^[INSERT|UPDATE|DELETE]+?[\s]+(.+?)[\s]+.*~i', $sql, $match); 
+        preg_match('~^[INSERT|UPDATE|DELETE]+?[\s]+(.+?)[\s]+.*~i', $sql, $match);
+        
+        if (empty($match[1])) {
+            return true;
+        }
+        
         $table = preg_replace('~.*?\.~', '', $match[1]);
        
         $stmt  = $this->rawQuery("SELECT ENGINE 
@@ -187,4 +191,5 @@ class Pdo extends \PDO
         
         return true;
     }
+
 }

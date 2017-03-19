@@ -23,6 +23,7 @@ class Pdo
     protected $construct;
     protected $stmt;
     protected $query;
+    protected $execute = false;
     
     /**
     * Конструктор
@@ -57,15 +58,12 @@ class Pdo
     */     
     public function createCommand($params)
     {
+        $this->construct->isDisable();
         $this->construct->disable();
         $this->query = is_array($params) ? $params[0] : $params; 
         $this->query = $this->construct->rescuer->quoteFields($this->query);
-        $this->prepare($this->query);
-       
-        if (!empty($params[1]) && is_array($params[1])) {
-            $this->bindValues($params[1]);
-        }
-     
+        $values = !empty($params[1]) ? $params[1] : null;
+        $this->prepareQuery($values);
         return $this->command;
     }
 
@@ -138,49 +136,44 @@ class Pdo
         }
         
         $this->stmt->execute();
+        $this->execute = true;
         return $this->stmt->rowCount();
     } 
     
     /**
-    * возвращает набор строк. каждая строка - это ассоциативный массив с именами столбцов и значений.
+    * Возвращает набор строк. каждая строка - это ассоциативный массив с именами столбцов и значений.
     * если выборка ничего не вернёт, то будет получен пустой массив.
     *
     * @return array
     */     
     public function queryAll()
     {
-        $this->implementQuery();
+        $this->executeForSelect();
         return $this->stmt->fetchAll();
     }  
     
     /**
-    * вернёт один столбец 
+    * Вернёт один столбец 
     * пустой массив, при отсутствии результата
     *
     * @return mixed
     */     
     public function queryColumn($num = 0)
     {
-        if(empty($this->stmt)){
-            $this->implementQuery();
-        }
-        
         $num = !empty($num) ? $num : 0;
+        $this->executeForSelect();
         return $this->stmt->fetchColumn($num);
     }
     
     /**
-    * вернёт одну строку 
+    * Вернёт одну строку 
     * false, если ничего не будет выбрано
     *
     * @return mixed
     */     
     public function queryRow()
-    {
-        if(empty($this->stmt)){
-            $this->implementQuery();
-        }
-        
+    { 
+        $this->executeForSelect();
         return $this->stmt->fetch(\PDO::FETCH_NUM);
     }
     
@@ -195,14 +188,14 @@ class Pdo
     } 
     
     /**
-    * вернёт скалярное значение
+    * Вернёт скалярное значение
     * или false, при отсутствии результата
     *
     * @return mixed
     */     
     public function queryScalar()
     {
-        $this->implementQuery();
+        $this->executeForSelect();
         return $this->stmt->fetchColumn();
     }
     
@@ -327,28 +320,41 @@ class Pdo
     }
     
     /**
+    * Подготовка запросов
+    *
+    * @param array $values
+    *
+    * @return void
+    */      
+    protected function prepareQuery($values = null)
+    {
+        if (empty($this->query)) {
+            $this->query = $this->getSql();
+            $this->query = $this->construct->rescuer->quoteFields($this->query);
+        }
+        
+        $this->prepare($this->query); 
+      
+        if (!empty($values) && is_array($values)) {
+            $this->bindValues([$values]);
+        } 
+    } 
+    
+    /**
     * Выполняет SELECT-запросы
     *
     * @return int
     */     
-    protected function implementQuery()
-    { 
+    protected function executeForSelect()
+    {
         if (empty($this->query)) {
             $this->query = $this->getSql();
-            $this->createCommand($this->query); 
+            $this->query = $this->construct->rescuer->quoteFields($this->query);
+            $this->prepare($this->query);
         }
      
-        return $this->execute(); 
-    } 
-    
-    /**
-    * Подготовка не SELECT-запросов
-    *
-    * @return void
-    */     
-    protected function prepareQuery()
-    { 
-        $this->query = $this->getSql();
-        $this->createCommand($this->query); 
-    }
+        if(false === $this->execute){
+            $this->execute();                       
+        }
+    }     
 }

@@ -16,10 +16,10 @@ use ABC\Abc\Components\Sql\DbCommand\Transaction;
 class DbCommand
 {
     protected $abc;
-    protected $driver;
     protected $values = [];
     protected $transaction;
-    
+    protected $space = 'ABC\Abc\Components\Sql\DbCommand\\';
+    protected $driver;
     /**
     * Конструктор
     *
@@ -29,7 +29,7 @@ class DbCommand
     {
         $this->abc = $abc;
         $driver = $abc->getConfig('db_command')['driver'];
-        $this->driver = 'ABC\Abc\Components\Sql\DbCommand\\'. $driver;
+        $this->driver = $this->space . $driver;
         $this->command = new $this->driver($this->abc, $this);
     }
     
@@ -40,7 +40,7 @@ class DbCommand
     */     
     public function subQuery()
     {
-        return new $this->driver($this->abc);
+        return $this->abc->newService('DbCommand');
     }  
   
     /**
@@ -81,7 +81,7 @@ class DbCommand
             $this->transaction = new Transaction($this->command);
         }
         
-        $this->transaction->begin();
+        $this->transaction->beginTransaction();
         return $this->transaction;
     }
     

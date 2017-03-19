@@ -59,6 +59,7 @@ class Pdo
     public function createCommand($params)
     {
         $this->construct->isDisable();
+        $this->construct->checkParams($params);
         $this->construct->disable();
         $this->query = is_array($params) ? $params[0] : $params; 
         $this->query = $this->construct->rescuer->quoteFields($this->query);
@@ -67,19 +68,6 @@ class Pdo
         return $this->command;
     }
 
-    /**
-    * Обертка PDO::prepare()
-    *
-    * @param string $sql
-    *
-    * @return object
-    */     
-    public function prepare($sql)
-    {
-        $this->stmt = $this->db->prepare($sql);
-        return $this->command;        
-    }
-    
     /**
     * Обертка PDO::bindValue() для массива
     *
@@ -272,7 +260,7 @@ class Pdo
     *
     * @return void
     */     
-    public function transactionCommit()
+    public function commit()
     {
         $this->db->commit();
     }
@@ -282,7 +270,7 @@ class Pdo
     *
     * @return void
     */     
-    public function transactionRollback()
+    public function rollback()
     {
         $this->db->rollback();
     }
@@ -356,5 +344,18 @@ class Pdo
         if(false === $this->execute){
             $this->execute();                       
         }
-    }     
+    }  
+    
+    /**
+    * Обертка PDO::prepare()
+    *
+    * @param string $sql
+    *
+    * @return object
+    */     
+    protected function prepare($sql)
+    {
+        $this->stmt = $this->db->prepare($sql);
+        return $this->command;        
+    }
 }

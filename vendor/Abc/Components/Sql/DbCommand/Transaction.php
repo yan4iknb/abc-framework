@@ -31,7 +31,7 @@ class Transaction
     * 
     *
     */     
-    public function begin()
+    public function beginTransaction()
     {
         $this->driver->beginTransaction();
     } 
@@ -42,7 +42,7 @@ class Transaction
     */     
     public function commit()
     {
-        $this->driver->transactionCommit();
+        $this->driver->commit();
     } 
     
     /**
@@ -51,6 +51,6 @@ class Transaction
     */     
     public function rollback()
     {
-        $this->driver->transactionRollback();
+        $this->driver->rollback();
     }
 }

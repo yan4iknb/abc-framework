@@ -122,7 +122,7 @@ class SqlConstruct
         if (is_array($params[0])) {
             $params = $params[0];
         }
- 
+     
         $this->isDisable();
         $this->checkParams($params);
         $this->checkSequence('select', 'select distinct', 'delete');
@@ -131,13 +131,13 @@ class SqlConstruct
         foreach ($params as $key => $table) {
          
             if (is_string($table) && false === strpos($table, '(')) {
-                $table = $this->addAlias($table, $key, true);  
+                $table = $this->rescuer->addAliasToTable($table, $key);  
             } elseif (is_object($table)) {
                 $class =  $this->space . $this->driver;
                 
                 if ($table instanceof $class) {
                     $table = '('. $table->getSql() .') ';
-                    $table = $this->addAlias($table, $key, true);
+                    $table = $this->rescuer->addAliasToTable($table, $key);
                 } else {
                     AbcError::invalidArgument($this->component . ABC_OTHER_OBJECT);
                 }
@@ -801,9 +801,9 @@ class SqlConstruct
             foreach ($params as $key => $param) {
              
                 if (is_object($param)) {
-                    $columns[] = $this->addAlias($this->addExpressions($param), $key);
+                    $columns[] = $this->rescuer->addAliasToExpression($this->addExpressions($param), $key);
                 } else {
-                    $columns[] = $this->addAlias($param, $key);              
+                    $columns[] = $this->rescuer->addAliasToField($param, $key);              
                 }
             }
             
@@ -811,48 +811,12 @@ class SqlConstruct
         } 
         
         if (is_object($params)) {
-            return $this->addAlias($this->addExpressions($params));
+            return $this->rescuer->addAliasToExpression($this->addExpressions($params));
         } 
         
         AbcError::logic($this->component . ABC_COMMAND_SELECT);
     }  
-    
-    /**
-    * Экранирует и добавляет алиас
-    *
-    * @param string $key
-    * @param string $field
-    *
-    * @return string
-    */  
-    protected function addAlias($field, $key = null, $table = false)
-    {
-        $field = $this->rescuer->wrapFields($field);
-     
-        if (is_numeric($key)) {
-         
-            if (false === strpos($field, '(')) {
-                $exp = preg_split('~\s+~', trim($field), -1, PREG_SPLIT_NO_EMPTY);
-                $field = !empty($exp[0]) ? $exp[0] : $field;
-                $alias = null;
-                
-                if (!empty($exp[2]) && strtoupper($exp[1]) == 'AS') {
-                    $alias = ' AS '. $exp[2];
-                } elseif (!empty($exp[1])) {
-                    $alias = ' '. $exp[1];
-                }                 
-                
-                return $this->rescuer->wrapTable($field) .' '. $alias;
-            }
-        } 
-        
-        if (true == $table) {
-            return $this->rescuer->wrapTable($field) .' '. $this->rescuer->wrapFields($key);     
-        }           
-        
-        return $field .' '. $this->rescuer->wrapFields($key);
-    } 
-    
+
     /**
     * Эмуляция JOIN
     *

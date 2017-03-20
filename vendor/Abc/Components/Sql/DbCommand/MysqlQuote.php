@@ -127,6 +127,113 @@ class MysqlQuote
     } 
     
     /**
+    * Добавляет алиас
+    *
+    * @param string $key
+    * @param string $field
+    * @param bool $table
+    *
+    * @return string
+    */  
+    public function addAlias($field, $key = null, $table = false)
+    {
+        $field = $this->wrapFields($field);
+     
+        if (is_numeric($key)) {
+         
+            if (false === strpos($field, '(')) {
+                $exp = preg_split('~\s+~', trim($field), -1, PREG_SPLIT_NO_EMPTY);
+                $field = !empty($exp[0]) ? $exp[0] : $field;
+                $alias = null;
+                
+                if (!empty($exp[2]) && strtoupper($exp[1]) == 'AS') {
+                    $alias = ' AS '. $exp[2];
+                } elseif (!empty($exp[1])) {
+                    $alias = ' '. $exp[1];
+                }                 
+                
+                return $this->wrapTable($field) .' '. $alias;
+            }    
+        } 
+        
+        if (true == $table) {
+            return $this->wrapTable($field) .' '. $this->wrapFields($key);     
+        }           
+        
+        return $field .' '. $this->wrapFields($key);
+    } 
+    
+    /**
+    * Добавляет алиас к полю
+    *
+    * @param string $field
+    * @param string $key
+    *
+    * @return string
+    */  
+    public function addAliasToField($field, $key = null)
+    {
+        $alias = $this->createAlias($field, $key);
+        return $this->wrapFields($field) .' '. $this->wrapFields($alias);
+    } 
+    
+    /**
+    * Добавляет алиас к таблице
+    *
+    * @param string $table
+    * @param string $key
+    *
+    * @return string
+    */  
+    public function addAliasToTable($table, $key = null)
+    {
+        $alias = $this->createAlias($table, $key);
+        return $this->wrapTable($table) .' '. $this->wrapFields($alias);
+    } 
+    
+    /**
+    * Добавляет алиас к выражению
+    *
+    * @param string $expression
+    * @param string $key
+    *
+    * @return string
+    */  
+    public function addAliasToExpression($expression, $key = null)
+    {
+        return $expression .' '. (!empty($key) ? $this->wrapFields($key) : '');
+    } 
+    
+    /**
+    * Формирует алиас
+    *
+    * @param string $string
+    * @param string $key
+    *
+    * @return string
+    */  
+    protected function createAlias($string, $key = null)
+    { 
+        if (is_numeric($key)) {
+            $alias = null;
+            
+            if (false === strpos($string, '(')) {
+                $exp = preg_split('~\s+~', trim($field), -1, PREG_SPLIT_NO_EMPTY);
+              
+                if (!empty($exp[2]) && strtoupper($exp[1]) == 'AS') {
+                    $alias = ' AS '. $exp[2];
+                } elseif (!empty($exp[1])) {
+                    $alias = ' '. $exp[1];
+                }
+            }
+            
+            return $alias;
+        } 
+        
+        return $key;
+    }     
+    
+    /**
     * Экранирует поля
     *
     * @param string $field

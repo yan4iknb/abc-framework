@@ -173,7 +173,11 @@ class Ru
 
 </span><br />',
 
+'Call to protected method (.+?) from context (.+)' => 'Call to protected method <strong>$1</strong> from context <strong>$2</strong><br /><span class="translate">
 
+(Вызов защищенного метода <strong>$1</strong> из контекста <strong>$2</strong>)
+
+</span><br />',
                  //''  => '',
                  'Synᐃtax'  => 'Syntax',
                  'ᐃboolean' => 'boolean',

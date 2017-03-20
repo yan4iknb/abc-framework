@@ -629,7 +629,7 @@ class SqlConstruct
     *
     * @param array $operands
     */    
-    protected function checkParams()
+    public function checkParams()
     {
         $operands = func_get_args();
         

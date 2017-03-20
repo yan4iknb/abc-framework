@@ -18,7 +18,10 @@ class Transaction
     protected $config;
     
     /**
-    * @param string $driver
+    * Конструктор
+    *
+    * @param object $abc
+    * @param object $abc
     */  
     public function __construct($abc, $driver)
     {
@@ -32,8 +35,9 @@ class Transaction
     }
     
     /**
-    * 
+    * Стартует транзакцию
     *
+    * @return void
     */     
     public function beginTransaction()
     {
@@ -41,8 +45,9 @@ class Transaction
     } 
     
     /**
-    * 
+    * Фиксирует транзакцию
     *
+    * @return void
     */     
     public function commit()
     {
@@ -51,8 +56,9 @@ class Transaction
     } 
     
     /**
-    * 
+    * Откат транзакции
     *
+    * @return void
     */     
     public function rollback()
     {
@@ -61,8 +67,9 @@ class Transaction
     }
  
     /**
-    * 
+    * Возврат установки дебаггера
     *
+    * @return void
     */     
     protected function restoreInstallation()
     {

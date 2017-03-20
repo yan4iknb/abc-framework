@@ -22,7 +22,7 @@ class Container
     /**
     * Записывает сервис в хранилище
     *
-    * @param string $ServiceId
+    * @param string $serviceId
     * @param callable $callable
     *
     * @return void
@@ -82,7 +82,7 @@ class Container
     /**
     * Проверяет наличие сервиса в хранилище
     *
-    * @param string $ServiceId
+    * @param string $serviceId
     *
     * @return void
     */       
@@ -95,7 +95,7 @@ class Container
     /**
     * Инициализирует и возвращает новый объект сервиса, даже если он заморожен
     *
-    * @param string $ServiceId
+    * @param string $serviceId
     *
     * @return object|bool
     */      
@@ -113,7 +113,7 @@ class Container
     /**
     * Объявляет сервис синтетическим, запрещенным к внедрению в него зависимостей
     *
-    * @param string $ServiceId
+    * @param string $serviceId
     *
     * @return void
     */      

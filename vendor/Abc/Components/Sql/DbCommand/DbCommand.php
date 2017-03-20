@@ -16,10 +16,11 @@ use ABC\Abc\Components\Sql\DbCommand\Transaction;
 class DbCommand
 {
     protected $abc;
-    protected $values = [];
+    protected $params = [];
     protected $transaction;
     protected $space = 'ABC\Abc\Components\Sql\DbCommand\\';
     protected $driver;
+    
     /**
     * Конструктор
     *
@@ -45,7 +46,8 @@ class DbCommand
   
     /**
     * Проксирование вызовов методов в выбраный драйвер
-    *
+    * 
+    * @return object
     */     
     public function __call($method, $param)
     {
@@ -53,27 +55,30 @@ class DbCommand
     } 
     
     /**
+    * Связывает значение с параметром по ссылке
     * 
-    *
+    * @return object
     */     
     public function bindParam($name, &$value)
     {
-        $this->values[$name] = &$value;
+        $this->params[$name] = &$value;
         return $this;
     }  
     
     /**
+    * Возвращает связанные параметры
     * 
-    *
+    * @return object
     */  
-    public function getValues()
+    public function getParams()
     {
-        return $this->values;
+        return $this->params;
     }  
     
     /**
     * Старт транзакции
-    *
+    * 
+    * @return object
     */
     public function beginTransaction()
     {
@@ -88,7 +93,9 @@ class DbCommand
     /**
     * Транзакция
     *
-    * @param array $params
+    * @param callable $callback
+    * 
+    * @return object
     */
     public function transaction(callable $callback)
     {

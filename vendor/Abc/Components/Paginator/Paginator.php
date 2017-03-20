@@ -125,15 +125,16 @@ class Paginator
             
             if ($count > 12) { 
              
-                if($this->numPage == 7)
+                if ($this->numPage == 7) {
                     $menu .= $this->createLink(1, 1);
-                elseif($this->numPage == 8)
+                }  elseif($this->numPage == 8) {
                     $menu .= $this->createLink(1, 1) 
                           .  $this->createLink(2, 2);
-                elseif($this->numPage > 7)
+                } elseif($this->numPage > 7) {
                     $menu .= $this->createLink(1, 1) 
                           .  $this->createLink(2, 2) 
                           .  $this->createLink(0, '...', 'top', false);
+                }
             }    
          
             if ($this->numPage < 6) {  

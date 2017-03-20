@@ -28,7 +28,7 @@ class MysqlQuote
 
     
     /**
-    * Экранирует имена таблиц и добавляет префикс
+    * Экранирует имена таблиц и добавляет префиксы
     *
     * @param string $table
     * @param string $prefix
@@ -73,8 +73,11 @@ class MysqlQuote
     } 
     
     /**
-    * 
+    * Экранирует значения согласно выбранному драйверу
     *
+    * @param string|array $values
+    *
+    * @return array
     */     
     public function escape($values)
     {
@@ -111,8 +114,11 @@ class MysqlQuote
     }      
     
     /**
-    * 
+    * Заменяет псевдоэкранирование на косые кавычки
     *
+    * @param string $sql
+    *
+    * @return string
     */     
     public function quoteFields($sql)
     {   
@@ -120,8 +126,11 @@ class MysqlQuote
     } 
     
     /**
-    * 
+    * Экранирует поля
     *
+    * @param string $field
+    *
+    * @return string
     */     
     protected function quote($field)
     {

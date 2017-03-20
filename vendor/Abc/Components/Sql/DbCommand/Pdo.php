@@ -116,7 +116,7 @@ class Pdo
     */     
     public function execute()
     {
-        $values = $this->command->getValues();
+        $values = $this->command->getParam();
         
         if (!empty($values)) {
             $this->bindValues([$values]);

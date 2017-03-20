@@ -45,7 +45,7 @@ class Shaper extends \mysqli_stmt
     *    
     * @return void
     */     
-    public function bind_param($types, &...$vars)
+    public function bind_param($types, &$vars)
     {    
         if (strlen($types) !== count($vars)) {
             AbcError::invalidArgument('Component Mysqli: '. ABC_INVALID_MYSQLI_TYPE);
@@ -125,7 +125,6 @@ class Shaper extends \mysqli_stmt
     */ 
     protected function createSqlString($params)
     {
-        $values = [];
         $sql = $this->rawSql;
      
         foreach ($params['types'] as $k => $type) {
@@ -162,3 +161,4 @@ class Shaper extends \mysqli_stmt
         }   
     }
 }
+

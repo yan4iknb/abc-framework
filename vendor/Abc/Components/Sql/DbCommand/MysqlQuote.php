@@ -12,15 +12,18 @@ namespace ABC\Abc\Components\Sql\DbCommand;
  */  
 class MysqlQuote
 {
+    public $prefix;
+    public $newPrefix;
 
     protected $driver;
-    
+
     /**
     * @param string $driver
     */  
-    public function __construct($driver)
+    public function __construct($driver, $prefix)
     {
         $this->driver = $driver;
+        $this->prefix = $prefix;
     }
 
     
@@ -32,10 +35,11 @@ class MysqlQuote
     *
     * @return string 
     */     
-    public function wrapTable($table, $prefix)
+    public function wrapTable($table)
     {
-        $base = '';            
-        $table = str_replace('`', '', $table);            
+        $base = ''; 
+        $table = str_replace('{{%', $this->newPrefix, $table); 
+        $table = str_replace(['`', '{{', '}}'], '', $table);            
         $p = explode('.', $table);
      
         if (count($p) > 1) {
@@ -45,7 +49,7 @@ class MysqlQuote
             $table = $p[0];
         }
         
-        return $base .'`'. $prefix . $table .'`';
+        return $base .'`'. $this->prefix . $table .'`';
     } 
 
     /**
@@ -112,7 +116,7 @@ class MysqlQuote
     */     
     public function quoteFields($sql)
     {   
-        return str_replace(['[[', ']]', '{{', '}}'], '`', $sql);                
+        return str_replace(['[[', ']]'], '`', $sql);                
     } 
     
     /**

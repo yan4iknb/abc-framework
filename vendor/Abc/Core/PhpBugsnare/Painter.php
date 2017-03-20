@@ -155,7 +155,7 @@ class Painter
     *
     * @return string
     */    
-    public function highlightVar($blockCont)
+    public function highlightVar($blockCont, $obj = true)
     {      
         $strings = ['#(?<!\')object\s+#i' => '<span class="type">object</span> ',
                     '#(?<!\')array\s+#i'  => '<span class="type">array</span> ',
@@ -171,7 +171,10 @@ class Painter
             $blockCont = preg_replace('#[\'|"](.+?)[\'|"]#i', '<span class="value">\'$1\'</span>', $blockCont);
         }
         
-        $blockCont = preg_replace("#\((.+?)\)#i", '<span class="property">($1)</span>', $blockCont);
+        if ($obj) {
+            $blockCont = preg_replace("#\((.+?)\)#i", '<span class="property">($1)</span>', $blockCont);        
+        }
+     
         $blockCont = preg_replace(array_keys($strings), array_values($strings), $blockCont);
         
         

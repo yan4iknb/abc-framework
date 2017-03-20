@@ -10,7 +10,7 @@ use ABC\Abc\Components\Sql\DbCommand\Transaction;
  * 
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
- * @copyright © 2015
+ * @copyright © 2017
  * @license http://www.wtfpl.net/ 
  */  
 class DbCommand
@@ -78,7 +78,7 @@ class DbCommand
     public function beginTransaction()
     {
         if (empty($this->transaction)) {
-            $this->transaction = new Transaction($this->command);
+            $this->transaction = new Transaction($this->abc, $this->command);
         }
         
         $this->transaction->beginTransaction();

@@ -10,14 +10,13 @@ use ABC\Abc\Components\Sql\DbCommand\Expression;
  * 
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
- * @copyright © 2015
+ * @copyright © 2017
  * @license http://www.wtfpl.net/ 
  */  
 class Pdo
 {
     public $db;
-    public $prefix;    
-
+    
     protected $config;
     protected $command;
     protected $construct;

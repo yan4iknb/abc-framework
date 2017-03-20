@@ -162,7 +162,16 @@ class Ru
 (Нет активных транзакций)
 
 </span><br />',
+'Object of class (.+?) to string conversion' => 'Object of class $1 to string conversion<br /><span class="translate">
 
+(Объект или класс <strong>$1</strong> преобразуется в строку)
+
+</span><br />',
+'Object of class (.+?) could not be converted to string' => 'Object of class <strong>$1</strong> could not be converted to string<br /><span class="translate">
+
+(Объект или класс <strong>$1</strong> нельзя преобразовать в строку)
+
+</span><br />',
 
 
                  //''  => '',

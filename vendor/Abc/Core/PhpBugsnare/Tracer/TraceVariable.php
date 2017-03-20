@@ -39,7 +39,7 @@ class TraceVariable
     public function getListing($var) 
     {
         $data['lines'] = $this->createLine($var);        
-        $data['total'] = $this->painter->highlightVar($var);
+        $data['total'] = $this->painter->highlightVar($var, false);
         return $this->view->createListingVariable($data);
     } 
 

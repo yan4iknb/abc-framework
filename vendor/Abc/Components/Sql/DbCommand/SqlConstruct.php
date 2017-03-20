@@ -34,7 +34,7 @@ class SqlConstruct
     {
         $this->prefix  = $prefix;
         $rescuer = $this->space . $dbType . 'Quote';
-        $this->driver  = $driver;dbg($this->driver);
+        $this->driver  = $driver;
         $this->rescuer = new $rescuer($driver, $prefix); 
     }
     
@@ -497,10 +497,9 @@ class SqlConstruct
             }
         }    
         
-        if (!empty($params[1]) && ($where = $this->conditionsInternal($params[1])) != '') {
+        if(!empty($params[1]) && ($where = $this->conditionsInternal($params[1])) != '')
             $this->sql['delete from'] .= ' WHERE '. $where;
-        }
-        
+            
         return $this->getSql();
     }
 

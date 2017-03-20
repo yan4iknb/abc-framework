@@ -178,6 +178,13 @@ class Ru
 (Вызов защищенного метода <strong>$1</strong> из контекста <strong>$2</strong>)
 
 </span><br />',
+
+'(.+?) expects at least (.+?) parameters, (.+?) given' => '<span class="">$1</span> expects at least $2 parameters, $3 given<br /><span class="translate">
+
+(<strong>$1</strong> ожидает как минимум параметров $2, а задано $3)
+
+</span><br />',
+
                  //''  => '',
                  'Synᐃtax'  => 'Syntax',
                  'ᐃboolean' => 'boolean',
@@ -195,7 +202,7 @@ class Ru
         $patterns = [];
      
         foreach ($reporting as $key => $value) {
-            $patterns[] = '#'. $key .'#iu';
+            $patterns[] = '#'. $key .'#s';
         }
         return preg_replace($patterns, array_values($reporting), $message);
     }

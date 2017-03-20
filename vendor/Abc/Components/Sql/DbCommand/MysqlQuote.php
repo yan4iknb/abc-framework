@@ -121,8 +121,9 @@ class MysqlQuote
     * @return string
     */     
     public function quoteFields($sql)
-    {   
-        return str_replace(['[[', ']]'], '`', $sql);                
+    {           
+        $sql = str_replace('{{%', '{{'. $this->prefix . $this->newPrefix, $sql);
+        return str_replace(['[[', ']]', '{{', '}}'], '`', $sql);                
     } 
     
     /**
@@ -134,21 +135,22 @@ class MysqlQuote
     */     
     protected function quote($field)
     {
-        if (false !== strpos($field, '(') || false !== strpos(strtoupper($field), ' AS ')) {
+        if (false !== strpos($field, '(')){
             return $field;
         } 
         
-        $table = '';
-        
+        $exp = preg_split('~\s+~', trim($field), -1, PREG_SPLIT_NO_EMPTY);  
+     
+        if (false !== strpos(strtoupper($field), ' AS ')) {
+            $field = $exp[0] .'` AS `'. $exp[2];
+        } elseif (false !== strpos($field, ' ')) {
+            $field = $exp[0] .'` `'. $exp[1];
+        }
+     
         if (false !== ($pos = strrpos($field, '.'))) {
-            $table = '`'. substr($field, 0, $pos) .'`.';
-            $field = substr($field, $pos + 1);
+            $field = substr($field, 0, $pos) .'`.`'. substr($field, $pos + 1);
         }
         
-        if ($field !== '*') {
-            $field = '`'. trim($field, '`') .'`';
-        }
-        
-        return $table . $field;                
+        return '`'. $field .'`';                
     } 
 }

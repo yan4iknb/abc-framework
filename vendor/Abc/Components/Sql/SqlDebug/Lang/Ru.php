@@ -31,8 +31,8 @@ class Ru
         return [
 'Base Table or view not found: (\d*?)(.+)' => ' $2 ',        
 'Table(.+)doesn\'t exist' => 'Table$1doesn\'t exist<br /><span class="translate">(Таблица<strong>$1</strong>не существует)</span><br />',
-'You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near(.+)at line (.+)' => 'You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near$1at line $2<br /><span class="translate">(Ошибка SQL синтаксиса. Обратитесь к мануалу, соответствующему Вашей версии MySQL сервера, чтобы использовать верно строку$1на линии $2)</span><br />',
-'Field \'(.+?)\' doesn\'t have a default value' => 'Field \'$1\' doesn\'t have a default value<br /><span class="translate">Поле <strong>\'$1\'</strong> не имеет значения по умолчанию</span><br />',
+'You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near(.+?)at line (.+)' => 'You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near$1at line <strong>$2</strong><br /><span class="translate">(Ошибка SQL синтаксиса. Обратитесь к мануалу, соответствующему Вашей версии MySQL сервера, чтобы использовать верно строку <strong>$1</strong> на линии <strong>$2</strong>)</span><br />',
+'Field \'(.+?)\' doesn\'t have a default value' => 'Field \'<strong>$1</strong>\' doesn\'t have a default value<br /><span class="translate">Поле <strong>\'<strong>$1</strong>\'</strong> не имеет значения по умолчанию</span><br />',
 'Query was empty' => 'Query was empty<br /><span class="translate">Пустой запрос</span><br />',
 
         ];
@@ -44,7 +44,7 @@ class Ru
         $patterns = [];
      
         foreach ($reporting as $key => $value) {
-            $patterns[] = '#'. $key .'#iu';
+            $patterns[] = '#'. $key .'#s';
         }
         return preg_replace($patterns, array_values($reporting), $message);
     }    

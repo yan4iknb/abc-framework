@@ -15,7 +15,7 @@ class Ru
     public static function setConstants()
     {
         define('ABC_COMMAND_SELECT',          ' Syntax error for the SELECT statement <br /><span style="color:red">(ошибка синтаксиса оператора SELECT)</span><br />');
-        define('ABC_SQL_SEQUENCE',            ' Operator sequence error <br /><span style="color:red">(ошибка последовательности операторов)</span><br />');
+        define('ABC_SQL_SEQUENCE',            ' Operator sequence error <br /><span style="color:red">(ошибка последовательности методов)</span><br />');
         define('ABC_SQL_DUBLE',               ' Operator repeat <br /><span style="color:red">(повтор оператора)</span><br />');
         define('ABC_SQL_NO_CONDITIONS',       ' No conditions are specified <br /><span style="color:red">(не задано имя поля или значение)</span><br />');
         define('ABC_SQL_COUNT_VALUES',        ' Insufficient values for the operator <br /><span style="color:red">(недостаточно значений для оператора)</span><br />');

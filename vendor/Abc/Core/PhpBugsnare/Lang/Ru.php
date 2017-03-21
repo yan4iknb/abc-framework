@@ -15,6 +15,11 @@ class Ru
     protected static function errorReportings() 
     {
         return [
+'(.+?) operator not supported for strings' => '<strong>$1</strong> operator not supported for strings<br /><span class="translate">
+
+(<strong>$1</strong> оператор не поддерживается для строк)
+
+</span><br />',
       
 '(.*?)Unknown database(.+)' => 'Unknown database$2<br /><span class="translate">
 
@@ -179,11 +184,14 @@ class Ru
 
 </span><br />',
 
-'(.+?) expects at least (.+?) parameters, (.+?) given' => '<span class="">$1</span> expects at least $2 parameters, $3 given<br /><span class="translate">
+'(.+?) expects at least (.+?) parameters, (.+?) given' => '<strong>$1</strong> expects at least <strong>$2</strong> parameters, <strong>$3</strong> given<br /><span class="translate">
 
 (<strong>$1</strong> ожидает как минимум параметров $2, а задано $3)
 
 </span><br />',
+
+
+
 
                  //''  => '',
                  'Synᐃtax'  => 'Syntax',

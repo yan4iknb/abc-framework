@@ -34,6 +34,12 @@ class Ru
 'You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near(.+?)at line (.+)' => 'You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near$1at line <strong>$2</strong><br /><span class="translate">(Ошибка SQL синтаксиса. Обратитесь к мануалу, соответствующему Вашей версии MySQL сервера, чтобы использовать верно строку <strong>$1</strong> на линии <strong>$2</strong>)</span><br />',
 'Field \'(.+?)\' doesn\'t have a default value' => 'Field \'<strong>$1</strong>\' doesn\'t have a default value<br /><span class="translate">Поле <strong>\'<strong>$1</strong>\'</strong> не имеет значения по умолчанию</span><br />',
 'Query was empty' => 'Query was empty<br /><span class="translate">Пустой запрос</span><br />',
+'Column (.+?) in where clause is ambiguous' => 'Column <strong>$1</strong> in where clause is ambiguous<br /><span class="translate">Столбец <strong>$1</strong> неоднозначен</span><br />',
+'Subquery returns more than (\d+) row' => 'Subquery returns more than $1 row<br /><span class="translate">Подзапрос вернул рядов больше, чем $1</span><br />',
+'Not unique table/alias: (.+)' => 'Not unique table/alias: <strong>$1</strong><br /><span class="translate">Не уникальны таблица или алиас <strong>$1</strong></span><br />',
+'Unknown column (.+?) in \'(.+?) clause\'' => 'Unknown column <strong>$1</strong> in <strong>$2</strong> clause<br /><span class="translate">Неизвестный столбец <strong>$1</strong> в клаузе <strong>$2</strong></span><br />',
+
+
 
         ];
     }

@@ -48,8 +48,11 @@ class MysqlQuote
         } else {
             $table = $p[0];
         }
-        
-        return $base .'`'. $this->prefix . $table .'`';
+       
+        $exp = preg_split('~\s+~', trim($table), -1, PREG_SPLIT_NO_EMPTY);
+        $alias = !empty($exp[1]) ? ' `'. $exp[1] .'`' : '';
+     
+        return $base .'`'. $this->prefix . $exp[0] .'`'. $alias;
     } 
 
     /**
@@ -73,6 +76,30 @@ class MysqlQuote
     } 
     
     /**
+    * Экранирует условие для ON
+    *
+    * @param string $on
+    *
+    * @return string
+    */     
+    public function wrapOn($on)
+    {  
+        if (false !== strpos($on, '(')) {
+            return ' ON '. $on;
+        }
+     
+        if (is_string($on)) {
+            $exp = preg_split('~\s*=\s*~', trim($on), -1, PREG_SPLIT_NO_EMPTY);
+            
+            if (!empty($exp[1])) {
+                return ' ON '. $this->quote($exp[0]) .' = '. $this->quote($exp[1]);
+            }
+            
+            return ' '. $on;            
+        }
+    }
+    
+    /**
     * Экранирует значения согласно выбранному драйверу
     *
     * @param string|array $values
@@ -86,11 +113,22 @@ class MysqlQuote
             case 'Pdo' :
                 $pdo = \ABC\Abc::sharedService('Pdo');
                 
+                
                 if (!is_array($values)) {
+                 
+                    if (false !== strpos($values, '(')){
+                        return $values;
+                    } 
+                    
                     return $pdo->quote($values);
                 }
                 
                 foreach ($values as $value) {
+                 
+                    if (false !== strpos($value, '(')){
+                        $result[] = $value;
+                    }
+                    
                     $result[] = $pdo->quote($value);                
                 }
                 
@@ -100,10 +138,20 @@ class MysqlQuote
                 $mysqli = \ABC\Abc::sharedService('Mysqli');
                 
                 if (!is_array($values)) {
+                 
+                    if (false !== strpos($values, '(')){
+                        return $values;
+                    } 
+                 
                     return "'". $mysqli->escape_string($values) ."'";
                 }
                 
                 foreach ($values as $value) {
+                 
+                    if (false !== strpos($value, '(')){
+                        $result[] = $value;
+                    }
+                    
                     $result[] = "'". $mysqli->escape_string($values) ."'";                
                 }
                 
@@ -149,7 +197,7 @@ class MysqlQuote
     * @return string
     */  
     public function addAliasToTable($table, $key = null)
-    {
+    { 
         $alias = $this->createAlias($table, $key);
         return $this->wrapTable($table) . $alias;
     } 
@@ -176,14 +224,14 @@ class MysqlQuote
     * @return string
     */  
     protected function createAlias($string, $key = null)
-    {  
+    {   
         if (empty($key)) {
             return null;
         }
      
         if (is_numeric($key)) {
             $alias = null;
-            
+           
             if (false === strpos($string, '(')) {
                 $exp = preg_split('~\s+~', trim($string), -1, PREG_SPLIT_NO_EMPTY);
               

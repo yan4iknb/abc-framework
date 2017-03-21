@@ -22,7 +22,7 @@ class Expression
     public function __construct($params)
     {
         $this->extression = $params[0];
-        
+      
         if (!empty($params[1]) && is_array($params[1])) {
             $this->params = $params[1];
         }
@@ -42,7 +42,7 @@ class Expression
     *
     */     
     public function getParams()
-    {
+    { 
         return $this->params;
     }
 }

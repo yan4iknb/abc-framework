@@ -39,13 +39,20 @@ class Pdo
     
     /**
     * Проксирование вызовов методов конструктора
-    *
     */     
     public function __call($method, $params)
     { 
         $this->construct->$method($params);
         return $this;
     }
+    
+    /**
+    * Текст для подзапроса
+    */  
+    public function __toString()
+    { 
+        return '('. $this->construct->getSql() .')';
+    } 
     
     /**
     * Выполняет запрос из подготовленного выражения с привязкой параметров

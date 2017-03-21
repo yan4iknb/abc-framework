@@ -16,13 +16,14 @@ class SqlConstruct
 {
     public $prefix;
     public $rescuer;
+   
 
     protected $operators = ['=', '!=', '>', '<', '>=', '<=', '<>', '!<', '!>'];
     protected $disable = false;
     protected $query;    
     protected $sql = [];
     protected $params = [];
-    protected $component = ' Component DbCommand: ';
+    protected $component = ' Component DbCommand: '; 
     protected $space = 'ABC\Abc\Components\Sql\DbCommand\\';
     protected $driver;
     
@@ -36,7 +37,7 @@ class SqlConstruct
         $this->prefix  = $prefix;
         $rescuer = $this->space . $dbType . 'Quote';
         $this->driver  = $driver;
-        $this->rescuer = new $rescuer($driver, $prefix); 
+        $this->rescuer = new $rescuer($driver, $prefix, $this->component); 
     }
     
     /**
@@ -133,7 +134,7 @@ class SqlConstruct
         foreach ($params as $key => $table) {
          
             if (is_string($table) && false === strpos($table, '(')) {
-                $table = $this->rescuer->addAliasToTable($table, $key); 
+                $table = $this->rescuer->addAliasToTable($table, $key);
             } elseif (is_object($table)) {
                 $class =  $this->space . $this->driver;
                 
@@ -162,8 +163,23 @@ class SqlConstruct
         $this->isDisable();
         $this->checkSequence('select', 'select distinct', 'update');
         $this->checkParams($params);
-        $this->joinInternal('inner join', $params);
+        $type = strtolower(array_shift($params));
+        $this->joinInternal($type, $params);
     }      
+    
+    /**
+    * INNER JOIN
+    *
+    * @param array $params
+    *
+    */  
+    public function innerJoin($params)
+    {
+        $this->isDisable();
+        $this->checkSequence('select', 'select distinct', 'update');
+        $this->checkParams($params);
+        $this->joinInternal('inner join', $params);
+    }  
     
     /**
     * LEFT JOIN
@@ -231,6 +247,12 @@ class SqlConstruct
         $this->isDisable();
         $this->checkDuble('where');
         $this->checkParams($params);
+     
+        if (!empty($params[0])) {
+            $this->sql['where'] = $this->conditionsInternal($params[0]);
+        } else {
+            AbcError::logic($this->component . ABC_SQL_INVALID_CONDITIONS);        
+        }          
         
         if (!empty($params[1]) && is_array($params[1])) {
          
@@ -242,13 +264,7 @@ class SqlConstruct
                     $this->params[$name] = $this->rescuer->escape($value);                
                 }
             }
-        } 
-     
-        if (!empty($params[0])) {
-            $this->sql['where'] = $this->conditionsInternal($params[0]);
-        } else {
-            AbcError::logic($this->component . ABC_SQL_INVALID_CONDITIONS);        
-        }    
+        }  
     }
  
     /**
@@ -349,16 +365,16 @@ class SqlConstruct
                 $columns = preg_split('~\s*,\s*~', trim($columns), -1, PREG_SPLIT_NO_EMPTY);
             }
             
-            foreach ($columns as $i => $column) {
+            foreach ($columns as $column) {
              
                 if (is_object($column)) {
-                    $columns[$i] = (string)$column;
+                    $columns[] = (string)$column;
                 } elseif (false === strpos($column,'(')) {
                  
                     if (preg_match('~^(.*?)\s+(asc|desc)$~i', $column, $matches)) {
-                        $columns[$i] = $this->rescuer->wrapFields($matches[1]).' '.strtoupper($matches[2]);
+                        $columns[] = $this->rescuer->wrapFields($matches[1]).' '.strtoupper($matches[2]);
                     } else {
-                        $columns[$i] = $this->rescuer->wrapFields($column);
+                        $columns[] = $this->rescuer->wrapFields($column);
                     }
                 }
             }
@@ -698,7 +714,7 @@ class SqlConstruct
         }
      
         $operator = strtoupper(array_shift($conditions));
-
+     
         if (count($conditions) < 2) {
             AbcError::logic($this->component . ABC_SQL_COUNT_VALUES);
         }        
@@ -715,21 +731,9 @@ class SqlConstruct
         
         AbcError::logic($this->component . ABC_SQL_INVALID_OPERATOR);
     }
-    
+   
     /**
-    * Генерация условий для WHERE
-    *
-    * @param array $condition
-    */  
-    protected function conditionsOther($condition, $operator)
-    {
-        $field = $this->rescuer->wrapFields($condition[0]);
-        $value = $condition[1];
-        return $this->replace($field .' '. $operator .' '. $value);
-    }
-    
-    /**
-    * Генерация условий для WHERE
+    * Генерация условий с операторами группы AND
     *
     * @param array $condition
     */  
@@ -746,10 +750,13 @@ class SqlConstruct
     }
     
     /**
-    * Генерация условий для WHERE
+    * Генерация условий с операторами группы IN 
     *
-    * @param array $condition
-    */  
+    * @param array $conditions
+    * @param string $operator
+    *
+    * $return string
+    */   
     protected function conditionsIn($conditions, $operator)
     { 
         if (!isset($conditions[0], $conditions[1])) {
@@ -766,9 +773,12 @@ class SqlConstruct
     }
     
     /**
-    * Генерация условий для WHERE
+    * Генерация условий с операторами группы LIKE
     *
-    * @param array $condition
+    * @param array $conditions
+    * @param string $operator
+    *
+    * $return string
     */  
     protected function conditionsLike($conditions, $operator)
     { 
@@ -799,7 +809,21 @@ class SqlConstruct
         }
      
         return $this->replace(implode($andor, $expressions));  
-        
+    }
+   
+    /**
+    * Генерация условий с другими операторами
+    *
+    * @param array $conditions
+    * @param string $operator
+    *
+    * $return string
+    */  
+    protected function conditionsOther($condition, $operator)
+    {
+        $field = $this->rescuer->wrapFields($condition[0]);
+        $value = $condition[1];
+        return $this->replace($field .' '. $operator .' '. $value);
     }
     
     /**
@@ -826,9 +850,11 @@ class SqlConstruct
     }
     
     /**
-    * 
+    * Подготавливает колонки
     *
     * @param array $params
+    *
+    * @return string|array
     */     
     protected function prepareColumns($params)
     {
@@ -872,30 +898,32 @@ class SqlConstruct
     */ 
     protected function joinInternal($type, $params)
     {
-        if (false === strpos($params[0], '(')) {
-         
-            if (preg_match('~^(.*?)(?i:\s+as|)\s+([^ ]+)$~', $params[0], $matches)) {
-                $table = $this->rescuer->wrapTable($matches[1]) .' '. $this->rescuer->wrapFields($matches[2]);
-            } else {
-                $table = $this->rescuer->wrapTable($params[0]);
-            }
-            
-        } else {
-            $table = $params[0];
+        if (!is_string($params[0])) {
+            AbcError::logic($this->component . ABC_SQL_INVALID_CONDITIONS);
+            return false;
         }
         
-        $conditions = $this->conditionsInternal($params[1]);
-        
-        if ($conditions != '') {
-            $conditions = ' ON '. $conditions;
-        }
+        $table = $this->rescuer->wrapTable($params[0]);
+        $conditions = '';
        
-        if (!empty($params[2]) && is_array($params[2])) {
-           
-            foreach ($params[2] as $name => $value) {
-                $this->params[$name] = $value;
+        if (!empty($params[1])) {
+         
+            if (is_string($params[1]) && false === strpos($params[0], '(')) {
+             
+                if (preg_match('~^(.*?)(?i:\s+as|)\s+([^ ]+)$~', $params[0], $matches)) {
+                    $table = $this->rescuer->wrapTable($matches[1]) .' '. $this->rescuer->wrapFields($matches[2]);
+                }
+             
+                $conditions = $this->rescuer->wrapOn($params[1]); 
+                
+            } elseif (is_array($params[1])) {               
+                $conditions = ' ON ('. $this->conditionsInternal($params[1]) .')';
+            } elseif (is_object($params[1])) {
+                $conditions = ' ON ('. $this->addExpressions($params[1]) .')';
+            } else {
+                AbcError::logic($this->component . ABC_SQL_INVALID_VALUES);
             }
-        }        
+        }
         
         $this->sql[$type][] = $this->replace(' '. $table . $conditions);
     }
@@ -932,28 +960,40 @@ class SqlConstruct
     /**
     * Добавляет выражения
     *
-    * @param array $value
+    * @param object $object
     *
     * @return string
     */ 
-    protected function addExpressions($value)
+    protected function addExpressions($object)
     {
-        $expressions = '';
-        $params = $value->getParams();
-        $expression = $value->getExpression();
-       
-        if (!empty($params)) {
+        $class =  $this->space . 'Expression';
+        
+        if ($object instanceof $class) {
+            $expressions = '';
+            $params = $object->getParams();
+            $expression = $object->getExpression();
+           
+            if (!empty($params)) {
+             
+                foreach ($params as $p => $v) {
+                    
+                    if (is_object($v)) {
+                        $expressions .= str_replace($p, (string)$v, $expression);
+                    } else {
+                        $expressions .= str_replace($p, $this->rescuer->escape($v), $expression);                    
+                    }
+                }
+                
+                return $expressions;            
+            } 
          
-            foreach ($params as $p => $v) {
-                $expressions .= str_replace($p, $this->rescuer->escape($v), $expression);
-            }
-            
-            return $expressions;            
+            return $expression;            
         } 
         
-        return $expression;
+        AbcError::invalidArgument($this->component . ABC_OTHER_OBJECT);
     }    
     
+
     /**
     * Метод оператора SET
     *

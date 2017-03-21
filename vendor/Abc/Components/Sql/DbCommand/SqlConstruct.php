@@ -15,8 +15,9 @@ use ABC\Abc\Core\Exception\AbcError;
 class SqlConstruct
 {
     public $prefix;
-    public $rescuer;    
+    public $rescuer;
 
+    protected $operators = ['=', '!=', '>', '<', '>=', '<=', '<>', '!<', '!>'];
     protected $disable = false;
     protected $query;    
     protected $sql = [];
@@ -127,11 +128,12 @@ class SqlConstruct
         $this->checkParams($params);
         $this->checkSequence('select', 'select distinct', 'delete');
         $this->checkDuble('from');
-      
+        $from = '';
+        
         foreach ($params as $key => $table) {
          
             if (is_string($table) && false === strpos($table, '(')) {
-                $table = $this->rescuer->addAliasToTable($table, $key);  
+                $table = $this->rescuer->addAliasToTable($table, $key); 
             } elseif (is_object($table)) {
                 $class =  $this->space . $this->driver;
                 
@@ -143,10 +145,10 @@ class SqlConstruct
                 }
             }
             
-            @$this->sql['from'] .= $table .', ';
+            $from .= $table .', ';
         }
         
-        $this->sql['from'] = rtrim($this->sql['from'], ', ');
+        $this->sql['from'] = rtrim($from, ', ');
     }
 
     /**
@@ -241,7 +243,7 @@ class SqlConstruct
                 }
             }
         } 
-        
+     
         if (!empty($params[0])) {
             $this->sql['where'] = $this->conditionsInternal($params[0]);
         } else {
@@ -623,7 +625,7 @@ class SqlConstruct
     public function checkParams()
     {
         $operands = func_get_args();
-        
+       
         if (empty($operands[0])) {
             AbcError::logic($this->component . ABC_SQL_EMPTY_ARGUMENTS);        
         }
@@ -696,65 +698,108 @@ class SqlConstruct
         }
      
         $operator = strtoupper(array_shift($conditions));
-     
+
         if (count($conditions) < 2) {
             AbcError::logic($this->component . ABC_SQL_COUNT_VALUES);
         }        
         
-        if ($operator === 'OR' || $operator === 'AND') { 
-          
-            foreach ($conditions as &$parts) {
-                
-                if (is_array($parts)) {
-                    $parts = '('. $this->conditionsInternal($parts) .')';
-                }
-            }
-         
-            return $this->replace(implode(' '. $operator .' ', $conditions));
-            
-        } elseif ($operator === 'IN' || $operator === 'NOT IN') {
-          
-            if (!isset($conditions[0], $conditions[1])) {
-                AbcError::logic($this->component . ABC_SQL_INVALID_CONDITIONS);
-            }
-            
-            if (is_array($conditions[1])) {
-                $field = $this->rescuer->wrapFields($conditions[0]);
-                $values = $conditions[1];
-                return $this->replace($field .' '. $operator .' ('. implode(', ', $this->rescuer->escape($values)) .')');
-            } else {
-                AbcError::logic($this->component . ABC_SQL_INVALID_VALUES);
-            }
-            
-        } elseif ($operator === 'LIKE' || $operator === 'NOT LIKE' || $operator === 'OR LIKE' || $operator === 'OR NOT LIKE') {
-         
-            if (!isset($conditions[0], $conditions[1])) {
-                AbcError::logic($this->component . ABC_SQL_INVALID_CONDITIONS);
-            }
-            
-            if( $operator === 'LIKE' || $operator === 'NOT LIKE') {
-                $andor = ' AND ';
-            } else {
-                $andor = ' OR ';
-                $operator = ($operator === 'OR LIKE') ? 'LIKE' : 'NOT LIKE';
-            }
-         
-            if (is_array($conditions[1])) {
-                $expressions = [];            
-                $field = $this->rescuer->wrapFields($conditions[0]);
-                
-                foreach ($conditions[1] as $value) {
-                    $expressions[] = $field .' '. $operator .' '. $this->rescuer->escape($value);
-                }
-                
-            } else {
-                AbcError::logic($this->component . ABC_SQL_INVALID_VALUES);
-            }
-            
-            return $this->replace(implode($andor, $expressions));  
+        if ($operator === 'AND' || $operator === 'OR') { 
+            return $this->conditionsAnd($conditions, $operator);   
+        } elseif ($operator === 'IN' || $operator === 'NOT IN') { 
+            return $this->conditionsIn($conditions, $operator);  
+        } elseif ($operator === 'LIKE' || $operator === 'NOT LIKE' || $operator === 'OR LIKE' || $operator === 'OR NOT LIKE') {   
+            return $this->conditionsLike($conditions, $operator); 
+        } elseif (in_array($operator, $this->operators)) {   
+            return $this->conditionsOther($conditions, $operator); 
         }
         
         AbcError::logic($this->component . ABC_SQL_INVALID_OPERATOR);
+    }
+    
+    /**
+    * Генерация условий для WHERE
+    *
+    * @param array $condition
+    */  
+    protected function conditionsOther($condition, $operator)
+    {
+        $field = $this->rescuer->wrapFields($condition[0]);
+        $value = $condition[1];
+        return $this->replace($field .' '. $operator .' '. $value);
+    }
+    
+    /**
+    * Генерация условий для WHERE
+    *
+    * @param array $condition
+    */  
+    protected function conditionsAnd($conditions, $operator)
+    { 
+        foreach ($conditions as &$parts) {
+            
+            if (is_array($parts)) {
+                $parts = '('. $this->conditionsInternal($parts) .')';
+            }
+        }
+     
+        return $this->replace(implode(' '. $operator .' ', $conditions));
+    }
+    
+    /**
+    * Генерация условий для WHERE
+    *
+    * @param array $condition
+    */  
+    protected function conditionsIn($conditions, $operator)
+    { 
+        if (!isset($conditions[0], $conditions[1])) {
+            AbcError::logic($this->component . ABC_SQL_INVALID_CONDITIONS);
+        }
+        
+        if (is_array($conditions[1])) {
+            $field = $this->rescuer->wrapFields($conditions[0]);
+            $values = $conditions[1];
+            return $this->replace($field .' '. $operator .' ('. implode(', ', $this->rescuer->escape($values)) .')');
+        } else {
+            AbcError::logic($this->component . ABC_SQL_INVALID_VALUES);
+        }
+    }
+    
+    /**
+    * Генерация условий для WHERE
+    *
+    * @param array $condition
+    */  
+    protected function conditionsLike($conditions, $operator)
+    { 
+        if (count($conditions) < 2) {
+            AbcError::logic($this->component . ABC_SQL_INVALID_CONDITIONS);
+        }        
+        
+        if( $operator === 'LIKE' || $operator === 'NOT LIKE') {
+            $andor = ' AND ';
+        } else {
+            $andor = ' OR ';
+            $operator = ($operator === 'OR LIKE') ? 'LIKE' : 'NOT LIKE';
+        }
+        
+        $expressions = [];            
+        $field = $this->rescuer->wrapFields($conditions[0]);
+     
+        if (is_array($conditions[1])) {
+         
+            foreach ($conditions[1] as $value) {
+                $expressions[] = $field .' '. $operator .' '. $this->rescuer->escape($value);
+            }
+            
+        } elseif (is_string($conditions[1])) {
+            $expressions[] =  $field .' '. $operator .' '. $this->rescuer->escape($conditions[1]);
+        } else {
+            AbcError::logic($this->component . ABC_SQL_INVALID_VALUES);            
+        }
+     
+        return $this->replace(implode($andor, $expressions));  
+        
     }
     
     /**

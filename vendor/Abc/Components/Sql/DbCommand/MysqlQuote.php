@@ -137,7 +137,7 @@ class MysqlQuote
     public function addAliasToField($field, $key = null)
     {
         $alias = $this->createAlias($field, $key);
-        return $this->wrapFields($field) .' '. $this->wrapFields($alias);
+        return $this->wrapFields($field) . $alias;
     } 
     
     /**
@@ -151,7 +151,7 @@ class MysqlQuote
     public function addAliasToTable($table, $key = null)
     {
         $alias = $this->createAlias($table, $key);
-        return $this->wrapTable($table) .' '. $this->wrapFields($alias);
+        return $this->wrapTable($table) . $alias;
     } 
     
     /**
@@ -164,7 +164,7 @@ class MysqlQuote
     */  
     public function addAliasToExpression($expression, $key = null)
     {
-        return $expression .' '. (!empty($key) ? $this->wrapFields($key) : '');
+        return $expression .' '. (!empty($key) ? $key : '');
     } 
     
     /**
@@ -176,12 +176,16 @@ class MysqlQuote
     * @return string
     */  
     protected function createAlias($string, $key = null)
-    { 
+    {  
+        if (empty($key)) {
+            return null;
+        }
+     
         if (is_numeric($key)) {
             $alias = null;
             
             if (false === strpos($string, '(')) {
-                $exp = preg_split('~\s+~', trim($field), -1, PREG_SPLIT_NO_EMPTY);
+                $exp = preg_split('~\s+~', trim($string), -1, PREG_SPLIT_NO_EMPTY);
               
                 if (!empty($exp[2]) && strtoupper($exp[1]) == 'AS') {
                     $alias = ' AS '. $exp[2];
@@ -190,10 +194,10 @@ class MysqlQuote
                 }
             }
             
-            return $alias;
+            return ' '. $this->wrapFields($alias);
         } 
         
-        return $key;
+        return ' '. $this->wrapFields($key);
     }     
     
     /**

@@ -17,7 +17,6 @@ class Pdo
 {
     public $db;
     
-    protected $config;
     protected $command;
     protected $construct;
     protected $stmt;
@@ -31,10 +30,8 @@ class Pdo
     public function __construct($abc, $command = null)
     {
         $this->db = $abc->sharedService('Pdo');
-        $dbType = $abc->getConfig('db_command')['db_type'];
-        $this->config  = $abc->getConfig('pdo');
         $this->command = $command;        
-        $this->construct = new SqlConstruct($this->config['prefix'], $dbType, 'Pdo');
+        $this->construct = new SqlConstruct($abc, 'Pdo');
     }
     
     /**
@@ -51,7 +48,7 @@ class Pdo
     */  
     public function __toString()
     { 
-        return '('. $this->construct->getSql() .')';
+        return $this->construct->getSql();
     } 
     
     /**
@@ -122,7 +119,7 @@ class Pdo
     * @return int
     */     
     public function execute()
-    {
+    {        
         $values = $this->command->getParams();
         
         if (!empty($values)) {

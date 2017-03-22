@@ -190,7 +190,11 @@ class Ru
 
 </span><br />',
 
+'Call to a member function (.+?) on string' => 'Call to a member function <strong>$1</strong> on string<br /><span class="translate">
 
+(Вызов метода <strong>$1</strong> из строки)
+
+</span><br />',
 
 
                  //''  => '',

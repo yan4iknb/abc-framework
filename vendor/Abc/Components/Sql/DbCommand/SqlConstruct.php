@@ -17,14 +17,13 @@ class SqlConstruct
     public $prefix;
     public $rescuer;
    
-
+    protected $component = ' Component DbCommand: '; 
+    protected $space = 'ABC\Abc\Components\Sql\DbCommand\\';
     protected $operators = ['=', '!=', '>', '<', '>=', '<=', '<>', '<=>', '!<', '!>']; // NOT, IS NULL
     protected $disable = false;
     protected $query;    
     protected $sql = [];
     protected $params = [];
-    protected $component = ' Component DbCommand: '; 
-    protected $space = 'ABC\Abc\Components\Sql\DbCommand\\';
     protected $driver;
     
     /**
@@ -32,14 +31,15 @@ class SqlConstruct
     *
     * @param string config
     */     
-    public function __construct($prefix, $dbType, $driver)
+    public function __construct($abc, $driver)
     {
-        $this->prefix  = $prefix;
+        $dbType  = $abc->getConfig('db_command')['db_type'];
+        $prefix  = $abc->getConfig('pdo')['prefix'];
         $rescuer = $this->space . $dbType . 'Quote';
         $this->driver  = $driver;
         $this->rescuer = new $rescuer($driver, $prefix, $this->component); 
     }
-    
+   
     /**
     * Устанавливает префикс
     *
@@ -78,7 +78,7 @@ class SqlConstruct
         
         $options = !empty($params[1]) ? $params[1] : null;
         $params =  !empty($params[0]) ? $params[0] : null;
-        $columns = $this->prepareColumns($params);       
+        $columns = $this->normaliseColumns($params);       
      
         $this->sql['select'] = $options .' '. implode(', ', $columns);
     }
@@ -94,7 +94,7 @@ class SqlConstruct
         $this->checkSequence('select', 'select distinct', 'update');
         
         $params = !empty($params[0]) ? $params[0] : null;
-        $columns = $this->prepareColumns($params);
+        $columns = $this->normaliseColumns($params);
         $this->sql['select'] .= ', '. implode(', ', $columns);
     }
   
@@ -445,14 +445,18 @@ class SqlConstruct
     */  
     public function union($params)
     {
-        $this->isDisable();    
-        $this->checkParams($params);
+        $this->isDisable(); 
+        $this->checkParams($params); 
         
-        if (isset($this->sql['union']) && is_string($this->sql['union'])) {
-            $this->sql['union'] = [$this->sql['union']];
+        if (is_array($params[0])) {
+         
+            foreach ($params[0] as $sql) {
+                $this->addUnion($sql);           
+            }
+            
+        } else {
+            $this->addUnion($params[0]); 
         }
-        
-        $this->sql['union'][] = $params[0];
     } 
 
     /**
@@ -633,7 +637,7 @@ class SqlConstruct
     }
  
     /**
-    * создает условие
+    * создает условие для WHERE, HAVING и ON
     *
     * @param string $command
     * @param array  $params
@@ -655,8 +659,9 @@ class SqlConstruct
         }
     }
     
+ 
     /**
-    * Генерация условий 
+    * Генерация условий
     *
     * @param array $condition
     */  
@@ -811,7 +816,7 @@ class SqlConstruct
     *
     * @return string|array
     */     
-    protected function prepareColumns($params)
+    protected function normaliseColumns($params)
     {
         if (empty($params)) {
             return ['*'];
@@ -925,9 +930,9 @@ class SqlConstruct
             return $values;
         } elseif(is_string($values)) {  
             $exp = preg_split('~\s*,\s*~', trim($values), -1, PREG_SPLIT_NO_EMPTY);
-            return $this->createGroupOrder($exp);  
+            return $this->normaliseGroup($exp);  
         } elseif (is_array($values)) {
-            return $this->createGroupOrder($values); 
+            return $this->normaliseGroup($values); 
         } elseif (is_object($values)) {
             return $this->createExpressions($values);
         } 
@@ -943,7 +948,7 @@ class SqlConstruct
     *
     * @return string
     */      
-    protected function createGroupOrder($values)
+    protected function normaliseGroup($values)
     {
         foreach ($values as $direction => $column) {
          
@@ -985,7 +990,7 @@ class SqlConstruct
                 foreach ($params as $p => $v) {
                     
                     if (is_object($v)) {
-                        $expressions .= str_replace($p, (string)$v, $expression);
+                        $expressions .= str_replace($p, '('. $v .')', $expression);
                     } else {
                         $expressions .= str_replace($p, $this->rescuer->escape($v), $expression);                    
                     }
@@ -1000,7 +1005,20 @@ class SqlConstruct
         AbcError::invalidArgument($this->component . ABC_OTHER_OBJECT);
     }    
     
-
+    /**
+    * Добавляет часть запроса в UNION
+    *
+    * @param array $sql
+    */  
+    protected function addUnion($sql)
+    {
+        if (isset($this->sql['union']) && is_string($this->sql['union'])) {
+            $this->sql['union'] = ["\n    ". $this->sql['union']];
+        }
+        
+        $this->sql['union'][] = "\n    ". $sql;
+    } 
+    
     /**
     * Метод оператора SET
     *

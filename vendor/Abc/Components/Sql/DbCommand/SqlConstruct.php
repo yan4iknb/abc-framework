@@ -16,16 +16,16 @@ class SqlConstruct
 {
     public $prefix;
     public $rescuer;
-   
+ 
+
     protected $component = ' Component DbCommand: '; 
     protected $space = 'ABC\Abc\Components\Sql\DbCommand\\';
     protected $operators = ['=', '!=', '>', '<', '>=', '<=', '<>', '<=>', '!<', '!>']; // NOT, IS NULL
-    protected $disable = false;
     protected $query;    
     protected $sql = [];
     protected $params = [];
     protected $driver;
-    
+    protected $disable = false;      
     /**
     * Конструктор
     *
@@ -91,7 +91,7 @@ class SqlConstruct
     public function addSelect($params)
     {
         $this->isDisable();
-        $this->checkSequence('select', 'select distinct', 'update');
+        $this->checkSequence('select');
         
         $params = !empty($params[0]) ? $params[0] : null;
         $columns = $this->normaliseColumns($params);
@@ -127,7 +127,7 @@ class SqlConstruct
      
         $this->isDisable();
         $this->checkParams($params);
-        $this->checkSequence('select', 'select distinct', 'delete');
+        $this->checkSequence('select', 'delete');
         $this->checkDuble('from');
         $from = '';
         
@@ -161,7 +161,7 @@ class SqlConstruct
     public function join($params)
     {
         $this->isDisable();
-        $this->checkSequence('select', 'select distinct', 'update');
+        $this->checkSequence('select', 'update');
         $this->checkParams($params);
         $type = strtolower(array_shift($params));
         $this->joinInternal($type, $params);
@@ -176,7 +176,7 @@ class SqlConstruct
     public function innerJoin($params)
     {
         $this->isDisable();
-        $this->checkSequence('select', 'select distinct', 'update');
+        $this->checkSequence('select', 'update');
         $this->checkParams($params);
         $this->joinInternal('inner join', $params);
     }  
@@ -190,7 +190,7 @@ class SqlConstruct
     public function leftJoin($params)
     {
         $this->isDisable();
-        $this->checkSequence('select', 'select distinct', 'update');
+        $this->checkSequence('select', 'update');
         $this->checkParams($params);
         $this->joinInternal('left join', $params);
     }    
@@ -204,7 +204,7 @@ class SqlConstruct
     public function rightJoin($params)
     {
         $this->isDisable();
-        $this->checkSequence('select', 'select distinct', 'update');
+        $this->checkSequence('select', 'update');
         $this->checkParams($params);
         $this->joinInternal('right join', $params);
     }
@@ -218,7 +218,7 @@ class SqlConstruct
     public function crossJoin($params)
     {
         $this->isDisable();
-        $this->checkSequence('select', 'select distinct', 'update');
+        $this->checkSequence('select', 'update');
         $this->checkParams($params);
         $this->joinInternal('cross join', $params);
     }    
@@ -232,7 +232,7 @@ class SqlConstruct
     public function naturalJoin($params)
     {
         $this->isDisable();
-        $this->checkSequence('select', 'select distinct', 'update');
+        $this->checkSequence('select', 'update');
         $this->checkParams($params);
         $this->joinInternal('natural join', $params);
     }
@@ -359,7 +359,7 @@ class SqlConstruct
     {
         $this->isDisable();
         $this->checkParams($params);
-        $this->checkSequence('select', 'select distinct', 'from');
+        $this->checkSequence('select', 'from');
         $this->checkDuble('group by');
         $this->sql['group by'] = $this->prepareGroupOrder($params[0]);
     }
@@ -389,7 +389,7 @@ class SqlConstruct
     {
         $this->isDisable();
         $this->checkParams($params);
-        $this->checkSequence('select', 'select_distinct', 'from');
+        $this->checkSequence('select', 'from');
         $this->checkDuble('order by');
         $this->sql['order by'] = $this->prepareGroupOrder($params[0]);
     }
@@ -405,7 +405,7 @@ class SqlConstruct
     {
         $this->isDisable();
         $this->checkParams($params);
-        $this->checkSequence('select', 'select_distinct', 'from');
+        $this->checkSequence('select', 'from');
         $order = $this->sql['order by'];
         unset($this->sql['order by']);
         $this->order($params);
@@ -421,7 +421,7 @@ class SqlConstruct
     {
         $this->isDisable();
         $this->checkParams($params);
-        $this->checkSequence('select', 'select distinct', 'from', 'update', 'insert', 'delete');
+        $this->checkSequence('select', 'from', 'update', 'insert', 'delete');
         $this->checkDuble('limit');
         $this->sql['limit'] = (int)$params[0];
         
@@ -620,9 +620,16 @@ class SqlConstruct
     protected function checkSequence()
     {
         $operands = func_get_args();
-     
+        $check = array_change_key_case($this->sql, CASE_LOWER);
+        $keys = array_keys($check);
+        array_walk($keys, function(&$value) {
+            $exp = preg_split('~\s+~', $value, -1, PREG_SPLIT_NO_EMPTY);
+            $value = $exp[0]; 
+        });
+          
         foreach ($operands as $operand) {
-            if (isset($this->sql[$operand])) {
+            $exp = preg_split('~\s+~', $operand, -1, PREG_SPLIT_NO_EMPTY);
+            if (in_array($exp[0], $keys)) {
                 return true;
             }
         }
@@ -637,7 +644,7 @@ class SqlConstruct
     */      
     protected function checkDuble($operand)
     {
-        if (isset($this->sql[$operand])) {
+        if (isset($this->sql[strtolower($operand)])) {
             AbcError::logic($this->component . ABC_SQL_DUBLE);
         }
     }

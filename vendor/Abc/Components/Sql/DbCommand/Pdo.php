@@ -22,7 +22,7 @@ class Pdo
     protected $stmt;
     protected $query;
     protected $execute = false;
-    
+    protected $isCreateCommand = false;
     /**
     * Конструктор
     *
@@ -68,6 +68,7 @@ class Pdo
         $this->query = $this->construct->rescuer->quoteFields($this->query);
         $values = !empty($params[1]) ? $params[1] : null;
         $this->prepareQuery($values);
+        $this->isCreateCommand = true;
         return $this->command;
     }
 
@@ -119,7 +120,11 @@ class Pdo
     * @return int
     */     
     public function execute()
-    {       
+    { 
+        if (false === $this->isCreateCommand) {
+            $this->prepareQuery();
+        }
+        
         $values = $this->command->getParams();
         
         if (!empty($values)) {
@@ -210,7 +215,6 @@ class Pdo
     public function insert()
     {
         $this->construct->insert(func_get_args()[0]);
-        $this->prepareQuery();
         return $this->command;
     }
     
@@ -222,7 +226,6 @@ class Pdo
     public function batchInsert()
     {
         $this->construct->batchInsert(func_get_args()[0]);
-        $this->prepareQuery();
         return $this->command;
     }
     
@@ -234,7 +237,6 @@ class Pdo
     public function update()
     {
         $this->construct->update(func_get_args()[0]);
-        $this->prepareQuery();
         return $this->command;
     }
     
@@ -246,7 +248,6 @@ class Pdo
     public function delete()
     {
         $this->construct->delete(func_get_args()[0]);
-        $this->prepareQuery();
         return $this->command;    
     }
     

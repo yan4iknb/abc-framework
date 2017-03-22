@@ -247,13 +247,8 @@ class SqlConstruct
         $this->isDisable();
         $this->checkDuble('where');
         $this->checkParams($params);
+        //$params[0]
      
-        if (!empty($params[0])) {
-            $this->sql['where'] = $this->conditionsInternal($params[0]);
-        } else {
-            AbcError::logic($this->component . ABC_SQL_INVALID_CONDITIONS);        
-        }          
-        
         if (!empty($params[1]) && is_array($params[1])) {
          
             foreach ($params[1] as $name => $value) {
@@ -264,9 +259,15 @@ class SqlConstruct
                     $this->params[$name] = $this->rescuer->escape($value);                
                 }
             }
+        }         
+       
+        if (!empty($params[0])) {
+            $this->sql['where'] = $this->conditionsInternal($params[0]);
+        } else {
+            AbcError::logic($this->component . ABC_SQL_INVALID_CONDITIONS);        
         }  
     }
- 
+
     /**
     * Добавляет условие в существующую часть запроса WHERE с оператором AND
     *
@@ -307,10 +308,15 @@ class SqlConstruct
         if (!empty($params[1]) && is_array($params[1])) {
          
             foreach ($params[1] as $name => $value) {
-                $this->params[$name] = $this->rescuer->escape($value);
+                
+                if (is_object($value)) {
+                    $this->params[$name] = $this->createExpressions($value);
+                } else {
+                    $this->params[$name] = $this->rescuer->escape($value);                
+                }
             }
-        }
-        
+        }         
+       
         if (!empty($params[0])) {
             $this->sql['having'] = $this->conditionsInternal($params[0]);
         } else {
@@ -666,7 +672,7 @@ class SqlConstruct
     * @param array $condition
     */  
     protected function conditionsInternal($conditions)
-    { 
+    {         
         if (!is_array($conditions)) {
             return $this->replace($conditions);
         } elseif (empty($conditions)) {

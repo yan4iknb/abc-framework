@@ -119,7 +119,7 @@ class Pdo
     * @return int
     */     
     public function execute()
-    {        
+    {       
         $values = $this->command->getParams();
         
         if (!empty($values)) {
@@ -129,6 +129,18 @@ class Pdo
         $this->stmt->execute();
         $this->execute = true;
         return $this->stmt->rowCount();
+    }
+    
+    /**
+    * Возвращает объект PDOStatement для разбора результа
+    *
+    * @return array
+    */     
+    public function query($sql, $params)
+    {
+        $this->createCommand($sql, $params);
+        $this->execute();
+        return $this->stmt;
     } 
     
     /**
@@ -189,19 +201,7 @@ class Pdo
         $this->executeForSelect();
         return $this->stmt->fetchColumn();
     }
-    
-    /**
-    * Удаляет строки
-    *
-    * @return int
-    */     
-    public function delete()
-    {
-        $this->construct->delete(func_get_args()[0]);
-        $this->prepareQuery();
-        return $this;    
-    }
-    
+
     /**
     * Вставляет одну строку
     *
@@ -211,7 +211,7 @@ class Pdo
     {
         $this->construct->insert(func_get_args()[0]);
         $this->prepareQuery();
-        return $this;
+        return $this->command;
     }
     
     /**
@@ -223,7 +223,7 @@ class Pdo
     {
         $this->construct->batchInsert(func_get_args()[0]);
         $this->prepareQuery();
-        return $this;
+        return $this->command;
     }
     
     /**
@@ -235,7 +235,19 @@ class Pdo
     {
         $this->construct->update(func_get_args()[0]);
         $this->prepareQuery();
-        return $this;
+        return $this->command;
+    }
+    
+    /**
+    * Удаляет строки
+    *
+    * @return int
+    */     
+    public function delete()
+    {
+        $this->construct->delete(func_get_args()[0]);
+        $this->prepareQuery();
+        return $this->command;    
     }
     
     /**

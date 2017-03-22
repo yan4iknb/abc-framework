@@ -39,7 +39,7 @@ class Ru
 'Not unique table/alias: (.+)' => 'Not unique table/alias: <strong>$1</strong><br /><span class="translate">Не уникальны таблица или алиас <strong>$1</strong></span><br />',
 'Unknown column (.+?) in \'(.+?) clause\'' => 'Unknown column <strong>$1</strong> in <strong>$2</strong> clause<br /><span class="translate">Неизвестный столбец <strong>$1</strong> в клаузе <strong>$2</strong></span><br />',
 'The used (.+?) statements have a different number of columns' => 'The used <strong>$1</strong> statements have a different number of columns<br /><span class="translate">Используемые операторы <strong>$1</strong> имеют различное количество столбцов</span><br />',
-
+'Unknown column (.+?) in (.+)' => 'Unknown column <strong>$1</strong> in <strong>$2</strong><br /><span class="translate">Неизвестный столбец <strong>$1</strong> в <strong>$2</strong></span><br />',
 
         ];
     }

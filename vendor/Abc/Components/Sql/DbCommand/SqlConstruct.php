@@ -613,6 +613,42 @@ class SqlConstruct
     }
     
     /**
+    * Формирует выражения из объекта класса Expression
+    *
+    * @param object $object
+    *
+    * @return string
+    */ 
+    public function createExpressions($object)
+    {
+        $class =  $this->space . 'Expression';
+       
+        if ($object instanceof $class) {
+            $expressions = '';
+            $params = $object->getParams();
+            $expression = $object->getExpression();
+           
+            if (!empty($params)) {
+             
+                foreach ($params as $p => $v) {
+                    
+                    if (is_object($v)) {
+                        $expressions .= str_replace($p, '('. $v .')', $expression);
+                    } else {
+                        $expressions .= str_replace($p, $this->rescuer->escape($v), $expression);                    
+                    }
+                }
+                
+                return $expressions;            
+            } 
+         
+            return $expression;            
+        } 
+        
+        AbcError::invalidArgument($this->component . ABC_OTHER_OBJECT);
+    }    
+    
+    /**
     * Метод проверки последовательности операторов
     *
     * @param array $operands
@@ -981,43 +1017,7 @@ class SqlConstruct
        
         return implode(', ', $columns);
     }
-    
-    /**
-    * Добавляет выражения
-    *
-    * @param object $object
-    *
-    * @return string
-    */ 
-    protected function createExpressions($object)
-    {
-        $class =  $this->space . 'Expression';
-        
-        if ($object instanceof $class) {
-            $expressions = '';
-            $params = $object->getParams();
-            $expression = $object->getExpression();
-           
-            if (!empty($params)) {
-             
-                foreach ($params as $p => $v) {
-                    
-                    if (is_object($v)) {
-                        $expressions .= str_replace($p, '('. $v .')', $expression);
-                    } else {
-                        $expressions .= str_replace($p, $this->rescuer->escape($v), $expression);                    
-                    }
-                }
-                
-                return $expressions;            
-            } 
-         
-            return $expression;            
-        } 
-        
-        AbcError::invalidArgument($this->component . ABC_OTHER_OBJECT);
-    }    
-    
+
     /**
     * Добавляет часть запроса в UNION
     *

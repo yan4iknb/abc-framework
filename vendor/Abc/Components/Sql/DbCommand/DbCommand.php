@@ -16,7 +16,7 @@ use ABC\Abc\Components\Sql\DbCommand\Transaction;
 class DbCommand
 {
     protected $abc;
-    protected $params = [];
+    protected $params;
     protected $transaction;
     protected $space = 'ABC\Abc\Components\Sql\DbCommand\\';
     protected $driver;
@@ -30,8 +30,8 @@ class DbCommand
     {
         $this->abc = $abc;
         $driver = $abc->getConfig('db_command')['driver'];
-        $this->driver = $this->space . $driver;
-        $this->command = new $this->driver($this->abc, $this);
+        $driver = $this->space . $driver;
+        $this->driver = new $driver($this->abc, $this);
     }
     
     /**
@@ -51,17 +51,53 @@ class DbCommand
     */     
     public function __call($method, $param)
     {
-        return $this->command->$method($param);
+        return $this->driver->$method($param);
     } 
+    
+    
+    /**
+    * Связывает значение с параметром 
+    * 
+    * @return object
+    */     
+    public function bindValue($name, $value, $dataType = null)
+    {
+        $this->params[$name]['value'] = $value;
+        $this->params[$name]['type']  = $dataType;
+        return $this;
+    }  
+    
+    /**
+    * Связывает список значений с параметрами
+    * 
+    * @return object
+    */     
+    public function bindValues($values)
+    {
+        foreach ($values as $name => $value) {
+           
+            $dataType = null;
+         
+            if (is_array($value)) {
+                $dataType = key($value);
+                $value = array_shift($value);
+            }
+         
+            $this->bindValue($name, $value, $dataType);
+        }
+      
+        return $this;
+    }  
     
     /**
     * Связывает значение с параметром по ссылке
     * 
     * @return object
     */     
-    public function bindParam($name, &$value)
+    public function bindParam($name, &$value, $dataType = null)
     {
-        $this->params[$name] = &$value;
+        $this->params[$name]['value'] = &$value;
+        $this->params[$name]['type']  = $dataType;
         return $this;
     }  
     
@@ -83,7 +119,7 @@ class DbCommand
     public function beginTransaction()
     {
         if (empty($this->transaction)) {
-            $this->transaction = new Transaction($this->abc, $this->command);
+            $this->transaction = new Transaction($this->abc, $this->driver);
         }
         
         $this->transaction->beginTransaction();

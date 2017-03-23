@@ -149,9 +149,12 @@ class Shaper extends \PDOStatement
         switch ($param['type']) {
             case PDO::PARAM_INT :
                 return (int)$param['value'];
-            
-            default :
+                
+            case PDO::PARAM_STR :
                 return $this->pdo->quote($param['value']);
+                
+            default :
+                return $param['value'];
         }   
     } 
 }

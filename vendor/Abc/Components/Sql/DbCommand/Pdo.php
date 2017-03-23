@@ -23,15 +23,17 @@ class Pdo
     protected $query;
     protected $execute = false;
     protected $isCreateCommand = false;
+    
     /**
     * Конструктор
     *
     */     
-    public function __construct($abc, $command = null)
+    public function __construct($abc, $command)
     {
         $this->db = $abc->sharedService('Pdo');
         $this->command = $command;        
         $this->construct = new SqlConstruct($abc, 'Pdo');
+        $this->defineConstants();
     }
     
     /**
@@ -81,39 +83,27 @@ class Pdo
     */     
     public function bindValues($params)
     {
-        if (!empty($params[0])) {
+        foreach ($params as $name => $param) {
          
-            foreach ($params[0] as $name => $param) {
-                
-                if (is_array($param)) {
-                    $value = $param[0];
-                    $type  = $param[1];
-                } else {
-                    $value = $param;
-                    $type  = \PDO::PARAM_STR;
-                }
-                
-                $this->stmt->bindValue($name, $value, $type);
+            if (is_array($param)) {
+                $value = $param['value'];
+                $type  = $param['type'];
+            } else {
+                $value = $param;
+                $type  = \PDO::PARAM_STR;
             }
+            
+            if (is_object($value)) {
+                $value = $this->construct->createExpressions($value);
+                $type  = null; 
+            }
+            
+            $this->stmt->bindValue($name, $value, $type);
         }
-        
+       
         return $this->command;
-    } 
-    
-    /**
-    * Обертка PDO::bindValue()
-    *
-    * @param array $params
-    *
-    * @return object
-    */    
-    public function bindValue($params)
-    {
-        $type = !empty($params[2]) ? $params[2] : \PDO::PARAM_STR;
-        $this->stmt->bindValue($params[0], $params[1], $type);
-        return $this->command;
-    } 
- 
+    }
+
     /**
     * Обертка PDO::execute()
     *
@@ -126,9 +116,9 @@ class Pdo
         }
         
         $values = $this->command->getParams();
-        
+     
         if (!empty($values)) {
-            $this->bindValues([$values]);
+            $this->bindValues($values);
         }
         
         $this->stmt->execute();
@@ -373,5 +363,19 @@ class Pdo
     {
         $this->stmt = $this->db->prepare($sql);
         return $this->command;        
+    }
+    
+    /**
+    * Установка констант
+    *
+    */     
+    public function defineConstants()
+    {
+        defined('ABC_PARAM_INT') or define('ABC_PARAM_INT', \PDO::PARAM_INT);
+        defined('ABC_PARAM_BOOL') or define('ABC_PARAM_BOOL', \PDO::PARAM_BOOL);
+        defined('ABC_PARAM_NULL') or define('ABC_PARAM_NULL', \PDO::PARAM_NULL);
+        defined('ABC_PARAM_STR') or define('ABC_PARAM_STR', \PDO::PARAM_STR);    
+        defined('ABC_PARAM_LOB') or define('ABC_PARAM_LOB', \PDO::PARAM_LOB);
+        defined('ABC_PARAM_INPUT_OUTPUT') or define('ABC_PARAM_INPUT_OUTPUT', \PDO::PARAM_INPUT_OUTPUT);    
     }
 }

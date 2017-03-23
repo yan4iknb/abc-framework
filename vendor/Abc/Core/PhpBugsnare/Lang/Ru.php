@@ -177,25 +177,46 @@ class Ru
 (Объект или класс <strong>$1</strong> нельзя преобразовать в строку)
 
 </span><br />',
-
 'Call to protected method (.+?) from context (.+)' => 'Call to protected method <strong>$1</strong> from context <strong>$2</strong><br /><span class="translate">
 
 (Вызов защищенного метода <strong>$1</strong> из контекста <strong>$2</strong>)
 
 </span><br />',
-
 '(.+?) expects at least (.+?) parameters, (.+?) given' => '<strong>$1</strong> expects at least <strong>$2</strong> parameters, <strong>$3</strong> given<br /><span class="translate">
 
 (<strong>$1</strong> ожидает как минимум параметров $2, а задано $3)
 
 </span><br />',
-
 'Call to a member function (.+?) on string' => 'Call to a member function <strong>$1</strong> on string<br /><span class="translate">
 
 (Вызов метода <strong>$1</strong> из строки)
 
 </span><br />',
+'Undefined class constant (.+)' => 'Undefined class constant <strong>$1</strong><br /><span class="translate">
 
+(Не установлена константа <strong>$1</strong> в классе)
+
+</span><br />',
+'Cannot use a scalar value as an array' => 'Cannot use a scalar value as an array<br /><span class="translate">
+
+(Нельзя использовать скалярное значение в качестве массива
+
+</span><br />',
+'Invalid parameter number: Columns/Parameters are 1-based' => 'Invalid parameter number: Columns/Parameters are 1-based<br /><span class="translate">
+
+(Неверный номер колонки/параметра. Отсчет должен начинаться с 1)
+
+</span><br />',
+'Illegal string offset (.+)' => 'Illegal string offset <strong>$1</strong><br /><span class="translate">
+
+(Недопустимое смещение, строкa <strong>$1</strong>)
+
+</span><br />', 
+'Cannot use object of type (.+?) as array' => 'Cannot use object of type <strong>$1</strong> as array<br /><span class="translate">
+
+(Невозможно использовать объект типа <strong>$1</strong> как массив)
+
+</span><br />',
 
                  //''  => '',
                  'Synᐃtax'  => 'Syntax',

@@ -24,7 +24,9 @@ class Expression
         $this->extression = $params[0];
       
         if (!empty($params[1]) && is_array($params[1])) {
-            $this->params = $params[1];
+            foreach ($params[1] as $name => $value) {
+                $this->params[$name] = $value;
+            }
         }
     }  
     

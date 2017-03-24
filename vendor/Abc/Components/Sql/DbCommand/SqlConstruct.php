@@ -19,7 +19,6 @@ class SqlConstruct
  
 
     protected $component = ' Component DbCommand: '; 
-    protected $space = 'ABC\Abc\Components\Sql\DbCommand\\';
     protected $operators = ['=', '!=', '>', '<', '>=', '<=', '<>', '<=>', '!<', '!>']; // NOT, IS NULL
     protected $query;    
     protected $sql = [];
@@ -31,13 +30,10 @@ class SqlConstruct
     *
     * @param string config
     */     
-    public function __construct($abc, $driver)
+    public function __construct($driver, $rescuer)
     {
-        $dbType  = $abc->getConfig('db_command')['db_type'];
-        $prefix  = $abc->getConfig('pdo')['prefix'];
-        $rescuer = $this->space . $dbType . 'Quote';
         $this->driver  = $driver;
-        $this->rescuer = new $rescuer($driver, $prefix, $this->component); 
+        $this->rescuer = $rescuer;
     }
     
   
@@ -147,7 +143,7 @@ class SqlConstruct
             if (is_string($table) && false === strpos($table, '(')) {
                 $table = $this->rescuer->addAliasToTable($table, $key);
             } elseif (is_object($table)) {
-                $class =  $this->space . $this->driver;
+                $class =  get_class($this->driver);
                 
                 if ($table instanceof $class) {
                     $table = '('. $table->getSql() .') ';
@@ -587,23 +583,13 @@ class SqlConstruct
     } 
     
     /**
-    * Блокирует конструктор
-    *
-    * @return void
-    */       
-    public function disable()
-    {
-        $this->disable = true;
-    } 
-    
-    /**
     * Проверка на блокировку
     *
     * @return void
     */       
     public function isDisable()
     {
-        if ($this->disable) {
+        if (true === $this->driver->disable) {
             AbcError::logic($this->component . ABC_SQL_DISABLE);
         }
     }
@@ -631,31 +617,7 @@ class SqlConstruct
     */ 
     public function createExpressions($object)
     {
-        $class =  $this->space . 'Expression';
-       
-        if ($object instanceof $class) {
-            $expressions = '';
-            $params = $object->getParams();
-            $expression = $object->getExpression();
-           
-            if (!empty($params)) {
-             
-                foreach ($params as $p => $v) {
-                    
-                    if (is_object($v)) {
-                        $expressions .= str_replace($p, '('. $v .')', $expression);
-                    } else {
-                        $expressions .= str_replace($p, $this->rescuer->escape($v), $expression);                    
-                    }
-                }
-                
-                return $expressions;            
-            } 
-         
-            return $expression;            
-        } 
-        
-        AbcError::invalidArgument($this->component . ABC_OTHER_OBJECT);
+        return (new Expression())->createExpression($object, $this->rescuer);
     }    
     
     /**

@@ -54,16 +54,6 @@ class DbCommand
     {
         return $this->abc->newService('DbCommand');
     }  
-    
-    /**
-    * Возвращает объект с выражениями
-    *
-    * @return object
-    */     
-    public function expression($params)
-    {
-        return new Expression($params);
-    }
 
     /**
     * Связывает значение с параметром 

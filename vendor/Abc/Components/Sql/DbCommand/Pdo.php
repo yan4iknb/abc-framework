@@ -15,14 +15,16 @@ use ABC\Abc\Components\Sql\DbCommand\SqlConstruct;
 class Pdo
 {
     public $db;
-    
+    public $disable = false;    
+
+    protected $abc;
+    protected $space = 'ABC\Abc\Components\Sql\DbCommand\\';
     protected $command;
     protected $construct;
     protected $sql;    
     protected $stmt;
     protected $execute = false;
     protected $scalar;
-    protected $object;
     protected $count;
     
     /**
@@ -31,9 +33,15 @@ class Pdo
     */     
     public function __construct($abc, $command)
     {
+        $this->abc = $abc;        
+     
+        $dbType   = $abc->getConfig('db_command')['db_type'];        
+        $rescuer  = $this->space . $dbType . 'Quote';
         $this->db = $abc->sharedService('Pdo');
-        $this->command = $command;        
-        $this->construct = new SqlConstruct($abc, 'Pdo');
+        $prefix   = $this->db->prefix;    
+        $this->command = $command;
+        
+        $this->rescuer = new $rescuer($this, $prefix);
         $this->defineConstants();
     }
     
@@ -42,17 +50,28 @@ class Pdo
     */     
     public function __call($method, $params)
     { 
-        $this->construct->$method($params);
+        $this->getConstruct()->$method($params);
         return $this;
     }
-    
+
     /**
     * Текст для подзапроса
     */  
     public function __toString()
     { 
-        return $this->construct->getSql();
+        return $this->getConstruct()->getSql();
     } 
+    
+    /**
+    * Возвращает объект с выражениями
+    *
+    * @return object
+    */     
+    public function expression($params)
+    {
+        return new Expression($params[0]);
+    }
+    
     
     /**
     * Общий запрос
@@ -63,11 +82,9 @@ class Pdo
     */     
     public function createCommand($params)
     {
-        $this->construct->isDisable();
-        $this->construct->checkParams($params);
-        $this->construct->disable();
+        $this->disable = true;
         $this->sql = is_array($params) ? $params[0] : $params; 
-        $this->sql = $this->construct->rescuer->quoteFields($this->sql);
+        $this->sql = $this->rescuer->quoteFields($this->sql);
         return $this->command;
     }
 
@@ -91,7 +108,7 @@ class Pdo
             }
             
             if (is_object($value)) {
-                $value = $this->construct->createExpressions($value);
+                $value = $this->construct->createExpressions($value);/////////////////////
                 $type  = null; 
             }
             
@@ -223,7 +240,7 @@ class Pdo
     */     
     public function insert()
     {
-        $this->construct->insert(func_get_args()[0]);
+        $this->getConstruct()->insert(func_get_args()[0]);
         $this->sql = $this->getSql();
         $this->executeInternal();
         return $this->command;
@@ -236,7 +253,7 @@ class Pdo
     */ 
     public function batchInsert()
     {
-        $this->construct->batchInsert(func_get_args()[0]);
+        $this->getConstruct()->batchInsert(func_get_args()[0]);
         $this->sql = $this->getSql();
         $this->executeInternal();
         return $this->command;
@@ -249,7 +266,7 @@ class Pdo
     */     
     public function update()
     {
-        $this->construct->update(func_get_args()[0]);
+        $this->getConstruct()->update(func_get_args()[0]);
         $this->sql = $this->getSql();
         $this->executeInternal();
         return $this->command;
@@ -262,7 +279,7 @@ class Pdo
     */     
     public function delete()
     {
-        $this->construct->delete(func_get_args()[0]);
+        $this->getConstruct()->delete(func_get_args()[0]);
         $this->sql = $this->getSql();
         $this->executeInternal();
         return $this->command;    
@@ -305,7 +322,7 @@ class Pdo
     */     
     public function getSql()
     {
-        return !empty($this->sql) ? $this->sql : $this->construct->getSql();
+        return !empty($this->sql) ? $this->sql : $this->getConstruct()->getSql();
     } 
     
     /**
@@ -316,7 +333,7 @@ class Pdo
     public function reset()
     {
         $this->sql = null;
-        $this->construct->reset();  
+        $this->getConstruct()->reset();  
     } 
     
     /**
@@ -360,7 +377,7 @@ class Pdo
     protected function executeInternal()
     {
         if (empty($this->stmt)) {
-            $this->sql = $this->construct->rescuer->quoteFields($this->sql);
+            $this->sql = $this->rescuer->quoteFields($this->sql);
             $this->prepare($this->sql);
         }
      
@@ -380,6 +397,20 @@ class Pdo
         $stmt->execute();
         return $stmt;
     }  
+    
+    /**
+    * Подключение конструктора
+    *
+    * @return object
+    */     
+    protected function getConstruct()
+    { 
+        if (empty($this->construct)) {
+            $this->construct = new SqlConstruct($this, $this->rescuer);
+        }
+        
+        return $this->construct;
+    }
     
     /**
     * Установка констант

@@ -15,13 +15,14 @@ class Expression
 
     protected $expression;
     protected $params = [];
+    
     /**
     * 
     *
     */     
-    public function __construct($params)
+    public function __construct($extression)
     {
-        $this->extression = $params[0];
+        $this->extression = $extression;
       
         if (!empty($params[1]) && is_array($params[1])) {
             foreach ($params[1] as $name => $value) {

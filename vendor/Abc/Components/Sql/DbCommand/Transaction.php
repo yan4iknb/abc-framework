@@ -26,10 +26,9 @@ class Transaction
     public function __construct($abc, $driver)
     {
         $this->driver = $driver;
-        $class = basename(get_class($this->driver->db));
         $this->config = $abc->getConfig(strtolower($class));
        
-        if (true === $this->config['debug'] && $this->class === 'Pdo') {
+        if (true === $this->config['debug'] && ABC_DBCOMMAND === 'PDO') {
             $this->driver->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION); 
         }
     }
@@ -73,7 +72,7 @@ class Transaction
     */     
     protected function restoreInstallation()
     {
-        if (true === $this->config['debug'] && $this->class === 'Pdo') {
+        if (true === $this->config['debug'] && ABC_DBCOMMAND === 'PDO') {
             $this->driver->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_WARNING); 
         }
     }    

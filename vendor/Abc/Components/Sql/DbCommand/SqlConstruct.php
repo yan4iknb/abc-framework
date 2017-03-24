@@ -39,6 +39,17 @@ class SqlConstruct
         $this->driver  = $driver;
         $this->rescuer = new $rescuer($driver, $prefix, $this->component); 
     }
+    
+  
+    /**
+    * Неопределенный метод
+    * 
+    * @return object
+    */     
+    public function __call($method, $param)
+    {
+        AbcError::badMethodCall($this->component .'<strong>'. $method .'</strong>()'. ABC_NO_METHOD_IN_DBC);
+    } 
    
     /**
     * Устанавливает префикс

@@ -15,6 +15,12 @@ class Ru
     protected static function errorReportings() 
     {
         return [
+'Call to undefined function (.+)' => 'Call to undefined function <strong>$1</strong><br /><span class="translate">
+
+(Вызов неопределенной функции <strong>$1</strong>)
+
+</span><br />',
+        
 '(.+?) operator not supported for strings' => '<strong>$1</strong> operator not supported for strings<br /><span class="translate">
 
 (<strong>$1</strong> оператор не поддерживается для строк)

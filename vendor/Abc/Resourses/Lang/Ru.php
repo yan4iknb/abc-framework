@@ -63,9 +63,7 @@ class Ru
         define('ABC_TRANSACTION_ERROR',        ' Transaction error:  <br /><span style="color:red">Ошибка транзакции: </span><br />'); 
         define('ABC_NO_SUPPORT',               ' This type of table is not supported by the debugger  <br /><span style="color:red">(Этот тип таблицы не поддерживается дебаггером)</span><br />'); 
         define('ABC_OTHER_OBJECT',             ' An inappropriate object is used  <br /><span style="color:red">(Используется неподходящий объект)</span><br />'); 
-        
-        
-        
+        define('ABC_NO_METHOD_IN_DBC',         ' method is not supported by the Query builder<br /><span style="color:red">(метод не поддерживается конструктором запросов)</span><br />');
         
         /**
         * Ошибки использования шаблонизатора

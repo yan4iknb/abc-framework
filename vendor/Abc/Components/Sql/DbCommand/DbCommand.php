@@ -3,6 +3,7 @@
 namespace ABC\Abc\Components\Sql\DbCommand;
 
 use ABC\Abc\Core\Exception\AbcError;
+use ABC\Abc\Components\Sql\DbCommand\Expression;
 use ABC\Abc\Components\Sql\DbCommand\Transaction;
 
 /** 
@@ -33,16 +34,6 @@ class DbCommand
         $driver = $this->space . $driver;
         $this->driver = new $driver($this->abc, $this);
     }
-    
-    /**
-    * Возвращает объект конструктора запроса
-    * 
-    * @return object
-    */     
-    public function subQuery()
-    {
-        return $this->abc->newService('DbCommand');
-    }  
   
     /**
     * Проксирование вызовов методов в выбраный драйвер
@@ -54,7 +45,26 @@ class DbCommand
         return $this->driver->$method($param);
     } 
     
+    /**
+    * Возвращает объект конструктора запроса
+    * 
+    * @return object
+    */     
+    public function subQuery()
+    {
+        return $this->abc->newService('DbCommand');
+    }  
     
+    /**
+    * Возвращает объект с выражениями
+    *
+    * @return object
+    */     
+    public function expression($params)
+    {
+        return new Expression($params);
+    }
+
     /**
     * Связывает значение с параметром 
     * 

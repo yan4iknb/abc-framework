@@ -3,7 +3,6 @@
 namespace ABC\Abc\Components\Sql\DbCommand;
 
 use ABC\Abc\Components\Sql\DbCommand\SqlConstruct;
-use ABC\Abc\Components\Sql\DbCommand\Expression;
 
 /** 
  * Конструктор для PDO
@@ -19,11 +18,11 @@ class Pdo
     
     protected $command;
     protected $construct;
+    protected $sql;    
     protected $stmt;
-    protected $query;
     protected $execute = false;
-    protected $isCreateCommand = false;
-    
+    protected $scalar;
+    protected $count;
     /**
     * Конструктор
     *
@@ -66,11 +65,8 @@ class Pdo
         $this->construct->isDisable();
         $this->construct->checkParams($params);
         $this->construct->disable();
-        $this->query = is_array($params) ? $params[0] : $params; 
-        $this->query = $this->construct->rescuer->quoteFields($this->query);
-        $values = !empty($params[1]) ? $params[1] : null;
-        $this->prepareQuery($values);
-        $this->isCreateCommand = true;
+        $this->sql = is_array($params) ? $params[0] : $params; 
+        $this->sql = $this->construct->rescuer->quoteFields($this->sql);
         return $this->command;
     }
 
@@ -111,10 +107,6 @@ class Pdo
     */     
     public function execute()
     { 
-        if (false === $this->isCreateCommand) {
-            $this->prepareQuery();
-        }
-        
         $values = $this->command->getParams();
      
         if (!empty($values)) {
@@ -129,7 +121,7 @@ class Pdo
     /**
     * Возвращает объект PDOStatement для разбора результа
     *
-    * @return array
+    * @return object
     */     
     public function query($sql, $params)
     {
@@ -146,7 +138,7 @@ class Pdo
     */     
     public function queryAll()
     {
-        $this->executeForSelect();
+        $this->executeInternal();
         return $this->stmt->fetchAll();
     }  
     
@@ -156,10 +148,10 @@ class Pdo
     *
     * @return mixed
     */     
-    public function queryColumn($num = 0)
+    public function queryColumn($params = [])
     {
-        $num = !empty($num) ? $num : 0;
-        $this->executeForSelect();
+        $num = !empty($params[0]) ? $params[0] : 0;
+
         return $this->stmt->fetchColumn($num);
     }
     
@@ -169,10 +161,11 @@ class Pdo
     *
     * @return mixed
     */     
-    public function queryRow()
+    public function queryRow($params = [])
     { 
-        $this->executeForSelect();
-        return $this->stmt->fetch(\PDO::FETCH_NUM);
+        $mode = !empty($params[0]) ? $params[0] : \PDO::FETCH_ASSOC;
+        $this->executeInternal();
+        return $this->stmt->fetch($mode);
     }
     
     /**
@@ -180,9 +173,9 @@ class Pdo
     *
     * @return mixed
     */     
-    public function queryOne()
+    public function queryOne($params)
     {
-        return $this->queryRow();
+        return $this->sqlRow($params);
     } 
     
     /**
@@ -193,62 +186,85 @@ class Pdo
     */     
     public function queryScalar()
     {
-        $this->executeForSelect();
-        return $this->stmt->fetchColumn();
+        if (empty($this->scalar)) {
+            $this->executeInternal();
+            $this->scalar = $this->stmt->fetchColumn();
+        }
+     
+        return $this->scalar;
+    }
+    
+    /**
+    * Вернёт количество строк текущего запроса
+    *
+    * @return mixed
+    */     
+    public function count($params = [])
+    {
+        $field = !empty($params[0]) ? $params[0] : '*';
+        $sql = $this->getSql();
+        $sql = preg_replace('~^SELECT(.+?)FROM~is', 
+                                    'SELECT COUNT('. $field .') FROM', 
+                                    $sql); 
+
+        if (empty($this->count)) {
+            $stmt = $this->executeCount($sql);
+            $this->count = $stmt->fetchColumn();
+        }
+     
+        return $this->count;
     }
 
     /**
     * Вставляет одну строку
     *
-    * @return int
+    * @return object
     */     
     public function insert()
     {
         $this->construct->insert(func_get_args()[0]);
+        $this->sql = $this->getSql();
+        $this->executeInternal();
         return $this->command;
     }
     
     /**
     * Вставляет много строк
     *
-    * @return int
+    * @return object
     */ 
     public function batchInsert()
     {
         $this->construct->batchInsert(func_get_args()[0]);
+        $this->sql = $this->getSql();
+        $this->executeInternal();
         return $this->command;
     }
     
     /**
     * Обновляет данные в строке
     *
-    * @return int
+    * @return object
     */     
     public function update()
     {
         $this->construct->update(func_get_args()[0]);
+        $this->sql = $this->getSql();
+        $this->executeInternal();
         return $this->command;
     }
     
     /**
     * Удаляет строки
     *
-    * @return int
+    * @return object
     */     
     public function delete()
     {
         $this->construct->delete(func_get_args()[0]);
+        $this->sql = $this->getSql();
+        $this->executeInternal();
         return $this->command;    
-    }
-    
-    /**
-    * Возвращает объект с выражениями
-    *
-    * @return object
-    */     
-    public function expression($params)
-    {
-        return new Expression($params);
     }
     
     /**
@@ -288,7 +304,7 @@ class Pdo
     */     
     public function getSql()
     {
-        return !empty($this->query) ? $this->query : $this->construct->getSql();
+        return !empty($this->sql) ? $this->sql : $this->construct->getSql();
     } 
     
     /**
@@ -298,7 +314,7 @@ class Pdo
     */       
     public function reset()
     {
-        $this->query = null;
+        $this->sql = null;
         $this->construct->reset();  
     } 
     
@@ -312,70 +328,63 @@ class Pdo
         $this->db->test();
         return $this->command;
     }
-    
-    /**
-    * Подготовка запросов
-    *
-    * @param array $values
-    *
-    * @return void
-    */      
-    protected function prepareQuery($values = null)
-    {
-        if (empty($this->query)) {
-            $this->query = $this->getSql();
-            $this->query = $this->construct->rescuer->quoteFields($this->query);
-        }
-        
-        $this->prepare($this->query); 
-      
-        if (!empty($values) && is_array($values)) {
-            $this->bindValues([$values]);
-        } 
-    } 
-    
-    /**
-    * Выполняет SELECT-запросы
-    *
-    * @return int
-    */     
-    protected function executeForSelect()
-    {
-        if (empty($this->query)) {
-            $this->query = $this->getSql();
-            $this->query = $this->construct->rescuer->quoteFields($this->query);
-            $this->prepare($this->query);
-        }
-     
-        if(false === $this->execute){
-            $this->execute();                       
-        }
-    }  
-    
+
     /**
     * Обертка PDO::prepare()
     *
     * @param string $sql
     *
-    * @return object
+    * @return void
     */     
     protected function prepare($sql)
-    {
-        $this->stmt = $this->db->prepare($sql);
-        return $this->command;        
+    {  
+        $this->stmt = $this->db->prepare($sql);        
     }
+    
+    /**
+    * Выполняет SELECT-запросы
+    *
+    * @return void
+    */     
+    protected function executeInternal()
+    {
+        if (empty($this->stmt)) {
+            $this->sql = $this->construct->rescuer->quoteFields($this->sql);
+            $this->prepare($this->sql);
+        }
+     
+        if(false === $this->execute){
+            $this->execute();                       
+        }
+    }
+    
+    /**
+    * Выполняет SELECT-запросы
+    *
+    * @return object
+    */     
+    protected function executeCount($sql)
+    {
+        $stmt = $this->db->prepare($sql);
+        $stmt->execute();
+        return $stmt;
+    }  
     
     /**
     * Установка констант
     *
+    * @return void
     */     
     public function defineConstants()
     {
+        defined('ABC_DBCOMMAND') or define('ABC_DBCOMMAND', 'PDO');
         defined('ABC_PARAM_INT') or define('ABC_PARAM_INT', \PDO::PARAM_INT);
         defined('ABC_PARAM_BOOL') or define('ABC_PARAM_BOOL', \PDO::PARAM_BOOL);
         defined('ABC_PARAM_NULL') or define('ABC_PARAM_NULL', \PDO::PARAM_NULL);
         defined('ABC_PARAM_STR') or define('ABC_PARAM_STR', \PDO::PARAM_STR);    
         defined('ABC_PARAM_LOB') or define('ABC_PARAM_LOB', \PDO::PARAM_LOB);
-        defined('ABC_PARAM_INPUT_OUTPUT') or define('ABC_PARAM_INPUT_OUTPUT', \PDO::PARAM_INPUT_OUTPUT);    
+        defined('ABC_PARAM_INPUT_OUTPUT') or define('ABC_PARAM_INPUT_OUTPUT', \PDO::PARAM_INPUT_OUTPUT);  
+        defined('ABC_FETCH_ASSOC') or define('ABC_FETCH_ASSOC', \PDO::FETCH_ASSOC);
+        defined('ABC_FETCH_NUM') or define('ABC_FETCH_NUM', \PDO::FETCH_NUM);
     }
 }

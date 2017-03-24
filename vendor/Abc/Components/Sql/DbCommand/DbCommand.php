@@ -166,5 +166,5 @@ class DbCommand
         }
         
         return $result;
-    }    
+    }
 }

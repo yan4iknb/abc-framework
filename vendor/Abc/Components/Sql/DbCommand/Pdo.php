@@ -22,7 +22,9 @@ class Pdo
     protected $stmt;
     protected $execute = false;
     protected $scalar;
+    protected $object;
     protected $count;
+    
     /**
     * Конструктор
     *
@@ -53,9 +55,8 @@ class Pdo
     } 
     
     /**
-    * Выполняет запрос из подготовленного выражения с привязкой параметров
+    * Общий запрос
     *
-    * @param string $sql
     * @param array $params
     *
     * @return object
@@ -119,41 +120,18 @@ class Pdo
     }
     
     /**
-    * Возвращает объект PDOStatement для разбора результа
-    *
-    * @return object
-    */     
-    public function query($sql, $params)
-    {
-        $this->createCommand($sql, $params);
-        $this->execute();
-        return $this->stmt;
-    } 
-    
-    /**
     * Возвращает набор строк. каждая строка - это ассоциативный массив с именами столбцов и значений.
     * если выборка ничего не вернёт, то будет получен пустой массив.
     *
     * @return array
     */     
-    public function queryAll()
+    public function queryAll($style = \PDO::FETCH_ASSOC)
     {
+        if (is_array($style)) {$style = $style[0];}
+        $this->sql = $this->getSql();
         $this->executeInternal();
-        return $this->stmt->fetchAll();
+        return $this->stmt->fetchAll($style);
     }  
-    
-    /**
-    * Вернёт один столбец 
-    * пустой массив, при отсутствии результата
-    *
-    * @return mixed
-    */     
-    public function queryColumn($params = [])
-    {
-        $num = !empty($params[0]) ? $params[0] : 0;
-
-        return $this->stmt->fetchColumn($num);
-    }
     
     /**
     * Вернёт одну строку 
@@ -161,22 +139,27 @@ class Pdo
     *
     * @return mixed
     */     
-    public function queryRow($params = [])
+    public function queryRow($style)
     { 
-        $mode = !empty($params[0]) ? $params[0] : \PDO::FETCH_ASSOC;
+        $style = (!empty($style) && is_array($style)) ? $style[0] : \PDO::FETCH_ASSOC;
+        $this->sql = $this->getSql();
         $this->executeInternal();
-        return $this->stmt->fetch($mode);
+        return $this->stmt->fetch($style);
     }
     
     /**
-    * Псевдоним для queryRow()
+    * Вернёт один столбец 
+    * пустой массив, при отсутствии результата
     *
     * @return mixed
     */     
-    public function queryOne($params)
+    public function queryColumn($num = 0)
     {
-        return $this->sqlRow($params);
-    } 
+        $num = (!empty($num) && is_array($num)) ? $num[0] : 0;
+        $this->sql = $this->getSql();
+        $this->executeInternal();
+        return $this->stmt->fetchColumn($num);
+    }
     
     /**
     * Вернёт скалярное значение
@@ -187,11 +170,28 @@ class Pdo
     public function queryScalar()
     {
         if (empty($this->scalar)) {
+            $this->sql = $this->getSql();
             $this->executeInternal();
             $this->scalar = $this->stmt->fetchColumn();
+            $this->stmt->closeCursor();
         }
      
         return $this->scalar;
+    }
+    
+    /**
+    * Вернёт результат в иде объекта
+    *
+    * @return mixed
+    */     
+    public function queryObject()
+    { 
+        $params = func_get_args()[0];
+        $className = !empty($params[0]) ? $params[0] : null;
+        $ctorArgs  = !empty($params[1]) ? $params[1] : [];        
+        $this->sql = $this->getSql();
+        $this->executeInternal();    
+        return $this->stmt->fetchObject($className, $ctorArgs);
     }
     
     /**
@@ -210,6 +210,7 @@ class Pdo
         if (empty($this->count)) {
             $stmt = $this->executeCount($sql);
             $this->count = $stmt->fetchColumn();
+            $stmt->closeCursor();
         }
      
         return $this->count;
@@ -229,7 +230,7 @@ class Pdo
     }
     
     /**
-    * Вставляет много строк
+    * Вставляет несколько строк
     *
     * @return object
     */ 
@@ -298,7 +299,7 @@ class Pdo
     }
     
     /**
-    * Возвращает текст SQL запроса
+    * Возвращает текущий текст SQL 
     *
     * @return string
     */     
@@ -328,6 +329,16 @@ class Pdo
         $this->db->test();
         return $this->command;
     }
+    
+    /**
+    * Освобождает ресурсы, выделенные для выполнения текущего запроса
+    * 
+    * @return void
+    */
+    public function close()
+    {
+        $this->stmt->closeCursor();
+    }    
 
     /**
     * Обертка PDO::prepare()
@@ -359,7 +370,7 @@ class Pdo
     }
     
     /**
-    * Выполняет SELECT-запросы
+    * Выполняет запрос для count()
     *
     * @return object
     */     

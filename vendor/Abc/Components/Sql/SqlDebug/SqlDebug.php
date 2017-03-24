@@ -19,7 +19,8 @@ class SqlDebug
     public $db; 
     public $error;
     public $trace;
- 
+    
+    protected $pref;  
     protected $view; 
     protected $explain;    
     protected $file;
@@ -73,6 +74,7 @@ class SqlDebug
         $language = $this->language;
         
         $data = ['message' => $this->component .': <b>'. $this->message .'</b>',
+                 'pref'    => $this->pref,
                  'error'   => $language::translate($this->error),
                  'num'     => $raw['num'],
                  'sql'     => $raw['sql'],
@@ -100,7 +102,8 @@ class SqlDebug
         $this->db->rawQuery($sql); 
         $time = sprintf("%01.4f", microtime(true) - $start);
         $this->explain = $this->performExplain($sql, $time);
-        $this->errorReport($sql);        
+        $this->pref = 'Testing the ';        
+        $this->errorReport($sql); 
     }
 
     /**

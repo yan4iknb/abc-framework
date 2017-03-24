@@ -4,7 +4,7 @@
     </div>
     <div class="mess">
          <strong>
-         Query in: </strong>{$file} 
+         {$pref} Query in: </strong>{$file} 
          <strong> on line: </strong>{$line}
          <br />
          {$error}

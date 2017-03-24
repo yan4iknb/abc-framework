@@ -258,7 +258,6 @@ class SqlConstruct
         $this->isDisable();
         $this->checkDuble('where');
         $this->checkParams($params);
-        //$params[0]
      
         if (!empty($params[1]) && is_array($params[1])) {
          

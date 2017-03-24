@@ -108,7 +108,7 @@ class Pdo
             }
             
             if (is_object($value)) {
-                $value = $this->construct->createExpressions($value);/////////////////////
+                $value = (new Expression())->createExpression($value, $this->rescuer);
                 $type  = null; 
             }
             

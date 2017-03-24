@@ -55,8 +55,6 @@ class Expression
                         $expressions .= str_replace($p, $this->rescuer->escape($v), $expression);                    
                     }
                 }
-                
-                return $expressions;            
             } 
          
             return $expression;            

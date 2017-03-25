@@ -27,10 +27,6 @@ class Transaction
     {
         $this->driver = $driver;
         $this->debug  = $abc->getConfig(strtolower(ABC_DBCOMMAND))['debug'];
-      
-        if (true === $this->debug && ABC_DBCOMMAND === 'PDO') {
-            $this->driver->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION); 
-        }
     }
     
     /**
@@ -38,8 +34,12 @@ class Transaction
     *
     * @return void
     */     
-    public function beginTransaction()
+    public function beginTransaction($exception = false)
     {
+        if (true === $exception && true === $this->debug && ABC_DBCOMMAND === 'PDO') {
+            $this->driver->db->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION); 
+        }
+     
         $this->driver->beginTransaction();
     } 
     

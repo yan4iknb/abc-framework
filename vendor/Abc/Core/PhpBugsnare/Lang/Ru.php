@@ -223,6 +223,25 @@ class Ru
 (Невозможно использовать объект типа <strong>$1</strong> как массив)
 
 </span><br />',
+'Call to a member function (.+?) on integer' => 'Call to a member function <strong>$1</strong> on integer<br /><span class="translate">
+
+(Вызов метода <strong>$1</strong> из числа)
+
+</span><br />',
+
+// PDO
+
+'.+Base table or view not found: 1146 Table (.+?) doesn\'t exist' => 'Base table or view not found: Table <strong>$1</strong> doesn\'t exist<br /><span class="translate">
+
+(Таблица <strong>$1</strong> не обнаружена в базе данных)
+
+</span><br />',
+'.+Field (.+?) doesn\'t have a default value' => 'Field <strong>$1</strong> doesn\'t have a default value<br /><span class="translate">
+
+(Поле <strong>$1</strong> не имеет значения по умолчанию)
+
+</span><br />',
+
 
                  //''  => '',
                  'Synᐃtax'  => 'Syntax',

@@ -426,14 +426,15 @@ class SqlConstruct
     */    
     public function limit($params)
     {
-        $this->isDisable();
-        $this->checkParams($params);
+        $this->isDisable();        
+        $limit = $params[0];
+        $this->checkParams($limit);
         $this->checkSequence('select', 'from', 'update', 'insert', 'delete');
         $this->checkDuble('limit');
-        $this->sql['limit'] = (int)$params[0];
+        $this->sql['limit'] = (int)$limit[0];
         
-        if (!empty($params[1])) {
-            $this->sql['offset'] = (int)$params[1];
+        if (!empty($limit[1])) {
+            $this->sql['offset'] = (int)$limit[1];
         }  
     } 
     

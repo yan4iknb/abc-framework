@@ -19,8 +19,8 @@ class Pdo
     public $disable = false;    
 
     protected $abc;
+    protected $component = ' Component DbCommand: '; 
     protected $space = 'ABC\Abc\Components\Sql\DbCommand\\';
-
     protected $command;
     protected $construct;
     protected $sql;    
@@ -97,7 +97,7 @@ class Pdo
     *
     * @return object
     */     
-    public function bindValues($params)
+    public function bindValues($stmt, $params)
     {
         foreach ($params as $name => $param) {
          
@@ -114,7 +114,7 @@ class Pdo
                 $type  = null; 
             }
             
-            $this->stmt->bindValue($name, $value, $type);
+            $stmt->bindValue($name, $value, $type);
         }
        
         return $this->command;
@@ -127,15 +127,20 @@ class Pdo
     */     
     public function execute()
     { 
-        $values = $this->command->getParams();
+        $this->sql = $this->getSql();
+        $sql  = $this->rescuer->quoteFields($this->sql);
+        $stmt = $this->db->prepare($sql);
      
-        if (!empty($values)) {
-            $this->bindValues($values);
-        }
+        $values = $this->command->getParams();        
         
-        $this->stmt->execute();
-        $this->execute = true;
-        return $this->stmt->rowCount();
+        if (!empty($values)) {
+            $this->bindValues($stmt, $values);
+        }
+
+        $stmt->execute();
+        $cnt = $stmt->rowCount();
+        $this->reset();
+        return $cnt;
     }
     
     /**
@@ -144,10 +149,9 @@ class Pdo
     *
     * @return array
     */     
-    public function queryAll($style = \PDO::FETCH_ASSOC)
+    public function queryAll($style)
     {
-        if (is_array($style)) {$style = $style[0];}
-        $this->sql = $this->getSql();
+        $style = (!empty($style) && is_array($style)) ? $style[0] : \PDO::FETCH_ASSOC;
         $this->executeInternal();
         return $this->stmt->fetchAll($style);
     }  
@@ -161,8 +165,7 @@ class Pdo
     public function queryRow($style)
     { 
         $style = (!empty($style) && is_array($style)) ? $style[0] : \PDO::FETCH_ASSOC;
-        $this->sql = $this->getSql();
-        $this->executeInternal();
+        $this->executeInternal(); 
         return $this->stmt->fetch($style);
     }
     
@@ -243,8 +246,6 @@ class Pdo
     public function insert()
     {
         $this->getConstruct()->insert(func_get_args()[0]);
-        $this->sql = $this->getSql();
-        $this->prepareInternal();
         return $this->command;
     }
     
@@ -256,8 +257,6 @@ class Pdo
     public function batchInsert()
     {
         $this->getConstruct()->batchInsert(func_get_args()[0]);
-        $this->sql = $this->getSql();
-        $this->prepareInternal();
         return $this->command;
     }
     
@@ -269,8 +268,6 @@ class Pdo
     public function update()
     {
         $this->getConstruct()->update(func_get_args()[0]);
-        $this->sql = $this->getSql();
-        $this->prepareInternal();
         return $this->command;
     }
     
@@ -282,8 +279,6 @@ class Pdo
     public function delete()
     {
         $this->getConstruct()->delete(func_get_args()[0]);
-        $this->sql = $this->getSql();
-        $this->prepareInternal();
         return $this->command;    
     }
     
@@ -324,7 +319,11 @@ class Pdo
     */     
     public function getSql()
     {
-        return !empty($this->sql) ? $this->sql : $this->getConstruct()->getSql();
+        if (!$this->disable) {
+            return $this->getConstruct()->getSql();
+        }
+        
+        return $this->sql; 
     } 
     
     /**
@@ -371,25 +370,19 @@ class Pdo
     *
     * @return void
     */     
-    protected function prepareInternal()
-    {
-        if (empty($this->stmt)) {
-            $sql  = $this->rescuer->quoteFields($this->sql);
-            $this->stmt = $this->db->prepare($sql);
-        }
-    }
-    
-    /**
-    * Выполняет SELECT-запросы
-    *
-    * @return void
-    */     
     protected function executeInternal()
     {
-        $this->prepareInternal();
-     
         if(false === $this->execute){
-            $this->execute();                       
+            $sql = $this->getSql(); 
+            $this->stmt = $this->db->prepare($sql);
+            $values = $this->command->getParams();        
+            
+            if (!empty($values)) {
+                $this->bindValues($this->stmt, $values);
+            }  
+            
+            $this->stmt->execute();
+            $this->execute = true;
         }
     }
     

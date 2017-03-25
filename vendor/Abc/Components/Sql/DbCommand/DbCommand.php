@@ -122,7 +122,7 @@ class DbCommand
             $this->transaction = new Transaction($this->abc, $this->driver);
         }
         
-        $this->transaction->beginTransaction();
+        $this->transaction->beginTransaction(true);
         return $this->transaction;
     }
     
@@ -149,10 +149,9 @@ class DbCommand
             
         } catch (\Exception $e) {
             $this->transaction->rollback();
-            AbcError::logic('DbCommand: ' . ABC_TRANSACTION_ERROR . $e->getMessage());
+            throw $e;
         } catch (\Throwable $e) {
             $this->transaction->rollback();
-            AbcError::logic('DbCommand: ' . ABC_TRANSACTION_ERROR . $e->getMessage());
         }
         
         return $result;

@@ -32,6 +32,7 @@ class SqlConstruct
     */     
     public function __construct($driver, $rescuer)
     {
+        $this->prefix  = $driver->prefix;
         $this->driver  = $driver;
         $this->rescuer = $rescuer;
     }

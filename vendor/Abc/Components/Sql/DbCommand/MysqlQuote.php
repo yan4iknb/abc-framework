@@ -20,9 +20,8 @@ class MysqlQuote
     /**
     * @param string $driver
     */  
-    public function __construct($driver, $prefix)
+    public function __construct($prefix)
     {
-        $this->driver = $driver;
         $this->prefix = $prefix;
     }
 
@@ -108,9 +107,9 @@ class MysqlQuote
     */     
     public function escape($values)
     {
-        switch ($this->driver) {
+        switch (ABC_DBCOMMAND) {
          
-            case 'Pdo' :
+            case 'PDO' :
                 $pdo = \ABC\Abc::sharedService('Pdo');
                 
                 

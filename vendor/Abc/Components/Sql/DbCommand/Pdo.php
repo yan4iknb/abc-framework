@@ -15,10 +15,12 @@ use ABC\Abc\Components\Sql\DbCommand\SqlConstruct;
 class Pdo
 {
     public $db;
+    public $prefix;
     public $disable = false;    
 
     protected $abc;
     protected $space = 'ABC\Abc\Components\Sql\DbCommand\\';
+
     protected $command;
     protected $construct;
     protected $sql;    
@@ -38,10 +40,10 @@ class Pdo
         $dbType   = $abc->getConfig('db_command')['db_type'];        
         $rescuer  = $this->space . $dbType . 'Quote';
         $this->db = $abc->sharedService('Pdo');
-        $prefix   = $this->db->prefix;    
+        $this->prefix = $this->db->prefix;    
         $this->command = $command;
         
-        $this->rescuer = new $rescuer($this, $prefix);
+        $this->rescuer = new $rescuer($this->prefix);
         $this->defineConstants();
     }
     
@@ -83,7 +85,7 @@ class Pdo
     public function createCommand($params)
     {
         $this->disable = true;
-        $this->sql = is_array($params) ? $params[0] : $params; 
+        $this->sql = $params[0]; 
         $this->sql = $this->rescuer->quoteFields($this->sql);
         return $this->command;
     }
@@ -242,7 +244,7 @@ class Pdo
     {
         $this->getConstruct()->insert(func_get_args()[0]);
         $this->sql = $this->getSql();
-        $this->executeInternal();
+        $this->prepareInternal();
         return $this->command;
     }
     
@@ -255,7 +257,7 @@ class Pdo
     {
         $this->getConstruct()->batchInsert(func_get_args()[0]);
         $this->sql = $this->getSql();
-        $this->executeInternal();
+        $this->prepareInternal();
         return $this->command;
     }
     
@@ -268,7 +270,7 @@ class Pdo
     {
         $this->getConstruct()->update(func_get_args()[0]);
         $this->sql = $this->getSql();
-        $this->executeInternal();
+        $this->prepareInternal();
         return $this->command;
     }
     
@@ -281,7 +283,7 @@ class Pdo
     {
         $this->getConstruct()->delete(func_get_args()[0]);
         $this->sql = $this->getSql();
-        $this->executeInternal();
+        $this->prepareInternal();
         return $this->command;    
     }
     
@@ -332,8 +334,15 @@ class Pdo
     */       
     public function reset()
     {
-        $this->sql = null;
-        $this->getConstruct()->reset();  
+        if (!empty($this->stmt)) { 
+            $this->execute = false;
+            $this->stmt = null;
+            $this->sql  = null;
+            
+            if (!$this->disable) {
+                $this->getConstruct()->reset(); 
+            }
+        } 
     } 
     
     /**
@@ -355,18 +364,19 @@ class Pdo
     public function close()
     {
         $this->stmt->closeCursor();
-    }    
-
+    }
+    
     /**
-    * Обертка PDO::prepare()
-    *
-    * @param string $sql
+    * Выполняет SELECT-запросы
     *
     * @return void
     */     
-    protected function prepare($sql)
-    {  
-        $this->stmt = $this->db->prepare($sql);        
+    protected function prepareInternal()
+    {
+        if (empty($this->stmt)) {
+            $sql  = $this->rescuer->quoteFields($this->sql);
+            $this->stmt = $this->db->prepare($sql);
+        }
     }
     
     /**
@@ -376,10 +386,7 @@ class Pdo
     */     
     protected function executeInternal()
     {
-        if (empty($this->stmt)) {
-            $this->sql = $this->rescuer->quoteFields($this->sql);
-            $this->prepare($this->sql);
-        }
+        $this->prepareInternal();
      
         if(false === $this->execute){
             $this->execute();                       

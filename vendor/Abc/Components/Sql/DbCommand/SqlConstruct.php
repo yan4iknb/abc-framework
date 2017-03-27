@@ -583,8 +583,6 @@ class SqlConstruct
         $this->sql = [];
         $this->params = [];
         $this->query = null;
-        $this->rescuer->prefix = $this->prefix;
-        $this->rescuer->newPrefix = null;
         $this->disable = false;        
     } 
     
@@ -881,10 +879,6 @@ class SqlConstruct
             $expression = $this->createExpressions($params);
             $columns[] = $this->rescuer->addAliasToExpression($expression);
         } 
-        
-        if (empty($params)) {
-            AbcError::logic($this->component . ABC_COMMAND_SELECT);
-        }
         
         return  implode(', ', $columns);
     }  

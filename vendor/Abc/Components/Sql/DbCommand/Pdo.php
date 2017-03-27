@@ -76,6 +76,16 @@ class Pdo
         $this->db = $this->abc->newService('Pdo');
         $this->db->newConnect($config);
     }
+   
+    /**
+    * Устанавливает префикс
+    *
+    * @param array $params
+    */     
+    public function setPrefix($prefix)
+    {
+        $this->rescuer->newPrefix = $prefix;
+    }
 
     /**
     * Удаляет префиксы
@@ -87,16 +97,6 @@ class Pdo
         $this->rescuer->prefix = null;
         $this->rescuer->newPrefix = null;
     } 
-   
-    /**
-    * Устанавливает префикс
-    *
-    * @param array $params
-    */     
-    public function setPrefix($prefix)
-    {
-        $this->rescuer->newPrefix = $prefix;
-    }
     
     /**
     * Общий запрос
@@ -310,7 +310,9 @@ class Pdo
             $this->execute = false;
             $this->stmt = null;
             $this->sql  = null;
-            
+            $this->rescuer->prefix = $this->prefix;
+            $this->rescuer->newPrefix = null;
+        
             if (!$this->disable) {
                 $this->construct->reset(); 
             }

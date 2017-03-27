@@ -14,7 +14,6 @@ class Ru
 {
     public static function setConstants()
     {
-        defined('ABC_COMMAND_SELECT')    or define('ABC_COMMAND_SELECT', ' Syntax error for the SELECT statement <br /><span style="color:red">(ошибка синтаксиса оператора SELECT)</span><br />');
         defined('ABC_SQL_SEQUENCE')      or define('ABC_SQL_SEQUENCE',            ' Operator sequence error <br /><span style="color:red">(ошибка последовательности методов)</span><br />');
         defined('ABC_SQL_DUBLE')         or define('ABC_SQL_DUBLE',               ' Operator repeat <br /><span style="color:red">(повтор оператора)</span><br />');
         defined('ABC_SQL_NO_CONDITIONS') or define('ABC_SQL_NO_CONDITIONS',       ' No conditions are specified <br /><span style="color:red">(не задано имя поля или значение)</span><br />');
@@ -29,6 +28,8 @@ class Ru
     protected static function errorReportings() 
     {
         return [
+'Incorrect usage of (.+?) and (.+)' => 'Incorrect usage of <strong>$1</strong> and <strong>$2</strong>
+<br /><span class="translate">(Неверное использование <strong>$1</strong> и <strong>$2</strong>)</span><br />',
 'Incorrect datetime value: \'(.+?)\' for column \'(.+?)\' at row (\d+)' => 'Incorrect datetime value: \'$1\' for column \'$2\' at row $3
 <br /><span class="translate">(Некорректное значение даты и времени: <strong>$1</strong> для столбца <strong>$2</strong> в строке <strong>$3</strong>)</span><br />',
 'Base Table or view not found: (\d*?)(.+)' => ' $2 ',        

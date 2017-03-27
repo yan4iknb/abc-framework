@@ -26,9 +26,9 @@ class Expression
     public function __construct($extression = null)
     {
         $this->extression = $extression;
-      
-        if (!empty($params[1]) && is_array($params[1])) {
-            foreach ($params[1] as $name => $value) {
+    
+        if (!empty($params) && is_array($params)) {
+            foreach ($params as $name => $value) {
                 $this->params[$name] = $value;
             }
         }

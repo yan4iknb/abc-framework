@@ -58,13 +58,13 @@ class Ru
         define('ABC_INVALID_MYSQLI_TYPE',      ' Number of elements in type definition string doesn\'t match number of bind variables  <br /><span style="color:red">(количество элементов типа отличается от количества аргументов)</span><br />');
         define('ABC_NO_MYSQLI_TYPE',           ' Unknown type of the parameter  <br /><span style="color:red">(неизвестный тип параметра)</span><br />');
         define('ABC_SQL_ERROR',                ' Query build error  <br /><span style="color:red">(Ошибка построения запроса)</span><br />');
-        define('ABC_SQL_EMPTY_ARGUMENTS',      ' No arguments given <br /><span style="color:red">(Не заданы аргументы)</span><br />');        
+        define('ABC_SQL_EMPTY_ARGUMENTS',      ' Not all arguments are specified in a member function <br /><span style="color:red"> Не все аргументы заданы в методе <strong>');        
         define('ABC_TRANSACTION_EXIST',        ' There is already an active transaction  <br /><span style="color:red">(Уже есть активная транзакция)</span><br />');
         define('ABC_TRANSACTION_ERROR',        ' Transaction error:  <br /><span style="color:red">Ошибка транзакции: </span><br />'); 
         define('ABC_NO_SUPPORT',               ' This type of table is not supported by the debugger  <br /><span style="color:red">(Этот тип таблицы не поддерживается дебаггером)</span><br />'); 
         define('ABC_OTHER_OBJECT',             ' An inappropriate object is used  <br /><span style="color:red">(Используется неподходящий объект)</span><br />'); 
         define('ABC_NO_METHOD_IN_DBC',         ' method is not supported by the Query builder<br /><span style="color:red">(метод не поддерживается конструктором запросов)</span><br />');
-        
+        define('ABC_ERROR_BINDVALUES',         ' The numbering of the array in the parameter of the <strong>bindValues()</strong> method must begin with 1<br /><span style="color:red">(Нумерация массива в параметре метода <strong>bindValues()</strong> должна начинаться с единицы)</span><br />');
         /**
         * Ошибки использования шаблонизатора
         */ 

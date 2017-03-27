@@ -15,14 +15,16 @@ use ABC\Abc\Components\Sql\DbCommand\SqlConstruct;
 class Pdo
 {
     public $db;
+    public $construct;
+    public $rescuer;
     public $prefix;
-    public $disable = false;    
+    public $disable = false;
 
     protected $abc;
     protected $component = ' Component DbCommand: '; 
     protected $space = 'ABC\Abc\Components\Sql\DbCommand\\';
     protected $command;
-    protected $construct;
+
     protected $sql;    
     protected $stmt;
     protected $execute = false;
@@ -40,10 +42,10 @@ class Pdo
         $dbType   = $abc->getConfig('db_command')['db_type'];        
         $rescuer  = $this->space . $dbType . 'Quote';
         $this->db = $abc->sharedService('Pdo');
-        $this->prefix = $this->db->prefix;    
+        $this->prefix  = $this->db->prefix;    
         $this->command = $command;
         
-        $this->rescuer = new $rescuer($this->prefix);
+        $this->rescuer = new $rescuer($this->db, $this->prefix);
         $this->defineConstants();
     }
     
@@ -52,42 +54,63 @@ class Pdo
     */     
     public function __call($method, $params)
     { 
-        $this->getConstruct()->$method($params);
+        $this->construct->$method($params);
         return $this;
     }
 
     /**
     * Текст для подзапроса
-    */  
+    *
+    * @return string
+    */ 
     public function __toString()
     { 
-        return $this->getConstruct()->getSql();
+        return $this->construct->getSql();
     } 
     
     /**
-    * Возвращает объект с выражениями
-    *
-    * @return object
-    */     
-    public function expression($params)
-    {
-        return new Expression($params[0]);
+    * Смена СУБД
+    */  
+    public function setDb($config)
+    { 
+        $this->db = $this->abc->newService('Pdo');
+        $this->db->newConnect($config);
     }
-    
+
+    /**
+    * Удаляет префиксы
+    *
+    * @param array $params
+    */     
+    public function unsetPrefix()
+    {
+        $this->rescuer->prefix = null;
+        $this->rescuer->newPrefix = null;
+    } 
+   
+    /**
+    * Устанавливает префикс
+    *
+    * @param array $params
+    */     
+    public function setPrefix($prefix)
+    {
+        $this->rescuer->newPrefix = $prefix;
+    }
     
     /**
     * Общий запрос
     *
-    * @param array $params
+    * @param string $sql
     *
     * @return object
     */     
-    public function createCommand($params)
+    public function createCommand($sql)
     {
         $this->disable = true;
-        $this->sql = $params[0]; 
+        $this->sql = $sql; 
         $this->sql = $this->rescuer->quoteFields($this->sql);
-        return $this->command;
+
     }
 
     /**
@@ -97,7 +120,7 @@ class Pdo
     *
     * @return object
     */     
-    public function bindValues($stmt, $params)
+    protected function bindValuesInternal($stmt, $params)
     {
         foreach ($params as $name => $param) {
          
@@ -117,7 +140,7 @@ class Pdo
             $stmt->bindValue($name, $value, $type);
         }
        
-        return $this->command;
+
     }
 
     /**
@@ -127,16 +150,15 @@ class Pdo
     */     
     public function execute()
     { 
-        $this->sql = $this->getSql();
-        $sql  = $this->rescuer->quoteFields($this->sql);
+        $sql = $this->getSql();
         $stmt = $this->db->prepare($sql);
      
-        $values = $this->command->getParams();        
-        
-        if (!empty($values)) {
-            $this->bindValues($stmt, $values);
+        $params = $this->command->getParams();        
+     
+        if (!empty($params)) {
+            $this->bindValuesInternal($stmt, $params);
         }
-
+     
         $stmt->execute();
         $cnt = $stmt->rowCount();
         $this->reset();
@@ -149,9 +171,9 @@ class Pdo
     *
     * @return array
     */     
-    public function queryAll($style)
+    public function queryAll($style = null)
     {
-        $style = (!empty($style) && is_array($style)) ? $style[0] : \PDO::FETCH_ASSOC;
+        $style = (!empty($style)) ? $style : \PDO::FETCH_ASSOC;
         $this->executeInternal();
         return $this->stmt->fetchAll($style);
     }  
@@ -162,9 +184,9 @@ class Pdo
     *
     * @return mixed
     */     
-    public function queryRow($style)
+    public function queryRow($style = null)
     { 
-        $style = (!empty($style) && is_array($style)) ? $style[0] : \PDO::FETCH_ASSOC;
+        $style = (!empty($style)) ? $style : \PDO::FETCH_ASSOC;
         $this->executeInternal(); 
         return $this->stmt->fetch($style);
     }
@@ -177,7 +199,6 @@ class Pdo
     */     
     public function queryColumn($num = 0)
     {
-        $num = (!empty($num) && is_array($num)) ? $num[0] : 0;
         $this->sql = $this->getSql();
         $this->executeInternal();
         return $this->stmt->fetchColumn($num);
@@ -202,15 +223,12 @@ class Pdo
     }
     
     /**
-    * Вернёт результат в иде объекта
+    * Вернёт результат в виде объекта
     *
     * @return mixed
     */     
-    public function queryObject()
-    { 
-        $params = func_get_args()[0];
-        $className = !empty($params[0]) ? $params[0] : null;
-        $ctorArgs  = !empty($params[1]) ? $params[1] : [];        
+    public function queryObject($className = null, $ctorArgs = [])
+    {        
         $this->sql = $this->getSql();
         $this->executeInternal();    
         return $this->stmt->fetchObject($className, $ctorArgs);
@@ -221,9 +239,8 @@ class Pdo
     *
     * @return mixed
     */     
-    public function count($params = [])
+    public function count($field = '*')
     {
-        $field = !empty($params[0]) ? $params[0] : '*';
         $sql = $this->getSql();
         $sql = preg_replace('~^SELECT(.+?)FROM~is', 
                                     'SELECT COUNT('. $field .') FROM', 
@@ -236,50 +253,6 @@ class Pdo
         }
      
         return $this->count;
-    }
-
-    /**
-    * Вставляет одну строку
-    *
-    * @return object
-    */     
-    public function insert()
-    {
-        $this->getConstruct()->insert(func_get_args()[0]);
-        return $this->command;
-    }
-    
-    /**
-    * Вставляет несколько строк
-    *
-    * @return object
-    */ 
-    public function batchInsert()
-    {
-        $this->getConstruct()->batchInsert(func_get_args()[0]);
-        return $this->command;
-    }
-    
-    /**
-    * Обновляет данные в строке
-    *
-    * @return object
-    */     
-    public function update()
-    {
-        $this->getConstruct()->update(func_get_args()[0]);
-        return $this->command;
-    }
-    
-    /**
-    * Удаляет строки
-    *
-    * @return object
-    */     
-    public function delete()
-    {
-        $this->getConstruct()->delete(func_get_args()[0]);
-        return $this->command;    
     }
     
     /**
@@ -320,7 +293,7 @@ class Pdo
     public function getSql()
     {
         if (!$this->disable) {
-            return $this->getConstruct()->getSql();
+            return $this->construct->getSql();
         }
         
         return $this->sql; 
@@ -339,7 +312,7 @@ class Pdo
             $this->sql  = null;
             
             if (!$this->disable) {
-                $this->getConstruct()->reset(); 
+                $this->construct->reset(); 
             }
         } 
     } 
@@ -352,7 +325,6 @@ class Pdo
     public function test()
     {
         $this->db->test();
-        return $this->command;
     }
     
     /**
@@ -378,7 +350,7 @@ class Pdo
             $values = $this->command->getParams();        
             
             if (!empty($values)) {
-                $this->bindValues($this->stmt, $values);
+                $this->bindValuesInternal($this->stmt, $values);
             }  
             
             $this->stmt->execute();
@@ -397,20 +369,6 @@ class Pdo
         $stmt->execute();
         return $stmt;
     }  
-    
-    /**
-    * Подключение конструктора
-    *
-    * @return object
-    */     
-    protected function getConstruct()
-    { 
-        if (empty($this->construct)) {
-            $this->construct = new SqlConstruct($this, $this->rescuer);
-        }
-        
-        return $this->construct;
-    }
     
     /**
     * Установка констант

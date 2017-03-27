@@ -69,8 +69,8 @@ class SqlDebug
     * @return void
     */        
     public function errorReport($sql)
-    {
-        $raw = $this->prepareSqlListing($sql, $this->db->error);
+    { 
+        $raw = $this->prepareSqlListing($sql, $this->error);
         $language = $this->language;
         
         $data = ['message' => $this->component .': <b>'. $this->message .'</b>',
@@ -121,7 +121,7 @@ class SqlDebug
         
         if (!empty($error)) {
             preg_match("#'(.+?)'#is", $error, $location);
-            
+           
             if (!empty($location[1])) {
                 $sql = $this->view->highlightLocation($sql, $location[1]);
             }
@@ -168,8 +168,13 @@ class SqlDebug
         $php = '';
         $i = 0;
         $hide = ['Shaper.php', 'DbCommand'];
-     
+       
         foreach ($this->trace as $block) {
+         
+            if (empty($block['file'])) {
+                continue;
+            }
+         
             $name = basename($block['file']);
             $dir  = basename(dirname($block['file']));
             

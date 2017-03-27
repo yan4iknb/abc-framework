@@ -21,6 +21,8 @@ class Pdo extends \PDO
     protected $abc;
     protected $shaper = '\ABC\Abc\Components\Sql\Pdo\Shaper';
     protected $debugger;
+    
+    private $connect = false;
 
     /**
     * Конструктор
@@ -31,47 +33,22 @@ class Pdo extends \PDO
     {
         $this->abc = $abc;
         $config = $abc->getConfig('pdo');
-        
-        if (!empty($config)) {
-            $this->newConnect($config);  
-        } else {
-            AbcError::invalidArgument(' Component PDO: '. ABC_WRONG_CONNECTION);
-        }
+        $this->setMode($config);
     }
     
     /**
-    * Коннектор
+    * Новый коннект
     *
+    * @param array $config
+    * 
     * @return void
-    */     
+    */       
     public function newConnect($config = [])
     {
-        if (!$this->checkConfig($config)) {
-            return false;
-        }
-     
-        if (!isset($config['dsn'], $config['user'], $config['pass'])) {
-            AbcError::invalidArgument(' Component PDO: '. ABC_WRONG_CONNECTION);
-            return false;
-        }
-        
-        if (empty($config['opt'])) {
-            $opt = [
-                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
-            ];            
-        } else {
-            $opt = $config['opt'];
-        }
-        
-        $this->debugger  = !empty($config['debug']) ? $this->abc->newService('SqlDebug') : null;
-        $this->prefix = !empty($config['prefix']) ? $config['prefix'] : null; 
-     
-        parent::__construct($config['dsn'], $config['user'], $config['pass'], $opt);
-        
-        if (!empty($config['debug'])) {
-            $this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [$this->shaper, [$this]]); 
-            $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING); 
+        if (false === $this->connect) {
+            $this->setMode($config);
+            $this->connector();
+            $this->connect = true;
         }
     }
     
@@ -95,14 +72,16 @@ class Pdo extends \PDO
     */     
     public function query($sql)
     {
+        $this->newConnect();
+       
         if (!empty($this->debugger)) {
          
             if (false === $this->checkEngine($sql)) {
                 AbcError::logic(' Component PDO: '. ABC_NO_SUPPORT);
                 return false;
             }
-         
-            $result = @parent::query($sql);     
+           
+            $result = @parent::query($sql);  
             $this->debugger->error = $this->errorInfo()[2];
             $this->debugger->trace = debug_backtrace();
             $this->debugger->db = $this;
@@ -126,10 +105,25 @@ class Pdo extends \PDO
     * @return object
     */     
     public function prepare($sql, $options = [])
-    {    
+    { 
+        $this->newConnect();
         $stmt = parent::prepare($sql, $options);
         $stmt->rawSql = $sql;
         return $stmt;
+    }
+    
+    /**
+    * Обертка для quote()
+    *
+    * @param string $string
+    * @param int $type
+    *    
+    * @return object
+    */     
+    public function quote($string, $type = null)
+    { 
+        $this->newConnect();
+        return parent::quote($string, PDO::PARAM_STR);
     }
     
     /**
@@ -174,9 +168,51 @@ class Pdo extends \PDO
     } 
     
     /**
+    * Установка режимов
+    *
+    * @param array $config
+    * 
+    * @return void
+    */     
+    protected function setMode($config)
+    {
+        $this->config = !empty($config) ? $config : $this->config;  
+        $this->prefix = !empty($this->config['prefix']) ? $this->config['prefix'] : null;
+        $this->debugger  = !empty($this->config['debug']) ? $this->abc->newService('SqlDebug') : null;
+    }
+    
+    /**
+    * Коннектор
+    *
+    * @return void
+    */     
+    protected function connector()
+    {
+        if (!$this->checkConfig($this->config)) {
+            return false;
+        }
+     
+        if (empty($this->config['opt'])) {
+            $opt = [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC
+            ];            
+        } else {
+            $opt = $this->config['opt'];
+        }
+        
+        parent::__construct($this->config['dsn'], $this->config['user'], $this->config['pass'], $opt);
+        
+        if (!empty($this->config['debug'])) {
+            $this->setAttribute(PDO::ATTR_STATEMENT_CLASS, [$this->shaper, [$this]]); 
+            $this->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_WARNING); 
+        }
+    }
+    
+    /**
     * Проверка корректности настроек
     *
-    * @param string $config
+    * @param array $config
     *    
     * @return bool
     */     

@@ -64,7 +64,9 @@ class En
         define('ABC_TRANSACTION_EXIST',        ' There is already an active transaction');
         define('ABC_TRANSACTION_ERROR',        ' Transaction error: '); 
         define('ABC_NO_SUPPORT',               ' This type of table is not supported by the debugger'); 
-        define('ABC_OTHER_OBJECT',             ' An inappropriate object is used'); 
+        define('ABC_OTHER_OBJECT',             ' An inappropriate object is used');
+        define('ABC_ERROR_BINDVALUES',         ' The numbering of parameters must begin with 1');
+        
         /**
         * Errors template
         */ 

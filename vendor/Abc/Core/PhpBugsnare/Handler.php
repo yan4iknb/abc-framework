@@ -116,6 +116,10 @@ class Handler
     */    
     protected function blocksFilter($block, $beforeClass = '')
     { 
+        if (empty($block['file'])) {
+            return false;
+        }
+    
         if (!empty($block['file'][1]) && false !== strpos($block['file'], 'eval')) {
             return false;
         }

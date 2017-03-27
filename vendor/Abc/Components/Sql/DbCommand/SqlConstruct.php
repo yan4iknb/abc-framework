@@ -30,11 +30,11 @@ class SqlConstruct
     *
     * @param string config
     */     
-    public function __construct($driver, $rescuer)
+    public function __construct($driver)
     {
         $this->prefix  = $driver->prefix;
         $this->driver  = $driver;
-        $this->rescuer = $rescuer;
+        $this->rescuer = $driver->rescuer;
     }
     
   
@@ -45,50 +45,24 @@ class SqlConstruct
     */     
     public function __call($method, $param)
     {
-        AbcError::badMethodCall($this->component .'<strong>'. $method .'</strong>()'. ABC_NO_METHOD_IN_DBC);
+        AbcError::badMethodCall($this->component .'<strong>'. $method .'()</strong>'. ABC_NO_METHOD_IN_DBC);
     } 
-   
-    /**
-    * Устанавливает префикс
-    *
-    * @param array $params
-    */     
-    public function setPrefix($params)
-    {
-        $this->rescuer->newPrefix = $params[0][0];
-    }
 
-    /**
-    * Удаляет префиксы
-    *
-    * @param array $params
-    */     
-    public function unsetPrefix()
-    {
-        $this->rescuer->prefix = null;
-        $this->rescuer->newPrefix = null;
-    }
-    
     /**
     * Метод оператора SELECT
     *
     * @param array $params
     */     
-    public function select($params)
+    public function select($columns = null, $options = null)
     {
-        $this->isDisable();
-        $this->checkDuble('select');
-        $this->checkDuble('select distinct');        
-     
-        if (is_array($params)) {
-            $params = $params[0];
+        if (!$this->check(__METHOD__, func_num_args(), 0)) {
+            return false;
         }
         
-        $options = !empty($params[1]) ? $params[1] : null;
-        $params =  !empty($params[0]) ? $params[0] : null;
-        $columns = $this->normaliseColumns($params);       
-     
-        $this->sql['select'] = $options .' '. implode(', ', $columns);
+        $this->checkDuble('select');
+        $this->checkDuble('select distinct');
+        $columns = $this->normaliseColumns($columns);
+        $this->sql['select'] = $options .' '. $columns;
     }
     
     /**
@@ -96,14 +70,15 @@ class SqlConstruct
     *
     * @param array $params
     */     
-    public function addSelect($params)
+    public function addSelect($columns = null)
     {
-        $this->isDisable();
-        $this->checkSequence('select');
+        if (!$this->check(__METHOD__, func_num_args(), 0)) {
+            return false;
+        }
         
-        $params = !empty($params[0]) ? $params[0] : null;
-        $columns = $this->normaliseColumns($params);
-        $this->sql['select'] .= ', '. implode(', ', $columns);
+        $this->checkSequence('select'); 
+        $columns = $this->normaliseColumns($columns);
+        $this->sql['select'] .= ', '. $columns;
     }
   
     /**
@@ -111,53 +86,37 @@ class SqlConstruct
     *
     * @param array $params
     */     
-    public function selectDistinct(...$params)
+    public function selectDistinct($columns = null, $options = null)
     {
-        $this->isDisable();
-        $this->checkParams($params);
+        if (!$this->check(__METHOD__, func_num_args(), 0)) {
+            return false;
+        }
+        
         $this->checkDuble('select');
         $this->checkDuble('select distinct');
-        $this->select($params[0]);
-        $this->sql['select distinct'] = $this->sql['select'];
-        unset($this->sql['select']);
+        $options = 'DISTINCT'. $options;
+        $columns = $this->select($columns, $options);
     }
     
     /**
     * Метод оператора FROM
     *
-    * @param array $params
+    * @param string|array $tables
     */     
-    public function from($params)
-    {
-        if (is_array($params[0])) {
-            $params = $params[0];
+    public function from($tables = null)
+    { 
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
         }
-     
-        $this->isDisable();
-        $this->checkParams($params);
+        
         $this->checkSequence('select', 'delete');
         $this->checkDuble('from');
-        $from = '';
         
-        foreach ($params as $key => $table) {
-         
-            if (is_string($table) && false === strpos($table, '(')) {
-                $table = $this->rescuer->addAliasToTable($table, $key);
-            } elseif (is_object($table)) {
-                $class =  get_class($this->driver);
-                
-                if ($table instanceof $class) {
-                    $table = '('. $table->getSql() .') ';
-                    $table = $this->rescuer->addAliasToTable($table, $key);
-                } else {
-                    AbcError::invalidArgument($this->component . ABC_OTHER_OBJECT);
-                }
-            }
-            
-            $from .= $table .', ';
+        if (is_array($tables)) {
+            $this->sql['from'] = $this->normaliseFrom($tables);
+        } else {
+            $this->sql['from'] = $this->normaliseFrom([$tables]);
         }
-        
-        $this->sql['from'] = rtrim($from, ', ');
     }
 
     /**
@@ -166,13 +125,15 @@ class SqlConstruct
     * @param array $params
     *
     */  
-    public function join($params)
+    public function join($type = null, $table = null, $on = null)
     {
-        $this->isDisable();
+        if (!$this->check(__METHOD__, func_num_args(), 2)) {
+            return false;
+        }
+        
         $this->checkSequence('select', 'update');
-        $this->checkParams($params);
-        $type = strtolower(array_shift($params));
-        $this->joinInternal($type, $params);
+        $type = strtolower($type);
+        $this->joinInternal($type, $table, $on);
     }      
     
     /**
@@ -181,12 +142,14 @@ class SqlConstruct
     * @param array $params
     *
     */  
-    public function innerJoin($params)
+    public function innerJoin($table = null, $on = null)
     {
-        $this->isDisable();
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
+        }
+        
         $this->checkSequence('select', 'update');
-        $this->checkParams($params);
-        $this->joinInternal('inner join', $params);
+        $this->joinInternal('inner join', $table, $on);
     }  
     
     /**
@@ -195,12 +158,14 @@ class SqlConstruct
     * @param array $params
     *
     */ 
-    public function leftJoin($params)
+    public function leftJoin($table = null, $on = null)
     {
-        $this->isDisable();
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
+        }
+        
         $this->checkSequence('select', 'update');
-        $this->checkParams($params);
-        $this->joinInternal('left join', $params);
+        $this->joinInternal('left join', $table, $on);
     }    
     
     /**
@@ -209,12 +174,14 @@ class SqlConstruct
     * @param array $params
     *
     */ 
-    public function rightJoin($params)
+    public function rightJoin($table = null, $on = null)
     {
-        $this->isDisable();
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
+        }
+        
         $this->checkSequence('select', 'update');
-        $this->checkParams($params);
-        $this->joinInternal('right join', $params);
+        $this->joinInternal('right join', $table, $on);
     }
     
     /**
@@ -223,12 +190,14 @@ class SqlConstruct
     * @param array $params
     *
     */ 
-    public function crossJoin($params)
+    public function crossJoin($table = null, $on = null)
     {
-        $this->isDisable();
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
+        }
+        
         $this->checkSequence('select', 'update');
-        $this->checkParams($params);
-        $this->joinInternal('cross join', $params);
+        $this->joinInternal('cross join', $table, $on);
     }    
     
     /**
@@ -237,12 +206,14 @@ class SqlConstruct
     * @param array $params
     *
     */ 
-    public function naturalJoin($params)
+    public function naturalJoin($table = null, $on = null)
     {
-        $this->isDisable();
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
+        }
+        
         $this->checkSequence('select', 'update');
-        $this->checkParams($params);
-        $this->joinInternal('natural join', $params);
+        $this->joinInternal('natural join', $table, $on);
     }
     
     /**
@@ -250,15 +221,17 @@ class SqlConstruct
     *
     * @param array $params
     */     
-    public function where($params)
+    public function where($conditions = null, $params = [])
     {
-        $this->isDisable();
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
+        }
+        
         $this->checkDuble('where');
-        $this->checkParams($params);
-     
-        if (!empty($params[1]) && is_array($params[1])) {
+        
+        if (!empty($params) && is_array($params)) {
          
-            foreach ($params[1] as $name => $value) {
+            foreach ($params as $name => $value) {
                 
                 if (is_object($value)) {
                     $this->params[$name] = $this->createExpressions($value);
@@ -268,8 +241,8 @@ class SqlConstruct
             }
         }         
        
-        if (!empty($params[0])) {
-            $this->sql['where'] = $this->conditionsInternal($params[0]);
+        if (!empty($conditions)) {
+            $this->sql['where'] = $this->conditionsInternal($conditions);
         } else {
             AbcError::logic($this->component . ABC_SQL_INVALID_CONDITIONS);        
         }  
@@ -280,12 +253,14 @@ class SqlConstruct
     *
     * @param array $params
     */ 
-    public function andWhere($params)
+    public function andWhere($conditions = null, $params = [])
     {
-        $this->isDisable(); 
-        $this->checkParams($params);
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
+        }
+        
         $this->checkSequence('where');
-        $this->createConditions('where', $params, 'and');
+        $this->createConditions('where', $conditions, $params, 'and');
     }
     
     /**
@@ -293,28 +268,67 @@ class SqlConstruct
     *
     * @param array $params
     */ 
-    public function orWhere($params)
+    public function orWhere($conditions = null, $params = [])
     {
-        $this->isDisable(); 
-        $this->checkParams($params);
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
+        }
+        
         $this->checkSequence('where');
-        $this->createConditions('where', $params, 'or');
+        $this->createConditions('where', $conditions, $params, 'or');
     }
- 
+
+    /**
+    * Метод оператора GROUP BY
+    *
+    * @param array $columns
+    */  
+    public function group($columns = null)
+    {
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
+        }
+        
+        $this->checkSequence('select', 'from');
+        $this->checkDuble('group by');
+        $this->sql['group by'] = $this->prepareGroupOrder($columns);
+    }
+    
+    /**
+    * Добавляет параметры в оператор GROUP BY
+    *
+    * @param array $columns
+    */      
+    public function addGroup($columns = null)
+    {
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
+        }
+        
+        $this->checkSequence('group by');
+        $group = $this->sql['group by'];
+        unset($this->sql['group by']);
+        $this->group($columns);
+        $this->sql['group by'] = $group .', '. $this->sql['group by'];
+    }
+    
+
     /**
     * Метод оператора HAVING
     *
     * @param array $params
     */     
-    public function having($params)
+    public function having($conditions = null, $params = [])
     {
-        $this->isDisable();
-        $this->checkParams($params);
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
+        }
+        
         $this->checkDuble('having');
      
-        if (!empty($params[1]) && is_array($params[1])) {
+        if (!empty($params) && is_array($params)) {
          
-            foreach ($params[1] as $name => $value) {
+            foreach ($params as $name => $value) {
                 
                 if (is_object($value)) {
                     $this->params[$name] = $this->createExpressions($value);
@@ -324,8 +338,8 @@ class SqlConstruct
             }
         }         
        
-        if (!empty($params[0])) {
-            $this->sql['having'] = $this->conditionsInternal($params[0]);
+        if (!empty($conditions)) {
+            $this->sql['having'] = $this->conditionsInternal($conditions);
         } else {
             AbcError::logic($this->component . ABC_SQL_INVALID_CONDITIONS);        
         }  
@@ -336,12 +350,14 @@ class SqlConstruct
     *
     * @param array $params
     */ 
-    public function andHaving($params)
+    public function andHaving($conditions = null, $params = [])
     {
-        $this->isDisable();
-        $this->checkParams($params);
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
+        }
+        
         $this->checkSequence('having');
-        $this->createConditions('having', $params, 'and');
+        $this->createConditions('having', $conditions, $params, 'and');
     }
     
     /**
@@ -349,42 +365,14 @@ class SqlConstruct
     *
     * @param array $params
     */ 
-    public function orHaving($params)
+    public function orHaving($conditions = null, $params = [])
     {
-        $this->isDisable(); 
-        $this->checkParams($params);
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
+        }
+        
         $this->checkSequence('having');
-        $this->createConditions('having', $params, 'or');
-    }
-
-    /**
-    * Метод оператора GROUP BY
-    *
-    * @param array $params
-    */  
-    public function group($params)
-    {
-        $this->isDisable();
-        $this->checkParams($params);
-        $this->checkSequence('select', 'from');
-        $this->checkDuble('group by');
-        $this->sql['group by'] = $this->prepareGroupOrder($params[0]);
-    }
-    
-    /**
-    * Добавляет параметры в оператор GROUP BY
-    *
-    * @param array $params
-    */      
-    public function addGroup($params)
-    {
-        $this->isDisable(); 
-        $this->checkParams($params);
-        $this->checkSequence('group by');
-        $group = $this->sql['group by'];
-        unset($this->sql['group by']);
-        $this->group($params);
-        $this->sql['group by'] = $group .', '. $this->sql['group by'];
+        $this->createConditions('having', $conditions, $params, 'or');
     }
     
     /**
@@ -392,13 +380,15 @@ class SqlConstruct
     *
     * @param array $params
     */      
-    public function order($params)
+    public function order($columns = null)
     {
-        $this->isDisable();
-        $this->checkParams($params);
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
+        }
+        
         $this->checkSequence('select', 'from');
         $this->checkDuble('order by');
-        $this->sql['order by'] = $this->prepareGroupOrder($params[0]);
+        $this->sql['order by'] = $this->prepareGroupOrder($columns);
     }
     
     
@@ -408,10 +398,12 @@ class SqlConstruct
     *
     * @param array $params
     */      
-    public function addOrder($params)
+    public function addOrder($params = null)
     {
-        $this->isDisable();
-        $this->checkParams($params);
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
+        }
+        
         $this->checkSequence('select', 'from');
         $order = $this->sql['order by'];
         unset($this->sql['order by']);
@@ -422,54 +414,59 @@ class SqlConstruct
     /**
     * Метод оператора LIMIT
     *
-    * @param array $params
+    * @param int $limit
+    * @param int $offset
     */    
-    public function limit($params)
+    public function limit($limit = null, $offset = null)
     {
-        $this->isDisable();        
-        $limit = $params[0];
-        $this->checkParams($limit);
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
+        }
+        
         $this->checkSequence('select', 'from', 'update', 'insert', 'delete');
         $this->checkDuble('limit');
-        $this->sql['limit'] = (int)$limit[0];
+        $this->sql['limit'] = (int)$limit;
         
-        if (!empty($limit[1])) {
-            $this->sql['offset'] = (int)$limit[1];
+        if (!empty($offset)) {
+            $this->sql['offset'] = (int)$offset;
         }  
     } 
     
     /**
     * Метод оператора OFFSET
     *
-    * @param array $params
+    * @param int $offset
     */     
-    public function offset($params)
+    public function offset($offset = null)
     {
-        $this->isDisable();
-        $this->checkParams($params);
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
+        }
+        
         $this->checkSequence('limit');
         $this->checkDuble('offset'); 
-        $this->sql['offset'] = (int)$params[0];
+        $this->sql['offset'] = (int)$offset;
     } 
     
     /**
     * Метод оператора UNION
     *
-    * @param array $params
+    * @param string|array $sql
     */  
-    public function union($params)
+    public function union($sql = null)
     {
-        $this->isDisable(); 
-        $this->checkParams($params); 
+        if (!$this->check(__METHOD__, func_num_args(), 1)) {
+            return false;
+        }
         
-        if (is_array($params[0])) {
+        if (is_array($sql)) {
          
-            foreach ($params[0] as $sql) {
+            foreach ($sql as $sql) {
                 $this->addUnion($sql);           
             }
             
         } else {
-            $this->addUnion($params[0]); 
+            $this->addUnion($sql); 
         }
     } 
 
@@ -478,15 +475,17 @@ class SqlConstruct
     *
     * @param array $params
     */  
-    public function insert($params)
-    {
-        $this->isDisable();
-        $this->checkParams($params);
+    public function insert($table = null, $columns = [])
+    { 
+        if (!$this->check(__METHOD__, func_num_args(), 2)) {
+            return false;
+        }
         $this->checkDuble('insert into');
-        $table = $this->rescuer->wrapTable($params[0]);
+        $table = $this->rescuer->wrapTable($table);
         $this->sql['insert into'] = $table;
-        $this->sql['insert into'] .= "\n    (". implode(', ', $this->rescuer->wrapFields(array_keys($params[1]))) .")";
-        $this->values([array_values($params[1])]);
+        $fields = $this->rescuer->wrapFields(array_keys($columns));
+        $this->sql['insert into'] .= "\n    (". implode(', ', $fields) .")";
+        $this->values([array_values($columns)]);
     }
     
     /**
@@ -494,14 +493,17 @@ class SqlConstruct
     *
     * @param array $params
     */  
-    public function batchInsert($params)
+    public function batchInsert($table = null, $columns = null, $values = null)
     {
-        $this->isDisable();
-        $this->checkParams($params);
+        if (!$this->check(__METHOD__, func_num_args(), 3)) {
+            return false;
+        }
+        
         $this->checkDuble('insert into');
-        $this->sql['insert into'] = $this->rescuer->wrapTable($params[0]);
-        $this->sql['insert into'] .= "\n    (". implode(', ', $this->rescuer->wrapFields($params[1])) .")";
-        $this->values($params[2]);
+        $this->sql['insert into'] = $this->rescuer->wrapTable($table);
+        $columns = $this->rescuer->wrapFields($columns);
+        $this->sql['insert into'] .= "\n    (". implode(', ', $columns) .")";
+        $this->values($values);
     }
     
     /**
@@ -509,18 +511,19 @@ class SqlConstruct
     *
     * @param array $params
     */  
-    public function update($params)
+    public function update($table = null, $columns = null, $conditions = null, $params = null)
     {
-        $this->isDisable();
-        $this->checkParams($params);
+        if (!$this->check(__METHOD__, func_num_args(), 4)) {
+            return false;
+        }
+        
         $this->checkDuble('update');
-        $this->sql['update'] = $this->rescuer->wrapTable($params[0]);
+        $this->sql['update'] = $this->rescuer->wrapTable($table);
         
-        $this->set($params);
+        $this->set($columns);
         
-        if (!empty($params[2])) {
-            $params[3] = !empty($params[3]) ? $params[3] : null;         
-            $this->where([$params[2], $params[3]]);
+        if (!empty($conditions)) {        
+            $this->where($conditions, $params);
         }
     }
 
@@ -529,16 +532,17 @@ class SqlConstruct
     *
     * @param array $params
     */  
-    public function delete($params)
+    public function delete($table = null, $conditions = null, $params = null)
     {
-        $this->isDisable();
-        $this->checkParams($params);
+        if (!$this->check(__METHOD__, func_num_args(), 2)) {
+            return false;
+        }
+        
         $this->checkDuble('delete from');        
-        $this->sql['delete from'] = $this->rescuer->wrapTable($params[0]);
+        $this->sql['delete from'] = $this->rescuer->wrapTable($table);
       
-        if (!empty($params[1])) {
-            $params[2] = !empty($params[2]) ? $params[2] : null;         
-            $this->where([$params[1], $params[2]]);
+        if (!empty($conditions)) {       
+            $this->where($conditions, $params);
         }
     }
 
@@ -584,6 +588,23 @@ class SqlConstruct
         $this->disable = false;        
     } 
     
+    
+    /**
+    * Метод проверки
+    *
+    * @param array $operands
+    */    
+    public function check($method, $argsCnt = 0, $min = 0)
+    {    
+        if ($this->isDisable() || $argsCnt < $min) {
+            AbcError::logic($this->component . ABC_SQL_EMPTY_ARGUMENTS 
+                            . basename($method) .'()</strong></span><br />');
+            return false;
+        }
+        
+        return true;
+    }
+    
     /**
     * Проверка на блокировку
     *
@@ -593,20 +614,19 @@ class SqlConstruct
     {
         if (true === $this->driver->disable) {
             AbcError::logic($this->component . ABC_SQL_DISABLE);
+            return true;
         }
     }
-    
+
     /**
-    * Метод проверки параметров
+    * Метод проверки повтора оператора
     *
-    * @param array $operands
-    */    
-    public function checkParams()
+    * @param array $operand
+    */      
+    protected function checkDuble($operand)
     {
-        $operands = func_get_args();
-       
-        if (empty($operands[0])) {
-            AbcError::logic($this->component . ABC_SQL_EMPTY_ARGUMENTS);        
+        if (isset($this->sql[strtolower($operand)])) {
+            AbcError::logic($this->component . ABC_SQL_DUBLE);
         }
     }
     
@@ -629,6 +649,10 @@ class SqlConstruct
     */    
     protected function checkSequence()
     {
+        if (empty($this->sql)) {
+            return true;
+        }
+        
         $operands = func_get_args();
         $check = array_change_key_case($this->sql, CASE_LOWER);
         $keys = array_keys($check);
@@ -646,19 +670,7 @@ class SqlConstruct
         
         AbcError::logic($this->component . ABC_SQL_SEQUENCE);
     } 
-    
-    /**
-    * Метод проверки повтора оператора
-    *
-    * @param array $operand
-    */      
-    protected function checkDuble($operand)
-    {
-        if (isset($this->sql[strtolower($operand)])) {
-            AbcError::logic($this->component . ABC_SQL_DUBLE);
-        }
-    }
- 
+
     /**
     * создает условие для WHERE, HAVING и ON
     *
@@ -666,17 +678,17 @@ class SqlConstruct
     * @param array  $params
     * @param string $operator
     */ 
-    protected function createConditions($command, $params, $operator = null)
+    protected function createConditions($command, $conditions, $params = null, $operator = null)
     {
-        if (!empty($params[1]) && is_array($params[1])) {
+        if (!empty($params) && is_array($params)) {
          
-            foreach ($params[1] as $name => $value) {
+            foreach ($params as $name => $value) {
                 $this->params[$name] = $this->rescuer->escape($value);
             }
         } 
        
-        if (!empty($params[0])) {
-            $this->sql[$command] = $this->conditionsInternal([$operator, $this->sql[$command], $params[0]]);
+        if (!empty($conditions)) {
+            $this->sql[$command] = $this->conditionsInternal($conditions, $this->sql[$command], $operator);
         } else {
             AbcError::logic($this->component . ABC_SQL_INVALID_CONDITIONS);        
         }
@@ -689,7 +701,7 @@ class SqlConstruct
     * @param array $condition
     */  
     protected function conditionsInternal($conditions)
-    {         
+    {        
         if (!is_array($conditions)) {
             return $this->replace($conditions);
         } elseif (empty($conditions)) {
@@ -697,7 +709,7 @@ class SqlConstruct
         }
      
         $operator = strtoupper(array_shift($conditions));
-     
+      
         if (count($conditions) < 2) {
             AbcError::logic($this->component . ABC_SQL_COUNT_VALUES);
         }        
@@ -842,12 +854,12 @@ class SqlConstruct
     protected function normaliseColumns($params)
     {
         if (empty($params)) {
-            return ['*'];
+            $columns[] = '*';
         } 
         
         if (is_string($params)) {
-            $columns = preg_split('~\s*,\s*~', trim($params), -1, PREG_SPLIT_NO_EMPTY);
-            return $this->rescuer->wrapFields($columns);
+            $exp = preg_split('~\s*,\s*~', trim($params), -1, PREG_SPLIT_NO_EMPTY);
+            $columns = $this->rescuer->wrapFields($exp); 
         } 
         
         if (is_array($params)) {
@@ -855,20 +867,55 @@ class SqlConstruct
             foreach ($params as $key => $param) {
              
                 if (is_object($param)) {
-                    $columns[] = $this->rescuer->addAliasToExpression($this->createExpressions($param), $key);
+                    $expression = $this->createExpressions($param);
+                    $columns[] = $this->rescuer->addAliasToExpression($expression, $key);
                 } else {
                     $columns[] = $this->rescuer->addAliasToField($param, $key);              
                 }
             }
             
-            return $columns;            
+            $columns[] = $columns;            
         } 
         
         if (is_object($params)) {
-            return $this->rescuer->addAliasToExpression($this->createExpressions($params));
+            $expression = $this->createExpressions($params);
+            $columns[] = $this->rescuer->addAliasToExpression($expression);
         } 
         
-        AbcError::logic($this->component . ABC_COMMAND_SELECT);
+        if (empty($params)) {
+            AbcError::logic($this->component . ABC_COMMAND_SELECT);
+        }
+        
+        return  implode(', ', $columns);
+    }  
+    
+    /**
+    * Подготавливает таблицы для FROM
+    *
+    * @param string|array $tables
+    */     
+    public function normaliseFrom($tables)
+    { 
+        $from = '';
+        foreach ($tables as $key => $table) {
+         
+            if (is_string($table) && false === strpos($table, '(')) {
+                $table = $this->rescuer->addAliasToTable($table, $key);
+            } elseif (is_object($table)) {
+                $class =  get_class($this->driver);
+                
+                if ($table instanceof $class) {
+                    $table = '('. $table->getSql() .') ';
+                    $table = $this->rescuer->addAliasToTable($table, $key);
+                } else {
+                    AbcError::invalidArgument($this->component . ABC_OTHER_OBJECT);
+                }
+            }
+            
+            $from .= $table .', ';
+        }
+        
+        return rtrim($from, ', ');
     }  
 
     /**
@@ -879,30 +926,30 @@ class SqlConstruct
     *
     * @return string
     */ 
-    protected function joinInternal($type, $params)
+    protected function joinInternal($type, $table, $on)
     {
-        if (!is_string($params[0])) {
+        if (!is_string($type)) {
             AbcError::logic($this->component . ABC_SQL_INVALID_CONDITIONS);
             return false;
         }
         
-        $table = $this->rescuer->wrapTable($params[0]);
+        $table = $this->rescuer->wrapTable($table);
         $conditions = '';
        
-        if (!empty($params[1])) {
+        if (!empty($on)) {
          
-            if (is_string($params[1]) && false === strpos($params[0], '(')) {
+            if (is_string($on) && false === strpos($table, '(')) {
              
-                if (preg_match('~^(.*?)(?i:\s+as|)\s+([^ ]+)$~', $params[0], $matches)) {
+                if (preg_match('~^(.*?)(?i:\s+as|)\s+([^ ]+)$~', $table, $matches)) {
                     $table = $this->rescuer->wrapTable($matches[1]) .' '. $this->rescuer->wrapFields($matches[2]);
                 }
              
-                $conditions = $this->rescuer->wrapOn($params[1]); 
+                $conditions = $this->rescuer->wrapOn($on); 
                 
-            } elseif (is_array($params[1])) {               
-                $conditions = ' ON ('. $this->conditionsInternal($params[1]) .')';
-            } elseif (is_object($params[1])) {
-                $conditions = ' ON ('. $this->createExpressions($params[1]) .')';
+            } elseif (is_array($on)) {               
+                $conditions = ' ON ('. $this->conditionsInternal($on) .')';
+            } elseif (is_object($on)) {
+                $conditions = ' ON ('. $this->createExpressions($on) .')';
             } else {
                 AbcError::logic($this->component . ABC_SQL_INVALID_VALUES);
             }
@@ -918,8 +965,6 @@ class SqlConstruct
     */  
     protected function values($params)
     {
-        $this->isDisable();
-        $this->checkSequence('insert into');
         $group = '';        
      
         foreach ($params as $values) {
@@ -927,7 +972,7 @@ class SqlConstruct
             foreach ($values as $name => $value) {
                 $values[$name] = '';
                 
-                if (is_object($value)) { 
+                if (is_object($value)) {
                     $values[$name] .= $this->createExpressions($value);
                 } else {
                     $values[$name] = $this->rescuer->escape($value);               
@@ -1016,7 +1061,7 @@ class SqlConstruct
         $this->isDisable();
         $this->checkSequence('insert into', 'update');
         
-        foreach ($params[1] as $name => $value) {
+        foreach ($params as $name => $value) {
             $set[$name] = $this->rescuer->wrapFields($name);
            
             if (is_object($value)) { 

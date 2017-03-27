@@ -15,6 +15,32 @@ class Ru
     protected static function errorReportings() 
     {
         return [
+'(.+?)Invalid arguments passed' => '<strong>$1</strong>Invalid arguments passed<br /><span class="translate">
+
+(<strong>$1</strong> переданы недопустимые аргументы)
+
+</span><br />', 
+'Cannot access protected property (.+)' => 'Cannot access protected property  <strong>$1</strong><br /><span class="translate">
+
+(Нет доступа к защищенному свойству <strong>$1</strong>)
+
+</span><br />',
+'Missing argument (\d+) for (.+)' => 'Missing argument <strong>$1</strong> for <strong>$2</strong><br /><span class="translate">
+
+(Отсутствует аргумент <strong>$1</strong> для <strong>$2</strong>)
+
+</span><br />',
+'Maximum execution time of (.+?) seconds exceeded' => 'Maximum execution time of <strong>$1</strong> seconds exceeded<br /><span class="translate">
+
+(Превышено максимальное время выполнения <strong>$1</strong> cекунд)
+
+</span><br />',
+        
+'Cannot use (.+?) for reading' => 'Cannot use <strong>$1</strong> for reading<br /><span class="translate">
+
+(Нельзя использовать <strong>$1</strong> при чтении)
+
+</span><br />',
 'Call to undefined function (.+)' => 'Call to undefined function <strong>$1</strong><br /><span class="translate">
 
 (Вызов неопределенной функции <strong>$1</strong>)
@@ -239,6 +265,17 @@ class Ru
 '.+Field (.+?) doesn\'t have a default value' => 'Field <strong>$1</strong> doesn\'t have a default value<br /><span class="translate">
 
 (Поле <strong>$1</strong> не имеет значения по умолчанию)
+
+</span><br />',
+'PDO constructor was not called' => 'PDO constructor was not called<br /><span class="translate">
+
+(Конструктор PDO не вызван)
+
+</span><br />',
+
+'.+You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near(.+?)at line (.+)' => 'You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near$1at line <strong>$2</strong><br /><span class="translate">
+
+(Ошибка SQL синтаксиса. <br />Обратитесь к мануалу, соответствующему Вашей версии MySQL сервера, чтобы использовать верно строку <strong>$1</strong> на линии <strong>$2</strong>)
 
 </span><br />',
 

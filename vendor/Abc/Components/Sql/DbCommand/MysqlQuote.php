@@ -15,13 +15,15 @@ class MysqlQuote
     public $prefix;
     public $newPrefix;
 
-    protected $driver;
+    protected $db;
 
     /**
-    * @param string $driver
+    * @param object $db
+    * @param string $prefix
     */  
-    public function __construct($prefix)
+    public function __construct($db, $prefix)
     {
+        $this->db = $db;
         $this->prefix = $prefix;
     }
 
@@ -110,16 +112,14 @@ class MysqlQuote
         switch (ABC_DBCOMMAND) {
          
             case 'PDO' :
-                $pdo = \ABC\Abc::sharedService('Pdo');
-                
-                
+            
                 if (!is_array($values)) {
                  
                     if (false !== strpos($values, '(')){
                         return $values;
                     } 
                     
-                    return $pdo->quote($values);
+                    return $this->db->quote($values);
                 }
                 
                 foreach ($values as $value) {
@@ -128,21 +128,20 @@ class MysqlQuote
                         $result[] = $value;
                     }
                     
-                    $result[] = $pdo->quote($value);                
+                    $result[] = $this->db->quote($value);                
                 }
                 
             break;
             
             case 'Mysqli' :
-                $mysqli = \ABC\Abc::sharedService('Mysqli');
-                
+             
                 if (!is_array($values)) {
                  
                     if (false !== strpos($values, '(')){
                         return $values;
                     } 
                  
-                    return "'". $mysqli->escape_string($values) ."'";
+                    return "'". $this->db->escape_string($values) ."'";
                 }
                 
                 foreach ($values as $value) {
@@ -151,7 +150,7 @@ class MysqlQuote
                         $result[] = $value;
                     }
                     
-                    $result[] = "'". $mysqli->escape_string($values) ."'";                
+                    $result[] = "'". $this->db->escape_string($values) ."'";                
                 }
                 
             break;

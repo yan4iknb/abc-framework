@@ -20,6 +20,7 @@ class DbCommand
     protected $params;
     protected $transaction;
     protected $space = 'ABC\Abc\Components\Sql\DbCommand\\';
+    protected $component = ' Component DbCommand: ';
     protected $driver;
     
     /**
@@ -40,13 +41,37 @@ class DbCommand
     * 
     * @return object
     */     
-    public function __call($method, $param)
+    public function __call($method, $params)
     {
-        return $this->driver->$method($param);
-    } 
+        if (method_exists($this->driver, $method)) {
+            call_user_func_array([$this->driver, $method], $params);
+            return $this;
+        } else {
+         
+            if (empty($this->construct)) {
+                $this->construct = new SqlConstruct($this->driver);
+                $this->driver->construct = $this->construct;
+            }
+         
+            call_user_func_array([$this->construct, $method], $params);
+            return $this;
+        }
+    }
     
     /**
-    * Возвращает объект конструктора запроса
+    * Возвращает объект с выражениями
+    *
+    * @param $term
+    *
+    * @return object
+    */     
+    public function expression($term)
+    {
+        return new Expression($term);
+    }
+    
+    /**
+    * Возвращает новый объект конструктора запроса
     * 
     * @return object
     */     
@@ -62,8 +87,12 @@ class DbCommand
     */     
     public function bindValue($name, $value, $dataType = null)
     {
-        $this->params[$name]['value'] = $value;
-        $this->params[$name]['type']  = $dataType;
+        if (!empty($dataType)) {
+            $this->params[$name]['value'] = $value;
+            $this->params[$name]['type']  = $dataType;
+        } else {
+            $this->params[$name] = $value;
+        }
         return $this;
     }  
     
@@ -75,7 +104,11 @@ class DbCommand
     public function bindValues($values)
     {
         foreach ($values as $name => $value) {
-           
+         
+            if ($name == 0) {
+                AbcError::invalidArgument($this->component . ABC_ERROR_BINDVALUES);
+            }  
+            
             $dataType = null;
          
             if (is_array($value)) {
@@ -96,8 +129,12 @@ class DbCommand
     */     
     public function bindParam($name, &$value, $dataType = null)
     {
-        $this->params[$name]['value'] = &$value;
-        $this->params[$name]['type']  = $dataType;
+        if (!empty($dataType)) {
+            $this->params[$name]['value'] = &$value;
+            $this->params[$name]['type']  = $dataType;
+        } else {
+            $this->params[$name] = &$value;
+        }
         return $this;
     }  
     

@@ -48,26 +48,7 @@ class Pdo
         $this->rescuer = new $rescuer($this->db, $this->prefix);
         $this->defineConstants();
     }
-    
-    /**
-    * Проксирование вызовов методов конструктора
-    */     
-    public function __call($method, $params)
-    { 
-        $this->construct->$method($params);
-        return $this;
-    }
 
-    /**
-    * Текст для подзапроса
-    *
-    * @return string
-    */ 
-    public function __toString()
-    { 
-        return $this->construct->getSql();
-    } 
-    
     /**
     * Смена СУБД
     */  
@@ -90,7 +71,6 @@ class Pdo
     /**
     * Удаляет префиксы
     *
-    * @param array $params
     */     
     public function unsetPrefix()
     {
@@ -110,15 +90,15 @@ class Pdo
         $this->disable = true;
         $this->sql = $sql; 
         $this->sql = $this->rescuer->quoteFields($this->sql);
-
     }
 
     /**
     * Обертка PDO::bindValue() для массива
     *
+    * @param object $stmt
     * @param array $params
     *
-    * @return object
+    * @return void
     */     
     protected function bindValuesInternal($stmt, $params)
     {
@@ -139,8 +119,6 @@ class Pdo
             
             $stmt->bindValue($name, $value, $type);
         }
-       
-
     }
 
     /**
@@ -169,6 +147,8 @@ class Pdo
     * Возвращает набор строк. каждая строка - это ассоциативный массив с именами столбцов и значений.
     * если выборка ничего не вернёт, то будет получен пустой массив.
     *
+    * @param int $style
+    *
     * @return array
     */     
     public function queryAll($style = null)
@@ -182,6 +162,8 @@ class Pdo
     * Вернёт одну строку 
     * false, если ничего не будет выбрано
     *
+    * @param int $style
+    *
     * @return mixed
     */     
     public function queryRow($style = null)
@@ -194,6 +176,8 @@ class Pdo
     /**
     * Вернёт один столбец 
     * пустой массив, при отсутствии результата
+    *
+    * @param int $num
     *
     * @return mixed
     */     
@@ -225,6 +209,9 @@ class Pdo
     /**
     * Вернёт результат в виде объекта
     *
+    * @param string $className
+    * @param array $ctorArgs
+    *
     * @return mixed
     */     
     public function queryObject($className = null, $ctorArgs = [])
@@ -236,6 +223,8 @@ class Pdo
     
     /**
     * Вернёт количество строк текущего запроса
+    *
+    * @param string $field
     *
     * @return mixed
     */     
@@ -312,7 +301,7 @@ class Pdo
             $this->sql  = null;
             $this->rescuer->prefix = $this->prefix;
             $this->rescuer->newPrefix = null;
-        
+         
             if (!$this->disable) {
                 $this->construct->reset(); 
             }
@@ -362,6 +351,8 @@ class Pdo
     
     /**
     * Выполняет запрос для count()
+    *
+    * @param string $sql
     *
     * @return object
     */     

@@ -210,7 +210,7 @@ class MysqlQuote
     */  
     public function addAliasToExpression($expression, $key = null)
     {
-        return $expression .' '. (!empty($key) ? $key : '');
+        return $expression .' '. (!empty($key) ? ' AS `'. $key .'`' : '');
     } 
     
     /**

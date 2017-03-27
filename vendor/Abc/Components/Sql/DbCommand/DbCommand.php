@@ -59,16 +59,15 @@ class DbCommand
     }
     
     /**
-    * Возвращает объект с выражениями
+    * Текст для подзапроса
     *
-    * @param $term
-    *
-    * @return object
-    */     
-    public function expression($term)
-    {
-        return new Expression($term);
-    }
+    * @return string
+    */ 
+    public function __toString()
+    { 
+        return $this->driver->getSql();
+    } 
+    
     
     /**
     * Возвращает новый объект конструктора запроса
@@ -79,6 +78,19 @@ class DbCommand
     {
         return $this->abc->newService('DbCommand');
     }  
+    
+    /**
+    * Возвращает объект с выражениями
+    *
+    * @param $term
+    *
+    * @return object
+    */     
+    public function expression($term)
+    {
+        return new Expression($term);
+    }
+
 
     /**
     * Связывает значение с параметром 

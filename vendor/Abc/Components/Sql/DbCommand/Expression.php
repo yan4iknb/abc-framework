@@ -57,10 +57,11 @@ class Expression
                 }
             } 
          
-            return $expression;            
-        } 
-        
-        AbcError::invalidArgument($this->component . ABC_OTHER_OBJECT);
+            return $expression;
+            
+        } else {
+            return '('. (string)$object .')';
+        }
     } 
     
     /**

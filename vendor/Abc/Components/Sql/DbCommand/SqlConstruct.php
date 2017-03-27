@@ -19,7 +19,7 @@ class SqlConstruct
  
 
     protected $component = ' Component DbCommand: '; 
-    protected $operators = ['=', '!=', '>', '<', '>=', '<=', '<>', '<=>', '!<', '!>']; // NOT, IS NULL
+    protected $operators = ['=', '!=', '>', '<', '>=', '<=', '<>', '<=>', '!<', '!>'];
     protected $query;    
     protected $sql = [];
     protected $params = [];
@@ -51,7 +51,8 @@ class SqlConstruct
     /**
     * Метод оператора SELECT
     *
-    * @param array $params
+    * @param mixed $columns
+    * @param array $options
     */     
     public function select($columns = null, $options = null)
     {
@@ -66,9 +67,9 @@ class SqlConstruct
     }
     
     /**
-    * Добавляет параметров к SELECT
+    * Добавляет параметры к SELECT
     *
-    * @param array $params
+    * @param mixed $columns
     */     
     public function addSelect($columns = null)
     {
@@ -84,7 +85,8 @@ class SqlConstruct
     /**
     * Метод оператора SELECT DISTINCT
     *
-    * @param array $params
+    * @param mixed $columns
+    * @param array $options
     */     
     public function selectDistinct($columns = null, $options = null)
     {
@@ -122,8 +124,9 @@ class SqlConstruct
     /**
     * JOIN
     *
-    * @param array $params
-    *
+    * @param string $type
+    * @param string $table
+    * @param mixed $on
     */  
     public function join($type = null, $table = null, $on = null)
     {
@@ -139,8 +142,8 @@ class SqlConstruct
     /**
     * INNER JOIN
     *
-    * @param array $params
-    *
+    * @param string $table
+    * @param mixed $on
     */  
     public function innerJoin($table = null, $on = null)
     {
@@ -155,8 +158,8 @@ class SqlConstruct
     /**
     * LEFT JOIN
     *
-    * @param array $params
-    *
+    * @param string $table
+    * @param mixed $on
     */ 
     public function leftJoin($table = null, $on = null)
     {
@@ -171,8 +174,8 @@ class SqlConstruct
     /**
     * RIGHT JOIN
     *
-    * @param array $params
-    *
+    * @param string $table
+    * @param mixed $on
     */ 
     public function rightJoin($table = null, $on = null)
     {
@@ -187,8 +190,8 @@ class SqlConstruct
     /**
     * CROSS JOIN
     *
-    * @param array $params
-    *
+    * @param string $table
+    * @param mixed $on
     */ 
     public function crossJoin($table = null, $on = null)
     {
@@ -203,8 +206,8 @@ class SqlConstruct
     /**
     * NATURAL JOIN
     *
-    * @param array $params
-    *
+    * @param string $table
+    * @param mixed $on
     */ 
     public function naturalJoin($table = null, $on = null)
     {
@@ -219,6 +222,7 @@ class SqlConstruct
     /**
     * Метод оператора WHERE
     *
+    * @param mixed $conditions
     * @param array $params
     */     
     public function where($conditions = null, $params = [])
@@ -251,6 +255,7 @@ class SqlConstruct
     /**
     * Добавляет условие в существующую часть запроса WHERE с оператором AND
     *
+    * @param mixed $conditions
     * @param array $params
     */ 
     public function andWhere($conditions = null, $params = [])
@@ -266,6 +271,7 @@ class SqlConstruct
     /**
     * Добавляет условие в существующую часть запроса WHERE с оператором OR
     *
+    * @param mixed $conditions
     * @param array $params
     */ 
     public function orWhere($conditions = null, $params = [])
@@ -297,7 +303,7 @@ class SqlConstruct
     /**
     * Добавляет параметры в оператор GROUP BY
     *
-    * @param array $columns
+    * @param mixed $columns
     */      
     public function addGroup($columns = null)
     {
@@ -316,6 +322,7 @@ class SqlConstruct
     /**
     * Метод оператора HAVING
     *
+    * @param mixed $conditions
     * @param array $params
     */     
     public function having($conditions = null, $params = [])
@@ -348,6 +355,7 @@ class SqlConstruct
     /**
     * Добавляет условие в существующую часть запроса HAVING с оператором AND
     *
+    * @param mixed $conditions
     * @param array $params
     */ 
     public function andHaving($conditions = null, $params = [])
@@ -363,6 +371,7 @@ class SqlConstruct
     /**
     * Добавляет условие в существующую часть запроса HAVING с оператором OR
     *
+    * @param mixed $conditions
     * @param array $params
     */ 
     public function orHaving($conditions = null, $params = [])
@@ -378,7 +387,7 @@ class SqlConstruct
     /**
     * Метод оператора ORDER BY
     *
-    * @param array $params
+    * @param mixed $columns
     */      
     public function order($columns = null)
     {
@@ -396,9 +405,9 @@ class SqlConstruct
     /**
     * Добавляет параметры в оператор ORDER
     *
-    * @param array $params
+    * @param mixed $columns
     */      
-    public function addOrder($params = null)
+    public function addOrder($columns = null)
     {
         if (!$this->check(__METHOD__, func_num_args(), 1)) {
             return false;
@@ -407,7 +416,7 @@ class SqlConstruct
         $this->checkSequence('select', 'from');
         $order = $this->sql['order by'];
         unset($this->sql['order by']);
-        $this->order($params);
+        $this->order($columns);
         $this->sql['order by'] = $order .', '. $this->sql['order by'];
     }
 
@@ -473,7 +482,8 @@ class SqlConstruct
     /**
     * Метод оператора INSERT INTO
     *
-    * @param array $params
+    * @param string $table
+    * @param array $columns
     */  
     public function insert($table = null, $columns = [])
     { 
@@ -491,7 +501,9 @@ class SqlConstruct
     /**
     * Множественный INSERT
     *
-    * @param array $params
+    * @param string $table
+    * @param array $columns
+    * @param array $values
     */  
     public function batchInsert($table = null, $columns = null, $values = null)
     {
@@ -509,6 +521,9 @@ class SqlConstruct
     /**
     * Метод оператора UPDATE
     *
+    * @param string $table
+    * @param array $columns
+    * @param array $conditions
     * @param array $params
     */  
     public function update($table = null, $columns = null, $conditions = null, $params = null)
@@ -530,6 +545,8 @@ class SqlConstruct
     /**
     * Метод оператора DELETE
     *
+    * @param string $table
+    * @param array $conditions
     * @param array $params
     */  
     public function delete($table = null, $conditions = null, $params = null)
@@ -586,13 +603,26 @@ class SqlConstruct
         $this->disable = false;        
     } 
     
+    /**
+    * Формирует выражения из объекта класса Expression
+    *
+    * @param object $object
+    *
+    * @return string
+    */ 
+    public function createExpressions($object)
+    {
+        return (new Expression())->createExpression($object, $this->rescuer);
+    } 
     
     /**
     * Метод проверки
     *
-    * @param array $operands
+    * @param string $method
+    * @param int $argsCnt
+    * @param int $min
     */    
-    public function check($method, $argsCnt = 0, $min = 0)
+    protected function check($method, $argsCnt = 0, $min = 0)
     {    
         if ($this->isDisable() || $argsCnt < $min) {
             AbcError::logic($this->component . ABC_SQL_EMPTY_ARGUMENTS 
@@ -608,7 +638,7 @@ class SqlConstruct
     *
     * @return void
     */       
-    public function isDisable()
+    protected function isDisable()
     {
         if (true === $this->driver->disable) {
             AbcError::logic($this->component . ABC_SQL_DISABLE);
@@ -627,19 +657,7 @@ class SqlConstruct
             AbcError::logic($this->component . ABC_SQL_DUBLE);
         }
     }
-    
-    /**
-    * Формирует выражения из объекта класса Expression
-    *
-    * @param object $object
-    *
-    * @return string
-    */ 
-    public function createExpressions($object)
-    {
-        return (new Expression())->createExpression($object, $this->rescuer);
-    }    
-    
+  
     /**
     * Метод проверки последовательности операторов
     *
@@ -673,6 +691,7 @@ class SqlConstruct
     * создает условие для WHERE, HAVING и ON
     *
     * @param string $command
+    * @param array $conditions
     * @param array  $params
     * @param string $operator
     */ 
@@ -729,6 +748,7 @@ class SqlConstruct
     * Генерация условий с операторами группы AND
     *
     * @param array $condition
+    * @param string $operator
     */  
     protected function conditionsAnd($conditions, $operator)
     { 
@@ -857,7 +877,7 @@ class SqlConstruct
         
         if (is_string($params)) {
             $exp = preg_split('~\s*,\s*~', trim($params), -1, PREG_SPLIT_NO_EMPTY);
-            $columns = $this->rescuer->wrapFields($exp); 
+            $columns = $this->rescuer->wrapFields($exp);
         } 
         
         if (is_array($params)) {
@@ -868,18 +888,16 @@ class SqlConstruct
                     $expression = $this->createExpressions($param);
                     $columns[] = $this->rescuer->addAliasToExpression($expression, $key);
                 } else {
-                    $columns[] = $this->rescuer->addAliasToField($param, $key);              
+                    $columns[] = $this->rescuer->addAliasToField($param, $key);
                 }
-            }
-            
-            $columns[] = $columns;            
+            }           
         } 
         
         if (is_object($params)) {
             $expression = $this->createExpressions($params);
             $columns[] = $this->rescuer->addAliasToExpression($expression);
         } 
-        
+     
         return  implode(', ', $columns);
     }  
     
@@ -887,6 +905,8 @@ class SqlConstruct
     * Подготавливает таблицы для FROM
     *
     * @param string|array $tables
+    *
+    * @return string
     */     
     public function normaliseFrom($tables)
     { 
@@ -916,9 +936,9 @@ class SqlConstruct
     * Эмуляция JOIN
     *
     * @param string $type
-    * @param array $params
+    * @param string $table
+    * @param mixed $on
     *
-    * @return string
     */ 
     protected function joinInternal($type, $table, $on)
     {
@@ -1004,7 +1024,7 @@ class SqlConstruct
     
     
     /**
-    * Генерация выражений ORDER BY и GROUP BY
+    * Нормализация выражений ORDER BY и GROUP BY
     *
     * @param mixed $values
     *

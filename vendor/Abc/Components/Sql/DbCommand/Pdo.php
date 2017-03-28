@@ -90,6 +90,7 @@ class Pdo
         $this->disable = true;
         $this->sql = $sql; 
         $this->sql = $this->rescuer->quoteFields($this->sql);
+        return $this->command;
     }
 
     /**
@@ -154,7 +155,7 @@ class Pdo
     public function queryAll($style = null)
     {
         $style = (!empty($style)) ? $style : \PDO::FETCH_ASSOC;
-        $this->executeInternal();
+        $this->executeInternal();       
         return $this->stmt->fetchAll($style);
     }  
     
@@ -281,7 +282,7 @@ class Pdo
     */     
     public function getSql()
     {
-        if (!$this->disable) {
+        if (!empty($this->construct)) {
             return $this->construct->getSql();
         }
         
@@ -295,17 +296,19 @@ class Pdo
     */       
     public function reset()
     {
+        if (!empty($this->construct)) {
+            $this->construct->reset(); 
+        }
+     
+        $this->sql  = null;
+        $this->rescuer->prefix = $this->prefix;
+        $this->rescuer->newPrefix = null;        
+        $this->disable = false;
+      
         if (!empty($this->stmt)) { 
             $this->execute = false;
             $this->stmt = null;
-            $this->sql  = null;
-            $this->rescuer->prefix = $this->prefix;
-            $this->rescuer->newPrefix = null;
-         
-            if (!$this->disable) {
-                $this->construct->reset(); 
-            }
-        } 
+        }
     } 
     
     /**
@@ -347,6 +350,8 @@ class Pdo
             $this->stmt->execute();
             $this->execute = true;
         }
+        
+        $this->disable = true; 
     }
     
     /**

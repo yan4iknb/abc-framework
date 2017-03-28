@@ -65,6 +65,10 @@ class Ru
         define('ABC_OTHER_OBJECT',             ' An inappropriate object is used  <br /><span style="color:red">(Используется неподходящий объект)</span><br />'); 
         define('ABC_NO_METHOD_IN_DBC',         ' method is not supported by the Query builder<br /><span style="color:red">(метод не поддерживается конструктором запросов)</span><br />');
         define('ABC_ERROR_BINDVALUES',         ' The numbering of the array in the parameter of the <strong>bindValues()</strong> method must begin with 1<br /><span style="color:red">(Нумерация массива в параметре метода <strong>bindValues()</strong> должна начинаться с единицы)</span><br />');
+        define('ABC_DBCOMAND_SERIALIZE',       ' You can not serialize a query builder object<br /><span style="color:red">(Нельзя сериализовать объект конструктора запросов)</span><br />');
+        
+        
+        
         /**
         * Ошибки использования шаблонизатора
         */ 

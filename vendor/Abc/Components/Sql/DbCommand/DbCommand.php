@@ -16,12 +16,14 @@ use ABC\Abc\Components\Sql\DbCommand\Transaction;
  */  
 class DbCommand
 {
+    public $driver;
+    
     protected $abc;
+    protected $construct;
     protected $params;
     protected $transaction;
     protected $space = 'ABC\Abc\Components\Sql\DbCommand\\';
     protected $component = ' Component DbCommand: ';
-    protected $driver;
     
     /**
     * Конструктор
@@ -44,17 +46,15 @@ class DbCommand
     public function __call($method, $params)
     {
         if (method_exists($this->driver, $method)) {
-            call_user_func_array([$this->driver, $method], $params);
-            return $this;
+            return call_user_func_array([$this->driver, $method], $params);
         } else {
          
             if (empty($this->construct)) {
-                $this->construct = new SqlConstruct($this->driver);
+                $this->construct = new SqlConstruct($this);
                 $this->driver->construct = $this->construct;
             }
          
-            call_user_func_array([$this->construct, $method], $params);
-            return $this;
+            return call_user_func_array([$this->construct, $method], $params);
         }
     }
     
@@ -67,7 +67,6 @@ class DbCommand
     { 
         return $this->driver->getSql();
     } 
-    
     
     /**
     * Возвращает новый объект конструктора запроса

@@ -15,6 +15,21 @@ class Ru
     protected static function errorReportings() 
     {
         return [
+'(.+)should return an array only containing the names of instance-variables to serialize' => '<strong>$1</strong> should return an array only containing the names of instance-variables to serialize<br /><span class="translate">
+
+(Serialize (): __sleep должен возвращать массив, содержащий только имена свойств для сериализации)
+
+</span><br />',
+'You cannot serialize or unserialize (.+?) instances' => 'You cannot serialize or unserialize <strong>$1</strong> instances<br /><span class="translate">
+
+(Вы не можете сериализовать и десереиализовать объекты <strong>$1</strong>)
+
+</span><br />',
+'Serialization of \'Closure\' is not allowed' => 'Serialization of \'Closure\' is not allowed<br /><span class="translate">
+
+(Сериализация замыканий запрещена)
+
+</span><br />',
 '(.+?)Invalid arguments passed' => '<strong>$1</strong>Invalid arguments passed<br /><span class="translate">
 
 (<strong>$1</strong> переданы недопустимые аргументы)
@@ -278,7 +293,11 @@ class Ru
 (Ошибка SQL синтаксиса. <br />Обратитесь к мануалу, соответствующему Вашей версии MySQL сервера, чтобы использовать верно строку <strong>$1</strong> на линии <strong>$2</strong>)
 
 </span><br />',
+'(.+?)SQLSTATE.+?General error' => '<strong>$1</strong> General error<br /><span class="translate">
 
+(<strong>$1</strong> Общая ошибка)
+
+</span><br />',
 
                  //''  => '',
                  'Synᐃtax'  => 'Syntax',

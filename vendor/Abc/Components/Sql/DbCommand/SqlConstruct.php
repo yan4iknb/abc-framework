@@ -17,7 +17,7 @@ class SqlConstruct
     public $prefix;
     public $rescuer;
  
-
+    protected $command;
     protected $component = ' Component DbCommand: '; 
     protected $operators = ['=', '!=', '>', '<', '>=', '<=', '<>', '<=>', '!<', '!>'];
     protected $query;    
@@ -25,18 +25,19 @@ class SqlConstruct
     protected $params = [];
     protected $driver;
     protected $disable = false;      
+
     /**
     * Конструктор
     *
     * @param string config
     */     
-    public function __construct($driver)
+    public function __construct($command)
     {
-        $this->prefix  = $driver->prefix;
-        $this->driver  = $driver;
-        $this->rescuer = $driver->rescuer;
-    }
-    
+        $this->command  = $command;
+        $this->driver   = $command->driver;
+        $this->prefix   = $this->driver->prefix;
+        $this->rescuer  = $this->driver->rescuer;
+    }    
   
     /**
     * Неопределенный метод
@@ -64,6 +65,7 @@ class SqlConstruct
         $this->checkDuble('select distinct');
         $columns = $this->normaliseColumns($columns);
         $this->sql['select'] = $options .' '. $columns;
+        return $this->command;
     }
     
     /**
@@ -80,6 +82,7 @@ class SqlConstruct
         $this->checkSequence('select'); 
         $columns = $this->normaliseColumns($columns);
         $this->sql['select'] .= ', '. $columns;
+        return $this->command;
     }
   
     /**
@@ -98,6 +101,7 @@ class SqlConstruct
         $this->checkDuble('select distinct');
         $options = 'DISTINCT'. $options;
         $columns = $this->select($columns, $options);
+        return $this->command;
     }
     
     /**
@@ -119,6 +123,8 @@ class SqlConstruct
         } else {
             $this->sql['from'] = $this->normaliseFrom([$tables]);
         }
+        
+        return $this->command;
     }
 
     /**
@@ -137,6 +143,7 @@ class SqlConstruct
         $this->checkSequence('select', 'update');
         $type = strtolower($type);
         $this->joinInternal($type, $table, $on);
+        return $this->command;
     }      
     
     /**
@@ -153,6 +160,7 @@ class SqlConstruct
         
         $this->checkSequence('select', 'update');
         $this->joinInternal('inner join', $table, $on);
+        return $this->command;
     }  
     
     /**
@@ -169,6 +177,7 @@ class SqlConstruct
         
         $this->checkSequence('select', 'update');
         $this->joinInternal('left join', $table, $on);
+        return $this->command;
     }    
     
     /**
@@ -184,7 +193,8 @@ class SqlConstruct
         }
         
         $this->checkSequence('select', 'update');
-        $this->joinInternal('right join', $table, $on);
+        $this->joinInternal('right join', $table, $on);  
+        return $this->command;
     }
     
     /**
@@ -201,6 +211,7 @@ class SqlConstruct
         
         $this->checkSequence('select', 'update');
         $this->joinInternal('cross join', $table, $on);
+        return $this->command;
     }    
     
     /**
@@ -217,6 +228,7 @@ class SqlConstruct
         
         $this->checkSequence('select', 'update');
         $this->joinInternal('natural join', $table, $on);
+        return $this->command;
     }
     
     /**
@@ -249,7 +261,9 @@ class SqlConstruct
             $this->sql['where'] = $this->conditionsInternal($conditions);
         } else {
             AbcError::logic($this->component . ABC_SQL_INVALID_CONDITIONS);        
-        }  
+        } 
+        
+        return $this->command;
     }
 
     /**
@@ -266,6 +280,7 @@ class SqlConstruct
         
         $this->checkSequence('where');
         $this->createConditions('where', $conditions, $params, 'and');
+        return $this->command;
     }
     
     /**
@@ -282,6 +297,7 @@ class SqlConstruct
         
         $this->checkSequence('where');
         $this->createConditions('where', $conditions, $params, 'or');
+        return $this->command;
     }
 
     /**
@@ -298,6 +314,7 @@ class SqlConstruct
         $this->checkSequence('select', 'from');
         $this->checkDuble('group by');
         $this->sql['group by'] = $this->prepareGroupOrder($columns);
+        return $this->command;
     }
     
     /**
@@ -316,6 +333,7 @@ class SqlConstruct
         unset($this->sql['group by']);
         $this->group($columns);
         $this->sql['group by'] = $group .', '. $this->sql['group by'];
+        return $this->command;
     }
     
 
@@ -349,7 +367,9 @@ class SqlConstruct
             $this->sql['having'] = $this->conditionsInternal($conditions);
         } else {
             AbcError::logic($this->component . ABC_SQL_INVALID_CONDITIONS);        
-        }  
+        }
+        
+        return $this->command;
     }
     
     /**
@@ -366,6 +386,7 @@ class SqlConstruct
         
         $this->checkSequence('having');
         $this->createConditions('having', $conditions, $params, 'and');
+        return $this->command;
     }
     
     /**
@@ -382,6 +403,7 @@ class SqlConstruct
         
         $this->checkSequence('having');
         $this->createConditions('having', $conditions, $params, 'or');
+        return $this->command;
     }
     
     /**
@@ -398,6 +420,7 @@ class SqlConstruct
         $this->checkSequence('select', 'from');
         $this->checkDuble('order by');
         $this->sql['order by'] = $this->prepareGroupOrder($columns);
+        return $this->command;
     }
     
     
@@ -418,6 +441,7 @@ class SqlConstruct
         unset($this->sql['order by']);
         $this->order($columns);
         $this->sql['order by'] = $order .', '. $this->sql['order by'];
+        return $this->command;
     }
 
     /**
@@ -438,8 +462,10 @@ class SqlConstruct
         
         if (!empty($offset)) {
             $this->sql['offset'] = (int)$offset;
-        }  
-    } 
+        } 
+        
+        return $this->command;
+    }
     
     /**
     * Метод оператора OFFSET
@@ -455,6 +481,7 @@ class SqlConstruct
         $this->checkSequence('limit');
         $this->checkDuble('offset'); 
         $this->sql['offset'] = (int)$offset;
+        return $this->command;
     } 
     
     /**
@@ -477,7 +504,9 @@ class SqlConstruct
         } else {
             $this->addUnion($sql); 
         }
-    } 
+        
+        return $this->command;
+    }
 
     /**
     * Метод оператора INSERT INTO
@@ -496,6 +525,7 @@ class SqlConstruct
         $fields = $this->rescuer->wrapFields(array_keys($columns));
         $this->sql['insert into'] .= "\n    (". implode(', ', $fields) .")";
         $this->values([array_values($columns)]);
+        return $this->command;
     }
     
     /**
@@ -516,6 +546,7 @@ class SqlConstruct
         $columns = $this->rescuer->wrapFields($columns);
         $this->sql['insert into'] .= "\n    (". implode(', ', $columns) .")";
         $this->values($values);
+        return $this->command;
     }
     
     /**
@@ -540,6 +571,8 @@ class SqlConstruct
         if (!empty($conditions)) {        
             $this->where($conditions, $params);
         }
+        
+        return $this->command;
     }
 
     /**
@@ -561,6 +594,8 @@ class SqlConstruct
         if (!empty($conditions)) {       
             $this->where($conditions, $params);
         }
+        
+        return $this->command;
     }
 
     /**
@@ -623,8 +658,12 @@ class SqlConstruct
     * @param int $min
     */    
     protected function check($method, $argsCnt = 0, $min = 0)
-    {    
-        if ($this->isDisable() || $argsCnt < $min) {
+    {  
+        if (true === $this->isDisable()) {
+            return false;
+        }
+
+        if ($argsCnt < $min) {
             AbcError::logic($this->component . ABC_SQL_EMPTY_ARGUMENTS 
                             . basename($method) .'()</strong></span><br />');
             return false;
@@ -643,7 +682,7 @@ class SqlConstruct
         if (true === $this->driver->disable) {
             AbcError::logic($this->component . ABC_SQL_DISABLE);
             return true;
-        }
+        } 
     }
 
     /**
@@ -672,11 +711,11 @@ class SqlConstruct
         $operands = func_get_args();
         $check = array_change_key_case($this->sql, CASE_LOWER);
         $keys = array_keys($check);
-        array_walk($keys, function(&$value) {
-            $exp = preg_split('~\s+~', $value, -1, PREG_SPLIT_NO_EMPTY);
-            $value = $exp[0]; 
-        });
-          
+        
+        foreach ($keys as &$key) {
+            $key = preg_replace('~(.+?)\s+.*~', '$1', $key);
+        }
+     
         foreach ($operands as $operand) {
             $exp = preg_split('~\s+~', $operand, -1, PREG_SPLIT_NO_EMPTY);
             if (in_array($exp[0], $keys)) {

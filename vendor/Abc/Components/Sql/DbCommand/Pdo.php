@@ -300,9 +300,7 @@ class Pdo
             $this->construct->reset(); 
         }
      
-        $this->sql  = null;
-        $this->rescuer->prefix = $this->prefix;
-        $this->rescuer->newPrefix = null;        
+        $this->sql  = null;       
         $this->disable = false;
       
         if (!empty($this->stmt)) { 
@@ -319,6 +317,7 @@ class Pdo
     public function test()
     {
         $this->db->test();
+        return $this->command;
     }
     
     /**

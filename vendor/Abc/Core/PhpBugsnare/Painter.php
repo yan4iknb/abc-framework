@@ -161,7 +161,6 @@ class Painter
                     '#(?<!\')array\s+#i'  => '<span class="type">array</span> ',
                     '#(?<!\')string\s+#i' => '<span class="type">string</span> ',
                     '#(?<!\')int\s+#i'    => '<span class="type">int</span> ',
-                    '#(?<!\')null\s+#i'   => '<span class="type">null</span> ',
         ];
         
         if (extension_loaded('xdebug')) {

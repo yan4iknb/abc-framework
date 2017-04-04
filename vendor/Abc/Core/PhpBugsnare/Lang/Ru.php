@@ -15,6 +15,135 @@ class Ru
     protected static function errorReportings() 
     {
         return [
+'(.+?): Requires argument (\d), (.+?), to be a valid callback' => '<strong>$1</strong>: Requires argument <strong>$2</strong>, <strong>$3</strong>, to be a valid callback<br /><span class="translate">
+
+(<strong>$1</strong>: Аргумент <strong>$2</strong>, <strong>$3</strong>, должен быть валидный callback.)
+
+</span><br />',
+        
+'Cannot re-assign \$this' => 'Cannot re-assign <strong>$this</strong><br /><span class="translate">
+
+(Невозможно повторно назначить <strong>$this</strong>.)
+
+</span><br />',
+'Missing argument (\d+) for (.+?), called in (.+?) on line (.+?) and defined' => 'Missing argument <strong>$1</strong> for <strong>$2</strong>, called in <strong>$3</strong> on line <strong>$4</strong> and defined<br /><span class="translate">
+
+(Отсутствует аргумент <strong>$1</strong> для <strong>$2</strong> вызванного из <strong>$3</strong> на линии <strong>$4</strong>.)
+
+</span><br />',
+        
+'(.+?) and (.+?) define the same property (.+?) in the composition of (.+?). This might be incompatible, to improve maintainability consider using accessor methods in traits instead. Class was composed' => '<strong>$1</strong> and <strong>$2</strong> define the same property (<strong>$3</strong>) in the composition of <strong>$4</strong>. This might be incompatible, to improve maintainability consider using accessor methods in traits instead. Class was composed<br /><span class="translate">
+
+<strong>$1</strong> и <strong>$1</strong> определяют одно и то же свойство (<strong>$3</strong>) в составе <strong>$4</strong>. Это может быть несовместимо. Для улучшения ремонтопригодности следует вместо этого использовать геттеры. Класс собран в
+
+</span><br />',
+'Undefined index' => 'Undefined index<br /><span class="translate">
+
+(Неопределен индекс.)
+
+</span><br />',
+'Illegal offset type' => 'Illegal offset type<br /><span class="translate">
+
+(Недопустимый тип смещения.)
+
+</span><br />',
+'Call to a member function (.+?) on array' => 'Call to a member function <strong>$1</strong> on array<br /><span class="translate">
+
+(Вызов метода <strong>$1</strong> из массива.)
+
+</span><br />', 
+'Argument (\d+) passed to (.+?) must be of the type (.+?), (.+?) given, called in (.+?) on line (.+?) and defined' => 'Argument <strong>$1</strong> passed to <strong>$2</strong> must be of the type <strong>$3</strong>, <strong>$4</strong> given, called in <strong>$5</strong> on line <strong>$6</strong> and defined<br /><span class="translate">
+
+(Аргумент <strong>$1</strong>, переданный в <strong>$2</strong>, должен быть <strong>$3</strong>, а определен как <strong>$4</strong>. Вызван в <strong>$5</strong> на линии <strong>$6</strong>)
+
+</span><br />', 
+'Interface (.+?) not found' => 'Interface <strong>$1</strong> not found<br /><span class="translate">
+
+(Интерфейс <strong>$1</strong> не найден.)
+
+</span><br />', 
+'(.+?): Argument (.+?) is not an array' => '<strong>$1</strong>: Argument $2 is not an array<br /><span class="translate">
+
+(<strong>$1</strong> Аргумент $2 не массив.)
+
+</span><br />',
+'Trait (.+?) not found' => 'Trait <strong>$1</strong> not found<br /><span class="translate">
+
+(Трэйт <strong>$1</strong> не найден.)
+
+</span><br />', 
+'syntax error, unexpected end of file, expecting function \(T_FUNCTION\)' => 'Syntax error, unexpected end of file, expecting function<br /><span class="translate">
+
+(Неожиданный конец файла, ожидается функция.)
+
+</span><br />', 
+'The magic method __call() must have public visibility and cannot be static' => 'The magic method <strong>__call()</strong> must have public visibility and cannot be statict<br /><span class="translate">
+
+(Магический метод <strong>__call()</strong> должен быть публичным и не статичным.)
+
+</span><br />', 
+
+
+'(.+?) expects parameter (\d+) to be a valid callback, first array member is not a valid class name or object' => '<strong>$1</strong> expects parameter (\d+) to be a valid callback, first array member is not a valid class name or object<br /><span class="translate">
+
+(<strong>$1</strong> ожидает <strong>$2</strong> параметром действующий callback-функционал, а первый элемент массива не является валидным именем класса или объектом.)
+
+</span><br />', 
+'(.+?) expects parameter (\d+) to be a valid callback, class (.+?) not found' => '<strong>$1</strong> expects parameter <strong>$2</strong> to be a valid callback, class <strong>$3</strong> not found<br /><span class="translate">
+
+(<strong>$1</strong> ожидает <strong>$2</strong> параметром действующий callback-функционал, а класс <strong>$3</strong> не найден.)
+
+</span><br />', 
+'The use statement with non-compound name \'(.+?)\' has no effect' => 'The use statement with non-compound name <strong>$1</strong> has no effect<br /><span class="translate">
+
+(Использование оператора <strong>use</strong> с несвязанным именем <strong>$1</strong> не имеет эфекта.)
+
+</span><br />', 
+        
+'(.+?) cannot use (.+?) - it is not a trait' => '<strong>$1</strong> cannot use <strong>$2</strong> - it is not a trait<br /><span class="translate">
+
+(<strong>$1</strong> не может использовать <strong>$2</strong> - это не трейт.)
+
+</span><br />', 
+'The magic method (.+?) must have public visibility and be static' => 'The magic method <strong>$1</strong> must have public visibility and be static <br /><span class="translate">
+
+(Магический метод <strong>$1</strong> должен быть публичным и статичным.)
+
+</span><br />', 
+'Access to undeclared static property: (.+)' => 'Access to undeclared static property: <strong>$1</strong><br /><span class="translate">
+
+(Обращение к свойству, необъявленному статическим: <strong>$1</strong>)
+
+</span><br />', 
+'Declaration of (.+?) must be compatible with (.+)' => 'Declaration of <strong>$1</strong> must be compatible with <strong>$2</strong><br /><span class="translate">
+
+(Объявление <strong>$1</strong> должно быть совместимым с <strong>$2</strong>)
+
+</span><br />',
+        
+'Class (.+?) contains (\d+) abstract methods and must therefore be declared abstract or implement the remaining methods (.+)' => 'Class <strong>$1</strong> contains <strong>$2</strong> abstract methods and must therefore be declared abstract or implement the remaining methods $3<br /><span class="translate">
+
+(Класс <strong>$1</strong> содержит  абстрактные методы <strong>($2 шт)</strong> и поэтому должен быть объявлен абстрактным или реализовать остальные методы:<br />$3)
+
+</span><br />',
+
+'Using \$this when not in object context' => 'Using <strong>$this</strong> when not in object context<br /><span class="translate">
+
+(Использование <strong>$this</strong> не в контексте объекта)
+
+</span><br />',
+        
+'Class \'(.+?)\' not found' => 'Class <strong>$1</strong> not found<br /><span class="translate">
+
+(Класс <strong>$1</strong> не найден)
+
+</span><br />',
+'Cannot redeclare (.+)' => 'Cannot redeclare <strong>$1</strong><br /><span class="translate">
+
+(Невозможно повторное объявление <strong>$1</strong>)
+
+</span><br />',
+        
 '(.+)should return an array only containing the names of instance-variables to serialize' => '<strong>$1</strong> should return an array only containing the names of instance-variables to serialize<br /><span class="translate">
 
 (Serialize (): __sleep должен возвращать массив, содержащий только имена свойств для сериализации)

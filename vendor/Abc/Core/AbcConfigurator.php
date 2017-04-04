@@ -42,7 +42,9 @@ class AbcConfigurator
         if (class_exists($langusge)) {
             $langusge::set();
         } else {
-            throw new \Exception($this->config['debug']['language'] .' language is not supported');
+            throw new \Exception($this->config['debug']['language'] 
+                               .' language is not supported'
+            );
         }
     } 
    
@@ -107,9 +109,8 @@ class AbcConfigurator
     */     
     public function getConfig()
     {   
-        $hardConfig = ['route_rules' => $this->getRouteRule()];
-        
-        return array_merge($this->config, $hardConfig);
+        $hardConfig['router'] = ['route_rules' => $this->getRouteRule()];
+        return array_merge_recursive($this->config, $hardConfig);
     }    
 
     /**
@@ -145,7 +146,7 @@ class AbcConfigurator
         
         foreach ($config as $key => $array) { 
          
-            if (is_array($array)) { 
+            if (is_array($array) && $key !== 'environment') { 
                 $config[$key] = $this->normaliseConfig($array); 
             } 
         }

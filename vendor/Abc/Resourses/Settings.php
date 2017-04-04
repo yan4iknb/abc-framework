@@ -8,6 +8,8 @@ class Settings
     public static function get()
     {
         return [ 
+                    // Переменные окружения
+                    'environment' => include_once 'Environment.php',
                     // Секция общей конфигурации
                     'settings'     => [
                             // Название (или путь до) директории с пользовательскими скриптами  
@@ -19,11 +21,14 @@ class Settings
                             // Название (или путь до) директории со слоем вьюшек  
                             'dir_views'       => 'Views',    
                         ],
-                 
-                    // Контроллер и экшен по умолчанию
-                    'default_route' => [
-                                        'controller' => 'Main', 
-                                        'action'     => 'Index'
+                    
+                    'router' => [   // Тип роутинга
+                                    'type' => 'convert',
+                                    // Контроллер и экшен по умолчанию
+                                    'default_route' => [
+                                                        'controller' => 'Main', 
+                                                        'action'     => 'Index' 
+                                    ],
                     ],
                     
                     // Секция шаблонизатора

@@ -5,8 +5,8 @@ namespace ABC\Abc\Core;
 
 use ABC\Abc\Core\AbcConfigurator;
 use ABC\Abc\Core\Exception\AbcError;
-use ABC\Abc\Components\Builder;
-use ABC\Abc\Components\Container\Container;
+use ABC\Abc\Services\Builder;
+use ABC\Abc\Services\Container\Container;
 
 /** 
  * Класс AbcFramework
@@ -19,7 +19,6 @@ use ABC\Abc\Components\Container\Container;
 class Abc
 {
 
-    protected $config; 
     protected $container;
     
     /**
@@ -31,13 +30,12 @@ class Abc
     public function __construct($appConfig = [], $siteConfig = [])
     {  
         $configurator = new AbcConfigurator($appConfig, $siteConfig);
-        $this->config = $configurator->getConfig();        
-        $this->container = new Container;  
-        $this->setToStorage('config', $this->config);
-        $this->setToStorage('Abc', $this); 
+        $config = $configurator->getConfig();        
+        $this->container = new Container; 
+        $this->addToStorage('Abc', $this); 
+        $this->addToStorage('config', $config);
         $this->addToContainer('AppManager');       
-        $this->addToContainer('Request');    
-        $this->addToContainer('Router');
+        $this->addToContainer('Request');
         $this->includeFunction();
     } 
    
@@ -53,13 +51,23 @@ class Abc
     }
     
     /**
-    * Возвращает контейнер
+    * Возвращает текущий контейнер
     *
     * @return object
     */     
     public function getContainer()
     {  
         return $this->container;
+    }
+    
+    /**
+    * Возвращает новый контейнер
+    *
+    * @return object
+    */     
+    public function getNewContainer()
+    {  
+        return new Container;
     }
     
     /**
@@ -70,7 +78,7 @@ class Abc
     *
     * @return void
     */     
-    public function setToStorage($id, $data)
+    public function addToStorage($id, $data)
     {  
         $this->container->setAsShared($id, 
                function() use ($data) {
@@ -161,12 +169,12 @@ class Abc
     *
     * @return void
     */     
-    protected function addToContainer($className)
+    protected function addToContainer($className, $dir = '')
     { 
         $abc = $this;
         $this->container->setAsShared($className, 
-               function() use ($className, $abc) {
-                   $className = 'ABC\Abc\Core\\' . $className;
+               function() use ($className, $dir, $abc) {
+                   $className = 'ABC\Abc\Core\\'. $dir . $className;
                    return new $className($abc);
                });
     }

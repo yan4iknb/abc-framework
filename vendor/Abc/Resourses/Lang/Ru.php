@@ -20,15 +20,47 @@ class Ru
         /**
         * Общие константы
         */ 
+        
+        define('ABC_NO_FUNCTIONAL',            ' is not implemented <br /><span style="color:red">(Этот функционал не реализован)</span><br />');
         define('ABC_NO_CLASS',                 ' class not found <br /><span style="color:red">(класс не найден)</span><br />');
         define('ABC_NO_METHOD',                ' method offline in framework <br /><span style="color:red">(метод не поддержиается фреймворком)</span><br />');
         define('ABC_TPL_DISABLE',              ' the template disabled <br /><span style="color:red">(шаблонизатор отключен)</span><br />');
         define('ABC_INVALID_CONFIGURE_APP',    ' Configuring the application is to be performed array <br /><span style="color:red">(конфигурация приложения должна быть массивом)</span><br />');
         define('ABC_INVALID_CONFIGURE_SITE',   ' Configuring the site is to be performed array <br /><span style="color:red">(конфигурация сайта должна быть массивом)</span><br />');
         define('ABC_NO_CONFIGURE',             ' Setting is not specified in the configuration file <br /><span style="color:red">(настройка не задана в конфигурационном файле)</span><br />');
-        define('ABC_INVALID_CONFIGURE',        'Setup key must be a string <br /><span style="color:red">(ключ настройки должен быть строкой)</span><br />');        
+        define('ABC_INVALID_CONFIGURE',        ' Setup key must be a string <br /><span style="color:red">(ключ настройки должен быть строкой)</span><br />');        
         define('ABC_UNKNOWN_ROUTES',           ' Unknown type of routing data <br /><span style="color:red">(неизвестный тип маршрутизации)</span><br />');
         define('ABC_ERROR_ROUTES_RULE',        ' Error in the routing rules <br /><span style="color:red">(ошибка в правилах роутинга)</span><br />');
+  
+        /**
+        * Request
+        */        
+
+        define('ABC_INVALID_STREAM',           'Invalid stream provided.<br /><span style="color:red">(Указан недопустимый поток)</span><br />');
+        define('ABC_INVALID_PROTOCOL',         'Invalid HTTP version.<br /><span style="color:red">(Невалидная версия протокола HTTP)</span><br />');
+        define('ABC_INVALID_TARGET',           'Invalid request target provided; cannot contain whitespace<br /><span style="color:red">(Некорректная цель запроса)</span><br />');        
+        define('ABC_NO_HEADER',                ' - There is no such header. <br /><span style="color:red">(Нет такого заголовка.)</span><br />');
+        define('ABC_VALUE_NO_STRING',          'Header must be a string or array of strings<br /><span style="color:red">(Заголовок должен быть строкой или массивом строк)</span><br />');    
+        define('ABC_INVALID_HEADER_NAME',      'Invalid header name. <br /><span style="color:red">(Невалидное имя заголовка.)</span><br />');
+        define('ABC_INVALID_HEADER_VALUE',     'Invalid header. <br /><span style="color:red">(Невалидный заголовок.)</span><br />');
+        define('ABC_NO_RESOURCE',              ' is not a resource. <br /><span style="color:red">(Аргумент не является ресурсом.)</span><br />');
+        define('ABC_NO_REWIND',                'Could not rewind stream<br /><span style="color:red">(Не удалось сбросить курсор потока)</span><br />');
+        define('ABC_NO_POINTER',               'Could not get the position of the pointer in stream<br /><span style="color:red">(Не удалось получить позицию указателя в потоке)</span><br />'); 
+        define('ABC_NO_WRITE',                 'Could not write to stream<br /><span style="color:red">(Не удалось запиисать в поток)</span><br />'); 
+        define('ABC_NO_READ',                  'Could not read from stream<br /><span style="color:red">(Не удалось прочитать из потока)</span><br />');
+        define('ABC_NO_CONTENT',               'Could not get contents of stream<br /><span style="color:red">(Не удалось пролучить контент из потока)</span><br />');
+        define('ABC_PATH_NO_STRING',           'Path must be a string<br /><span style="color:red">(Path должен быть строкой)</span><br />');
+        define('ABC_URI_NO_STRING',            'Uri must be a string<br /><span style="color:red">(URI должен быть строкой)</span><br />');
+        define('ABC_INVALID_URI',              'The invalid Uri<br /><span style="color:red">(Невалидный Uri)</span><br />'); 
+        define('ABC_SCHEME_NO_STRING',         'Uri scheme must be a string<br /><span style="color:red">(URI схема должна быть строкой)</span><br />');   
+        define('ABC_INVALID_SCHEME',           'Uri scheme must be one of: "", "https", "http"<br /><span style="color:red">(URI схема должна быть одним из "", "https", "http")</span><br />'); 
+        define('ABC_EMPTY_ARGYMENTS',          'Uri fragment must be a string<br /><span style="color:red">(Фрагмент должен быть строкой)</span><br />');   
+        define('ABC_EMPTY_FILE_PATH',          'No path is specified for moving the file<br /><span style="color:red">(Не указан путь для перемещения файла)</span><br />'); 
+        define('ABC_CANNOT_MOVE_FILE',         'Cannot move file<br /><span style="color:red">(Не удалось переместить файл)</span><br />'); 
+        define('ABC_ERROR_MOVED',              'Cannot retrieve stream after it has already been moved <br /><span style="color:red">(Не удалось получить поток после его перемещения)</span><br />');
+        define('ABC_ERROR_FILE',               'Error occurred while moving uploaded file <br /><span style="color:red">(Ошибка перемещения файла)</span><br />');
+        define('ABC_URI_IS_FRAGMENT',          'Query string must not include a URI fragment<br /><span style="color:red">(Строка запроса не должна содержать #фрагмент)</span><br />');
+        define('ABC_INVALID_STATUS',          'Invalid status code. Must be an integer between 100 and 599, inclusive<br /><span style="color:red">(Неверный статус-код. Код дожен быть в промежутке между 100 и 599)</span><br />');
         
         /**
         * Настройки дебаггера
@@ -66,8 +98,6 @@ class Ru
         define('ABC_NO_METHOD_IN_DBC',         ' method is not supported by the Query builder<br /><span style="color:red">(метод не поддерживается конструктором запросов)</span><br />');
         define('ABC_ERROR_BINDVALUES',         ' The numbering of the array in the parameter of the <strong>bindValues()</strong> method must begin with 1<br /><span style="color:red">(Нумерация массива в параметре метода <strong>bindValues()</strong> должна начинаться с единицы)</span><br />');
         define('ABC_DBCOMAND_SERIALIZE',       ' You can not serialize a query builder object<br /><span style="color:red">(Нельзя сериализовать объект конструктора запросов)</span><br />');
-        
-        
         
         /**
         * Ошибки использования шаблонизатора

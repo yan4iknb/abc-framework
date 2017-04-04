@@ -90,6 +90,16 @@ class Abc
     }
    
     /**
+    * Получает текущий контейнер
+    *
+    * @return object
+    */ 
+    public static function getContainer()
+    {
+        return self::$process->getContainer();
+    }
+   
+    /**
     * Инициализирует новый объект сервиса
     *
     * @param string $serviceId
@@ -122,9 +132,9 @@ class Abc
     *
     * @return void
     */     
-    public static function setInStorage($id, $data)
+    public static function addInStorage($id, $data)
     {
-        self::$process->setInStorage($id, $data);
+        self::$process->addInStorage($id, $data);
     }    
 
     /**

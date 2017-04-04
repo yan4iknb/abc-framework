@@ -16,7 +16,7 @@ use ABC\Abc\Core\PhpBugsnare\Debugger;
     
     /**
     * Инициализация GET
-    *
+    *i
     * @param array $key
     * @param array $default
     * 
@@ -25,7 +25,7 @@ use ABC\Abc\Core\PhpBugsnare\Debugger;
     function iniGET($key = null, $default = null)
     {
         $abc = abcForFunctions();
-        return $abc->getFromStorage('Request')->iniGET($key, $default);
+        return $abc->getFromStorage('Request')->get($key, $default);
     }
     
     /**
@@ -39,7 +39,7 @@ use ABC\Abc\Core\PhpBugsnare\Debugger;
     function iniPOST($key = null, $default = null)
     {
         $abc = abcForFunctions();
-        return $abc->getFromStorage('Request')->iniPOST($key, $default);
+        return $abc->getFromStorage('Request')->post($key, $default);
     }
     
     /**
@@ -53,7 +53,7 @@ use ABC\Abc\Core\PhpBugsnare\Debugger;
     function iniCOOKIE($key = null, $default = null)
     {
         $abc = abcForFunctions();
-        return $abc->getFromStorage('Request')->iniCOOKIE($key, $default);
+        return $abc->getFromStorage('Request')->cookie($key, $default);
     }
     
     /**
@@ -118,10 +118,10 @@ use ABC\Abc\Core\PhpBugsnare\Debugger;
     *
     * @return string 
     */      
-    function createUrl($queryString, $mode = false)   
+    function createUri($queryString, $mode = false)   
     {  
         $abc = abcForFunctions();
-        return $abc->sharedService('UrlManager')->createUrl($queryString, $mode);
+        return $abc->sharedService('UriManager')->createUri($queryString, $mode);
     }
     
     /**
@@ -136,7 +136,7 @@ use ABC\Abc\Core\PhpBugsnare\Debugger;
     function createLink($queryString, $text, $param = [])   
     { 
         $abc = abcForFunctions();
-        return $abc->sharedService('UrlManager')->createLink($queryString, $text, $param);
+        return $abc->sharedService('UriManager')->createLink($queryString, $text, $param);
     } 
     
     /**   
@@ -150,7 +150,7 @@ use ABC\Abc\Core\PhpBugsnare\Debugger;
     function activeLink($returnUrl, $css = 'class="active"')
     { 
         $abc = abcForFunctions();
-        return $abc->sharedService('UrlManager')->activeLink($returnUrl, $css);
+        return $abc->sharedService('UriManager')->activeLink($returnUrl, $css);
     }     
 
     /**

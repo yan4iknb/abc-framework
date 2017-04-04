@@ -2,37 +2,38 @@
 
 namespace ABC\Abc\Core;
 
+use ABC\Abc\Core\Exception\AbcError;
+
 /** 
  * Класс Request
  * 
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
- * @copyright © 2015
+ * @copyright © 2017
  * @license http://www.wtfpl.net/
  */   
 class Request
 {
-   
+
     protected $GET;
-    protected $uriHash;
-    protected $config; 
-    protected $router;
     
+        
     /**
-    * @param object $abc
+    * Конструктор
     */ 
-    public function __construct($abc)
+    public function __construct($abc = null)
     {
-        $this->config = $abc->getFromStorage('config');
-        $this->router = $abc->getFromStorage('Router');
-     
-        if (!empty($_SERVER['QUERY_STRING'])) {
-            $this->GET = $this->parseQueryString();
-        } else {
-            $this->GET = $this->parseRequestUri();
-        } 
-    } 
-    
+        if (!empty($abc)) {
+            if (!empty($_SERVER['QUERY_STRING'])) {
+                $this->GET = $this->parseQueryString();
+            } else {
+                $path = $this->getPath();
+                $router  = $abc->sharedService('Router');            
+                $this->GET = $router->createGet($path);
+            } 
+        }
+    }
+ 
     /**
     * Инициализация GET параметров
     *
@@ -41,7 +42,7 @@ class Request
     *
     * @return string|array
     */        
-    public function iniGET($key = null, $default = null)
+    public function get($key = null, $default = null)
     {
         if (empty($key)) {
             return @$this->GET;
@@ -58,7 +59,7 @@ class Request
     *
     * @return string|array
     */        
-    public function iniPOST($key = null, $default = null)
+    public function post($key = null, $default = null)
     {
         if (empty($key)) {
             return @$_POST;
@@ -75,7 +76,7 @@ class Request
     *
     * @return string
     */        
-    public function iniCOOKIE($key = null, $default = null)
+    public function cookie($key = null, $default = null)
     {
         if (empty($key)) {
             return @$_COOKIE;
@@ -179,33 +180,5 @@ class Request
         $queryString = urldecode($_SERVER['QUERY_STRING']);
         mb_parse_str($queryString, $result);
         return $result;
-    }
-    
-    /**
-    * Преобразует URI в массив HASH
-    *
-    * @return array
-    */    
-    protected function createUriHash()
-    {
-        $uriHash = explode('/', trim($this->getPath(), '/'));
-        
-        if (!empty($this->config['url']['show_script'])) {
-            array_shift($uriHash);
-        }
-        
-        return $uriHash;
-    }
-    
-    /**
-    * Разбирает массив HASH в массив GET по правилам роутинга
-    *
-    * @return array
-    */    
-    protected function parseRequestUri()
-    {
-        $uriHash = $this->createUriHash();
-        $string  = $this->getPath();
-        return $this->router->convertUri($uriHash, $string);
     }
 }

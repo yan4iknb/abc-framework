@@ -20,19 +20,42 @@ class En
         /**
         * General constants
         */ 
-        define('ABC_NO_CLASS',     ' class not found');
-        define('ABC_NO_METHOD',    ' method offline in class ');
-        define('ABC_TPL_DISABLE',  ' the template disabled');
-        
-        /**
-        * General settings
-        */ 
+        define('ABC_NO_FUNCTIONAL',            ' is not implemented');
+        define('ABC_NO_CLASS',                 ' class not found');
+        define('ABC_NO_METHOD',                ' method offline in class ');
+        define('ABC_TPL_DISABLE',              ' the template disabled');
         define('ABC_INVALID_CONFIGURE_APP',    ' Configuring the application is to be performed array');
         define('ABC_INVALID_CONFIGURE_SITE',   ' Configuring the site is to be performed array');
         define('ABC_NO_CONFIGURE',             ' Setting is not specified in the configuration file');
         define('ABC_INVALID_CONFIGURE',        'Setup key must be a string');
         define('ABC_UNKNOWN_ROUTES',           ' Unknown type of routing data');
         
+        /**
+        * HTTP
+        */        
+        define('ABC_INVALID_STREAM',           'Invalid stream provided.');
+        define('ABC_INVALID_PROTOCOL',         'Invalid HTTP version.');  
+        define('ABC_INVALID_TARGET',           'Invalid request target provided; cannot contain whitespace');
+        define('ABC_NO_HEADER',                ' - There is no such header.');
+        define('ABC_VALUE_NO_STRING',          'Header must be a string or array of strings.');
+        define('ABC_INVALID_HEADER_NAME',      'Invalid header name.');        
+        define('ABC_INVALID_HEADER_VALUE',     'Invalid header.');
+        define('ABC_NO_RESOURCE',              ' is not a resource.');
+        define('ABC_NO_REWIND',                'Could not rewind stream.');
+        define('ABC_NO_POINTER',               'Could not get the position of the pointer in stream.'); 
+        define('ABC_NO_WRITE',                 'Could not write to stream.');
+        define('ABC_NO_READ',                  'Could not read from stream');
+        define('ABC_NO_CONTENT',               'Could not get contents of stream');
+        define('ABC_URI_NO_STRING',            'Uri must be a string'); 
+        define('ABC_INVALID_URI',              'The invalid Uri'); 
+        define('ABC_SCHEME_NO_STRING',         'Uri scheme must be a string'); 
+        define('ABC_INVALID_SCHEME',           'Uri scheme must be one of: "", "https", "http"');  
+        define('ABC_FRAGMENT_NO_STRING',       'Fragment must be a string');        
+        define('ABC_ERROR_MOVED',              'Cannot retrieve stream after it has already been moved');
+        define('ABC_EMPTY_FILE_PATH',          'No path is specified for moving the file'); 
+        define('ABC_CANNOT_MOVE_FILE',         'Cannot move file');
+        define('ABC_URI_IS_FRAGMENT',          'Query string must not include a URI fragment');
+        define('ABC_INVALID_STATUS',          'Invalid status code. Must be an integer between 100 and 599, inclusive');
         /**
         * Debugger settings 
         */ 

@@ -11,7 +11,7 @@ namespace ABC\Abc\Core\Exception;
 class AbcError
 {
     public static $marker;
-    protected static $exception;
+    protected static $warning = false;
     protected static $bugsnare;
 
     /**
@@ -37,11 +37,12 @@ class AbcError
     */     
     public function __construct($config) 
     {
-        if (!empty($config['exception'])) {
-            self::$exception = true;
+        if (!empty($config['exception'])) { 
             set_error_handler([$this, 'triggerErrorException']);
+        } else {
+            self::$warning = true;        
         }
-        
+
         self::$bugsnare = !empty($config['bugsnare']);
     }
     
@@ -226,12 +227,12 @@ class AbcError
     * 
     */ 
     public static function error($message)
-    {
+    { 
         if (!self::$bugsnare) {
             $message = strip_tags($message);
         }
         
-        if (self::$exception) {
+        if (!self::$warning) {
             $message = self::$marker . $message;
         }
      

@@ -11,7 +11,7 @@ namespace ABC\Abc\Core\Routing;
  * @copyright © 2017
  * @license http://www.wtfpl.net/
  */   
-class CallableRouter
+class CallableResolver
 {
     /**
     * @param object $abc

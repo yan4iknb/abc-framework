@@ -1,6 +1,6 @@
 <?php 
 
-namespace ABC\Abc\Services\Uri\UriManager;
+namespace ABC\Abc\Services\UriManager;
 
 /** 
  * Класс UrlManager 
@@ -22,9 +22,9 @@ class UriManager
     */      
     public function __construct($abc)
     {
-        $this->config  = $abc->getConfig();
-        $this->request = $abc->getFromStorage('Request');
-        $this->parser  = $abc->sharedService('Router');
+        $this->uriConfig  = $abc->getConfig('uri_manager');
+        $this->params = $abc->sharedService('Params');
+        $this->router = $abc->getFromStorage('Router');
     }
     
     /**
@@ -43,14 +43,14 @@ class UriManager
      
         $queryString  = trim($queryString, '/'); 
      
-        if (is_array($mode) && !empty($this->config['url_manager'])) {
-            $config = array_merge($this->config['url_manager'], $mode);
-        } elseif (!is_array($mode) && !empty($this->config['url_manager'])) {
-            $config = $this->config['url_manager'];
+        if (is_array($mode) && !empty($this->uriConfig)) {
+            $config = array_merge($this->uriConfig, $mode);
+        } elseif (!is_array($mode) && !empty($this->uriConfig)) {
+            $config = $this->uriConfig;
         } 
      
         $protocol   = !empty($config['https']) ? 'https://' : 'http://';
-        $hostName   = $this->request->getHostName();
+        $hostName   = $this->params->getHostName();
         $scriptName = null;
         
         if (!empty($config['show_script'])) {
@@ -73,7 +73,7 @@ class UriManager
             if ($queryString[0] === '?') {
                 return $basePath .'?'. ltrim($queryString, '?');            
             } else {
-                $param = $this->parser->parseRoutes($queryString);
+                $param = $this->router->parseRoutes($queryString);
                 return $basePath .'?'. http_build_query($param); 
             }
             
@@ -83,7 +83,7 @@ class UriManager
                 return $basePath .'/'. $queryString;
             } else {
                 mb_parse_str($queryString, $param); 
-                $param = $this->parser->createHashFromParam($param);
+                $param = $this->router->createHashFromParam($param);
                 $queryString = implode('/', $param);
                 return $basePath .'/'. $queryString;
             }
@@ -100,8 +100,8 @@ class UriManager
     */     
     public function addParamToUri($queryString, $mode = false)
     {
-        $get = $this->request->get();
-        $addition = $this->parser->createGetFromPath($queryString);
+        $get = $this->params->get();
+        $addition = $this->router->createGetFromPath($queryString);
         $param = array_merge($get, $addition);
         $queryString = '?'. http_build_query($param); 
         return $this->createUri($queryString, $mode);
@@ -120,10 +120,10 @@ class UriManager
     { 
         $attribute = !empty($param['attribute']) ? $param['attribute'] : null;
         
-        if (!empty($param['returnUrl']) && !empty($param['css'])) {
-            $attribute .= $this->activeLink($param['returnUrl'], $param['css']); 
-        } elseif (!empty($param['returnUrl'])) {
-            $attribute .= $this->activeLink($param['returnUrl']);
+        if (!empty($param['returnUri']) && !empty($param['css'])) {
+            $attribute .= $this->activeLink($param['returnUri'], $param['css']); 
+        } elseif (!empty($param['returnUri'])) {
+            $attribute .= $this->activeLink($param['returnUri']);
         }        
             
         $mode = !empty($param['mode']) ? $param['mode'] : false; 
@@ -145,7 +145,7 @@ class UriManager
     */ 
     public function activeLink($returnUrl, $activeCss = 'class="active"')
     {
-        $current = strtolower($this->request->getController() .'/'. $this->request->getAction());
+        $current = strtolower($this->params->getController() .'/'. $this->params->getAction());
      
         if ($current === $returnUrl) {
             return $activeCss;        

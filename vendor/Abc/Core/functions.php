@@ -22,10 +22,10 @@ use ABC\Abc\Core\PhpBugsnare\Debugger;
     * 
     * @return string
     */
-    function iniGET($key = null, $default = null)
+    function GET($key = null, $default = null)
     {
         $abc = abcForFunctions();
-        return $abc->getFromStorage('Request')->get($key, $default);
+        return $abc->sharedService('Params')->get($key, $default);
     }
     
     /**
@@ -36,10 +36,10 @@ use ABC\Abc\Core\PhpBugsnare\Debugger;
     * 
     * @return string
     */
-    function iniPOST($key = null, $default = null)
+    function POST($key = null, $default = null)
     {
         $abc = abcForFunctions();
-        return $abc->getFromStorage('Request')->post($key, $default);
+        return $abc->sharedService('Params')->post($key, $default);
     }
     
     /**
@@ -53,7 +53,7 @@ use ABC\Abc\Core\PhpBugsnare\Debugger;
     function iniCOOKIE($key = null, $default = null)
     {
         $abc = abcForFunctions();
-        return $abc->getFromStorage('Request')->cookie($key, $default);
+        return $abc->sharedService('Params')->cookie($key, $default);
     }
     
     /**

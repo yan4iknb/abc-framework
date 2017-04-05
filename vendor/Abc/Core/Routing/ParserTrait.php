@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Services\Uri\Router;
+namespace ABC\Abc\Core\Routing;
 
 use ABC\Abc\Core\Exception\AbcError;
 
@@ -12,11 +12,9 @@ use ABC\Abc\Core\Exception\AbcError;
  * @copyright © 2015
  * @license http://www.wtfpl.net/
  */   
-class Parser
+trait ParserTrait
 {
-    protected $defaultKeys = ['controller', 'action'];
-    protected $config;    
-    protected $defaultRoute;
+    protected $defaultKeys = ['controller', 'action'];   
     protected $routeRules; 
     protected $queryString;  
     protected $current;
@@ -24,15 +22,6 @@ class Parser
     protected $elements;
     protected $patterns;
     
-    /**
-    * @param object $abc
-    */ 
-    public function __construct($config)
-    {
-        $this->config = $config; 
-        $this->defaultRoute = arrayStrtolower($this->config['default_route']);
-        $this->routeRules   = $this->config['route_rules'];
-    }
     
     /**
     * Разбор правил маршрутизации

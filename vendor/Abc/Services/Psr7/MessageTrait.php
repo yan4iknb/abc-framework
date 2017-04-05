@@ -231,12 +231,7 @@ trait MessageTrait
     {
         $this->storage = $this->abc->newService('Storage');
         
-        $env = $this->abc->getConfig('environment');
-        $this->method = $env['REQUEST_METHOD'];
-        $this->storage->add('serverParam', $env);
-        
-        $protocolVersion = str_replace('HTTP/', '', $env['SERVER_PROTOCOL']);
-        $this->storage->add('protocolversion', $protocolVersion);
+
         
         $this->setHeaders($headers);
     }
@@ -248,22 +243,17 @@ trait MessageTrait
     */ 
     protected function setHeaders($headers = [])
     {
-        $headers = !empty($headers) ? $headers : $this->envHeaders();
         $headers = $this->filterHeaders($headers);
-        
-        foreach ($headers as $key => $value) {
-            $this->storage->add($key, $value, 'headers');           
-        }
+        $this->storage->addArray($headers, 'headers');
     }
     
     /**
     * Устанавливает дефолтные заголовки
     * 
-    * @return array 
+    * @param array $env
     */ 
-    protected function envHeaders()
+    protected function setEnvHeaders($env)
     {
-        $env = $this->storage->get('serverParam');
         $headers = [];
         foreach ($env as $key => $value) {
             $keyUpper = strtoupper($key);            
@@ -276,7 +266,7 @@ trait MessageTrait
             }
         }
         
-        return $headers;
+        $this->setHeaders($headers);
     }  
 
     /**

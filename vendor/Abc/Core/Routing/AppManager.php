@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Core;
+namespace ABC\Abc\Core\Routing;
 
 use ABC\Abc\Core\Base;
 
@@ -27,9 +27,9 @@ class AppManager
     public function __construct($abc)
     {  
         $this->abc = $abc;
-        $this->config    = $abc->getFromStorage('config');
-        $this->request   = $abc->getFromStorage('Request');
-        $this->settings  = $this->config['settings'];
+        $this->params   = $abc->sharedService('Params');
+        $this->config   = $abc->getConfig();
+        $this->settings = $this->config['settings'];
     }     
     
     /**
@@ -53,17 +53,13 @@ class AppManager
                 
                 if (class_exists($view)) {
                     $objView = new $view;
-
                 } else {
                     $objView = new Base;  
                 }
              
-                $objView->abc       = $this->abc;
-                $objView->config    = $this->config;
-                
-                $objController->abc       = $this->abc;
-                $objController->view      = $objView;
-                $objController->config    = $this->config;
+                $objView->abc = $this->abc;
+                $objController->abc    = $this->abc;
+                $objController->view   = $objView;
                 
                 call_user_func([$objController, $action]);
                 
@@ -103,7 +99,7 @@ class AppManager
     */        
     public function getNameClass()
     {   
-        $nameClass = $this->request->getController();
+        $nameClass = $this->params->getController();
         $nameClass = preg_replace('#[^a-z0-9\-_]#ui', '', $nameClass); 
         return mb_convert_case($nameClass, MB_CASE_TITLE);
     }  
@@ -115,7 +111,7 @@ class AppManager
     */        
     public function getAction()
     {   
-        $action = $this->request->getAction();
+        $action = $this->params->getAction();
         $action = preg_replace('#[^a-z0-9\-_]#ui', '', $action);
         return 'action'. mb_convert_case($action, MB_CASE_TITLE);
     } 

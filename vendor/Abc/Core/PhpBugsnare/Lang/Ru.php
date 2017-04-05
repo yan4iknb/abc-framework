@@ -62,9 +62,14 @@ class Ru
 (Интерфейс <strong>$1</strong> не найден.)
 
 </span><br />', 
-'(.+?): Argument (.+?) is not an array' => '<strong>$1</strong>: Argument $2 is not an array<br /><span class="translate">
+'(.+?): Argument (.+?) is not an array' => '<strong>$1</strong>: Argument <strong>$2</strong> is not an array<br /><span class="translate">
 
 (<strong>$1</strong> Аргумент $2 не массив.)
+
+</span><br />',
+'(.+?): Argument (.+?) should be an array' => '<strong>$1</strong>: Argument <strong>$2</strong> should be an array<br /><span class="translate">
+
+(<strong>$1</strong> Аргумент $2 должен быть массивом.)
 
 </span><br />',
 'Trait (.+?) not found' => 'Trait <strong>$1</strong> not found<br /><span class="translate">

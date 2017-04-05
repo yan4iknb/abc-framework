@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Services\Uri\Router;
+namespace ABC\Abc\Core\Routing;
 
 
 /** 
@@ -11,26 +11,20 @@ namespace ABC\Abc\Services\Uri\Router;
  * @copyright © 2017
  * @license http://www.wtfpl.net/
  */   
-class Custom
+class Router
 {
-    protected $defaultKeys = ['controller', 'action'];
-    protected $config;    
-    protected $defaultRoute;
-    protected $routeRules; 
-    protected $string;  
-    protected $current;
-    protected $routes;
-    protected $elements;
-    protected $patterns;
-    
+    use ParserTrait;
+   
+    protected $defaultRoute;   
+   
     /**
     * @param object $abc
     */ 
     public function __construct($config)
     {
-        $this->config = $config; 
-        $this->defaultRoute = arrayStrtolower($this->config['default_route']);
-        $this->parser = new Parser($config);
+        $this->defaultRoute = $config['default_route'];
+        $this->defaultRoute = array_map('strtolower', $this->defaultRoute);
+        $this->routeRules   = isset($config['route_rules']) ? $config['route_rules'] : [];
     }     
 
     /**
@@ -47,13 +41,13 @@ class Custom
     /**
     * Разбор правил маршрутизации
     *
-    * @param string $string
+    * @param string $queryString
     *
     * @return array
     */    
     public function parseRoutes($queryString)
     {
-        return $this->parser->parseRoutes($queryString);
+        return $this->parseRoutes($queryString);
     }
     
     /**
@@ -98,7 +92,7 @@ class Custom
     {
         $hash = explode('/', trim($path, '/'));
         
-        if (!empty($this->config['url']['show_script'])) {
+        if (!empty($this->config['uri_manager']['show_script'])) {
             array_shift($hash);
         }
         
@@ -151,7 +145,7 @@ class Custom
             return $this->defaultGet($hash);
         }
      
-        return $this->parser->parseRoutes($path);
+        return $this->parseRoutes($path);
     }
     
     /**

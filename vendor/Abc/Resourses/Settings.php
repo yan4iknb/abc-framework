@@ -22,13 +22,9 @@ class Settings
                             'dir_views'       => 'Views',    
                         ],
                     
-                    'router' => [   // Тип роутинга
-                                    'type' => 'convert',
-                                    // Контроллер и экшен по умолчанию
-                                    'default_route' => [
-                                                        'controller' => 'Main', 
-                                                        'action'     => 'Index' 
-                                    ],
+                    'default_route' => [
+                                        'controller' => 'Main', 
+                                        'action'     => 'Index' 
                     ],
                     
                     // Секция шаблонизатора
@@ -55,7 +51,9 @@ class Settings
                     'errors' => [   // Общий уровень ошибок
                                     'error_reporting'  => E_ALL,
                                     // Уровень ошибок для 500 Internal Server Error
-                                    'level_500'        => E_ALL & ~E_NOTICE,    
+                                    'level_500'        => -1,  
+                                    'abc_404'          => true, 
+                                    'abc_500'          => true, 
                     ],
                     
                     'debug' => [    // Язык перевода отчета об ошибках

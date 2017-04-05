@@ -5,8 +5,8 @@ namespace ABC\Abc\Resourses;
     return [
                 'SERVER_PROTOCOL'      => 'HTTP/1.1',
                 'REQUEST_METHOD'       => 'GET',
-                'SCRIPT_NAME'          => 'guest',
-                'REQUEST_URI'          => '/guest',
+                'SCRIPT_NAME'          => '',
+                'REQUEST_URI'          => '',
                 'QUERY_STRING'         => '',
                 'SERVER_NAME'          => 'localhost',
                 'SERVER_PORT'          => 80,

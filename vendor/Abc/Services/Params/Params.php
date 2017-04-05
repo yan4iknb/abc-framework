@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Core;
+namespace ABC\Abc\Services\Params;
 
 use ABC\Abc\Core\Exception\AbcError;
 
@@ -12,12 +12,12 @@ use ABC\Abc\Core\Exception\AbcError;
  * @copyright © 2017
  * @license http://www.wtfpl.net/
  */   
-class Request
+class Params
 {
 
     protected $GET;
     
-        
+ 
     /**
     * Конструктор
     */ 
@@ -28,7 +28,7 @@ class Request
                 $this->GET = $this->parseQueryString();
             } else {
                 $path = $this->getPath();
-                $router  = $abc->sharedService('Router');            
+                $router  = $abc->getFromStorage('Router');            
                 $this->GET = $router->createGet($path);
             } 
         }
@@ -104,7 +104,7 @@ class Request
     public function getAction()
     {    
         $get = $this->GET;
-        array_shift($get);    
+        array_shift($get); 
         return array_shift($get);
     }
     

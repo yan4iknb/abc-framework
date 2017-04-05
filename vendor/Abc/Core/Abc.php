@@ -4,9 +4,16 @@ namespace ABC\Abc\Core;
 
 
 use ABC\Abc\Core\AbcConfigurator;
+use ABC\Abc\Core\Request;
+use ABC\Abc\Core\Routing\AppManager;
+use ABC\Abc\Core\Routing\CallableResolver;
+use ABC\Abc\Core\Routing\Router;
 use ABC\Abc\Core\Exception\AbcError;
-use ABC\Abc\Services\Builder;
 use ABC\Abc\Services\Container\Container;
+use ABC\Abc\Services\Builder;
+use ABC\Abc\Services\Storage\Storage;
+
+
 
 /** 
  * Класс AbcFramework
@@ -18,9 +25,8 @@ use ABC\Abc\Services\Container\Container;
  */   
 class Abc
 {
-
+    protected $storage;
     protected $container;
-    
     /**
     * Конструктор
     * 
@@ -30,74 +36,35 @@ class Abc
     public function __construct($appConfig = [], $siteConfig = [])
     {  
         $configurator = new AbcConfigurator($appConfig, $siteConfig);
-        $config = $configurator->getConfig();        
-        $this->container = new Container; 
-        $this->addToStorage('Abc', $this); 
-        $this->addToStorage('config', $config);
-        $this->addToContainer('AppManager');       
-        $this->addToContainer('Request');
+        $config = $configurator->getConfig(); 
+        $this->container = new Container;
+        $this->storage   = new Storage;
+        $this->storage->addArray($config, 'config');
+        $this->storage->add('Router', new Router($config));
         $this->includeFunction();
     } 
-   
+    
     /**
     * Запускает приложение 
     *
     * @return void
     */     
-    public function startApp()
+    public function run()
     {
-        $manager = $this->getFromStorage('AppManager');
+        $manager = new AppManager($this);
         $manager->run();
     }
     
     /**
-    * Возвращает текущий контейнер
-    *
-    * @return object
-    */     
-    public function getContainer()
-    {  
-        return $this->container;
-    }
-    
-    /**
-    * Возвращает новый контейнер
-    *
-    * @return object
-    */     
-    public function getNewContainer()
-    {  
-        return new Container;
-    }
-    
-    /**
-    * Помещает любые данные в глобальное хранилище
-    *
-    * @param string $id
-    * @param mix $data
+    * Запуск фреймворка с роутингом
     *
     * @return void
     */     
-    public function addToStorage($id, $data)
-    {  
-        $this->container->setAsShared($id, 
-               function() use ($data) {
-                   return $data;
-               });
+    public function route()
+    { 
+        return new CallableResolver;    
     }
     
-    /**
-    * Получает содержимое глобального хранилища по ключу
-    *
-    * @param string $id
-    *
-    * @return mix
-    */     
-    public function getFromStorage($id = null)
-    {  
-        return $this->container->get($id);
-    }
-
     /**
     * Выбирает и запускает сервис
     *
@@ -106,8 +73,8 @@ class Abc
     * @return object
     */     
     public function newService($serviceId = null)
-    {   
-        $builder = $this->getBuilder($serviceId);
+    { 
+        $builder   = $this->getBuilder($serviceId);
         return $builder->newService($serviceId);
     }
     
@@ -120,31 +87,20 @@ class Abc
     */     
     public function sharedService($serviceId = null)
     {  
-        $builder = $this->getBuilder($serviceId);
-        return $builder->sharedService($serviceId);
+        $builder   = $this->getBuilder($serviceId);
+        return $builder->sharedService();
     }
     
     /**
-    * Получает настройку конфигурации
+    * Возвращает текущий контейнер
     *
-    * @param string $key
-    *
-    * @return string
+    * @return object
     */     
-    public function getConfig($key = null)
-    {
-        $config = $this->container->get('config');
-     
-        if (empty($key)) {
-            return $config;
-        } elseif (!is_string($key)) {
-            AbcError::invalidArgument(ABC_INVALID_CONFIGURE);        
-        } elseif (empty($config[$key])) {
-            AbcError::invalidArgument('<strong>'. $key .'</strong>'. ABC_NO_CONFIGURE);
-        }
-            return $config[$key];
+    public function getContainer()
+    {  
+        return $this->container;
     }
-  
+    
     /**
     * Возвращает объект билдера
     *
@@ -163,22 +119,55 @@ class Abc
     }
     
     /**
-    * Помещает объекты ядра в контейнер
+    * Возвращает настройки конфигурации
     *
-    * @param string $className
+    * @param string $key
     *
-    * @return void
+    * @return array|string|bool
     */     
-    protected function addToContainer($className, $dir = '')
-    { 
-        $abc = $this;
-        $this->container->setAsShared($className, 
-               function() use ($className, $dir, $abc) {
-                   $className = 'ABC\Abc\Core\\'. $dir . $className;
-                   return new $className($abc);
-               });
+    public function getConfig($key = null, $default = null)
+    {
+        if (empty($key) && null !== $default) {
+            return $default;
+        } 
+    
+        if (null === $key) {
+            return $this->storage->all('config');
+        } 
+        
+        if (!is_string($key)) {
+            AbcError::invalidArgument(ABC_INVALID_CONFIGURE);
+            return false;
+        } 
+        
+        if (!$this->storage->has($key, 'config')) {
+            AbcError::invalidArgument('<strong>'. $key .'</strong>'. ABC_NO_CONFIGURE);
+            return false;
+        }
+        
+        return $this->storage->get($key, 'config');
     }
     
+    /**
+    * Возвращает массив установленного окружения
+    *
+    * @return array
+    */     
+    public function getFromStorage($name, $key = null)
+    {    
+        return $this->storage->get($name, $key);
+    } 
+    
+    /**
+    * Возвращает массив установленного окружения
+    *
+    * @return array
+    */     
+    public function getEnvironment()
+    {    
+        return $this->config['environment'];
+    }  
+  
     /**
     * Подключает файл функций 
     *
@@ -186,7 +175,7 @@ class Abc
     */     
     protected function includeFunction()
     {
-        include_once __DIR__ .'/Functions/default.php';
+        include_once __DIR__ .'/functions.php';
         abcForFunctions($this);
     }   
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Services\Uri\Router;
+namespace ABC\Abc\Core\Routing;
 
 
 /** 
@@ -11,14 +11,14 @@ namespace ABC\Abc\Services\Uri\Router;
  * @copyright © 2017
  * @license http://www.wtfpl.net/
  */   
-class Executor
+class CallableRouter
 {
     /**
     * @param object $abc
     */ 
-    public function __construct($config)
+    public function __construct($abc)
     {
-        throw new \Exception($this->component .'<strong>'. __CLASS__ .'()</strong>'. ABC_NO_FUNCTIONAL);
+        throw new \Exception('<strong>'. __CLASS__ .'()</strong>'. ABC_NO_FUNCTIONAL);
     }     
 
 }

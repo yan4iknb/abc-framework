@@ -21,71 +21,86 @@ class Uri
     /**
     * Конструктор
     */ 
-    public function __construct($abc, $uri = '')
+    public function __construct($abc)
     {
         $this->storage = $abc->newService('Storage');
-     
-        if (!is_string($uri)) {
+        $this->inicialize($_SERVER);
+    }
+    
+    /**
+    * Конструктор
+    */ 
+    public function newUri($abc, $uri = '')
+    {
+       if (!is_string($uri)) {
             AbcError::InvalidArgument(ABC_URI_NO_STRING);
         } elseif (!empty($uri)) {
             $this->parseUri($uri);
         } else {
-         
-            $env = $abc->getConfig('environment');   
-         
-            $part['scheme']   = !empty($env['HTTPS']) ? 'https' : 'http';
-            $part['username'] = !empty($env['PHP_AUTH_USER']);
-            $part['password'] = !empty($env['PHP_AUTH_PW']);
-         
-            if (!empty($env['HTTP_HOST'])) {
-                $part['host'] = $env['HTTP_HOST'];
-            } else {
-                $part['host'] = $env['SERVER_NAME'];
-            }
-         
-            $part['port'] = !empty($env['SERVER_PORT']) ? (int)$env['SERVER_PORT'] : 80;
-            
-            if (preg_match('/^(\[[a-fA-F0-9:.]+\])(:\d+)?\z/', $part['host'], $matches)) {
-                $part['host'] = $matches[1];
-             
-                if ($matches[2]) {
-                    $part['port'] = (int)substr($matches[2], 1);
-                }
-                
-            } else {
-                $pos = strpos($part['host'], ':');
-                if ($pos !== false) {
-                    $part['port'] = (int)substr($part['host'], $pos + 1);
-                    $part['host'] = strstr($part['host'], ':', true);
-                }
-            }
-         
-            $scriptName = parse_url($env['SCRIPT_NAME'], PHP_URL_PATH);
-            $scriptDir = dirname($scriptName);
-         
-            $requestUri = parse_url('http://example.com'. $env['REQUEST_URI'], PHP_URL_PATH);
-         
-            $part['path'] = $part['basePath'] = '';
-         
-            if (stripos($requestUri, $scriptName) === 0) {
-                $part['basePath'] = $scriptName;
-            } elseif ($scriptDir !== '/' && stripos($requestUri, $scriptDir) === 0) {
-                $part['basePath'] = $scriptDir;
-            }
-         
-            if (!empty($part['basePath'])) {
-                $part['path'] = ltrim(substr($requestUri, strlen($basePath)), '/');
-            }
-          
-            $part['query'] = $env['QUERY_STRING'];
-            if (null === $part['query']) {
-                $part['query'] = parse_url('http://example.com'. $env['REQUEST_URI'], PHP_URL_QUERY);
-            }
-         
-            $part['fragment'] = '';
-            $this->storage->delete('env');
-            $this->storage->addArray($part);
+            $env = $this->abc->getEnvironment(); 
+            $this->inicialize($env);
         }
+    }
+    
+    /**
+    * Конструктор
+    */ 
+    public function inicialize($env)
+    {
+        $parts['scheme']   = !empty($env['HTTPS']) ? 'https' : 'http';
+        $parts['username'] = !empty($env['PHP_AUTH_USER']);
+        $parts['password'] = !empty($env['PHP_AUTH_PW']);
+     
+        if (!empty($env['HTTP_HOST'])) {
+            $parts['host'] = $env['HTTP_HOST'];
+        } else {
+            $parts['host'] = $env['SERVER_NAME'];
+        }
+     
+        $parts['port'] = !empty($env['SERVER_PORT']) ? (int)$env['SERVER_PORT'] : 80;
+        
+        if (preg_match('/^(\[[a-fA-F0-9:.]+\])(:\d+)?\z/', $parts['host'], $matches)) {
+            $parts['host'] = $matches[1];
+         
+            if ($matches[2]) {
+                $parts['port'] = (int)substr($matches[2], 1);
+            }
+            
+        } else {
+            $pos = strpos($parts['host'], ':');
+            if ($pos !== false) {
+                $parts['port'] = (int)substr($parts['host'], $pos + 1);
+                $parts['host'] = strstr($parts['host'], ':', true);
+            }
+        }
+     
+        $scriptName = parse_url($env['SCRIPT_NAME'], PHP_URL_PATH);
+        $scriptDir = dirname($scriptName);
+     
+        $requestUri = parse_url('http://example.com'. $env['REQUEST_URI'], PHP_URL_PATH);
+    
+        $parts['path'] = $basePath = '';
+     
+        if (stripos($requestUri, $scriptName) === 0) {
+            $basePath = $scriptName;
+        } elseif ($scriptDir !== '/' && stripos($requestUri, $scriptDir) === 0) {
+            $basePath = $scriptDir;
+        }
+     
+        if (!empty($basePath)) {
+            $parts['path'] = ltrim(substr($requestUri, strlen($basePath)), '/');
+        } else {
+            $parts['path'] = ltrim($requestUri, '/');
+        }
+      
+        $part['query'] = $env['QUERY_STRING'];
+        if (null === $part['query']) {
+            $parts['query'] = parse_url('http://example.com'. $env['REQUEST_URI'], PHP_URL_QUERY);
+        }
+     
+        $parts['fragment'] = '';
+        $this->storage->delete('env');
+        $this->storage->addArray($parts);
     }
     
     /**

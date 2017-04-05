@@ -35,9 +35,11 @@ class Request
     */ 
     public function __construct($abc)
     {
-        $this->abc = $abc;
-        $this->initialize();
-        $this->storage->add('body', new Stream('php://memory', 'r'));
+        $this->abc = $abc;  
+        $this->storage = $abc->newService('Storage');
+        $this->storage->add('serverParams', $_SERVER);
+        $this->setEnvHeaders($_SERVER);
+        $this->storage->add('uri', new Uri($this->abc));
     }
     
     /**
@@ -54,46 +56,56 @@ class Request
                          array $uploadedFiles = []
     ) {
         $new = new Request();
+        $env = $this->abc->getEnvironment();    
+        
+        if (isset($serverParams['SERVER_PROTOCOL'])) {
+            $protocolVersion = $serverParams['SERVER_PROTOCOL'];
+        } else {
+            $protocolVersion = $env['SERVER_PROTOCOL'];
+        }
+
+        $new->storage->add('protocolversion', str_replace('HTTP/', '', $protocolVersion));
         
         if (null === $method) {
-            $method = $this->method;
-        }            
-     
-        $new->storage->add('method', $this->filterMethod($method));
+            $method = $env['REQUEST_METHOD'];
+        }   
         
-        if (is_string($uri) && $uri instanceof Uri) {
-            $new->uri = $uri;
+        $new->storage->add('method', $new->filterMethod($method));
+        
+        if (is_string($uri)) {
+            $new->storage->add('uri', new Uri($this->abc, $uri));
+        } elseif ($uri instanceof Uri) {
+            $new->storage->add('uri', $uri);
+        } else {
+            $new->storage->add('uri', new Uri($this->abc));
         }
         
         if (null !== $headers) {
-        
-            foreach ($headers as $key => $value) {
-             
-                if (is_array($headers)) {                
-                    $new->withHeader(key($value), array_shift($value));                
-                } else {
-                    $new->withHeader($key, $value);    
-                }
-            }
+            $new->setHeaders($headers);
+        } else {
+            $new->setEnvHeaders($env);
         }
         
         if (null !== $serverParams) {
-            $new->storage->add('serverParams', $serverParams);
+            $new->storage->add('serverParams', $env);
+        } else {
+            $new->storage->add('serverParams', $serverParams);        
         }
         
         if (null !== $cookies) {
             $new->storage->add('cookies', $cookies);
         }
         
-        if (null !== $body) {
+        if (null !== $body && $body instanceof Stream) {
             $new->storage->add('body', $body);
+        } else {
+            $new->storage->add('body', new Stream('php://memory', 'r')); 
         }
      
         $new->storage->add('uploadedFiles', $uploadedFiles);
         return $new;   
     }     
-    
-    
+
     /**
     * Инициализация при клонировании
     */ 
@@ -179,11 +191,7 @@ class Request
     */
     public function getUri()
     {
-        if (!$this->storage->has('UriObject')) {
-            $this->storage->add('UriObject', (new Uri));
-        }
-        
-        return $this->storage->get('UriObject'); 
+        return $this->storage->get('uri'); 
     }
 
     /**
@@ -200,22 +208,24 @@ class Request
             AbcError::invalidArgument(ABC_OTHER_OBJECT);
             return false;
         }
-     
+        
+        $new = clone $this;
+        
         if (!$preserveHost) {
          
             if ($uri->getHost() !== '') {
-                $this->storage->add('host', $uri->getHost());
+                $new->storage->add('host', $uri->getHost());
             }
             
         } else {
          
             if ($uri->getHost() !== '' && (!$this->hasHeader('host') || $this->getHeaderLine('host') === '')) {
-                $this->storage->add('host', $uri->getHost());
+                $new->storage->add('host', $uri->getHost());
             }
         }
         
-        $this->storage->add('UriObject', $uri);
-        return clone $this;
+        $new->storage->add('uri', $uri);
+        return $new;
     }
     
 /*-----------------------------------------------------    
@@ -411,177 +421,5 @@ class Request
         }
      
         return $method;
-    }    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    /**
-    * Инициализация GET параметров
-    *
-    * @param string $key
-    * @param string $default
-    *
-    * @return string|array
-    */        
-    public function get($key = null, $default = null)
-    {
-        if (empty($key)) {
-            return @$this->GET;
-        }
-        
-        return isset($this->GET[$key]) ? $this->GET[$key] : $default;
-    } 
-    
-    /**
-    * Инициализация POST параметров 
-    *
-    * @param string $key
-    * @param string $default
-    *
-    * @return string|array
-    */        
-    public function post($key = null, $default = null)
-    {
-        if (empty($key)) {
-            return @$_POST;
-        }
-        
-        return isset($_POST[$key]) ? $_POST[$key] : $default;
-    }   
-    
-    /**
-    * Инициализация параметров COOKIE
-    *
-    * @param string $key
-    * @param string $default
-    *
-    * @return string
-    */        
-    public function cookie($key = null, $default = null)
-    {
-        if (empty($key)) {
-            return @$_COOKIE;
-        }
-        
-        return isset($_COOKIE[$key]) ? $_COOKIE[$key] : $default;
-    }
-    
-    /**
-    * Возвращает текущий контроллер
-    *
-    * @return string
-    */    
-    public function getController()
-    {
-        $get = $this->GET;
-        return array_shift($get);
-    }
-    
-    /**
-    * Возвращает текущий экшен
-    *
-    * @return string
-    */    
-    public function getAction()
-    {    
-        $get = $this->GET;
-        array_shift($get);    
-        return array_shift($get);
-    }
-    
-    /**
-    * Возвращает HOST
-    *
-    * @return string
-    */    
-    public function getHostName()
-    {
-        if (isset($_SERVER['HTTP_HOST'])) {
-            return $_SERVER['HTTP_HOST'];
-        } elseif (isset($_SERVER['SERVER_NAME'])) {
-            return $_SERVER['SERVER_NAME'];
-        }
-        
-        return null;
-    }
-
-    /**
-    * Возвращает PATH
-    *
-    * @return string
-    */    
-    public function getPath()
-    {
-        if (isset($_SERVER['REQUEST_URI'])) {
-            return parse_url($_SERVER['REQUEST_URI'])['path'];        
-        } 
-        
-        return '/';
-    }
-    
-    /**
-    * Возвращает текущий протокол
-    *
-    * @return string
-    */ 
-    public function getProtocol()
-    {
-        return (isset($_SERVER['HTTPS']) && (strcasecmp($_SERVER['HTTPS'], 'on') === 0 || $_SERVER['HTTPS'] == 1)
-               || isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strcasecmp($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') === 0) 
-                ? 'https' : 'http';
-    }
-    
-    /**
-    * Возвращает базовый URL
-    *
-    * @return string
-    */    
-    public function getBaseUrl()
-    {
-        return $this->getProtocol() .'://'. $this->getHostName();
-    }
-    
-    /**
-    * Проверяет, отправлен запрос AJAX'ом или нет
-    *
-    * @return bool
-    */  
-    public function isAjax()
-    {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) && $_SERVER['HTTP_X_REQUESTED_WITH'] === 'XMLHttpRequest';
-    }
-    
-    /**
-    * Разбирает в массив QUERY_STRING
-    *
-    * @return array
-    */        
-    protected function parseQueryString()
-    {
-        $queryString = urldecode($_SERVER['QUERY_STRING']);
-        mb_parse_str($queryString, $result);
-        return $result;
     }
 }

@@ -31,7 +31,7 @@ class Psr7
     *
     * @return object.
     */
-    public function getRequest()
+    public function createRequest()
     {
         return new Request($this->abc);
     }
@@ -41,7 +41,7 @@ class Psr7
     *
     * @return object.
     */
-    public function getResponse()
+    public function createResponse()
     {
         return new Response($this->abc);
     }
@@ -51,7 +51,7 @@ class Psr7
     *
     * @return object.
     */
-    public function createRequest($method        = null, 
+    public function newRequest($method        = null, 
                                   $uri           = null, 
                             array $headers       = null, 
                             array $cookies       = null,
@@ -74,7 +74,7 @@ class Psr7
     *
     * @return object.
     */
-    public function createResponse($body = 'php://memory', 
+    public function newResponse($body = 'php://memory', 
                                    $status = 200, 
                              array $headers = []
     ) {
@@ -88,7 +88,7 @@ class Psr7
     */
     public function createUri($uri = '')
     {
-        return new Uri($this->abc, $uri);
+        return (new Uri($this->abc))->newUri($uri);
     }    
 
     /**

@@ -16,9 +16,28 @@ use ABC\Abc\Core\Exception\AbcError;
 class Base
 {
     
-    public $abc;   
-    public $TplConfig;  
-    public $model;
+    public $abc;
+    public $view;
+    
+    /**
+    * Возвращает объект модели
+    *
+    * @param string $modelName
+    *
+    * @return object
+    */ 
+    protected function getModel($modelName)
+    {
+        $settings  = $this->abc->getConfig('settings');
+        $space = '\ABC\\'. $settings['application'] .'\\'. $settings['dir_models'] .'\\';
+        $model = $space . $modelName;
+      
+        if (class_exists($model)) {
+            return new $model;       
+        } 
+     
+        AbcError::badMethodCall('<strong>'. $model .'</strong> '. ABC_NO_MODEL);
+    }
     
     /**
     * Выбор шаблонизатора и установка шаблона
@@ -30,8 +49,7 @@ class Base
     public function selectTpl($template)
     {
         $this->TplConfig = $this->abc->getConfig('template');
-        $this->settings  = $this->abc->getConfig('settings');
-        $tplType = $this->getTplType();
+        $tplType   = $this->getTplType();
         $this->tpl = $this->abc->newService($tplType);   
         $this->tpl->selectTpl($template);
     }     
@@ -67,25 +85,6 @@ class Base
         
         return $tplName;
     }    
-    
-    /**
-    * Возвращает объект модели
-    *
-    * @param string $modelName
-    *
-    * @return object
-    */ 
-    protected function getModel($modelName)
-    {
-        $space = '\ABC\\'. $this->settings['application'] .'\\'. $this->settings['dir_models'] .'\\';
-        $model = $space . $modelName;
-      
-        if (class_exists($model)) {
-            return new $model;       
-        } 
-     
-        AbcError::badMethodCall('<strong>'. $model .'</strong> '. ABC_NO_MODEL);
-    }
     
     /**
     * Ошибка вызова метода

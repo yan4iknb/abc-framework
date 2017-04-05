@@ -17,6 +17,21 @@ class Builder
     protected $serviceId; 
     protected $container;
     protected $dir;
+    protected $normalize = [
+        'bb'         => 'Bb',
+        'container'  => 'Container',
+        'paginator'  => 'Paginator',
+        'psr7'       => 'Psr7',
+        'params'     => 'Params',
+        'dbcommand'  => 'DbCommand',
+        'mysqli'     => 'Mysqli',
+        'pdo'        => 'Pdo',
+        'sqldebug'   => 'SqlDebug',
+        'storage'    => 'Storage',
+        'template'   => 'Template',
+        'tplnative'  => 'TplNative',
+        'urimanager' => 'UriManager',
+    ];
     protected $subDir = [
         'DbCommand'     => 'Sql',
         'Mysqli'        => 'Sql',
@@ -24,16 +39,22 @@ class Builder
         'SqlDebug'      => 'Sql',
         'Template'      => 'Tpl',
         'TplNative'     => 'Tpl',
-        'Router'        => 'Uri',
-        'UriManager'    => 'Uri',
     ];
     
     public function __construct($serviceId, $abc)
     {
-        $this->serviceId = $serviceId;
-        $this->abc = $abc;
-        $this->container = $abc->getContainer();
-        $this->dir = !empty($this->subDir[$serviceId]) ? $this->subDir[$serviceId] .'\\' : null;
+        if (!isset($this->normalize[strtolower($serviceId)])) {
+            throw new \badFunctionCallException('<strong>'
+                                     . $serviceId 
+                                     .'</strong>' 
+                                     . ABC_NOT_FOUND_SERVICE
+            );
+        } else {  
+            $this->serviceId = $this->normalize[strtolower($serviceId)];
+            $this->abc = $abc;
+            $this->container = $abc->getContainer();
+            $this->dir = !empty($this->subDir[$serviceId]) ? $this->subDir[$serviceId] .'\\' : null;
+        }
     }
     
     /**
@@ -44,7 +65,7 @@ class Builder
     */    
     public function newService()
     {  
-        if (!$this->container->checkService($this->serviceId)) {
+        if (!$this->container->checkService($this->serviceId)) { 
             $this->buildService();
         }
         
@@ -60,7 +81,7 @@ class Builder
     */    
     public function sharedService()
     { 
-        if (!$this->container->checkService($this->serviceId)) { 
+        if (!$this->container->checkService($this->serviceId)) {
             $this->buildService(true);
         }
       
@@ -76,21 +97,14 @@ class Builder
     */         
     protected function buildService($global = false)
     {
-        $abc = $this->abc;    
+        $abc = $this->abc;  
         $component = __NAMESPACE__ .'\\'. $this->dir . $this->serviceId .'\\'. $this->serviceId;   
         $typeService = $global ? 'setAsShared' : 'set';
        
         $this->container->$typeService(
-            $this->serviceId,
+            strtolower($this->serviceId),
             function() use ($component, $abc) {
-                if (class_exists($component)) {
-                    return new $component($abc);
-                } else {
-                    AbcError::badFunctionCall('<strong>'. $this->serviceId .'</strong>' . ABC_NOT_FOUND_SERVICE);
-                }
-            }
-        );
+                return new $component($abc);
+            });
     }  
-    
-   
 }

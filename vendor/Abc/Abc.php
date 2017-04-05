@@ -19,29 +19,37 @@ class Abc
     protected static $process;     
 
     /**
-    * Запуск фреймворка
-    *
-    * Допускает инициализацию только одного объекта
+    * Старт приложения
     *
     * Принимает аргументaми массивы пользовательских настроек.
-    * Список настроек доступен в документации 
+    * Список настроек доступен в документации abc-framework.ru/docs/setting
     *
     * @param array $appConfig
     * @param array $siteConfig
     *
-    * @return void
+    * @return object
     */     
     public static function startApp($appConfig = [], $siteConfig = [])
     { 
-        if (!empty(self::$process)) {
-            throw new \Exception('Only one process');  
-        }
-        
-        self::$config = array_merge($appConfig, $siteConfig);
-        self::$autoload = __DIR__ . self::$autoload;
-        self::autoloadSelector();
-        self::$process = new \ABC\Abc\Core\Abc($appConfig, $siteConfig);
-        self::$process->startApp();    
+        self::process($appConfig, $siteConfig);
+        return self::$process->run();   
+    }
+    
+    /**
+    * Старт роутинга
+    *
+    * Принимает аргументaми массивы пользовательских настроек.
+    * Список настроек доступен в документации abc-framework.ru/docs/setting
+    *
+    * @param array $appConfig
+    * @param array $siteConfig
+    *
+    * @return object
+    */     
+    public static function Router($appConfig = [], $siteConfig = [])
+    { 
+        self::process($appConfig, $siteConfig);
+        return self::$process->route();   
     }
     
     /**
@@ -78,16 +86,6 @@ class Abc
         include self::$autoload;
         new \Autoloader(self::$config);
     } 
-  
-    /**
-    * Возвращает объект фреймворка
-    *
-    * @return object
-    */     
-    public static function process()
-    {
-        return self::$process;
-    }
    
     /**
     * Получает текущий контейнер
@@ -122,32 +120,7 @@ class Abc
     public static function sharedService($serviceId = null)
     {
         return self::$process->sharedService($serviceId);
-    }    
-    
-    /**
-    * Помещает данные в глобальное хранилище
-    *
-    * @param string $id
-    * @param mix $data
-    *
-    * @return void
-    */     
-    public static function addInStorage($id, $data)
-    {
-        self::$process->addInStorage($id, $data);
-    }    
-
-    /**
-    * Получает данные из глобального хранилища
-    *
-    * @param string $id
-    *
-    * @return mix
-    */     
-    public static function getFromStorage($id = null)
-    {
-        return self::$process->getFromStorage($id);
-    }
+    }  
     
     /**
     * Инициализация GET параметра
@@ -159,7 +132,7 @@ class Abc
     */     
     public static function GET($key = null, $default = null)
     {
-        return self::$process->getFromStorage('Request')->iniGET($key, $default);
+        return self::$process->getFromSystem('Request')->GET($key, $default);
     }
     
     /**
@@ -172,7 +145,7 @@ class Abc
     */     
     public static function POST($key = null, $default = null)
     {
-        return self::$process->getFromStorage('Request')->iniPOST($key, $default);
+        return self::$process->getFromSystem('Request')->POST($key, $default);
     }
     
     /**
@@ -185,6 +158,23 @@ class Abc
     public static function getConfig($key = null)
     {
         return self::$process->getConfig($key);
+    }
+    
+    /**
+    * Запуск фреймворка
+    *
+    * Принимает аргументaми массивы пользовательских настроек.
+    * Список настроек доступен в документации abc-framework.ru/docs/setting
+    *
+    * @param array $appConfig
+    * @param array $siteConfig
+    */     
+    protected static function process($appConfig, $siteConfig)
+    { 
+        self::$config = array_merge($appConfig, $siteConfig);
+        self::$autoload = __DIR__ . self::$autoload;
+        self::autoloadSelector();
+        self::$process = new \ABC\Abc\Core\Abc($appConfig, $siteConfig);  
     }
 }
 

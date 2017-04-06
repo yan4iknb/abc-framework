@@ -5,11 +5,11 @@ namespace ABC\Abc\Core\Routing;
 use ABC\Abc\Core\Exception\AbcError;
 
 /** 
- * Класс RouteParser
+ * Трэйт RouteParser
  * 
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
- * @copyright © 2015
+ * @copyright © 2017
  * @license http://www.wtfpl.net/
  */   
 trait ParserTrait
@@ -147,6 +147,7 @@ trait ParserTrait
                     $this->route[$this->defaultKeys[$num]] = $rout;
                 } else {
                     AbcError::logic(ABC_ERROR_ROUTES_RULE);
+                    return false;
                 }
             }
         }

@@ -13,8 +13,21 @@ namespace ABC;
  
 class Abc
 {
-    protected static $autoload = '/Autoloader.php';    
+    const BB           = 'Bb';
+    const CONTAINER    = 'Container'; 
+    const PAGINATOR    = 'Paginator';    
+    const PSR7         = 'Psr7';
+    const PARAMS       = 'Params';    
+    const DBCOMMAND    = 'DbCommand';    
+    const MYSQLI       = 'Mysqli';    
+    const PDO          = 'Pdo';
+    const SQLDEBUG     = 'SqlDebug';
+    const STORAGE      = 'Storage';
+    const TEMPLATE     = 'Template';
+    const TPLNATIVE    = 'TplNative';
+    const URIMANAGER   = 'UriManager';
 
+    protected static $autoload = '/Autoloader.php';
     protected static $config;
     protected static $process;     
 
@@ -49,7 +62,7 @@ class Abc
     public static function Router($appConfig = [], $siteConfig = [])
     { 
         self::process($appConfig, $siteConfig);
-        return self::$process->route();   
+        return self::$process->router();   
     }
     
     /**

@@ -15,7 +15,7 @@ use ABC\Abc\Core\Base;
 class AppManager
 {
     protected $abc;
-    protected $request;
+    protected $params;
     
 
     protected $config;    
@@ -28,8 +28,7 @@ class AppManager
     {  
         $this->abc = $abc;
         $this->params   = $abc->sharedService('Params');
-        $this->config   = $abc->getConfig();
-        $this->settings = $this->config['settings'];
+        $this->settings = $abc->getConfig('settings');
     }     
     
     /**
@@ -45,7 +44,7 @@ class AppManager
         $action     = $this->getAction();
      
         if (class_exists($controller)) {
-            $objController = new $controller($this->config);
+            $objController = new $controller();
           
             if (method_exists($objController, $action)) {
                 $viewsDir = $this->getViewsDir();
@@ -127,7 +126,7 @@ class AppManager
     public function create404($search)
     {   
         $baseController = new Base();
-        $baseController->config = $this->config;
+        $baseController->abc = $this->abc;
         $baseController->action404($search);
     }  
 }

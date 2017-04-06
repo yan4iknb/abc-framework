@@ -50,7 +50,7 @@ use ABC\Abc\Core\PhpBugsnare\Debugger;
     * 
     * @return string
     */
-    function iniCOOKIE($key = null, $default = null)
+    function COOKIE($key = null, $default = null)
     {
         $abc = abcForFunctions();
         return $abc->sharedService('Params')->cookie($key, $default);

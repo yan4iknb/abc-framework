@@ -197,17 +197,18 @@ class Paginator
     * 
     * @return string
     */      
-    protected function createLink($page = 1, $link = '', $class = '', $active = true)
+    protected function createLink($page = 1, $num = null, $class = null, $active = true)
     {                   
-        $link  = empty($link)  ? $page  : $link;
+        $num   = empty($link)  ? $page  : $num;
         $class = empty($class) ? 'link' : $class;
-        $query = $this->param .'/'. $link;
+        $pattern = '<'. $this->param .':\d+>';
+        
         if ($active) { 
             return '<span class=\"'. $class .'">'
-                 . '<a href="'. $this->uri->addParamToUri($query) .'" >'. $link .'</a>'
+                 . '<a href="'. $this->uri->addParamToUri($this->param, $num, $pattern) .'" >'. $num .'</a>'
                  . '</span>';
         }
         
-        return '<span class="'. $class .'">'. $link .'</span>';
+        return '<span class="'. $class .'">'. $num .'</span>';
     }
 }

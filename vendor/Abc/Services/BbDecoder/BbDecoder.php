@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Services\Bb;
+namespace ABC\Abc\Services\BbDecoder;
 
 
 /** 
@@ -11,7 +11,7 @@ namespace ABC\Abc\Services\Bb;
  * @copyright © 2015
  * @license http://www.wtfpl.net/ 
  */  
-class BB 
+class BbDecoder 
 { 
 
     protected $bbOpen; 

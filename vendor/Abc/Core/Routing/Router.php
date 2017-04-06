@@ -15,13 +15,14 @@ class Router
 {
     use ParserTrait;
    
-    protected $defaultRoute;   
-   
+    protected $defaultRoute;
+    protected $showScript;
     /**
     * @param object $abc
     */ 
     public function __construct($config)
     {
+        $this->showScript   = $config['uri_manager']['show_script'];
         $this->defaultRoute = $config['default_route'];
         $this->defaultRoute = array_map('strtolower', $this->defaultRoute);
         $this->routeRules   = isset($config['route_rules']) ? $config['route_rules'] : [];
@@ -38,17 +39,17 @@ class Router
         return $this->convertHashToGet($hash, $path);
     }
     
-    /**
-    * Разбор правил маршрутизации
-    *
-    * @param string $queryString
-    *
-    * @return array
-    */    
-    public function parseRoutes($queryString)
-    {
-        return $this->parseRoutes($queryString);
-    }
+    ///**
+    //* Разбор правил маршрутизации
+    //*
+    //* @param string $queryString
+    //*
+    //* @return array
+    //*/    
+    //public function parseRoutes($queryString)
+    //{
+        //return $this->parseRoutes($queryString);
+    //}
     
     /**
     * Генерирует массив HASH
@@ -92,7 +93,7 @@ class Router
     {
         $hash = explode('/', trim($path, '/'));
         
-        if (!empty($this->config['uri_manager']['show_script'])) {
+        if (!empty($this->showScript)) {
             array_shift($hash);
         }
         
@@ -141,7 +142,7 @@ class Router
     */    
     protected function convertHashToGet($hash, $path = '')
     {    
-        if (empty($this->config['route_rules'])) {
+        if (empty($this->routeRules)) {
             return $this->defaultGet($hash);
         }
      

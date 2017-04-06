@@ -2,6 +2,7 @@
 
 namespace ABC\Abc\Services;
 
+use ABC\Abc;
 use ABC\Abc\Core\Exception\AbcError;
 
 /** 
@@ -18,19 +19,19 @@ class Builder
     protected $container;
     protected $dir;
     protected $normalize = [
-        'bb'         => 'Bb',
-        'container'  => 'Container',
-        'paginator'  => 'Paginator',
-        'psr7'       => 'Psr7',
-        'params'     => 'Params',
-        'dbcommand'  => 'DbCommand',
-        'mysqli'     => 'Mysqli',
-        'pdo'        => 'Pdo',
-        'sqldebug'   => 'SqlDebug',
-        'storage'    => 'Storage',
-        'template'   => 'Template',
-        'tplnative'  => 'TplNative',
-        'urimanager' => 'UriManager',
+        'bbdecoder'  => Abc::BBDECODER,
+        'container'  => Abc::CONTAINER,
+        'paginator'  => Abc::PAGINATOR,
+        'psr7'       => Abc::PSR7,
+        'params'     => Abc::PARAMS,
+        'dbcommand'  => Abc::DBCOMMAND,
+        'mysqli'     => Abc::MYSQLI,
+        'pdo'        => Abc::PDO,
+        'sqldebug'   => Abc::SQLDEBUG,
+        'storage'    => Abc::STORAGE,
+        'template'   => Abc::TEMPLATE,
+        'tplnative'  => Abc::TPLNATIVE,
+        'urimanager' => Abc::URIMANAGER,
     ];
     protected $subDir = [
         'DbCommand'     => 'Sql',

@@ -42,7 +42,20 @@ class Settings
                             'php'             => false,
                                                
                     ],
-                    // Конструктор запросов
+                    
+                    // Вид URI в ссылках 
+                    'uri_manager'  => [ 
+                                // ЧПУ (Человеко Приятный Урл) 
+                                'pretty'      => true, 
+                                // Показать/скрыть имя скрипта 
+                                'show_script' => false, 
+                                // HTTPS 
+                                'https'       => false, 
+                                // Абсолютный путь 
+                                'absolute'    => true, 
+                    ], 
+                    
+                    // Конструктор SQL запросов
                     'db_command'    => [
                                             'driver'  => 'Pdo',  // Драйвер СУБД по умолчанию
                                             'db_type' => 'Mysql' // Тип используемой СУБД
@@ -51,13 +64,14 @@ class Settings
                     'errors' => [   // Общий уровень ошибок
                                     'error_reporting'  => E_ALL,
                                     // Уровень ошибок для 500 Internal Server Error
-                                    'level_500'        => -1,  
-                                    'abc_404'          => true, 
-                                    'abc_500'          => true, 
+                                    'level_500'        => E_ALL,  
+                                    'abc_404'          => false, 
+                                    'abc_500'          => false, 
                     ],
                     
-                    'debug' => [    // Язык перевода отчета об ошибках
-                                    'language'         => 'En', 
+                    'debug' => [    
+                                    'language'         => 'En', // Язык перевода отчета об ошибках
+                                    'bugsnare'         => true, //Режим дебаггинга
                     ],
         ];
     }

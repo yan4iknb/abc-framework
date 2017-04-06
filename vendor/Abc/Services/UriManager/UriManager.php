@@ -41,33 +41,10 @@ class UriManager
             return $queryString;
         }
      
-        $queryString  = trim($queryString, '/'); 
-     
-        if (is_array($mode) && !empty($this->uriConfig)) {
-            $config = array_merge($this->uriConfig, $mode);
-        } elseif (!is_array($mode) && !empty($this->uriConfig)) {
-            $config = $this->uriConfig;
-        } 
-     
-        $protocol   = !empty($config['https']) ? 'https://' : 'http://';
-        $hostName   = $this->params->getHostName();
-        $scriptName = null;
+        $config   = $this->createConfig($mode);
+        $basePath = $this->getBasePath($config, $mode);     
+        $queryString = trim($queryString, '/');
         
-        if (!empty($config['show_script'])) {
-            $query = trim($_SERVER['PHP_SELF'], '/');
-            $scriptName = '/'. explode('/', $query)[0]; 
-        }
-       
-        if (true === $mode) {
-            $basePath = $protocol. $hostName . $scriptName;
-        } elseif (false === $mode) {
-            $basePath = $scriptName;
-        } else {
-            $basePath = (isset($config['absolute']) && true === $config['absolute']) 
-                      ? $protocol . $hostName . $scriptName 
-                      : $scriptName;        
-        }
-     
         if (isset($config['pretty']) && false === $config['pretty']) {
          
             if ($queryString[0] === '?') {
@@ -88,8 +65,8 @@ class UriManager
                 return $basePath .'/'. $queryString;
             }
         }
-    }    
-    
+    } 
+
     /**
     * Добавляет параметры в URL
     *
@@ -98,12 +75,9 @@ class UriManager
     *
     * @return string
     */     
-    public function addParamToUri($queryString, $mode = false)
+    public function addParamToUri($name, $value, $pattern, $mode = false)
     {
-        $get = $this->params->get();
-        $addition = $this->router->createGetFromPath($queryString);
-        $param = array_merge($get, $addition);
-        $queryString = '?'. http_build_query($param); 
+        $queryString = $this->router->addParamToUri($value, $pattern); 
         return $this->createUri($queryString, $mode);
     }
     
@@ -165,5 +139,52 @@ class UriManager
         }
      
         return null;
+    } 
+    
+    /**
+    * Формирует конфигурацию URI
+    *
+    * @param bool|array $mode
+    *
+    * @return array
+    */  
+    protected function createConfig($mode)
+    { 
+        if (is_array($mode) && !empty($this->uriConfig)) {
+            return array_merge($this->uriConfig, $mode);
+        } elseif (!is_array($mode) && !empty($this->uriConfig)) {
+            return $this->uriConfig;
+        } 
+    }
+    
+    /**
+    * Получает базовый путь
+    *
+    * @param bool|array $mode
+    *
+    * @return string
+    */  
+    protected function getBasePath($config, $mode)
+    {
+        $protocol   = !empty($config['https']) ? 'https://' : 'http://';
+        $hostName   = $this->params->getHostName();
+        $scriptName = null;
+        
+        if (!empty($config['show_script'])) {
+            $query = trim($_SERVER['PHP_SELF'], '/');
+            $scriptName = '/'. explode('/', $query)[0]; 
+        }
+       
+        if (true === $mode) {
+            $basePath = $protocol. $hostName . $scriptName;
+        } elseif (false === $mode) {
+            $basePath = $scriptName;
+        } else {
+            $basePath = (isset($config['absolute']) && true === $config['absolute']) 
+                      ? $protocol . $hostName . $scriptName 
+                      : $scriptName;        
+        }
+        
+        return $basePath;
     } 
 } 

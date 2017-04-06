@@ -5,7 +5,7 @@ namespace ABC\Abc\Core\Routing;
 use ABC\Abc\Core\Exception\AbcError;
 
 /** 
- * Трэйт RouteParser
+ * Трейт RouteParser
  * 
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
@@ -18,10 +18,31 @@ trait ParserTrait
     protected $routeRules; 
     protected $queryString;  
     protected $current;
+    protected $route;
     protected $routes;
     protected $elements;
     protected $patterns;
     
+    /**
+    * Добавляет параметры в URL
+    *
+    * @param string $queryString
+    * @param bool|array $mode
+    *
+    * @return string
+    */     
+    public function addParamToUri($value, $pattern)
+    {
+        foreach ($this->routeRules as $rule => $location) {
+            $params = explode('/', $rule);
+            $last = array_pop($params);
+          
+            if ($last === $pattern) {
+                array_push($params, $value);
+                return implode('/', $params);
+            }
+        }
+    }
     
     /**
     * Разбор правил маршрутизации
@@ -45,7 +66,8 @@ trait ParserTrait
             
             if ($this->resolver($rule)) {
                 $get = $this->generateGet();
-                return array_merge($this->route, $get);
+                $get = array_merge($this->route, $get);
+                return $get;
             }    
         }
      

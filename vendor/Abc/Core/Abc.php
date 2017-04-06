@@ -4,13 +4,12 @@ namespace ABC\Abc\Core;
 
 
 use ABC\Abc\Core\AbcConfigurator;
-use ABC\Abc\Core\Request;
+use ABC\Abc\Core\Exception\AbcError;
 use ABC\Abc\Core\Routing\AppManager;
 use ABC\Abc\Core\Routing\CallableResolver;
 use ABC\Abc\Core\Routing\Router;
-use ABC\Abc\Core\Exception\AbcError;
-use ABC\Abc\Services\Container\Container;
 use ABC\Abc\Services\Builder;
+use ABC\Abc\Services\Container\Container;
 use ABC\Abc\Services\Storage\Storage;
 
 
@@ -20,13 +19,16 @@ use ABC\Abc\Services\Storage\Storage;
  * 
  * NOTE: Requires PHP version 5.5 or later   
  * @author phpforum.su
- * @copyright © 2015
+ * @copyright © 2017
  * @license http://www.wtfpl.net/ 
  */   
 class Abc
 {
+
+
     protected $storage;
     protected $container;
+    
     /**
     * Конструктор
     * 
@@ -60,9 +62,9 @@ class Abc
     *
     * @return void
     */     
-    public function route()
+    public function router()
     { 
-        return new CallableResolver;    
+        return new CallableResolver($this);    
     }
     
     /**
@@ -99,23 +101,6 @@ class Abc
     public function getContainer()
     {  
         return $this->container;
-    }
-    
-    /**
-    * Возвращает объект билдера
-    *
-    * @param string $serviceId
-    *
-    * @return object
-    */     
-    protected function getBuilder($serviceId = null)
-    {    
-        if (empty($serviceId) || !is_string($serviceId)) {
-            AbcError::invalidArgument(ABC_INVALID_SERVICE_NAME);
-        } 
-        
-        $builder = new Builder($serviceId, $this);
-        return $builder;
     }
     
     /**
@@ -167,6 +152,23 @@ class Abc
     {    
         return $this->config['environment'];
     }  
+    
+    /**
+    * Возвращает объект билдера
+    *
+    * @param string $serviceId
+    *
+    * @return object
+    */     
+    protected function getBuilder($serviceId = null)
+    {    
+        if (empty($serviceId) || !is_string($serviceId)) {
+            AbcError::invalidArgument(ABC_INVALID_SERVICE_NAME);
+        } 
+        
+        $builder = new Builder($serviceId, $this);
+        return $builder;
+    }
   
     /**
     * Подключает файл функций 

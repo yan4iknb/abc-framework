@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Services\Storage;
+namespace ABC\ABC\Services\Storage;
 
 
 /** 

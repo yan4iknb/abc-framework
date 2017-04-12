@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Resourses;
+namespace ABC\ABC\Resourses;
 
 class Settings
 {
@@ -65,7 +65,7 @@ class Settings
                                     'error_reporting'  => E_ALL,
                                     // Уровень ошибок для 500 Internal Server Error
                                     'level_500'        => E_ALL,  
-                                    'abc_404'          => false, 
+                                    'abc_404'          => true, 
                                     'abc_500'          => false, 
                     ],
                     

@@ -1,5 +1,5 @@
 <?php
-namespace ABC\Abc\Core\Exception;
+namespace ABC\ABC\Core\Exception;
 /** 
  * Класс AbcError 
  * 

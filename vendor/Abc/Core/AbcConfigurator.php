@@ -1,11 +1,11 @@
 <?php
 
-namespace ABC\Abc\Core;
+namespace ABC\ABC\Core;
 
-use ABC\Abc\Resourses\Settings;
-use ABC\Abc\Core\PhpBugsnare\Bugsnare;
-use ABC\Abc\Core\Exception\AbcError;
-use ABC\Abc\Core\Exception\AbcError500Exception;
+use ABC\ABC\Resourses\Settings;
+use ABC\ABC\Core\PhpBugsnare\Bugsnare;
+use ABC\ABC\Core\Exception\AbcError;
+use ABC\ABC\Core\Exception\AbcError500Exception;
 
 /** 
  * Конфигуратор

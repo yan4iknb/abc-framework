@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Resourses;
+namespace ABC\ABC\Resourses;
 
     return [
                 'SERVER_PROTOCOL'      => 'HTTP/1.1',

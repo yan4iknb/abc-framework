@@ -1,11 +1,11 @@
 <?php
     
-namespace ABC\Abc\Core\PhpBugsnare;
+namespace ABC\ABC\Core\PhpBugsnare;
 
-use ABC\Abc\Core\PhpBugsnare\Handler;
-use ABC\Abc\Core\PhpBugsnare\Tracer\TraceClass;
-use ABC\Abc\Core\PhpBugsnare\Tracer\TraceObject;
-use ABC\Abc\Core\PhpBugsnare\Tracer\TraceVariable;
+use ABC\ABC\Core\PhpBugsnare\Handler;
+use ABC\ABC\Core\PhpBugsnare\Tracer\TraceClass;
+use ABC\ABC\Core\PhpBugsnare\Tracer\TraceObject;
+use ABC\ABC\Core\PhpBugsnare\Tracer\TraceVariable;
 
 /** 
  * Class Dbg

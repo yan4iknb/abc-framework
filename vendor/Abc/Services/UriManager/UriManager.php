@@ -1,6 +1,9 @@
 <?php 
 
-namespace ABC\Abc\Services\UriManager;
+namespace ABC\ABC\Services\UriManager;
+
+use ABC\ABC;
+use ABC\ABC\Core\Exception\AbcError;
 
 /** 
  * Класс UrlManager 
@@ -23,8 +26,14 @@ class UriManager
     public function __construct($abc)
     {
         $this->uriConfig  = $abc->getConfig('uri_manager');
-        $this->params = $abc->sharedService('Params');
-        $this->router = $abc->getFromStorage('Router');
+        $this->params = $abc->sharedService(ABC::PARAMS);
+        $this->router = $abc->getFromStorage(ABC::ROUTER);
+        
+        if (false === $this->router) {
+            AbcError::BadFunctionCall('<strong>'. basename(__CLASS__) .'</strong>'
+                                      . ABC_NO_SUPPORT_SERVICE
+            );
+        }
     }
     
     /**
@@ -66,20 +75,6 @@ class UriManager
             }
         }
     } 
-
-    /**
-    * Добавляет параметры в URL
-    *
-    * @param string $queryString
-    * @param bool|array $mode
-    *
-    * @return string
-    */     
-    public function addParamToUri($name, $value, $pattern, $mode = false)
-    {
-        $queryString = $this->router->addParamToUri($value, $pattern); 
-        return $this->createUri($queryString, $mode);
-    }
     
     /**
     * Формирование ссылок.

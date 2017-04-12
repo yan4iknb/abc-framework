@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Services\Sql\DbCommand;
+namespace ABC\ABC\Services\Sql\DbCommand;
 
 
 /** 
@@ -13,6 +13,16 @@ namespace ABC\Abc\Services\Sql\DbCommand;
  */  
 class Pdo
 {
+    const DBCOMMAND = 'PDO';
+    const PARAM_INT          = \PDO::PARAM_INT;
+    const PARAM_BOOL         = \PDO::PARAM_BOOL;
+    const PARAM_NULL         = \PDO::PARAM_NULL;
+    const PARAM_STR          = \PDO::PARAM_STR;    
+    const PARAM_LOB          = \PDO::PARAM_LOB;
+    const PARAM_INPUT_OUTPUT = \PDO::PARAM_INPUT_OUTPUT;  
+    const FETCH_ASSOC        = \PDO::FETCH_ASSOC;
+    const FETCH_NUM          = \PDO::FETCH_NUM;
+
     public $db;
     public $construct;
     public $rescuer;
@@ -39,12 +49,11 @@ class Pdo
      
         $dbType   = $abc->getConfig('db_command')['db_type'];        
         $rescuer  = __NAMESPACE__ .'\\'. $dbType . 'Quote';
-        $this->db = $abc->sharedService('Pdo');
+        $this->db = $abc->sharedService(\ABC\ABC::PDO);
         $this->prefix  = $this->db->prefix;    
         $this->command = $command;
         
         $this->rescuer = new $rescuer($this->db, $this->prefix);
-        $this->defineConstants();
     }
 
     /**
@@ -52,7 +61,7 @@ class Pdo
     */  
     public function setDb($config)
     { 
-        $this->db = $this->abc->newService('Pdo');
+        $this->db = $this->abc->newService(\ABC\ABC::PDO);
         $this->db->newConnect($config);
     }
    
@@ -363,23 +372,5 @@ class Pdo
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
         return $stmt;
-    }  
-    
-    /**
-    * Установка констант
-    *
-    * @return void
-    */     
-    public function defineConstants()
-    {
-        defined('ABC_DBCOMMAND') or define('ABC_DBCOMMAND', 'PDO');
-        defined('ABC_PARAM_INT') or define('ABC_PARAM_INT', \PDO::PARAM_INT);
-        defined('ABC_PARAM_BOOL') or define('ABC_PARAM_BOOL', \PDO::PARAM_BOOL);
-        defined('ABC_PARAM_NULL') or define('ABC_PARAM_NULL', \PDO::PARAM_NULL);
-        defined('ABC_PARAM_STR') or define('ABC_PARAM_STR', \PDO::PARAM_STR);    
-        defined('ABC_PARAM_LOB') or define('ABC_PARAM_LOB', \PDO::PARAM_LOB);
-        defined('ABC_PARAM_INPUT_OUTPUT') or define('ABC_PARAM_INPUT_OUTPUT', \PDO::PARAM_INPUT_OUTPUT);  
-        defined('ABC_FETCH_ASSOC') or define('ABC_FETCH_ASSOC', \PDO::FETCH_ASSOC);
-        defined('ABC_FETCH_NUM') or define('ABC_FETCH_NUM', \PDO::FETCH_NUM);
-    }
+    } 
 }

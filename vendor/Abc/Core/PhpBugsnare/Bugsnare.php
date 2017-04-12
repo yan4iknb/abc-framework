@@ -1,10 +1,10 @@
 <?php
 
-namespace ABC\Abc\Core\PhpBugsnare;
+namespace ABC\ABC\Core\PhpBugsnare;
 
-use ABC\Abc\Core\PhpBugsnare\Levels\Fatal;
-use ABC\Abc\Core\PhpBugsnare\Levels\NoFatal;
-use ABC\Abc\Core\PhpBugsnare\Hoarder;
+use ABC\ABC\Core\PhpBugsnare\Levels\Fatal;
+use ABC\ABC\Core\PhpBugsnare\Levels\NoFatal;
+use ABC\ABC\Core\PhpBugsnare\Hoarder;
 
 
 class Bugsnare

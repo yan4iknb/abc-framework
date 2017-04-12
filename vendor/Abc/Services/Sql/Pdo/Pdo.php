@@ -1,8 +1,8 @@
 <?php
 
-namespace ABC\Abc\Services\Sql\Pdo;
+namespace ABC\ABC\Services\Sql\Pdo;
 
-use ABC\Abc\Core\Exception\AbcError;
+use ABC\ABC\Core\Exception\AbcError;
 
 /** 
  * Класс Pdo

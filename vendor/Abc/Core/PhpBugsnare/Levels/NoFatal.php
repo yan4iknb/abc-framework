@@ -1,8 +1,8 @@
 <?php
 
-namespace ABC\Abc\Core\PhpBugsnare\Levels;
+namespace ABC\ABC\Core\PhpBugsnare\Levels;
 
-use ABC\Abc\Core\PhpBugsnare\Handler;
+use ABC\ABC\Core\PhpBugsnare\Handler;
 
 /** 
  * Class Handler

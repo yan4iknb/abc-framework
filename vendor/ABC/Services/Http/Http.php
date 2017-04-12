@@ -1,18 +1,18 @@
 <?php
 
-namespace ABC\Abc\Services\Psr7;
+namespace ABC\ABC\Services\Http;
 
-use ABC\Abc\Core\Exception\AbcError;
+use ABC\ABC\Core\Exception\AbcError;
 
 /** 
- * Класс Psr7 
+ * Класс Http
  * 
  * NOTE: Requires PHP version 5.5 or later   
  * @author irbis-team.ru
  * @copyright © 2017
  * @license http://www.wtfpl.net/ 
  */   
-class Psr7
+class Http
 {   
     protected $abc;
 

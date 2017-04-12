@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Resourses\Lang;
+namespace ABC\ABC\Resourses\Lang;
 
 /** 
  * Класс En
@@ -20,7 +20,7 @@ class Ru
         /**
         * Общие константы
         */ 
-        
+        define('ABC_NO_SUPPORT_SERVICE',       ': service is not supported in the current configuration <br /><span style="color:red">(Сервис не поддерживается в текущей конфигурации)</span><br />');
         define('ABC_NO_FUNCTIONAL',            ' is not implemented <br /><span style="color:red">(Этот функционал не реализован)</span><br />');
         define('ABC_NO_CLASS',                 ' class not found <br /><span style="color:red">(класс не найден)</span><br />');
         define('ABC_NO_METHOD',                ' method offline in framework <br /><span style="color:red">(метод не поддержиается фреймворком)</span><br />');

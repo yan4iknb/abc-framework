@@ -1,8 +1,8 @@
 <?php
 
-namespace ABC\Abc\Services\Sql\Mysqli;
+namespace ABC\ABC\Services\Sql\Mysqli;
 
-use ABC\Abc\Core\Exception\AbcError;
+use ABC\ABC\Core\Exception\AbcError;
 
 /** 
  * Класс Shaper

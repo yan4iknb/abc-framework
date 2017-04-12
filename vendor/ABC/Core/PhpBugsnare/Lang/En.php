@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Core\PhpBugsnare\Lang;
+namespace ABC\ABC\Core\PhpBugsnare\Lang;
 
 /** 
  * Класс En

@@ -1,8 +1,8 @@
 <?php
 
-namespace ABC\Abc\Services\Paginator;
+namespace ABC\ABC\Services\Paginator;
 
-use ABC\Abc\Core\Exception\AbcError;
+use ABC\ABC\Core\Exception\AbcError;
 
 /** 
  * Класс Paginator 
@@ -15,24 +15,22 @@ use ABC\Abc\Core\Exception\AbcError;
    
 class Paginator
 {
-    /**
-    * @var ABC\Abc\Components\UrlManager\UrlManager
-    */
-    protected $url;
-
     protected $startPage;
     protected $numPage; 
     protected $numRows;   
     protected $numColumns;
+    protected $total = null;    
+    protected $uri;
     protected $param;
-    protected $total = null;
+    protected $pretty;
+
     
     /**
     * @param object $abc
     */    
     public function __construct($abc) 
     {
-        $this->uri = $abc->newService('UriManager');
+        $this->pretty = $abc->getConfig('uri_manager')['pretty'];
     }
 
     /**
@@ -103,12 +101,13 @@ class Paginator
     *
     * @return string
     */    
-    public function createMenu($param = 'num')
+    public function createMenu($uri, $param = 'num')
     { 
         if (is_null($this->total)) {
             AbcError::logic(ABC_NO_TOTAL);
         }
-     
+        
+        $this->uri = $uri;
         $this->param = $param;
        
         $count = ceil($this->total / $this->numRows / $this->numColumns);
@@ -199,13 +198,14 @@ class Paginator
     */      
     protected function createLink($page = 1, $num = null, $class = null, $active = true)
     {                   
-        $num   = empty($link)  ? $page  : $num;
+        $num   = empty($num)  ? $page  : $num;
         $class = empty($class) ? 'link' : $class;
-        $pattern = '<'. $this->param .':\d+>';
         
         if ($active) { 
+            
+            $pag = $this->pretty ? '/'. $num : '&'. $this->param .'='. $num;       
             return '<span class=\"'. $class .'">'
-                 . '<a href="'. $this->uri->addParamToUri($this->param, $num, $pattern) .'" >'. $num .'</a>'
+                 . '<a href="'. $this->uri . $pag .'" >'. $num .'</a>'
                  . '</span>';
         }
         

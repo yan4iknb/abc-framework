@@ -1,8 +1,8 @@
 <?php
 
-namespace ABC\Abc\Services\Psr7;
+namespace ABC\ABC\Services\Http;
 
-use ABC\Abc\Core\Exception\AbcError;
+use ABC\ABC\Core\Exception\AbcError;
 
 /** 
  * Класс Request
@@ -12,21 +12,20 @@ use ABC\Abc\Core\Exception\AbcError;
  * @copyright © 2017
  * @license http://www.wtfpl.net/
  */   
-class Request
+class Request extends RequestAddition
 {
     use MessageTrait;
 
     protected $abc;
-    protected $method; 
     protected static $validMethods = [
-        'CONNECT' => true,
+        'GET'     => true,    
+        'POST'    => true,
+        'PUT'     => true,
         'DELETE'  => true,
-        'GET'     => true,
+        'CONNECT' => true,
         'HEAD'    => true,
         'OPTIONS' => true,
         'PATCH'   => true,
-        'POST'    => true,
-        'PUT'     => true,
         'TRACE'   => true,
     ];  
         
@@ -39,6 +38,7 @@ class Request
         $this->storage = $abc->newService('Storage');
         $this->storage->add('serverParams', $_SERVER);
         $this->setEnvHeaders($_SERVER);
+        $this->storage->add('Method', $_SERVER['REQUEST_METHOD']);
         $this->storage->add('uri', new Uri($this->abc));
     }
     
@@ -168,7 +168,7 @@ class Request
     */
     public function getMethod()
     {
-        return $this->ctorage->get('Method');
+        return $this->storage->get('Method');
     }
 
     /**
@@ -232,7 +232,7 @@ class Request
         ServerRequest
 -------------------------------------------------------*/
     /**
-    * Получает параметры сервера (SERVER).
+    * Получает параметры сервера ($_SERVER).
     *
     * @return array
     */
@@ -242,7 +242,7 @@ class Request
     }
 
     /**
-    * Получает куки (COOKIE).
+    * Получает куки ($_COOKIE).
     *
     * @return array
     */
@@ -252,7 +252,7 @@ class Request
     }
 
     /**
-    * Возвращает новый объект с установленными куками (COOKIE).
+    * Возвращает новый объект с установленными куками ($_COOKIE).
     *
     * @param array $cookies 
     *
@@ -265,17 +265,31 @@ class Request
     }
 
     /**
-    * Возвращает параметры query string (GET) в виде массива.
+    * Возвращает параметры query string ($_GET) в виде массива.
     *
     * @return array
     */
     public function getQueryParams()
     {
+        $queryParams = $this->storage->get('queryParams');
+      
+        if (is_array($queryParams)) {
+            return $queryParams;
+        }
+     
+        if (!$this->storage->has('uri')) {
+            return [];
+        }
+     
+        $uri = $this->storage->get('uri');
+        parse_str($uri->getQuery(), $queryParams); 
+        $this->storage->add('queryParams', $queryParams);
+        
         return $this->storage->get('queryParams');
     }
 
     /**
-    * Возвращает новый объект с установленной query string (GET).
+    * Возвращает новый объект с установленной query string ($_GET).
     *
     * @param array $query 
     *
@@ -288,7 +302,7 @@ class Request
     }
 
     /**
-    * Возвращает нормализованные данные для загрузки файлов (FILES).
+    * Возвращает нормализованные данные для загрузки файлов ($_FILES).
     *
     * @return array 
     */
@@ -298,7 +312,7 @@ class Request
     }
 
     /**
-    * Возвращает новый объект с указанными загруженными файлами (FILES).
+    * Возвращает новый объект с указанными загруженными файлами ($_FILES).
     *
     * @param array $uploadedFiles
     *
@@ -312,7 +326,7 @@ class Request
     }
 
     /**
-    * Возвращает все параметры из body (POST).
+    * Возвращает все параметры из body ($_POST).
     *
     * @return null|array|object 
     */
@@ -322,7 +336,7 @@ class Request
     }
 
     /**
-    * Возвращает новый объект с указанным параметром body (POST).
+    * Возвращает новый объект с указанным параметром body ($_POST).
     *
     * @param null|array|object $data 
     *
@@ -406,7 +420,7 @@ class Request
         }
      
         if (!is_string($method)) {
-            AbcError::BadMethodCall('<strong>'
+            AbcError::badMethodCall('<strong>'
                        . $method 
                        .'</strong>'
                        . ABC_NO_METHOD

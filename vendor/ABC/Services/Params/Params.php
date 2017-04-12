@@ -1,8 +1,8 @@
 <?php
 
-namespace ABC\Abc\Services\Params;
+namespace ABC\ABC\Services\Params;
 
-use ABC\Abc\Core\Exception\AbcError;
+use ABC\ABC\Core\Exception\AbcError;
 
 /** 
  * Класс Request
@@ -23,13 +23,13 @@ class Params
     */ 
     public function __construct($abc = null)
     {
+        $this->abc = $abc;
+        
         if (!empty($abc)) {
             if (!empty($_SERVER['QUERY_STRING'])) {
                 $this->GET = $this->parseQueryString();
-            } else {
-                $path = $this->getPath();
-                $router  = $abc->getFromStorage('Router');            
-                $this->GET = $router->createGet($path);
+            } else { 
+                $this->GET = $abc->getFromStorage('GET');
             } 
         }
     }
@@ -104,8 +104,10 @@ class Params
     public function getAction()
     {    
         $get = $this->GET;
-        array_shift($get); 
-        return array_shift($get);
+        array_shift($get);
+        $action = array_shift($get);
+        return !empty($action) ? $action 
+               : $this->abc->getconfig('default_route')['action'];
     }
     
     /**

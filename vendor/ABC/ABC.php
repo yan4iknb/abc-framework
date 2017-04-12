@@ -13,20 +13,29 @@ namespace ABC;
  
 class Abc
 {
-    const BB           = 'Bb';
-    const CONTAINER    = 'Container'; 
-    const PAGINATOR    = 'Paginator';    
-    const PSR7         = 'Psr7';
-    const PARAMS       = 'Params';    
-    const DBCOMMAND    = 'DbCommand';    
-    const MYSQLI       = 'Mysqli';    
-    const PDO          = 'Pdo';
-    const SQLDEBUG     = 'SqlDebug';
-    const STORAGE      = 'Storage';
-    const TEMPLATE     = 'Template';
-    const TPLNATIVE    = 'TplNative';
-    const URIMANAGER   = 'UriManager';
-
+    /**
+    * Сервисы
+    */
+    const BB_DECODER    = 'BbDecoder';
+    const CONTAINER     = 'Container'; 
+    const PAGINATOR     = 'Paginator';    
+    const HTTP          = 'Http';
+    const PARAMS        = 'Params';    
+    const DB_COMMAND    = 'DbCommand';    
+    const MYSQLI        = 'Mysqli';    
+    const PDO           = 'Pdo';
+    const SQL_DEBUG     = 'SqlDebug';
+    const STORAGE       = 'Storage';
+    const TEMPLATE      = 'Template';
+    const TPL_NATIVE    = 'TplNative';
+    const URI_MANAGER   = 'UriManager';
+    
+    /**
+    * Система
+    */
+    const ROUTER            = 'Router';
+    const CALLABLE_RESOLVER = 'CallableResolver';
+    
     protected static $autoload = '/Autoloader.php';
     protected static $config;
     protected static $process;     
@@ -44,8 +53,11 @@ class Abc
     */     
     public static function startApp($appConfig = [], $siteConfig = [])
     { 
-        self::process($appConfig, $siteConfig);
-        return self::$process->run();   
+        if (empty(self::$process)) {
+            self::process($appConfig, $siteConfig);        
+        }
+        
+        return self::$process->startApp();   
     }
     
     /**
@@ -61,7 +73,10 @@ class Abc
     */     
     public static function Router($appConfig = [], $siteConfig = [])
     { 
-        self::process($appConfig, $siteConfig);
+        if (empty(self::$process)) {
+            self::process($appConfig, $siteConfig);        
+        }
+        
         return self::$process->router();   
     }
     

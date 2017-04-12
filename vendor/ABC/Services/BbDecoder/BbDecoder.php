@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Services\BbDecoder;
+namespace ABC\ABC\Services\BbDecoder;
 
 
 /** 

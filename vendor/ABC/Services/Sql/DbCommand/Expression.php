@@ -1,8 +1,8 @@
 <?php
 
-namespace ABC\Abc\Services\Sql\DbCommand;
+namespace ABC\ABC\Services\Sql\DbCommand;
 
-use ABC\Abc\Core\Exception\AbcError;
+use ABC\ABC\Core\Exception\AbcError;
 
 /** 
  * Выражения

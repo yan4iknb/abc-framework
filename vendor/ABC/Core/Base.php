@@ -1,9 +1,9 @@
 <?php
 
-namespace ABC\Abc\Core;
+namespace ABC\ABC\Core;
 
-use ABC\Abc\Core\BaseTemplate;
-use ABC\Abc\Core\Exception\AbcError;
+use ABC\ABC\Core\BaseTemplate;
+use ABC\ABC\Core\Exception\AbcError;
 
 /** 
  * Класс Base
@@ -76,9 +76,9 @@ class Base
     protected function getTplType()
     { 
         if (!isset($this->TplConfig['abc_template']) || true === $this->TplConfig['abc_template']) {
-            $tplName = 'Template';
+            $tplName = \ABC\ABC::TEMPLATE;
         } elseif (false === $this->TplConfig['abc_template']) {
-            $tplName = 'TplNative';
+            $tplName = \ABC\ABC::TPL_NATIVE;
         } else {
             AbcError::badFunctionCall(ABC_INVALID_DEBUG_SETTING);
         }

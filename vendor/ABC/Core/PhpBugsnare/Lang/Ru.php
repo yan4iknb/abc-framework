@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Core\PhpBugsnare\Lang;
+namespace ABC\ABC\Core\PhpBugsnare\Lang;
 
 /** 
  * Класс En
@@ -15,9 +15,25 @@ class Ru
     protected static function errorReportings() 
     {
         return [
+'Uninitialized string offset: (\d+)' => 'Uninitialized string offset:<strong>$1</strong><br /><span class="translate">
+
+(Неинициализированное смещение строки <strong>$1</strong>)
+
+</span><br />',
+'(.+?) Both parameters should have an equal number of elements' => '<strong>$1</strong> Both parameters should have an equal number of elements<br /><span class="translate">
+
+(<strong>$1</strong>: Оба параметра должны иметь равное количество элементов)
+
+</span><br />',
+        
+'(.+?) Parameter (\d+) expected to be Array or Object.  Incorrect value given' =>  '<strong>$1</strong>: Parameter <strong>$2</strong>   expected to be Array or Object.  Incorrect value given<br /><span class="translate">
+
+(<strong>$1</strong>: Параметр <strong>$2</strong> должен быть массивом или объектом. Передано некорректное значение)
+
+</span><br />',
 '(.+?): Requires argument (\d), (.+?), to be a valid callback' => '<strong>$1</strong>: Requires argument <strong>$2</strong>, <strong>$3</strong>, to be a valid callback<br /><span class="translate">
 
-(<strong>$1</strong>: Аргумент <strong>$2</strong>, <strong>$3</strong>, должен быть валидный callback.)
+(<strong>$1</strong>: Аргумент <strong>$2</strong>, <strong>$3</strong>, должен быть валидным callback.)
 
 </span><br />',
         

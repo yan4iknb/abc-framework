@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Services\Sql\SqlDebug;
+namespace ABC\ABC\Services\Sql\SqlDebug;
 
 
 /** 

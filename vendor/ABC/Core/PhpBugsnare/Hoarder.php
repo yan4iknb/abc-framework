@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Core\PhpBugsnare;
+namespace ABC\ABC\Core\PhpBugsnare;
 
 /** 
  * Class Hoarder

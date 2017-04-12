@@ -1,8 +1,8 @@
 <?php
 
-namespace ABC\Abc\Services\Tpl\TplNative;
+namespace ABC\ABC\Services\Tpl\TplNative;
 
-use ABC\Abc\Core\Exception\AbcError;
+use ABC\ABC\Core\Exception\AbcError;
 
 /** 
  * Класс BaseView

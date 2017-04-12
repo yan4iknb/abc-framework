@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Resourses\Lang;
+namespace ABC\ABC\Resourses\Lang;
 
 /** 
  * Класс En

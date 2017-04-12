@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\Abc\Core\Routing;
+namespace ABC\ABC\Core\Routing;
 
 
 /** 
@@ -20,12 +20,15 @@ class Router
     /**
     * @param object $abc
     */ 
-    public function __construct($config)
+    public function __construct($abc)
     {
+        $this->storage = $abc->getStorage();
+        $config = $abc->getConfig();
         $this->showScript   = $config['uri_manager']['show_script'];
         $this->defaultRoute = $config['default_route'];
         $this->defaultRoute = array_map('strtolower', $this->defaultRoute);
         $this->routeRules   = isset($config['route_rules']) ? $config['route_rules'] : [];
+        $this->createGet($this->getPath());
     }     
 
     /**
@@ -38,18 +41,6 @@ class Router
         $hash = $this->convertPathToHash($path);
         return $this->convertHashToGet($hash, $path);
     }
-    
-    ///**
-    //* Разбор правил маршрутизации
-    //*
-    //* @param string $queryString
-    //*
-    //* @return array
-    //*/    
-    //public function parseRoutes($queryString)
-    //{
-        //return $this->parseRoutes($queryString);
-    //}
     
     /**
     * Генерирует массив HASH
@@ -145,8 +136,8 @@ class Router
         if (empty($this->routeRules)) {
             return $this->defaultGet($hash);
         }
-     
-        return $this->parseRoutes($path);
+        
+        return $this->parseRoutes($this->routeRules, $path);
     }
     
     /**
@@ -156,7 +147,7 @@ class Router
     *
     * @return array
     */    
-    public function defaultGet($param)
+    protected function defaultGet($param)
     {
         $app = ['controller' => empty($param[0]) ? $this->defaultRoute['controller'] : $param[0],
                 'action'     => empty($param[1]) ? $this->defaultRoute['action'] : $param[1]
@@ -175,7 +166,7 @@ class Router
     *
     * @return array
     */    
-    public function generateDefaultGet($param)
+    protected function generateDefaultGet($param)
     {
         $get = [];
        
@@ -189,4 +180,18 @@ class Router
      
         return $get;
     } 
+    
+    /**
+    * Возвращает PATH
+    *
+    * @return string
+    */    
+    protected function getPath()
+    {
+        if (isset($_SERVER['REQUEST_URI'])) {
+            return parse_url($_SERVER['REQUEST_URI'])['path'];        
+        } 
+        
+        return '/';
+    }
 }

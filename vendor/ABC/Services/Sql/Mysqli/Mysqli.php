@@ -1,8 +1,8 @@
 <?php
 
-namespace ABC\ABC\Services\Sql\Mysqli;
+namespace ABC\Abc\Services\Sql\Mysqli;
 
-use ABC\ABC\Core\Exception\AbcError;
+use ABC\Abc\Core\Exception\AbcError;
 
 /** 
  * Класс Mysqli

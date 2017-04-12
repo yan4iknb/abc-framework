@@ -1,8 +1,8 @@
 <?php
 
-namespace ABC\ABC\Services\Http;
+namespace ABC\Abc\Services\Psr7;
 
-use ABC\ABC\Core\Exception\AbcError;
+use ABC\Abc\Core\Exception\AbcError;
 
 /** 
  * Класс Request
@@ -12,20 +12,21 @@ use ABC\ABC\Core\Exception\AbcError;
  * @copyright © 2017
  * @license http://www.wtfpl.net/
  */   
-class Request extends RequestAddition
+class Request
 {
     use MessageTrait;
 
     protected $abc;
+    protected $method; 
     protected static $validMethods = [
-        'GET'     => true,    
-        'POST'    => true,
-        'PUT'     => true,
-        'DELETE'  => true,
         'CONNECT' => true,
+        'DELETE'  => true,
+        'GET'     => true,
         'HEAD'    => true,
         'OPTIONS' => true,
         'PATCH'   => true,
+        'POST'    => true,
+        'PUT'     => true,
         'TRACE'   => true,
     ];  
         
@@ -38,7 +39,6 @@ class Request extends RequestAddition
         $this->storage = $abc->newService('Storage');
         $this->storage->add('serverParams', $_SERVER);
         $this->setEnvHeaders($_SERVER);
-        $this->storage->add('Method', $_SERVER['REQUEST_METHOD']);
         $this->storage->add('uri', new Uri($this->abc));
     }
     
@@ -168,7 +168,7 @@ class Request extends RequestAddition
     */
     public function getMethod()
     {
-        return $this->storage->get('Method');
+        return $this->ctorage->get('Method');
     }
 
     /**
@@ -232,7 +232,7 @@ class Request extends RequestAddition
         ServerRequest
 -------------------------------------------------------*/
     /**
-    * Получает параметры сервера ($_SERVER).
+    * Получает параметры сервера (SERVER).
     *
     * @return array
     */
@@ -242,7 +242,7 @@ class Request extends RequestAddition
     }
 
     /**
-    * Получает куки ($_COOKIE).
+    * Получает куки (COOKIE).
     *
     * @return array
     */
@@ -252,7 +252,7 @@ class Request extends RequestAddition
     }
 
     /**
-    * Возвращает новый объект с установленными куками ($_COOKIE).
+    * Возвращает новый объект с установленными куками (COOKIE).
     *
     * @param array $cookies 
     *
@@ -265,31 +265,17 @@ class Request extends RequestAddition
     }
 
     /**
-    * Возвращает параметры query string ($_GET) в виде массива.
+    * Возвращает параметры query string (GET) в виде массива.
     *
     * @return array
     */
     public function getQueryParams()
     {
-        $queryParams = $this->storage->get('queryParams');
-      
-        if (is_array($queryParams)) {
-            return $queryParams;
-        }
-     
-        if (!$this->storage->has('uri')) {
-            return [];
-        }
-     
-        $uri = $this->storage->get('uri');
-        parse_str($uri->getQuery(), $queryParams); 
-        $this->storage->add('queryParams', $queryParams);
-        
         return $this->storage->get('queryParams');
     }
 
     /**
-    * Возвращает новый объект с установленной query string ($_GET).
+    * Возвращает новый объект с установленной query string (GET).
     *
     * @param array $query 
     *
@@ -302,7 +288,7 @@ class Request extends RequestAddition
     }
 
     /**
-    * Возвращает нормализованные данные для загрузки файлов ($_FILES).
+    * Возвращает нормализованные данные для загрузки файлов (FILES).
     *
     * @return array 
     */
@@ -312,7 +298,7 @@ class Request extends RequestAddition
     }
 
     /**
-    * Возвращает новый объект с указанными загруженными файлами ($_FILES).
+    * Возвращает новый объект с указанными загруженными файлами (FILES).
     *
     * @param array $uploadedFiles
     *
@@ -326,7 +312,7 @@ class Request extends RequestAddition
     }
 
     /**
-    * Возвращает все параметры из body ($_POST).
+    * Возвращает все параметры из body (POST).
     *
     * @return null|array|object 
     */
@@ -336,7 +322,7 @@ class Request extends RequestAddition
     }
 
     /**
-    * Возвращает новый объект с указанным параметром body ($_POST).
+    * Возвращает новый объект с указанным параметром body (POST).
     *
     * @param null|array|object $data 
     *
@@ -420,7 +406,7 @@ class Request extends RequestAddition
         }
      
         if (!is_string($method)) {
-            AbcError::badMethodCall('<strong>'
+            AbcError::BadMethodCall('<strong>'
                        . $method 
                        .'</strong>'
                        . ABC_NO_METHOD

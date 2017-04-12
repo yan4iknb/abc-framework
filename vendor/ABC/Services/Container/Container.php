@@ -1,8 +1,8 @@
 <?php
 
-namespace ABC\ABC\Services\Container;
+namespace ABC\Abc\Services\Container;
 
-use ABC\ABC\Core\Exception\AbcError;
+use ABC\Abc\Core\Exception\AbcError;
 
 /** 
  * DI контейнер

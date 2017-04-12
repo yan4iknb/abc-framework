@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\ABC\Services\Sql\SqlDebug\Lang;
+namespace ABC\Abc\Services\Sql\SqlDebug\Lang;
 
 /** 
  * Класс En

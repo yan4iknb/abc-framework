@@ -1,8 +1,8 @@
 <?php
 
-namespace ABC\ABC\Core\Routing;
+namespace ABC\Abc\Core\Routing;
 
-use ABC\ABC\Core\Exception\AbcError;
+use ABC\Abc\Core\Exception\AbcError;
 
 /** 
  * Трейт RouteParser
@@ -15,57 +15,78 @@ use ABC\ABC\Core\Exception\AbcError;
 trait ParserTrait
 {
     protected $defaultKeys = ['controller', 'action'];   
-    protected $routeRules;  
+    protected $routeRules; 
+    protected $queryString;  
     protected $current;
     protected $route;
-    protected $routes = [];
+    protected $routes;
     protected $elements;
     protected $patterns;
     
     /**
+    * Добавляет параметры в URL
+    *
+    * @param string $queryString
+    * @param bool|array $mode
+    *
+    * @return string
+    */     
+    public function addParamToUri($value, $pattern)
+    {
+        foreach ($this->routeRules as $rule => $location) {
+            $params = explode('/', $rule);
+            $last = array_pop($params);
+          
+            if ($last === $pattern) {
+                array_push($params, $value);
+                return implode('/', $params);
+            }
+        }
+    }
+    
+    /**
     * Разбор правил маршрутизации
     *
-    * @param array $routeRules
-    * @param string $path
-    */    
-    public function parseRoutes($routeRules, $path)
-    {
-        $path = trim($path, '/') .'/';
-      
-        if ($path == '/') {
-            $this->storage->add('GET', $this->defaultRoute);
-            return;
-        }
-        
-        $this->elements = explode('/', $path);
-        $GET = [];
-        foreach ($routeRules as $rule => $route) {
-          
-            if ($this->resolve($rule, $path)) {
-                $this->routes = explode('/', $route);
-                $GET = $this->generateGet($this->patterns, $path);
-                $GET = array_merge($this->route, $GET);    
-            }    
-        }
-        
-        $this->storage->add('GET', $GET);
-        return $GET;
-    } 
-
-    /**
-    * Распознование подходящего правила
-    *
-    * @param string $rule
-    * @param string $path
+    * @param string $string
     *
     * @return array
     */    
-    public function resolve($rule, $path)
+    public function parseRoutes($queryString)
+    {
+        $this->queryString = trim($queryString, '/') .'/';
+      
+        if ($this->queryString == '/') {
+            return $this->defaultRoute;
+        }
+     
+        foreach ($this->routeRules as $rule => $route) {
+            $this->elements = explode('/', $this->queryString);
+            $this->current = $route; 
+            $this->routes = explode('/', $this->current);
+            
+            if ($this->resolver($rule)) {
+                $get = $this->generateGet();
+                $get = array_merge($this->route, $get);
+                return $get;
+            }    
+        }
+     
+        return [];
+    } 
+    
+    /**
+    * Распознование подходящего правила
+    *
+    * @param string $patterns
+    *
+    * @return array
+    */    
+    protected function resolver($rule)
     {
         $pattern = '';
-        $this->sections = $this->preapareSections($rule);
-     
-        foreach ($this->sections as $num => $section) {
+        $sections = $this->preapareSections($rule);
+        
+        foreach ($sections as $num => $section) {
             if (is_array($section)) {
                 $pattern .= '('. $section['value'] .'?)/'; 
             } else {
@@ -73,24 +94,7 @@ trait ParserTrait
             }
         }
      
-        return (bool)preg_match('~^'. $pattern .'$~', $path);           
-    }
-    
-    /**
-    * Формирует GET параметры
-    */    
-    public function setParameters($path)
-    {
-        $elements = explode('/', $path);
-        $GET = [];
-        foreach ($this->sections as $num => $section) {
-         
-            if (is_array($section)) {
-                $GET[$section['name']] = $elements[$num];
-            }
-        }
-        
-        $this->storage->add('GET', $GET);
+        return preg_match('~^'. $pattern .'$~', $this->queryString);           
     }
     
     /**
@@ -121,19 +125,17 @@ trait ParserTrait
     /**
     * Генерация массива GET параметров
     *
-    * @param string $route
-    *
     * @return array
     */    
     protected function generateGet()
     {
-        $GET = []; 
+        $get = []; 
      
         foreach ($this->patterns as $num => $pattern) {
             if (is_array($pattern)) {
              
                 if (preg_match('~'. $pattern['value'] .'~', $this->elements[$num])) {
-                    $GET[$pattern['name']] = $this->elements[$num];
+                    $get[$pattern['name']] = $this->elements[$num];
                 }
                 
             } else {
@@ -141,24 +143,22 @@ trait ParserTrait
                 $path = array_shift($elements);
                 
                 if ($path !== $pattern && preg_match('~'. $pattern .'~', $this->elements[$num])) {
-                    $GET[$pattern] = $this->elements[$num]; 
+                    $get[$pattern] = $this->elements[$num]; 
                 }   
             }
         }
         
         $this->setRoute();
-        return $GET;    
+        return $get;    
     }
    
     /**
     * Установка маршрутов
     *
-    * @param bool $default
-    *
-    * @return bool|void
+    * @return void
     */ 
     protected function setRoute($default = false)
-    {  
+    { 
         if($default){
             $this->route = $this->defaultRoute;
         } else {

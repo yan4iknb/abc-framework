@@ -1,8 +1,8 @@
 <?php
 
-namespace ABC\ABC\Services\Http;
+namespace ABC\Abc\Services\Psr7;
 
-use ABC\ABC\Core\Exception\AbcError;
+use ABC\Abc\Core\Exception\AbcError;
 
 /** 
  * Класс Uri
@@ -93,8 +93,8 @@ class Uri
             $parts['path'] = ltrim($requestUri, '/');
         }
       
-        $parts['query'] = $env['QUERY_STRING'];
-        if (null === $parts['query']) {
+        $part['query'] = $env['QUERY_STRING'];
+        if (null === $part['query']) {
             $parts['query'] = parse_url('http://example.com'. $env['REQUEST_URI'], PHP_URL_QUERY);
         }
      

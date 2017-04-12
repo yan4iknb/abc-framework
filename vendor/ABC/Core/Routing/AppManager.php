@@ -1,8 +1,8 @@
 <?php
 
-namespace ABC\ABC\Core\Routing;
+namespace ABC\Abc\Core\Routing;
 
-use ABC\ABC\Core\Base;
+use ABC\Abc\Core\Base;
 
 /** 
  * Класс AbcFramework
@@ -27,7 +27,7 @@ class AppManager
     public function __construct($abc)
     {  
         $this->abc = $abc;
-        $this->params   = $abc->sharedService(\ABC\ABC::PARAMS);
+        $this->params   = $abc->sharedService('Params');
         $this->settings = $abc->getConfig('settings');
     }     
     

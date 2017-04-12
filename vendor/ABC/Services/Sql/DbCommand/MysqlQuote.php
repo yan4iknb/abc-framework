@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\ABC\Services\Sql\DbCommand;
+namespace ABC\Abc\Services\Sql\DbCommand;
 
 /** 
  * Кавычки для MYSQL

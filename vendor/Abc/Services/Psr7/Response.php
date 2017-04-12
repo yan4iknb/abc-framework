@@ -1,8 +1,8 @@
 <?php
 
-namespace ABC\ABC\Services\Http;
+namespace ABC\Abc\Services\Psr7;
 
-use ABC\ABC\Core\Exception\AbcError;
+use ABC\Abc\Core\Exception\AbcError;
 
 /** 
  * Класс Response 
@@ -12,7 +12,7 @@ use ABC\ABC\Core\Exception\AbcError;
  * @copyright © 2017
  * @license http://www.wtfpl.net/ 
  */   
-class Response extends ResponseAddition
+class Response
 {
     use MessageTrait;
     

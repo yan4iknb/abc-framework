@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\ABC\Core\PhpBugsnare;
+namespace ABC\Abc\Core\PhpBugsnare;
 
 /** 
  * Class Handler
@@ -39,7 +39,7 @@ class Handler
     public function __construct($config) 
     {
         $this->language = $config['language'];
-        $this->language = __NAMESPACE__ .'\Lang\\'. $this->language;
+        $this->language = '\ABC\Abc\Core\PhpBugsnare\Lang\\'. $this->language;
      
         if (isset($config['framework_trace']) && true === $config['framework_trace']) {
             $this->allTrace = true;

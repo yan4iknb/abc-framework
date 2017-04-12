@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\ABC\Core\Exception;
+namespace ABC\Abc\Core\Exception;
 
 /** 
  * Класс OutOfRangeException

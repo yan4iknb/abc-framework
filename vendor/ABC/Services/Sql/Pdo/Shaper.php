@@ -1,8 +1,8 @@
 <?php
 
-namespace ABC\ABC\Services\Sql\Pdo;
+namespace ABC\Abc\Services\Sql\Pdo;
 
-use ABC\ABC\Core\Exception\AbcError;
+use ABC\Abc\Core\Exception\AbcError;
 
 /** 
  * Класс Shaper

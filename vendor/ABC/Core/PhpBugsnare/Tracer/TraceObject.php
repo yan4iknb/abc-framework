@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\ABC\Core\PhpBugsnare\Tracer;
+namespace ABC\Abc\Core\PhpBugsnare\Tracer;
 
 /** 
  * Class TrasseObject

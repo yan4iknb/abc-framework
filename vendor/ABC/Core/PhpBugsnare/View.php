@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\ABC\Core\PhpBugsnare;
+namespace ABC\Abc\Core\PhpBugsnare;
 
 /** 
  * Class View

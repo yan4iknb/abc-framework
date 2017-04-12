@@ -1,8 +1,8 @@
 <?php
 
-namespace ABC\ABC\Services\Sql\DbCommand;
+namespace ABC\Abc\Services\Sql\DbCommand;
 
-use ABC\ABC\Core\Exception\AbcError;
+use ABC\Abc\Core\Exception\AbcError;
 
 
 /** 

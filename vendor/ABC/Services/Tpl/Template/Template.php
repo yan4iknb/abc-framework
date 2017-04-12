@@ -1,8 +1,8 @@
 <?php 
 
-namespace ABC\ABC\Services\Tpl\Template;
+namespace ABC\Abc\Services\Tpl\Template;
 
-use ABC\ABC\Core\Exception\AbcError;
+use ABC\Abc\Core\Exception\AbcError;
 
 /** 
  * Класс Template 

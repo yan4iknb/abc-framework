@@ -1,6 +1,6 @@
 <?php
 
-namespace ABC\ABC\Services\BbDecoder;
+namespace ABC\Abc\Services\Bb;
 
 /** 
  * BB-декодер (класс установок)

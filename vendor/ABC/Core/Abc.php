@@ -1,15 +1,16 @@
 <?php
 
-namespace ABC\ABC\Core;
+namespace ABC\Abc\Core;
 
-use ABC\ABC\Core\AbcConfigurator;
-use ABC\ABC\Core\Exception\AbcError;
-use ABC\ABC\Core\Routing\AppManager;
-use ABC\ABC\Core\Routing\CallableResolver;
-use ABC\ABC\Core\Routing\Router;
-use ABC\ABC\Services\Builder;
-use ABC\ABC\Services\Container\Container;
-use ABC\ABC\Services\Storage\Storage;
+
+use ABC\Abc\Core\AbcConfigurator;
+use ABC\Abc\Core\Exception\AbcError;
+use ABC\Abc\Core\Routing\AppManager;
+use ABC\Abc\Core\Routing\CallableResolver;
+use ABC\Abc\Core\Routing\Router;
+use ABC\Abc\Services\Builder;
+use ABC\Abc\Services\Container\Container;
+use ABC\Abc\Services\Storage\Storage;
 
 
 
@@ -41,6 +42,7 @@ class Abc
         $this->container = new Container;
         $this->storage   = new Storage;
         $this->storage->addArray($config, 'config');
+        $this->storage->add('Router', new Router($config));
         $this->includeFunction();
     } 
     
@@ -49,9 +51,8 @@ class Abc
     *
     * @return void
     */     
-    public function startApp()
+    public function run()
     {
-        $this->storage->add(\ABC\ABC::ROUTER, new Router($this));
         $manager = new AppManager($this);
         $manager->run();
     }
@@ -63,8 +64,7 @@ class Abc
     */     
     public function router()
     { 
-        $this->storage->add(\ABC\ABC::CALLABLE_RESOLVER, new CallableResolver($this));    
-        return $this->storage->get(\ABC\ABC::CALLABLE_RESOLVER);   
+        return new CallableResolver($this);    
     }
     
     /**
@@ -134,26 +134,12 @@ class Abc
     }
     
     /**
-    * Возвращает системное хранилище
-    *
-    * @return object
-    */     
-    public function getStorage()
-    { 
-        return $this->storage;
-    }
-    
-    /**
     * Возвращает массив установленного окружения
     *
     * @return array
     */     
     public function getFromStorage($name, $key = null)
-    {  
-        if (!$this->storage->has($name)) {
-            return false;
-        }
-        
+    {    
         return $this->storage->get($name, $key);
     } 
     

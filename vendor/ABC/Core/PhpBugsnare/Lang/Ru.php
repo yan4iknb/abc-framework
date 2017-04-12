@@ -15,6 +15,11 @@ class Ru
     protected static function errorReportings() 
     {
         return [
+'(.+?) expects parameter (\d+) to be array, boolean given' => '<strong>$1</strong> expects parameter <strong>$2</strong> to be array, boolean given<br /><span class="translate">
+
+(<strong>$1</strong> ожидает <strong>$2</strong> параметром массив, а передано булево значение)
+
+</span><br />',
 'Non-static method (.+?) should not be called statically' => 'Non-static method <strong>$1</strong> should not be called statically<br /><span class="translate">
 
 (Нестатический метод <strong>$1</strong> не следует вызывать статично)
@@ -30,7 +35,7 @@ class Ru
 (<strong>$1</strong>: Оба параметра должны иметь равное количество элементов)
 
 </span><br />',
-        
+
 '(.+?) Parameter (\d+) expected to be Array or Object.  Incorrect value given' =>  '<strong>$1</strong>: Parameter <strong>$2</strong>   expected to be Array or Object.  Incorrect value given<br /><span class="translate">
 
 (<strong>$1</strong>: Параметр <strong>$2</strong> должен быть массивом или объектом. Передано некорректное значение)

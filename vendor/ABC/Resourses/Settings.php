@@ -22,6 +22,10 @@ class Settings
                             'dir_views'       => 'Views',    
                         ],
                     
+                    'route_rules' => [  
+                                    '/'   => 'main/index', 
+                    ], 
+                        
                     'default_route' => [
                                         'controller' => 'Main', 
                                         'action'     => 'Index' 

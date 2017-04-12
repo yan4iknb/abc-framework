@@ -159,7 +159,7 @@ class Stream
     */
     public function eof()
     {
-        return $this->isAttached() ? feof($this->stream) : true;
+        return feof($this->stream);
     }
 
     /**
@@ -173,8 +173,8 @@ class Stream
             $this->seekable = false;
             
             if (true === is_resource($this->stream)) {
-                $meta = $this->getMetadata();
-                $this->seekable = !$this->isPipe() && $meta['seekable'];
+                $seekable = $this->getMetadata('seekable');
+                $this->seekable = (!$this->isPipe() && $seekable);
             }
         }
      
@@ -235,25 +235,7 @@ class Stream
      
         return $this->writable;
     }
-
-    /**
-    * Записывает данные в поток.
-    *
-    * @param string $string 
-    *
-    * @return bool
-    */
-    public function write($string)
-    {
-        if (!$this->isWritable() || false === ($written = fwrite($this->stream, $string))) {
-            AbcError::runtime(ABC_NO_WRITE);
-            return false;
-        }
-     
-        $this->size = null;
-        return $written;
-    }
-
+    
     /**
     * Проверяет, доступен ли поток для чтения
     *
@@ -286,6 +268,23 @@ class Stream
     }
 
     /**
+    * Записывает данные в поток.
+    *
+    * @param string $string 
+    *
+    * @return bool
+    */
+    public function write($string)
+    {    
+        if (!$this->isWritable() || false === ($written = fwrite($this->stream, $string))) {
+            throw new \RuntimeException(ABC_NO_WRITE);
+        }
+     
+        $this->size = null;
+        return $written;
+    }
+    
+    /**
     * Читает данные из потока
     *
     * @param int $length 
@@ -293,11 +292,10 @@ class Stream
     */
     public function read($length)
     {
-        if (!$this->isReadable() || false === ($data = fread($this->stream, $length))) {
-            AbcError::runtime(ABC_NO_READ);
-            return false;
+        if (!$this->isReadable() || ($data = fread($this->stream, $length)) === false) {
+            throw new \RuntimeException(ABC_NO_READ);
         }
-     
+        
         return $data;
     }
 
@@ -309,8 +307,7 @@ class Stream
     public function getContents()
     {
         if (!$this->isReadable() || false === ($contents = stream_get_contents($this->stream))) {
-            AbcError::runtime(ABC_NO_CONTENT);
-            return false;
+            throw new \RuntimeException(ABC_NO_CONTENT);
         }
      
         return $contents;

@@ -35,6 +35,8 @@ class Abc
     */
     const ROUTER            = 'Router';
     const CALLABLE_RESOLVER = 'CallableResolver';
+    const REQUEST           = 'Request';
+    const RESPONSE          = 'Response';
     
     protected static $autoload = '/Autoloader.php';
     protected static $config;
@@ -80,6 +82,15 @@ class Abc
         return self::$process->router();   
     }
     
+    /**
+    * Запуск фреймворка с внешним роутингом
+    *
+    * @return void
+    */     
+    public static function run()
+    { 
+        self::$process->run();  
+    }
     /**
     * Селектор выбора автозагрузчика
     *

@@ -17,6 +17,7 @@ class Request extends RequestAddition
     use MessageTrait;
 
     protected $abc;
+    protected $storage;
     protected static $validMethods = [
         'GET'     => true,    
         'POST'    => true,
@@ -35,7 +36,7 @@ class Request extends RequestAddition
     public function __construct($abc)
     {
         $this->abc = $abc;  
-        $this->storage = $abc->newService('Storage');
+        $this->storage = $abc->newService(\ABC\ABC::STORAGE);
         $this->storage->add('serverParams', $_SERVER);
         $this->setEnvHeaders($_SERVER);
         $this->storage->add('Method', $_SERVER['REQUEST_METHOD']);

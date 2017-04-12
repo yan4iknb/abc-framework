@@ -74,7 +74,7 @@ class Http
     *
     * @return object.
     */
-    public function newResponse($body = 'php://memory', 
+    public function newResponse($body = 'php://temp', 
                                    $status = 200, 
                              array $headers = []
     ) {

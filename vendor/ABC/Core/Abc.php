@@ -3,6 +3,7 @@
 namespace ABC\ABC\Core;
 
 use ABC\ABC\Core\AbcConfigurator;
+use ABC\ABC\Core\Base;
 use ABC\ABC\Core\Exception\AbcError;
 use ABC\ABC\Core\Routing\AppManager;
 use ABC\ABC\Core\Routing\CallableResolver;
@@ -57,7 +58,7 @@ class Abc
     }
     
     /**
-    * Запуск фреймворка с роутингом
+    * Внешний роутинг
     *
     * @return void
     */     
@@ -65,6 +66,31 @@ class Abc
     { 
         $this->storage->add(\ABC\ABC::CALLABLE_RESOLVER, new CallableResolver($this));    
         return $this->storage->get(\ABC\ABC::CALLABLE_RESOLVER);   
+    }
+    
+    /**
+    * Запуск фреймворка с внешним роутингом
+    *
+    * @return void
+    */     
+    public function run()
+    {
+        $response = $this->storage->get(\ABC\ABC::RESPONSE);
+     
+        if (!empty($response)) {
+            $this->sendHeaders($response);
+            $size = $response->getBody()->getSize();
+            
+            if ($size !== null) {
+                $response = $response->withHeader('Content-Length', (string)$size);
+                $this->sendBody($response);
+            }
+            
+        } else {
+            $base = new Base;
+            $base->abc = $this;
+            $base->action404();
+        }
     }
     
     /**
@@ -193,5 +219,60 @@ class Abc
     {
         include_once __DIR__ .'/functions.php';
         abcForFunctions($this);
-    }   
+    } 
+    
+    /**
+    * Отправляет заголовки
+    *
+    * @param obj $response
+    *
+    * @return void
+    */     
+    protected function sendHeaders($response)
+    { 
+        if (!headers_sent()) {
+            header(sprintf(
+                'HTTP/%s %s %s',
+                $response->getProtocolVersion(),
+                $response->getStatusCode(),
+                $response->getReasonPhrase()
+            ));
+         
+            foreach ($response->getHeaders() as $name => $values) {
+                foreach ($values as $value) {
+                    header(sprintf('%s: %s', $name, $value), false);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Send the response the client
+     *
+     * @param ResponseInterface $response
+     */
+    public function sendBody($response)
+    {
+        $body = $response->getBody();
+        
+        if ($body->isSeekable()) {
+            $body->rewind();
+        }
+        
+        $chunkSize     = 4096;
+        $contentLength = $response->getHeaderLine('Content-Length'); 
+        $amountToRead  = $contentLength;
+
+        while ($amountToRead > 0 && !$body->eof()) {
+            $data = $body->read(min($chunkSize, $amountToRead));
+            echo $data;
+          
+            $amountToRead -= strlen($data);
+         
+            if (connection_status() != CONNECTION_NORMAL) {
+                break;
+            }
+        }
+
+    }
 }

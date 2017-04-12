@@ -34,7 +34,7 @@ class CallableResolver
     public function __construct($abc)
     {
         $this->storage = $abc->getStorage();
-        $http = $abc->newService(\ABC\ABC::HTTP);
+        $http = $abc->sharedService(\ABC\ABC::HTTP);
         $this->request  = $http->createRequest();
         $this->response = $http->createResponse();
         $this->method   = $this->request->getMethod();
@@ -128,7 +128,7 @@ class CallableResolver
                break;
             }
         }
-    
+     
         if (empty($method)) {
             AbcError::BadMethodCall('<strong>'
                        . $method 
@@ -172,31 +172,13 @@ class CallableResolver
         if (!$this->resolve($pattern, $path)) {
             return false;
         }
-
-        $this->setParameters($path);     
+     
+        $GET = $this->setParameters($path);
+        $this->request = $this->request->withAttributes($GET);
         $response = call_user_func_array($callable, 
                            [$this->request, $this->response]
         );
-        $this->storage->add('Response', $response);
+        
+        $this->storage->add(\ABC\ABC::RESPONSE, $response);
     } 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

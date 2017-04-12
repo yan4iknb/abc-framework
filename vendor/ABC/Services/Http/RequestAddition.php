@@ -56,5 +56,19 @@ abstract class RequestAddition
         $cookieParams = $this->getCookieParams();
         return isset($cookieParams[$key]) ? $cookieParams[$key] : $default;
     }
+    
+    /**
+    * Возвращает объект, в котором добавлен указанный атрибут.
+    *
+    * @param string $name
+    * @param mixed $value 
+    *
+    * @return object
+    */
+    public function withAttributes(array $attributes)
+    {
+        $this->storage->addArray($attributes, 'attributes');
+        return clone $this;
+    }
 }
 

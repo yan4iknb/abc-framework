@@ -17,6 +17,7 @@ class Response extends ResponseAddition
     use MessageTrait;
     
     protected $abc;
+    public $storage;
     protected static $messages = [
         100 => 'Continue',
         101 => 'Switching Protocols',
@@ -91,7 +92,7 @@ class Response extends ResponseAddition
     * @param int $status
     * @param array $headers
     */
-    public function __construct($abc, $body = 'php://memory', $status = 200, array $headers = [])
+    public function __construct($abc, $body = 'php://temp', $status = 200, array $headers = [])
     {
         $this->abc = $abc; 
      
@@ -104,7 +105,8 @@ class Response extends ResponseAddition
         }
         
         $this->initialize($headers);
-        $body = ($body instanceof Stream) ? $body : new Stream($body, 'wb+');
+        $this->storage->add('protocolVersion', '1.1');
+        $body = ($body instanceof Stream) ? $body : new Stream(fopen('php://temp', 'r+'));        
         $this->storage->add('body', $body);
         $this->storage->add('status', $status ? (int) $status : 200);
     }

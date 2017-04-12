@@ -91,6 +91,7 @@ trait ParserTrait
         }
         
         $this->storage->add('GET', $GET);
+        return $GET;
     }
     
     /**
@@ -106,6 +107,8 @@ trait ParserTrait
         $this->patterns = [];
         
         foreach ($rule as $num => $section) {
+            $section = str_replace(['{', '}'], ['<', '>'], $section);
+            
             if (preg_match_all('~<([\w._-]+)?>~', $section, $out)) {
                 $this->patterns[] = ['name' => $out[1][0], 'value' => '[^/]+'];
             } elseif (preg_match_all('~<([\w._-]+):?([^>]+)?>~', $section, $out)) {

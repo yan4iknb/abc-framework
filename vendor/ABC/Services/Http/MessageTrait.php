@@ -14,8 +14,6 @@ use ABC\ABC\Core\Exception\AbcError;
  */   
 trait MessageTrait
 {
-    protected $storage;
-
     protected static $validProtocol = [
                 '1.0' => 1,
                 '1.1' => 1,
@@ -51,7 +49,7 @@ trait MessageTrait
     */ 
     public function getProtocolVersion()
     {
-        return $this->storage->get('protocolversion');
+        return $this->storage->get('protocolVersion');
     }
     
     /**
@@ -68,7 +66,7 @@ trait MessageTrait
             return false;
         }
         
-        $this->storage->add('protocolversion', $version);
+        $this->storage->add('protocolVersion', $version);
         return clone $this;
     }
     
@@ -79,6 +77,10 @@ trait MessageTrait
     */ 
     public function getHeaders()
     {
+        if (!$this->storage->has('headers')) {
+            return [];
+        }
+        
         return $this->storage->all('headers');
     }
     
@@ -229,10 +231,7 @@ trait MessageTrait
     */ 
     protected function initialize($headers = [])
     {
-        $this->storage = $this->abc->newService('Storage');
-        
-
-        
+        $this->storage = $this->abc->newService(\ABC\ABC::STORAGE);
         $this->setHeaders($headers);
     }
     

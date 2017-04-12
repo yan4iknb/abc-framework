@@ -15,6 +15,11 @@ class Ru
     protected static function errorReportings() 
     {
         return [
+'Non-static method (.+?) should not be called statically' => 'Non-static method <strong>$1</strong> should not be called statically<br /><span class="translate">
+
+(Нестатический метод <strong>$1</strong> не следует вызывать статично)
+
+</span><br />',
 'Uninitialized string offset: (\d+)' => 'Uninitialized string offset:<strong>$1</strong><br /><span class="translate">
 
 (Неинициализированное смещение строки <strong>$1</strong>)

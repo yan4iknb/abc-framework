@@ -25,15 +25,15 @@ class UriManager
     */      
     public function __construct($abc)
     {
-        $this->uriConfig  = $abc->getConfig('uri_manager');
+        $this->uriConfig  = $abc->getConfig('uri_manager');        
         $this->params = $abc->sharedService(ABC::PARAMS);
         $this->router = $abc->getFromStorage(ABC::ROUTER);
         
-        if (false === $this->router) {
-            AbcError::BadFunctionCall('<strong>'. basename(__CLASS__) .'</strong>'
-                                      . ABC_NO_SUPPORT_SERVICE
-            );
-        }
+        //if (false === $this->router) {
+            //AbcError::BadFunctionCall('<strong>'. basename(__CLASS__) .'</strong>'
+                                      //. ABC_NO_SUPPORT_SERVICE
+            //);
+        //}
     }
     
     /**

@@ -53,8 +53,7 @@ class Abc
     public function startApp()
     {
         $this->storage->add(\ABC\ABC::ROUTER, new Router($this));
-        $manager = new AppManager($this);
-        $manager->run();
+        (new AppManager($this))->run();
     }
     
     /**
@@ -226,7 +225,6 @@ class Abc
     *
     * @param obj $response
     *
-    * @return void
     */     
     protected function sendHeaders($response)
     { 
@@ -247,9 +245,9 @@ class Abc
     }
     
     /**
-     * Send the response the client
+     * Отправляет ответ в поток
      *
-     * @param ResponseInterface $response
+     * @param object $response
      */
     public function sendBody($response)
     {
@@ -273,6 +271,5 @@ class Abc
                 break;
             }
         }
-
     }
 }

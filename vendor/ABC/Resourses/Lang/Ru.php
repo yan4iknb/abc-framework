@@ -24,6 +24,8 @@ class Ru
         define('ABC_NO_FUNCTIONAL',            ' is not implemented <br /><span style="color:red">(Этот функционал не реализован)</span><br />');
         define('ABC_NO_CLASS',                 ' class not found <br /><span style="color:red">(класс не найден)</span><br />');
         define('ABC_NO_METHOD',                ' method offline in framework <br /><span style="color:red">(метод не поддержиается фреймворком)</span><br />');
+        define('ABC_NO_CALLBACK',              ' Parameter must be a valid callback <br /><span style="color:red">(Аргументом должен быть валидный callback)</span><br />');
+        define('ABC_NO_INVOKE',                ' The class must contain the <strong>__invoke()</strong> method<br /><span style="color:red">(Класс должен содержать метод <strong>__invoke()</strong>)</span><br />');  
         define('ABC_TPL_DISABLE',              ' the template disabled <br /><span style="color:red">(шаблонизатор отключен)</span><br />');
         define('ABC_INVALID_CONFIGURE_APP',    ' Configuring the application is to be performed array <br /><span style="color:red">(конфигурация приложения должна быть массивом)</span><br />');
         define('ABC_INVALID_CONFIGURE_SITE',   ' Configuring the site is to be performed array <br /><span style="color:red">(конфигурация сайта должна быть массивом)</span><br />');

@@ -4,6 +4,7 @@ namespace ABC\ABC\Core\Routing;
 
 use ABC\ABC;
 use ABC\ABC\Core\Base;
+use ABC\ABC\Core\Exception\AbcError;
 
 /** 
  * Класс Executor
@@ -33,11 +34,17 @@ class CallableResolver
     */ 
     public function __construct($abc)
     {
+        $this->abc = $abc;
         $this->storage = $abc->getStorage();
         $http = $abc->sharedService(\ABC\ABC::HTTP);
         $this->request  = $http->createRequest();
         $this->response = $http->createResponse();
-        $this->method   = $this->request->getMethod();
+     
+        if (isset($_POST['_method']) && isset(self::$validMethods[$_POST['_method']])) {
+            $this->request = $this->request->withMethod($_POST['_method']);
+        }
+        
+        $this->method = $this->request->getMethod();
     }     
 
     /**
@@ -121,25 +128,17 @@ class CallableResolver
     *
     * @return object
     */ 
-    public function eny($methods = [], $pattern = null, $callable = null)
+    public function any($methods = [], $pattern = null, $callable = null)
     {
+        $methods = is_string($methods) ? [$methods] : $methods;
+        
         foreach ($methods as $method) {
             if ($this->method === $method) {
-               break;
+                $this->resolver($pattern, $callable);
             }
         }
-     
-        if (empty($method)) {
-            AbcError::BadMethodCall('<strong>'
-                       . $method 
-                       .'</strong>'
-                       . ABC_NO_METHOD
-            );
-            return false;
-        }
         
-        $this->resolver($pattern, $callable);
-        return $this;
+        return $this;        
     }
     
     /**
@@ -152,7 +151,10 @@ class CallableResolver
     */ 
     public function all($pattern = null, $callable = null)
     {
-        $this->resolver($pattern, $callable);
+        if (isset(self::$validMethods[$this->method])) {
+            $this->resolver($pattern, $callable);        
+        }
+     
         return $this;
     }
     
@@ -168,17 +170,59 @@ class CallableResolver
     {
         $path = $this->request->getUri()->getPath();
         $path = '/'. trim($path, '/') .'/';
-        
+     
         if (!$this->resolve($pattern, $path)) {
             return false;
         }
+        
+        if (is_string($callable) && false !== strpos($callable, '@')) {
+            $this->appManager($path, $callable);
+            return false;
+        }
      
+        if (class_exists($callable)) {
+         
+            if (!method_exists($callable, '__invoke')) {
+                AbcError::badFunctionCall(ABC_NO_INVOKE);
+                return false;
+            }
+            
+            $callable = new $callable;
+        }
+        
+        if (!is_callable($callable)) {
+            AbcError::badFunctionCall(ABC_NO_CALLBACK);
+            return false;
+        } 
+        
         $GET = $this->setParameters($path);
         $this->request = $this->request->withAttributes($GET);
+        
         $response = call_user_func_array($callable, 
                            [$this->request, $this->response]
         );
         
         $this->storage->add(\ABC\ABC::RESPONSE, $response);
     } 
+    
+    /**
+    *
+    *
+    * @param string $path
+    * @param string $rout
+    *
+    */ 
+    protected function appManager($path, $rout)
+    {
+        $routes = explode('@', $rout);
+        $GET = $this->setParameters($path, $routes);
+        
+        ob_start();
+        (new AppManager($this->abc))->run();
+        $content = ob_get_clean();
+        
+        $this->response->write($content);
+        @unset($content);
+        $this->storage->add(\ABC\ABC::RESPONSE, $this->response);    
+    }
 }

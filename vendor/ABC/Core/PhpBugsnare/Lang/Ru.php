@@ -15,6 +15,21 @@ class Ru
     protected static function errorReportings() 
     {
         return [
+'Argument (\d+) passed to (.+?) must be an instance of (.+?), string given, called' => 'Argument <strong>$1</strong> passed to <strong>$2</strong> must be an instance of <strong>$3</strong>, array given<br /><span class="translate">
+
+(Аргумент <strong>$1</strong>, переданный в <strong>$2</strong>, должен быть экземпляром массива, который называется <strong>$3</strong>)
+
+</span><br />',
+'(.+?) Compilation failed: nothing to repeat at offset (\d+)' => '<strong>$1</strong> Compilation failed: nothing to repeat at offset <strong>$2</strong><br /><span class="translate">
+
+(<strong>$1</strong> Сбой компиляции: ничего не повторяется при смещении <strong>$2</strong>)
+
+</span><br />',
+'(.+?) expects parameter (\d+) to be a valid callback, function (.+?) not found or invalid function name' => '<strong>$1</strong> expects parameter <strong>$2</strong> to be a valid callback, function <strong>$3</strong> not found or invalid function name<br /><span class="translate">
+
+(<strong>$1</strong> ожидает <strong>$2</strong> параметром валидный callback. Функция <strong>$3</strong> не найдена, либо имеет неверное название)
+
+</span><br />',
 '(.+?) expects parameter (\d+) to be array, boolean given' => '<strong>$1</strong> expects parameter <strong>$2</strong> to be array, boolean given<br /><span class="translate">
 
 (<strong>$1</strong> ожидает <strong>$2</strong> параметром массив, а передано булево значение)

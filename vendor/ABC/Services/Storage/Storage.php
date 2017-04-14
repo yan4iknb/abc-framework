@@ -16,27 +16,40 @@ class Storage
     private $names  = [];
     private $data   = [];
     
+
     /**
-    * Возвращает из хранилища все данные по указанному ключу
+    * Добавляет данные в хранилище (осторожно, перезапись!)
     *
+    * @param string $name
+    * @param mixed $value
     * @param string $key
     * 
-    * @return mixed
     */ 
-    public function all($key = null)
+    public function add($name, $value, $key = null)
     {
-        if (null === $key) {
-            return $this->data;
+        if (!empty($key)) {
+            $this->names[$key][strtolower($name)] = $name;        
+            $this->data[$key][$name] = $value;
+        } else {
+            $this->names[strtolower($name)] = $name;
+            $this->data[$name] = $value;
         }
-     
-        $values = [];
-        
-        foreach ($this->names[$key] as $name) {   
-            $values[$name] = $this->data[$key][$name];
+    }
+    
+    /**
+    * Добавляет данные в хранилище из массива (осторожно, перезапись!)
+    *
+    * @param string $key
+    * @param string $name
+    * @param mixed $value
+    * 
+    */ 
+    public function addArray(array $array, $key = null)
+    {
+        foreach ($array as $name => $value) {
+           $this->add($name, $value, $key);
         }
-        
-        return $values;
-    } 
+    }
     
     /**
     * Возвращает из хранилища данные по указанному ключу и имени
@@ -84,6 +97,28 @@ class Storage
     } 
     
     /**
+    * Возвращает из хранилища все данные по указанному ключу
+    *
+    * @param string $key
+    * 
+    * @return mixed
+    */ 
+    public function all($key = null)
+    {
+        if (null === $key) {
+            return $this->data;
+        }
+     
+        $values = [];
+        
+        foreach ($this->names[$key] as $name) {   
+            $values[$name] = $this->data[$key][$name];
+        }
+        
+        return $values;
+    } 
+
+    /**
     * Проверяет наличие данных по ключу и имени
     *
     * @param string $key
@@ -99,40 +134,6 @@ class Storage
      
         return isset($this->names[strtolower($name)]);
     } 
-
-    /**
-    * Добавляет данные в хранилище (осторожно, перезапись!)
-    *
-    * @param string $key
-    * @param string $name
-    * @param mixed $value
-    * 
-    */ 
-    public function add($name, $value, $key = null)
-    {
-        if (!empty($key)) {
-            $this->names[$key][strtolower($name)] = $name;        
-            $this->data[$key][$name] = $value;
-        } else {
-            $this->names[strtolower($name)] = $name;
-            $this->data[$name] = $value;
-        }
-    }
-    
-    /**
-    * Добавляет данные в хранилище из массива (осторожно, перезапись!)
-    *
-    * @param string $key
-    * @param string $name
-    * @param mixed $value
-    * 
-    */ 
-    public function addArray(array $array, $key = null)
-    {
-        foreach ($array as $name => $value) {
-           $this->add($name, $value, $key);
-        }
-    }
 
     /**
     * Добавляет данные к уже существующим

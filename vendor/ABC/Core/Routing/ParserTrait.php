@@ -42,8 +42,8 @@ trait ParserTrait
         foreach ($routeRules as $rule => $route) {
           
             if ($this->resolve($rule, $path)) {
-                $this->routes = explode('/', $route);
-                $GET = $this->generateGet($this->patterns, $path);
+                $routes = explode('/', $route);
+                $GET = $this->generateGet($routes);
                 $GET = array_merge($this->route, $GET);    
             }    
         }
@@ -79,7 +79,7 @@ trait ParserTrait
     /**
     * Формирует GET параметры
     */    
-    public function setParameters($path)
+    public function setParameters($path, $routes = null)
     {
         $elements = explode('/', $path);
         $GET = [];
@@ -88,6 +88,11 @@ trait ParserTrait
             if (is_array($section)) {
                 $GET[$section['name']] = $elements[$num];
             }
+        }
+        
+        if (!empty($routes)) {
+            $routes = $this->setRoute($routes);
+            $GET = array_merge($routes, $GET);
         }
         
         $this->storage->add('GET', $GET);
@@ -128,7 +133,7 @@ trait ParserTrait
     *
     * @return array
     */    
-    protected function generateGet()
+    protected function generateGet($routes)
     {
         $GET = []; 
      
@@ -149,7 +154,7 @@ trait ParserTrait
             }
         }
         
-        $this->setRoute();
+        $this->setRoute($routes);
         return $GET;    
     }
    
@@ -160,21 +165,18 @@ trait ParserTrait
     *
     * @return bool|void
     */ 
-    protected function setRoute($default = false)
+    protected function setRoute($routes = [])
     {  
-        if($default){
-            $this->route = $this->defaultRoute;
-        } else {
+        foreach ($routes as $num => $rout) {
          
-            foreach ($this->routes as $num => $rout) {
-             
-                if (!empty($this->defaultKeys[$num])) {
-                    $this->route[$this->defaultKeys[$num]] = $rout;
-                } else {
-                    AbcError::logic(ABC_ERROR_ROUTES_RULE);
-                    return false;
-                }
+            if (!empty($this->defaultKeys[$num])) {
+                $this->route[$this->defaultKeys[$num]] = $rout;
+            } else {
+                AbcError::logic(ABC_ERROR_ROUTES_RULE);
+                return false;
             }
         }
+        
+        return $this->route;
     }
 }

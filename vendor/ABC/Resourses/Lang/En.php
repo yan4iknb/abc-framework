@@ -23,11 +23,13 @@ class En
         define('ABC_NO_FUNCTIONAL',            ' is not implemented');
         define('ABC_NO_CLASS',                 ' class not found');
         define('ABC_NO_METHOD',                ' method offline in class ');
+        define('ABC_NO_CALLBACK',              ' Parameter must be a valid callback');
+        define('ABC_NO_INVOKE',                ' The class must contain the <strong>__invoke()</strong> method');   
         define('ABC_TPL_DISABLE',              ' the template disabled');
         define('ABC_INVALID_CONFIGURE_APP',    ' Configuring the application is to be performed array');
         define('ABC_INVALID_CONFIGURE_SITE',   ' Configuring the site is to be performed array');
         define('ABC_NO_CONFIGURE',             ' Setting is not specified in the configuration file');
-        define('ABC_INVALID_CONFIGURE',        'Setup key must be a string');
+        define('ABC_INVALID_CONFIGURE',        ' Setup key must be a string');
         define('ABC_UNKNOWN_ROUTES',           ' Unknown type of routing data');
         
         /**

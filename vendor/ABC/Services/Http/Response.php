@@ -92,7 +92,7 @@ class Response extends ResponseAddition
     * @param int $status
     * @param array $headers
     */
-    public function __construct($abc, $body = 'php://temp', $status = 200, array $headers = [])
+    public function __construct($abc, $body = 'php://memory', $status = 200, array $headers = [])
     {
         $this->abc = $abc; 
      
@@ -106,7 +106,7 @@ class Response extends ResponseAddition
         
         $this->initialize($headers);
         $this->storage->add('protocolVersion', '1.1');
-        $body = ($body instanceof Stream) ? $body : new Stream(fopen('php://temp', 'r+'));        
+        $body = ($body instanceof Stream) ? $body : new Stream(fopen('php://memory', 'r+'));        
         $this->storage->add('body', $body);
         $this->storage->add('status', $status ? (int) $status : 200);
     }

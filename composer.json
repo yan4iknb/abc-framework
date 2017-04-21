@@ -1,11 +1,11 @@
 {
-    "name": "abc-framework/abc-framework",
+    "name": "abc-framework",
     "type": "framework",
     "description": "A simple Framework for beginners (простой фреймворк для начинающих)",
     "keywords": ["framework"],
     "homepage": "http://abc-framework.ru/",
     "license": "MIT",
-	"minimum-stability": "dev",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "IRBIS-team",

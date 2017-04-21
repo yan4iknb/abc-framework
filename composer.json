@@ -5,6 +5,7 @@
     "keywords": ["framework"],
     "homepage": "http://abc-framework.ru/",
     "license": "MIT",
+	"minimum-stability": "dev-master",
     "authors": [
         {
             "name": "IRBIS-team",
@@ -12,6 +13,6 @@
         }
     ],
     "require": {
-        "php": "^5.5.0 || ^7.0"
+        "php": "^5.6.0 || ^7.0"
     }
 }

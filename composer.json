@@ -5,7 +5,7 @@
     "keywords": ["framework"],
     "homepage": "http://abc-framework.ru/",
     "license": "MIT",
-    "minimum-stability": "dev",
+    "minimum-stability": "master",
     "authors": [
         {
             "name": "IRBIS-team",

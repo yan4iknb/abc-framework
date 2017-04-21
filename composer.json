@@ -12,7 +12,6 @@
         }
     ],
     "require": {
-        "php": "^5.6.0 || ^7.0",
-        "another-vendor/package": "1.*"
+        "php": "^5.6.0 || ^7.0"
     }
 }

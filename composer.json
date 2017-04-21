@@ -12,6 +12,6 @@
         }
     ],
     "require": {
-        "abc-framework/abc-framework": "dev-master"
+        "abc-framework/vendor/ABC": "dev-master"
     }
 }

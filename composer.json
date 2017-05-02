@@ -1,5 +1,5 @@
 {
-    "name": "abc-framework",
+    "name": "abc-framework/abc-framework",
     "type": "framework",
     "description": "A simple Framework for beginners (простой фреймворк для начинающих)",
     "keywords": ["framework"],

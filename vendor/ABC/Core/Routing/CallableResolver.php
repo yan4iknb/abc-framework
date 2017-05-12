@@ -180,7 +180,7 @@ class CallableResolver
             return false;
         }
      
-        if (class_exists($callable)) {
+        if (is_string($callable) && class_exists($callable)) {
          
             if (!method_exists($callable, '__invoke')) {
                 AbcError::badFunctionCall(ABC_NO_INVOKE);
@@ -222,7 +222,7 @@ class CallableResolver
         $content = ob_get_clean();
         
         $this->response->write($content);
-        @unset($content);
+        unset($content);
         $this->storage->add(\ABC\ABC::RESPONSE, $this->response);    
     }
 }

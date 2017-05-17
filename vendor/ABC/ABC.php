@@ -11,7 +11,7 @@ namespace ABC;
  * @license http://www.wtfpl.net/ 
  */   
  
-class Abc
+class ABC
 {
     /**
     * Сервисы
